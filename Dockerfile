@@ -1,5 +1,7 @@
 FROM ubuntu:20.04
 
+LABEL maintainer="sleong@wustl.edu"
+
 # Setup LSF link libraries
 COPY lsf/ /opt/ibm/lsfsuite/lsf/10.1/
 
