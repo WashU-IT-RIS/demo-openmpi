@@ -36,7 +36,8 @@ RUN export DEBIAN_FRONTEND=noninteractive && apt-get update && \
     net-tools \
     pciutils \
     pkg-config \
-    python \
+    python3 \
+    python-is-python3 \
     swig \
     tk-dev \
     tzdata \
