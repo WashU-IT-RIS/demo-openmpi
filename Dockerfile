@@ -31,8 +31,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && apt-get update && \
     libnl-route-3-dev \
     libnuma-dev \
     libssl-dev \
-    libudev0 \
-    libusb-dev \
+    libusb-1.0-0-dev \
     lsb-release \
     lsof \
     m4 \
@@ -40,10 +39,11 @@ RUN export DEBIAN_FRONTEND=noninteractive && apt-get update && \
     pciutils \
     pkg-config \
     python3 \
-    python-is-python3 \
+    python2 \
     swig \
     tk-dev \
     tzdata \
+    udev \
     wget && \
     apt-get clean all
 
