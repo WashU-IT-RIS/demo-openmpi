@@ -1,8 +1,8 @@
 /*
  ****************************************************************************
  IBM Spectrum LSF 10.1
- Build 509238
- Date Dec 18 2018
+ Build 600488
+ Date Jun 10 2021
  ****************************************************************************
  */
 
@@ -43,13 +43,14 @@ extern "C" {
 #define SKIP_SPACES(word) \
     while ( word[0] == ' ' ) \
         word++;
-
+#ifndef FREEUP_ARRAY
 #define FREEUP_ARRAY(num, vector) \
     if(vector != NULL) {\
         FREE_STRING_VECTOR_ENTRIES(num, vector); \
         FREEUP(vector);\
         num = 0;\
     }
+#endif
 
 /* used to clean up structures containing the data staging
  * fields nStinFile and stinFile
@@ -100,9 +101,22 @@ extern "C" {
 #define  LSB_EVENT_VERSION9_1_2   9.12
 #define  LSB_EVENT_VERSION9_1_3   9.13
 #define  LSB_EVENT_VERSION10_1   10.1
+#define  LSB_EVENT_VERSION10_1_0_8 10.108
 
+/* keys for 10_1_0_8 events file and later */
+#define LSB_EVENT_FINISH_JOB_INSTIDS "instanceIds"
+#define LSB_EVENT_FINISH_SCHED_OVERHEAD  "schedulingOverhead"
 /* current event version number of the mbatchd */
-#define  THIS_VERSION      "10.1"
+#define  THIS_VERSION      "10.108"
+
+#define HDR_RESERVED0_3THOST 0x01
+#define HDR_RESERVED1_3THOST 0x01
+/*indicate eligible pend time feature is enable*/
+
+#define HDR_RESERVED1_ELIGIBLE_PEND_TIME 0x02
+#define HDR_RESERVED1_SECURITY_CHECKING  0x20000000
+#define HDR_RESERVED1_SUPPORT_SECURITY   0x40000000
+#define HDR_RESERVED1_SECURITY_COMM      0x80000000
 
 #define  MAX_VERSION_LEN     12
 #define  MAX_HPART_USERS     100  /* num of users per host partition */
@@ -115,9 +129,11 @@ extern "C" {
 #define  MAX_CALENDARS       256  /* for the local cluster */
 #define  MAX_USER_EQUIVALENT 128  /* max num of user equivalent entries */
 #define  MAX_USER_MAPPING    128  /* max num of user mapping entries */
-#define  MAXDESCLEN          20 * 512 /* max external msg's description length */
+#define  MAXDESCLEN          1024*1024 /* max external msg's description length */
+#define  MAX_ACNOTIFY_LEN      1024 /* max AC notification length */
 #define  MAX_GROUPS          4096 /* num of user or host group */
 #define  MAX_LSB_LP_LEN      2048 /*the max length of the lisenceproject*/
+#define  MAX_HCLOSURE_LOCK_ID   128  /* the max length of a hclosure lock ID */
 /*
  * RFC #725
  */
@@ -145,10 +161,14 @@ extern "C" {
 /**
  * \addtogroup host_status host_status
  * The status of the host. It is the bitwise inclusive OR of some of the following:
- * NOTE!!: If adding new host statuses please update the function hStatusToStr in lsb.hosts.c
  */
 /*@{*/
+
+/*
+ * NOTE!!: If adding new host statuses please update the function hStatusToStr in lsb.hosts.c
+ */
 #define XDR_HAS_PRIORITY          0x01
+#define XDR_GUAR_LOAN             0x02
 
 #define HOST_STAT_OK              0x0    /**< Ready to accept and run jobs */
 #define HOST_STAT_BUSY            0x01   /* Load is not good enough */
@@ -208,8 +228,10 @@ extern "C" {
 #define HOST_STAT_POWER_CLOSED 0x800000 /**< badmin hpower triggered power save */
 #define HOST_STAT_IN_CYCLETIME 0x1000000 /**< host is in cycle time */
 
-#define HOST_STAT_CLOSED_HFACTORY 0x2000000 /**< host is disabled by host factory policy */
+#define HOST_STAT_DISCONNECTED 0x2000000 /**< Disconnected mbatchd to sbd */
+
 #define HOST_STAT_RELINQUISHED    0x4000000 /**< host is relinquished to host factory */
+#define HOST_STAT_CLOSED_HFACTORY 0x8000000 /**< host is disabled by host factory policy */
 
 /* host is ok */
 #define LSB_HOST_OK(status)          ((status & ~HOST_STAT_ACOK) == HOST_STAT_OK)
@@ -461,6 +483,11 @@ extern "C" {
 #define  Q_ATTRIB2_RC_DEMAND_POLICY       0x400 /* RC_DEMAND_POLICY is configured 
 					   */
 
+#define  Q_ATTRIB2_RLIMITS64       0x800 /* 64-bit rLimits[] is used since 10.1.0.7 */
+#define  Q_ATTRIB2_64BITMEM        0x1000 /* 3TB memory host is supported since 10.1.0.8 */
+#define  Q_ATTRIB2_DOCKER          0x2000 /* queue level container and exec driver */
+#define Q_ATTRIB2_USE_PAM_EXT      0x4000
+
 
 /* exit code for mbatchd */
 #define MASTER_NULL           200
@@ -509,7 +536,7 @@ extern "C" {
 #define JOB_STAT_PERR         (0x100)    /**< Post job process has error */
 #define JOB_STAT_WAIT         (0x200)    /**< Chunk job waiting its turn to exec */
 #define JOB_STAT_RUNKWN       0x8000  /* Flag : Job status is UNKWN caused by losting contact with remote cluster */
-#define JOB_STAT_UNKWN        0x10000    /**< The slave batch daemon (sbatchd) on 
+#define JOB_STAT_UNKWN        0x10000    /**< The server batch daemon (sbatchd) on 
                                           * the host on which the job is processed 
                                           * has lost contact with the master batch 
                                           * daemon (mbatchd).*/
@@ -619,7 +646,12 @@ extern "C" {
 #define    EVENT_SBD_JOB_START_ACCEPT 82 /**< Job start accept in sbd */
 #define    EVENT_JOB_RESIZE_REQUEST 83   /**< Job resize request is received */
 #define    EVENT_JOB_DATA_STAGE    84   /**< Data staging action for the job */
-#define    NUM_EVENT_TYPES          85 /**< Number of different event types. */
+#define    EVENT_HOST_CTRL_LOCK_IDS  85   /**< Host lock IDs controled by IBM Spectrum LSF
+                                       * administrator (bhc operation) */
+#define    EVENT_ATTR_CREATE        86 /**< Attribute creation request is received */
+#define    EVENT_ATTR_DELETE        87 /**< Attribute deletion request is received */
+#define    EVENT_ATTR_INFO          88 /**< Attribute info */
+#define    NUM_EVENT_TYPES          89 /**< Number of different event types. */
 /*@}*/
 
 /* event kind
@@ -728,6 +760,7 @@ extern "C" {
 #define PEND_STAGE_STORAGE  69 /**< Not enough stage storage resources available */
 #define PEND_ADVRSV_OVERAGE 70 /**< Job's run limit exceeds the end time of the advance reservantion */
 #define PEND_ADVRSV_USER 71 /**< User permissions denied for the advance reservation */
+#define PEND_MAX_JOB_SCHEDULING_INTVL  72 /**< The job reached the job scheduling interval threshold */
 
 /*
  * Queue and System Related Reasons (301 - 599) 
@@ -854,22 +887,23 @@ extern "C" {
 #define PEND_HOST_REMOTE_DATA_REQ 1350 /**< Host is not suitable for jobs with a data requirement */
 #define PEND_HOST_DISCONNECTED 1351 /**< The host cannot be scheduled because the sbatchd is not connected */
 #define PEND_HOST_TEMPLATE_REP 1352 /**< Template host only used for demand calculation */
+#define PEND_HOST_HATTR_INVALID 1353 /**< Job's mandatory attribute affinity requirements not satisfied */
 
 /*
  * sbatchd Related Reasons (1601 - 1900)
  */
-#define PEND_SBD_UNREACH       1601   /**< Unable to reach slave batch server */
+#define PEND_SBD_UNREACH       1601   /**< Unable to reach batch server */
 #define PEND_SBD_JOB_QUOTA     1602   /**< Number of jobs exceeds quota */
 #define PEND_JOB_START_FAIL    1603   /**< Failed in talking to server to start the job */
 #define PEND_JOB_START_UNKNWN  1604   /**< Failed in receiving the reply from server when starting the job */
 #define PEND_SBD_NO_MEM        1605   /**< Unable to allocate memory to run job */
 #define PEND_SBD_NO_PROCESS    1606   /**< Unable to fork process to run job */
 #define PEND_SBD_SOCKETPAIR    1607   /**< Unable to communicate with job process */
-#define PEND_SBD_JOB_ACCEPT    1608   /**< Slave batch server failed to accept job */
+#define PEND_SBD_JOB_ACCEPT    1608   /**< Batch server failed to accept job */
 #define PEND_LEASE_JOB_REMOTE_DISPATCH 1609 /**< Lease job remote dispatch failed */
 #define PEND_JOB_RESTART_FAIL  1610   /**< Failed to restart job from last checkpoint */
 #define PEND_CHUNK_MAX_WAIT_TIME 1611 /**< Job is in WAIT status for longer time than CHUNK_MAX_WAIT_TIME */
-#define PEND_SBD_WRITE_EVENT_FAIL 1612 /**< Slave batch server failed to write data into the events file */
+#define PEND_SBD_WRITE_EVENT_FAIL 1612 /**< Batch server failed to write data into the events file */
 /*
  * Load Related Reasons (2001 - 2300, 
  *     PEND_HOST_LOAD_MORE - (PEND_HOST_LOAD_MORE + PEND_RES_EXTEND_SIZE -1)
@@ -942,6 +976,8 @@ extern "C" {
 #define PEND_RMT_PROC_APP_QUE         2945  /**< Remote application profile TASKLIMIT/JOB_SIZE_LIST rejected by the queue */
 #define PEND_RMT_QUEUE_DATA_REQ       2946 /**< Remote import queue not suitable for job with a data requirement */
 #define PEND_RMT_QUEUE_STAGE_REQ      2947 /**< Remote import queue not suitable for job with stage requirement */
+#define PEND_REMOTE_NOTSUPPORT_RLIMITS64 2948 /**< Remote cluster does not support 64-bit rlimits */
+
 /* SUSPENDING REASONS */
 
 /* 
@@ -958,6 +994,7 @@ extern "C" {
 #define PEND_GENERAL_LIMIT_JOBS_CLUSTER	4704   /**< JOBS limit defined cluster-wide has been reached */
 #define PEND_GENERAL_LIMIT_JOBS_HOST	4705   /**< JOBS limit defined on host or host group has been reached */
 #define PEND_GENERAL_LIMIT_JOBS_LIC_PROJECT 4706   /**< JOBS limit defined for the license project has been reached */
+#define PEND_GENERAL_LIMIT_JOBS_APP     4707   /**< JOBS limit defined for the application has been reached */
 #define PEND_GENERAL_LIMIT_JOB_DISPATCH_USER 4751  /**< JOB_DISPATCH_LIMIT defined for the user or user group has been reached */
 #define PEND_GENERAL_LIMIT_JOB_DISPATCH_QUEUE 4752  /**< JOB_DISPATCH_LIMIT defined for the queue has been reached */
 
@@ -968,7 +1005,8 @@ extern "C" {
 #define PEND_GENERAL_LIMIT_FWDSLOTS_USER    4802  /**< FWD_TASKS limit defined for the user or user group has been reached */
 #define PEND_GENERAL_LIMIT_FWDSLOTS_PROJECT 4803  /**< FWD_TASKS limit defined for the project has been reached */
 #define PEND_GENERAL_LIMIT_FWDSLOTS_CLUSTER 4804  /**< FWD_TASKS limit defined for remote cluster has been reached */
-#define IS_FWDSLOTS_LIMIT_REASON(id) ((id <= PEND_GENERAL_LIMIT_FWDSLOTS_CLUSTER ) && (id >= PEND_GENERAL_LIMIT_FWDSLOTS_QUEUE))
+#define PEND_GENERAL_LIMIT_FWDSLOTS_APP     4805  /**< FWD_TASKS limit defined for the application has been reached */
+#define IS_FWDSLOTS_LIMIT_REASON(id) ((id <= PEND_GENERAL_LIMIT_FWDSLOTS_APP ) && (id >= PEND_GENERAL_LIMIT_FWDSLOTS_QUEUE))
 
 /* LSF2 Presto RLA-related reasons    (4900 - 4989) */
 #define PEND_RMS_PLUGIN_INTERNAL                4900   /**< RMS scheduler plugin internal error */
@@ -1128,6 +1166,8 @@ extern "C" {
 #define PEND_GPU_SPAN                    5915
 #define PEND_GPU_RESOURCE                5916 
 #define PEND_GPU_NVLINK                  5917
+#define PEND_GPU_VENDOR_CONFLICT         5918
+#define PEND_GPU_MIG_MPS_SHARED_UNSUPPORT 5919
 
 /* slot pool related pending reasons (5950 - 5999) */
 #define PEND_QUEUE_SLOT_POOL_LIMIT      5950        /**< Queue has reached job slot limit of slot pool */
@@ -1142,8 +1182,8 @@ extern "C" {
 #define PEND_GUARANTEE_SLOTS_PKG        6305 /**< Slots reserved for package guarantees */
 #define PEND_GUARANTEE_MEM_PKG          6306 /**< Memory reserved for package guarantees */
 #define PEND_GUARANTEE_PKG              6307 /**< Insufficient free packages on host */
-#define PEND_GUARANTEE_LOAN              6308 /**< Ignore non-pool hosts during loan scheduling */
-
+#define PEND_GUARANTEE_LOAN             6308 /**< Ignore non-pool hosts during loan scheduling */
+#define PEND_CONS_GUAR_EXCEEDED         6309 /**< Consumer has exceeded its guaranteed resources */
 
 /* license project reasons (6400-6700) */
 #define PEND_GENERAL_LIMIT_LIC_PROJECT	6400   /**< Resource limit defined on license project has been reached */
@@ -1220,6 +1260,11 @@ extern "C" {
 #define PEND_GB_COMPOUND_RESREQ         7011
 #define PEND_GB_ALTERNATIVE_RESREQ      7012
 #define PEND_GB_DATA_REQ                7013
+#define PEND_KUBE_REASON                7014
+#define PEND_KUBE_API_SERVER            7015
+#define PEND_KUBE_POD_NOT_READY         7016
+#define PEND_KUBE_HOST                  7017
+#define PEND_KUBE_NOT_LOADED            7018
 
 /*
  * Jobs Resource Reservation Related Reasons (7101 - 7400)
@@ -1230,6 +1275,9 @@ extern "C" {
 
 #define PEND_RES_DEFAULT_SIZE 300
 #define PEND_RES_EXTEND_SIZE 1000
+
+/* Currently, PEND_GENERAL_LIMIT_APP_MORE = 8001 */
+#define PEND_GENERAL_LIMIT_APP_MORE  (PEND_HOST_JOB_RUSAGE_THRESHOLD_MORE - PEND_RES_EXTEND_SIZE)
 
 /* Currently, PEND_HOST_JOB_RUSAGE_THRESHOLD_MORE = 9001 */
 #define PEND_HOST_JOB_RUSAGE_THRESHOLD_MORE  (PEND_HOST_LOAD_MORE - PEND_RES_EXTEND_SIZE)
@@ -1298,6 +1346,10 @@ extern "C" {
 #define PEND_CSM_PREJOB_FAIL 7601
 #define PEND_CSM_API_BAD_NODE 7602
 
+#define PEND_MAX_TASKS_PER_HOST   7603
+#define PEND_MAX_HOSTS_FOR_STRIPE 7604
+#define PEND_GENERAL_LIMIT_APP          7700 /**< Resource limit defined on application has been reached */
+#define PEND_GENERAL_LIMIT_APP_END      8000 /**< place holder for limit reason for application */
 
 
 /* LSF reserves pending reason number from 1 - 20000.
@@ -1383,7 +1435,8 @@ job priority. */
 #define RELEASING_SLOT 1
 #define RELEASED_SLOT 2
 
-
+/*Granular ACL Support*/
+#define GRANULAR_ACL 2
 
 /*@}*/
                                                                                                 
@@ -1833,7 +1886,7 @@ LSB_JOB_MEMLIMIT defined */
 #define LSBE_MOD_SLA_ARRAY      227 /* Cannot modify service class on element of job array */
 #define LSBE_MOD_SLA_JGRP       228 /* Modify service class for job in job group is not supported*/
 #define LSBE_MAX_PEND           229 /* Max. Pending job error */
-#define LSBE_CONCURRENT         230 /* System concurrent query exceeded */
+#define LSBE_CONCURRENT         230 /* System concurrent query exceeded, (also caused by non-threadsafe write to chan, use b_write_fix instead of writeChan_) */
 #define LSBE_FEATURE_NULL       231 /* Requested feature not enabled */
 
 #define LSBE_DYNGRP_MEMBER      232 /* Host is already member of group */
@@ -2172,7 +2225,7 @@ LSB_JOB_MEMLIMIT defined */
 #define LSBE_AC_NO_PARAMETERS         490 /* Incorrect parameter */
 #define LSBE_AC_HOST_IN_PROVISIONING  491 /* Cannot operate on hosts in the Provisioning state */
 #define LSBE_AC_HOST_IN_SAVED         492 /* Cannot operate on hosts in the Saved state */
-#define LSBE_AC_HOST_SBD_STARTING_UP  493 /* Cannot operate on hosts waiting for the slave batch daemon to start up */
+#define LSBE_AC_HOST_SBD_STARTING_UP  493 /* Cannot operate on hosts waiting for the server batch daemon to start up */
 #define LSBE_AC_RESIZABLE             494 /* Dynamic Cluster jobs cannot be resizable jobs */
 #define LSBE_AC_VIRTUAL_MACHINE       495 /* Cannot specify virtual machines */
 #define LSBE_AC_CHUNK_JOB             496 /* Dynamic Cluster jobs cannot be chunk jobs */
@@ -2698,9 +2751,73 @@ LSB_JOB_MEMLIMIT defined */
 #define LSBE_MOD_NGPUS                    810 /* Cannot modify job's ngpus_physical in rusage section of the resource requirement */
 #define LSBE_HOST_IMAGE                    811   /* Not find specific image in specific hosts*/
 #define LSBE_IMAGE                         812   /* The image name of the job is empty*/
+#define LSBE_CSM_INVALID_SMT               813 /* -smt value is not valid in CSM requirement */
+#define LSBE_GPU_INVALID_AFFBIND           814   /* GPU aff option is bad */
 
+#define LSBE_LIC_SLA_EXIST                 815 /* sla already exist */
+#define LSBE_LIC_SLA_NAME_INVALID          816 /* name invalid */
+#define LSBE_LIC_SLA_ACCCTRL_INVALID       817 /* accesscontrol invalid */
+#define LSBE_LIC_SLA_AUTOATT_INVALID       818 /* auto attach invalid */
+#define LSBE_LIC_SLA_AUTOATT_EMPTY_ACCCTRL 819 /* auto attach empty accCtrl */
+#define LSBE_LIC_SLA_EMPTY_GPOOL_CONSUMER  820 /* delete gpool all consumer*/
+#define LSBE_LIC_SLA_ACCUSER_INVALID       821 /* delete gpool all consumer*/
+#define LSBE_LIC_SLA_ACCQUEUE_INVALID      822 /* delete gpool all consumer*/
+#define LSBE_LIC_SLA_ACCAPP_INVALID        823 /* delete gpool all consumer*/
+#define LSBE_LIC_SLA_ACCFG_INVALID         824 /* delete gpool all consumer*/
+#define LSBE_LIC_SLA_ACCPROJ_INVALID       825 /* delete gpool all consumer*/
+#define LSBE_LIC_SLA_ACCLICPROJ_INVALID    826 /* delete gpool all consumer*/
+#define LSBE_LIC_SLA_NOT_GUARANTEE         827 /* not a guaranteed sla */
+#define LSBE_LIC_SLA_CONF_INVALID          828 /* general error */
+#define LSBE_EXCLUDE_DEFAULT_UG            829 /* Cannot exclude default user group for fairshare*/
+#define LSBE_EXCLUDE_ENFORCE_UG            830 /* Cannot exclude and enforce user groups for the same job*/
+#define LSBE_DUP_NOTIFYAC                  831 /* Cannot send the duplicated notification in short time*/ 
+#define LSBE_LIC_SLA_UNSUP_AUTOATT         832 /* only support non-autoattached gsla */
+#define LSBE_RESIZE_GPU_MPS_SHARED_JOB     833 /* Cannot resize GPU MPS Shared jobs. */
+#define LSBE_MOD_NOTIFY_ARRAY              834 /* modification is rejected because not support -notify or -notifyn for any specific job array.*/
+#define LSBE_USER_IMPERSONATE              835 /* Not authorized to submit with the -user option */
+#define LSBE_KUBE_JOB_UNSUPPORTED          836 /* Cannot perform the operation on Kubernetes jobs */
+#define LSBE_KUBE_MOD_RUNJOB               837 /* Cannot modify a started Kubernetes job */ 
+#define LSBE_KUBE_SWITCH_RUNJOB            838 /* Cannot switch a started Kubernetes job to another queue */ 
+#define LSBE_KUBE_STOP_RUNJOB              839 /* Cannot stop a started Kubernetes job */ 
+#define LSBE_KUBE_PODJOB_UNSUPPORTED       840 /* Cannot perform the operation on Kubernetes control jobs */
+#define LSBE_KUBE_JOB_OPTION               841 /* Not support a Kubernetes job with the submission options */
+#define LSBE_KUBE_RSRCREQ                  842 /* Kubernetes job cannot work with compound or alternative resreq or "||" used in rusage[] */
+#define LSBE_KUBE_CONNECTOR                843 /* Accept Kubernetes job only for LSF_Connector_for_Kubernetes entitlement*/
+#define LSBE_RUSAGE_TYPE_RESRSV_LIMIT      844 /* Job cannot have a different rusage configuation from the default when RESRSV_LIMIT is configured */
+#define LSBE_LOCK_ID_NOT_VALID             845 /* Lock ID is not valid */
+#define LSBE_LOCK_ID_EXIST                 846 /* Lock ID is already attached to the host */
+#define LSBE_LOCK_ID_NOT_FOUND             847 /* Lock ID is not found */
+#define LSBE_LOCK_ID_CLOSED                848 /* Cannot open a closed host until all lock IDs are removed */
+/* error code about attribute affinity */
+#define LSBE_ATTR_REQ                      849 /* The job attribute requirement is not valid */
+#define LSBE_ATTR_NAME                     850 /* The attribute name is not valid */
+#define LSBE_ATTR_MAX_NUM                  851 /* The cluster-wide attribute number limit is reached */
+#define LSBE_ATTR_INVALID_SERVER           852 /* The specified host is not a valid server in the cluster to create attributes */
+#define LSBE_ATTR_CREATED_BY_OTHER         853 /* Cannot create or delete an attribute that was created by another user */
+#define LSBE_ATTR_NO_ATTR                  854 /* No attributes in the cluster to show or delete */
+#define LSBE_ATTR_NO_SPECIFIED_ATTR        855 /* The cluster does not have any specified attributes to show or delete */
+#define LSBE_ATTR_NO_ATTR_ON_HOST          856 /* The current user did not create the specified attribute on the specified host to delete*/
+#define LSBE_NO_SAMEAFF_REMOTE_ONLY        857 /* The job with the samehost or samecu request cannot submit to just remote queues */
+#define LSBE_NO_JOBAFF_LEASE               858 /* The job with the jobaff request cannot submit to lease queues */
+#define LSBE_ATTR_TOO_MANY_ATTRS           859 /* Too many attributes specified at once. 
+                                                * The number of attributes exceeds the cluster-wide maximum attribute limit 
+                                                */
+#define LSBE_ATTR_AFFINITY_DISABLED        860 /* Job cannot have attribute affinity requirement. Attribute affinity is disabled with ATTR_CREATE_USERS = none */
+#define LSBE_SAME_JOB_AFFINITY_DISABLED    861 /* Job cannot have samehost/samecu affinity requirement. 
+                                                * samehost/samecu affinity is disabled with SAME_JOB_AFFINITY = N 
+                                                */
+#define LSBE_GPU_INVALID_BLOCK             862   /* GPU block option is bad */
+#define LSBE_GPU_INVALID_GPACK             863   /* GPU pack option is bad */
+#define LSBE_IMAGE_AFFINITY_DISABLED       864   /* Docker image affinity feature disabled by setting LSF_DOCKER_IMAGE_UPDATE_INTERVAL = 0 or not defined in lsf.conf */
+#define LSBE_LOAD_EXT_LIBRARY              865 /* Failed to load external library */
+#define LSBE_GPU_INVALID_GLINK             866   /* GPU link option is bad */
+#define LSBE_GPU_INVALID_GVENDOR           867   /* GPU vendor option is bad */
+#define LSBE_GPU_VENDOR_CONFLICT           868   /* More than one type GPU feature are specified */
+#define LSBE_GPU_GLINK_NVLINK              869   /* Cann't specify nvlink and glink at same time */
+#define LSBE_GPU_INVALID_MIG_SPEC          870   /* Invalid mig in gpu requirement */
+#define LSBE_GPU_MIG_MPS_SHARED_UNSUPPORT  871   /* mps = shared is not supported for mig job */
+#define LSBE_NUM_ERR                       872   /* Number of the above error codes */
 
-#define LSBE_NUM_ERR    813 /* Number of the above error codes */
 /*********************************************************/
 
 /* op codes for hand shake protocol between client/server */
@@ -3055,7 +3172,7 @@ LSB_JOB_MEMLIMIT defined */
 						* network requirement */
 #define SUB4_AC_CHECKPOINT         0x00000400  /*DC check point*/
 #define SUB4_CPU_FREQUENCY         0x00000800 /**< cpu frequency requirement */
-
+#define SUB4_EXCLUDE_FS_UGROUP     0x00001000 /**< exclude fairshare user groups */
 #define SUB4_ENERGY_POLICY_DATA    0x00002000 /**< energy policy tag */ 
 #define SUB4_ENERGY_POLICY         0x00004000 /**< energy policy */
 #define SUB4_ORPHAN_TERM_NO_WAIT   0x00008000 /**< no orphan termination grace period for job */
@@ -3095,14 +3212,30 @@ LSB_JOB_MEMLIMIT defined */
 #define SUB5_JSM                   0x00000008
 #define SUB5_STEP_CGROUP           0x00000010
 #define SUB5_ALLOC_FLAGS           0x00000020
-#define SUB5_NNODES                 0x00000040
+#define SUB5_NNODES                0x00000040
+#define SUB5_SMT                   0x00000080
 
+#define SUB5_DEL_SMT               0x04000000
 #define SUB5_DEL_CORE_ISOLATION    0x08000000
 #define SUB5_DEL_CN_MEM            0x10000000
 #define SUB5_DEL_JSM               0x20000000
 #define SUB5_DEL_STEP_CGROUP       0x40000000
 #define SUB5_DEL_ALLOC_FLAGS       0x80000000    
 
+
+/*  New options bsub  Both set and del options are included*/
+
+#define SUB6_NOTIFY_EXIT           0x00000001 /* Epic #216340 For bsub -Ne, only send the mail when the job didn't succeed (exited, killed, etc) */
+#define SUB6_DEL_NOTIFY_EXIT       0x00000002
+
+#define SUB6_NOTIFY_STATUS         0x00000004 /* Epic #223411 For bsub -notify, to add an option to support specify notification demand */
+#define SUB6_DEL_NOTIFY_STATUS     0x00000008
+
+#define SUB6_JOBAFF                0x00000010 /* Epic #232016 Fro bsub -jobaff, to add an option to support attribute affinity */
+#define SUB6_DEL_JOBAFF            0x00000020
+
+#define SUB6_JOB_RC_ACCOUNT        0x00000040 /* Epic 252449 For bsub bmod -rcacct -rcacctn, allow job level configured RC_ACCOUNT */
+#define SUB6_DEL_JOB_RC_ACCOUNT    0x00000080
 
 /*@}*/
 
@@ -3113,34 +3246,20 @@ LSB_JOB_MEMLIMIT defined */
  *   - API: lsb_submit() and lsb_readjobinfo()
  */
 #define IS_SSM_JOB(option) ((option) & SUB2_SSM_JOB)
-#define IS_SSM_JOB_PERSIST(option) ((option) & SUB2_SSM_JOB_PERSIST)
 #define IS_SYM_JOB(option) ((option) & SUB2_SYM_JOB)
-#define IS_SYM_JOB_PARENT(option) ((option) & SUB2_SYM_JOB_PARENT)
-#define IS_SYM_JOB_REALTIME(option) ((option) & SUB2_SYM_JOB_REALTIME)
-#define IS_SYM_JOB_PERSIST_SRV(option) ((option) & SUB2_SYM_JOB_PERSIST_SRV)
 #define IS_SRV_JOB(option) ((option) & SUB2_SRV_JOB)
-#define IS_SYM_GRP(option) ((option) & SUB2_SYM_GRP)
-#define IS_SYM_JOB_OR_SYM_GRP(option) (IS_SYM_JOB(option)\
-            || IS_SYM_GRP(option))
+#define IS_SYM_JOB_OR_SYM_GRP(option) (IS_SYM_JOB(option))
 /* symphony job for which resource usage should be collected */
 #define IS_REAL_SYM_JOB(option) (IS_SYM_JOB(option) && !IS_SYM_JOB_PERSIST_SRV(option))
 
 #define IS_WLM_JOB(option) (IS_SSM_JOB(option) || IS_SYM_JOB(option)\
-            || IS_SRV_JOB(option) || IS_SYM_GRP(option))
+            || IS_SRV_JOB(option))
 #define IS_BATCH_JOB(option) (!IS_WLM_JOB(option))
 /* job for which resource usage should be collected */
 #define IS_JOB_FOR_ACCT(option) (IS_REAL_SYM_JOB(option) || IS_BATCH_JOB(option))
 
 #define IS_JOB_FOR_SYM(option) (IS_SYM_JOB(option)\
-            || IS_SRV_JOB(option) || IS_SYM_GRP(option))
-
-/* Don't send IS_SYM_JOB/IS_SYM_GRP jobs to scheduler;  
- * neither publish events nor brun the job allowed. 
- */
-#define IS_SYM_JOB_OR_GRP(jp) \
-            (   (jp) != NULL && (jp)->shared != NULL\
-             && (  IS_SYM_JOB((jp)->shared->jobBill.options2)\
-	         ||IS_SYM_GRP((jp)->shared->jobBill.options2)))
+            || IS_SRV_JOB(option))
 
 /* name of the lost and find queue and host */
 #define  LOST_AND_FOUND      "lost_and_found"
@@ -3370,10 +3489,47 @@ static unsigned char chrtyp[MAXCHR] = {
 #define JDATA_EXT_SIM_CSM_DELETE_RC 1080 /* csm_allocation_delete return code */
 #define JDATA_EXT_SIM_CSM_DELETE_BADNODES 1081 /* bad node list returned from csm_allocation_delete API */
 #define JDATA_EXT_SIM_NO_CSM_DELETE 1082 /* do not call csm_allocation_delete API in simulation mode */
-
 #define JDATA_EXT_FLEXIBLE_IMAGE_NAME 1083 /* The value of LSB_DOCKER_IMAGE env */
+#define JDATA_EXT_SMT             1084   /* -smt CSM option */
+#define JDATA_EXT_GPU_AFFBIND 1085 /* gpu aff option */
+#define JDATA_EXT_RLIMITS64   1086 /* The 64-bit rlimits[] are used. */
+/* Epic 209632, job pre-exec starttime.
+ * Putting preExecStartTime in submitExt
+ * as a temporary solution and will update in next major release.
+*/
+#define JDATA_EXT_PRE_EXEC_START_TIME 1087
+#define JDATA_EXT_OPTIONS6            1088 /* used to keep track of SUB6_* options */
+#define JDATA_EXT_NOTIFY_STATUS       1089 /* used for hold status to send notification */
+#define JDATA_EXT_HARD_RLIMITS_RSS    1090 /* hard job memory limit */
+#define JDATA_EXT_DOCKER_AFFINITY     1091
+#define JDATA_EXT_JOB_NAME            1092
+#define JDATA_EXT_DATACHK             1093 /* dm sub enh */
+#define JDATA_EXT_KUBE_PODNAME        1094  /* name of pods */
+#define JDATA_EXT_KUBE_JOB            1095  /* this is a Kubernetes job */
+#define JDATA_EXT_USER                1096  /* user impersonation (bsub -user) */
+#define JDATA_EXT_KUBE_OPTION         1097  /* kubernetes integration (bsub -k8s) */
+#define JDATA_EXT_KUBE_ALLOC          1098  /* kubernetes pod & binding information */
+#define JDATA_EXT_PLAN_STARTTIME      1099  /* plan start time */
+#define JDATA_EXT_REMOTE_UGROUPS      1100 /* structure for lsb_submit() call */
+#define JDATA_EXT_CTNER_IMAGE         1101 /* container image */
+#define JDATA_EXT_CTX_USER            1102 /* container context user*/
 
-/* structure for lsb_submit() call */
+#define JDATA_EXT_GPU_RSRC_TYPE       1103    /* gpu resource per type */
+#define JDATA_EXT_JOBAFF              1104    /* job attribute requirement (bsub -attr) */
+#define JDATA_EXT_GPU_BLOCK           1105    /* gpu block option */
+#define JDATA_EXT_GPU_GPACK            1106    /* gpu pack option */
+#define JDATA_EXT_USE_PAM_EXTENDED     1107    /* pass queue usePamExt
+						* in jobSpecs
+						*/
+#define JDATA_EXT_RESCHED_UPON_CSM_SETUP_ERROR  1108  /* pass lsb.params RESCHED_UPON_CSM_SETUP_ERROR in jobSpecs, for csm jobs */
+#define JDATA_EXT_GL_JGROUP           1109    /* original submit cluster's job group, 
+                                               * used for global limit. (format: jgroup@cluster) 
+                                               */
+#define JDATA_EXT_RC_ACCOUNT           1110    /* RC_ACCOUNT string */
+#define JDATA_EXT_GPU_GVENDOR          1111    /* gpu vendor option: amd, nividia */
+#define JDATA_EXT_GPU_GI_SLICE         1112    /* MIG GI slice */
+#define JDATA_EXT_GPU_CI_SLICE         1113    /* MIG CI slice */
+#define JDATA_EXT_REMOTE_SAAP          1114    /* remote execution charged SAAP */
 
 /**
  * \brief extend submit data structure
@@ -3599,6 +3755,11 @@ struct submit {
     char   *dataGrp;            /**< User group to be used when Data Manager
 				 * CACHE_PERMISSIONS is set to group
 				 */
+    LS_LONG_INT rLimits64[LSF_RLIM_NLIMITS];  
+                  /**< The limits over INT_MAX (2^31-1) are stored here.
+                   * The -1 means there is no limit over INT_MAX for the resource.*/
+    char **excludeUsrGroups;    /** The number of excluded fairshare user groups specified in bsub -G */
+    int numExcludeUsrGroups;    /** Array of the exluded fairshare user groups specified in bsub -G */
 };
 
 
@@ -3678,13 +3839,29 @@ typedef struct GpuReq_ {
     int num;
     GpuComputeMode gpumode;
     int mpsEnable;
+#define MPS_DEFAULT            0x00000001
+#define MPS_PER_SOCKET         0x00000002
+#define MPS_PER_GPU            0x00000004
+#define MPS_DAEMON_SHARED      0x00000008
+#define MPS_DISABLE_CVD        0x00000010
     int jobExclusive;
     char gmodel[MAX_LSB_NAME_LEN];
     char gmem[MAX_LSB_NAME_LEN];
     char gtile[MAX_LSB_NAME_LEN];
     char nvLink[MAX_LSB_NAME_LEN];
     int mergeFlag;
+    int affbind;
+    int block;
+    int gpack;
+    int type;
+    int glink;
+    int gvendor;
+    migReq_t migReq;
 }GpuReq;
+
+int checkGpuVendor(GpuReq * gReq, char* newVendor);
+int getGpuVendorByStr(char *gpuVendor);
+char *getGpuVendorStr(int gvendor);
 
 /*
  * For CSM
@@ -3696,6 +3873,7 @@ typedef struct GpuReq_ {
 #define CSM_OPTIONS_NO_CORE_ISOLATION  0x00000010
 #define CSM_OPTIONS_NO_JSM             0x00000020
 #define CSM_OPTIONS_NO_STEP_CGROUP     0x00000040
+#define CSM_OPTIONS_SMT                0x00000080
 
 struct csmReq {
     int options;
@@ -3703,6 +3881,7 @@ struct csmReq {
     char *alloc_flags;
     int  core_isolation;
     char *csmReqStr;	/* Save for bqueues */
+    int smt_mode;
 };
 
 #if defined(COMPAT32) && defined(INT32JOBID)
@@ -3848,7 +4027,13 @@ struct jgrpReply {
 };
 
 /* the job kill reason key in key value pair */
-#define KILL_REASON_MESSAGE  "KILL_REASON"
+#define KILL_REASON_MESSAGE       "KILL_REASON"
+#define HARD_RLIMITS_RSS          "HARD_RLIMITS_RSS"
+#define SUSPEND_REASON_MESSAGE    "SUSPEND_REASON"
+#define RESUME_REASON_MESSAGE     "RESUME_REASON"
+#define KILL_ISSUE_HOST           "KILL_ISSUE_HOST"
+#define SUSPEND_ISSUE_HOST           "SUSPEND_ISSUE_HOST"
+#define RESUME_ISSUE_HOST           "RESUME_ISSUE_HOST"
 
 /**
  * \brief Signal a group of jobs.
@@ -3857,9 +4042,9 @@ struct signalBulkJobs {
     int           signal;       /**< Signal type */
     int           njobs;        /**< Number of jobs */
     LS_LONG_INT   *jobs;        /**< Jobids list */
-    int           flags;        /**< Flags */
+    int flags; /**< Flags: reserved for future use */
     int           numkvs;   /**< Number of key value pair */
-    struct keyVal   *kvs;  /**< key value pair */
+    struct keyVal *kvs; /**< The key value pair used to pass signal reason and issue host to mbatchd */
 };
 
 
@@ -3867,7 +4052,7 @@ struct signalBulkJobs {
  * \brief Exteral job signal information.
  */
 struct signalExt {
-     char *killreason;       /**< Job kill reason*/
+     char *reason;       /**< Job kill/stop/resume reason*/
 };
 
 
@@ -4070,6 +4255,9 @@ struct rmtJobCtrlRecord2 {
 #define JOB_WITH_RESERVATIONS 0x01000  /* -plan option, jobs with allocation plan */
 #define NEW_BJOBS 0x4000 /* new bjobs to send extra data */
 #define CONTAINER_JOB         0x8000 /**< This flag indicates to selecting container jobs. */
+#define K8S_JOB          0x10000 /**< -k8s option. List kubernetes jobs. */
+#define SHOW_JOB_ENV          0x20000 /**< This flag indicates to show the env for specified job. */
+#define SHOW_JOB_SCRIPT       0x40000 /**< This flag indicates to show the jobfile script for specified job. */
 /*@}*/                           
 
 /**
@@ -4371,6 +4559,7 @@ struct stinfile {
 #define STINFILE_TAG       (0x0002)
 #define STINFILE_EXISTS    (0x0004) /* used for dmd to dmd work */
 #define STINFILE_LINKED    (0x0008) /* used by dmd to mark stgin cache entry */
+#define STINFILE_NTRANSFER (0x0010) /* used by dmd to mark stgin cache entry */
 
 /*  flag of estimated start time types */
 #define ESTIMATION_SIM_POINT_START_TIME     0x01
@@ -4465,14 +4654,52 @@ typedef struct _sigJob_extraInfo {
  struct keyVal *kvs;
 } sigJob_extraInfo;
 
+/* Kubernetes pod info
+ */
+typedef enum {
+    PODSTAT_NONE,
+    PODSTAT_PEND,
+    PODSTAT_RUN,
+    PODSTAT_DONE,
+    PODSTAT_EXIT,
+    PODSTAT_UNKNOWN,
+    PODSTAT_ERROR
+} KubernetesPodState;
+
+typedef struct _kubernetesPodRusage_ {
+    int cputime;
+    int memory;
+} KubernetesPodRusage_t;
+
+typedef struct _kubernetesPodData_ {
+    char *ns;
+    char *name;
+    KubernetesPodState state;
+    KubernetesPodRusage_t *rusage;
+    char *phase;
+    int exitCode;
+    char *reason;
+    char *node;
+    char *gpu;
+} KubernetesPodData_t;
+
+/* extended job info
+ */
 struct extJobInfoEnt {
-#define FUTURE_ALLOCATED 0x1
+#define FUTURE_ALLOCATED      0x1
+#define GPU_ALLOC_COMPAT_FLAG 0x2
     int flag; /* Flag for future use */
     enum howSet estRunTimeHow;
     struct jobFutureAllocInfoEnt futureAlloc;
     struct gpuJobData *gpuAlloc; /**<gpu alloction information */
     struct _sigJob_extraInfo sigExt;
     int numReqSlot;
+    int nPod;
+    KubernetesPodData_t *pod;
+    int isLoaningGSLA;
+    int nPool;
+    struct guarPoolForJob *guarPool;
+    float  schedulingOverhead;
 };
 
 struct tuplePlanAllocHost {
@@ -4616,8 +4843,8 @@ struct jobInfoEnt {
     time_t lastResizeTime;   /**< Last time when job allocation changed. */
     int    numhRusages;         /**< The number of host-based rusage entries in the list hostRusage. */
     struct hRusage * hostRusage; /**< Host based rusage list, one per host. */
-    int maxMem;  /**< Job maximum memory usage. */
-    int avgMem;  /**< Job average memory usage. */
+    long maxMem;  /**< Job maximum memory usage. */
+    long avgMem;  /**< Job average memory usage. */
     time_t fwdTime;             /**< Time when job forwarded. */
     char*  srcCluster;         /**< Cluster name that the job accepted. */
     LS_LONG_INT srcJobId;        /**< The job Id assigned by the cluster that the job accepted. */
@@ -4670,7 +4897,10 @@ struct jobInfoEnt {
     long jobInfoMaxUnneededData; /**< Amount of unneeded data allowed to accumulate in the job info event file before rewriting it. */
     struct pendingReasonInfo    *reasonInfo; /**< The pending reason info including different kinds of detail info */
     time_t requeueTime;           /**< The job's requeue time */
-    char * apsDetail;    /**< APS break down information */
+    char* apsDetail;    /**< APS break down information */
+    char* ctnerImage;
+    char* containerContextUsername;
+    char* ctnername;
     struct extJobInfoEnt ext;
 };
 /* the bit set for jobInfoEnt->exceptMask */
@@ -4779,6 +5009,20 @@ struct jobInfoReq {
     char   *rsvId;          /**< Reservation ID              */
 };
 
+struct packJobDiagnoseReq {
+    int nReqs;
+    struct jobDiagnoseReq *req;
+};
+
+struct jobDiagnoseReq {
+    int jobId;
+    int arrayIdx;
+    char *fileName;
+    int options;
+#define JOBDIAGNOSEREQ_DEMAND 0x1
+    int count;
+};
+
 /* job info request options */
 #define JOB_INFO_REQ_AFFINITY           0x01   /* affinity information */
 #define JOB_INFO_REQ_DATA               0x02   /* data requirement */ 
@@ -4794,7 +5038,9 @@ struct jobInfoReq {
 #define JOBCOUNT_NUM_SLOTS_FWDPEND      "Slots of FWDPEND jobs"
 #define JOBCOUNT_NUM_SLOTS_PROV         "Slots of PROV jobs"
 #define JOBCOUNT_NUM_SLOTS_PSUSP        "Slots of PSUSP jobs"
-
+/* For jobQueryJobFile */
+#define JOBENV_KEY_PREFIX               "Prefix of Env Key"
+#define JOBFILE_KEY            			"Content of Job Scipt"
 struct jobQueryCounters
 {
     int runNum;                 /* Number of RUN job slots */
@@ -4875,6 +5121,12 @@ struct queryInfo
     char                *rsvId;
 };
 
+struct jobQueryJobFile{
+    int      numEnv;                 /* number of env. parameters */
+    char     **env;                  /* envs. */
+    char     *script;                  /* jobfile. */
+};
+
 
 struct jobInfoQuery {
     int   nCols;          /* # of columns of job information which will returned */
@@ -4922,6 +5174,14 @@ struct userInfoEnt {
     int    maxPendSlots;   /**< The maximum number of pending slot allowed. */
     int    numPendJobs;   /**< current number of pending jobs for the specific user*/
     int    priority;      /**< User priority to be used in APS. */
+    /* users GPU Info */
+    int ngpus;
+    int ngpus_excl;
+    int ngpus_shared;
+    int ngpus_shared_jexcl;
+    int nmigs;
+    int nmigs_shared;
+    int nmigs_shared_jexcl;
 };
 
 /* UserEquivalent info */
@@ -4971,6 +5231,7 @@ struct apsLongNameMap {
 #define ALLOC_REQUESTED 0x4000 /*used with bqueues -alloc, bhosts -alloc, busers -alloc*/
 #define QUEUE_NON_INTERACTIVE 0x8000 /* used to inform mbd that bqueues is run non-interactively
                                       * Used by bqueues and busers */
+#define BUSERS_QUERY_GPUINFO 0x10000  /* used to inform mbd that busers requesting gpu info */ 
 
 /* Signal number in each version LSB_SIG_NUM must be equal to 
  * signal number in the latest version.
@@ -5035,6 +5296,8 @@ struct queueKVP{
 #define KEY_QUEUE_PLAN_RSCHED_TIME "PLAN_RSCHED_TIME"
 #define KEY_GPU_RUN_TIME_FACTOR "GPU_RUN_TIME_FACTOR"
 #define KEY_ENABLE_GPU_HIST_RUN_TIME "ENABLE_GPU_HIST_RUN_TIME"
+#define KEY_GPU_REQ_MERGE "GPU_REQ_MERGE"
+#define KEY_QUEUE_RELAX_JOB_DISPATCH_ORDER_SHARE "RELAX_JOB_DISPATCH_ORDER_SHARE"
 
 /* Structure for lsb_queueinfo() call */
 /* !!! IMPORTANT !!!
@@ -5448,7 +5711,7 @@ struct queueInfoEnt {
    
     int  defragTimeout;        /* DC Host Defragmentation timeout */
     int  defragMinPendingTime; /* DC Host Defragmentation minimum pending time */
-    int  defragMinMemSize;     /* DC Host Defragmentation minimum mem size */
+    long  defragMinMemSize;     /* DC Host Defragmentation minimum mem size */
 #define DC_HOST_DEFRAG_INT_ORDER_BY_VMSIZE   1
 #define DC_HOST_DEFRAG_STRING_ORDER_BY_VMSIZE  "vmsize"
 #define DC_HOST_DEFRAG_INT_ORDER_BY_FREEMEM  2
@@ -5480,6 +5743,17 @@ struct queueInfoEnt {
     char  *fwdUserList;    /**< A space-separated list of names of users
     			   * allowed to forward jobs from this queue. */
     int estRunTime;  /* estimated run time */			   
+
+    LS_LONG_INT rLimits64[LSF_RLIM_NLIMITS];  
+                  /**< The limits over INT_MAX (2^31-1) are stored here.
+                   * The -1 means there is no limit over INT_MAX for the resource.*/
+    
+    LS_LONG_INT defLimits64[LSF_RLIM_NLIMITS];  
+                 /**< The limits over INT_MAX (2^31-1) are stored here.
+                  * The -1 means there is no limit over INT_MAX for the resource.*/
+    int forwardDelay; /**< If value is positive, job will not forward to remote until delay time expires.
+                       * If value is negative, job will not schedule in local until delay time expires.*/
+    int    usePamExt;               /**< Use Linux-PAM extended */
 };
 
 /**
@@ -5493,6 +5767,20 @@ struct queueInfoEnt {
 #define ACT_DONE            3 	    /**<  Done*/
 #define ACT_FAIL            4 	    /**<  Fail*/
 /*@}*/
+
+/* set for the reply of bhosts attr reqeust*/
+typedef struct hostAttrInfo {
+    char * attr;
+    time_t ttl;
+    char * creator;
+    char * desc;
+} hostAttrInfo_t;
+
+struct hostInfoExtEnt {
+    char          * instanceID;
+    int             attrNum;
+    hostAttrInfo_t *attrs;
+};
 
 /**
  * \brief  host information entry. 
@@ -5626,6 +5914,7 @@ struct hostInfoEnt {
     int    numUSUSP4Slots;
     int    numRESERVE4Slots;
     struct gpuHostData *gpuData;    /* gpu data on the host */                         
+    struct hostInfoExtEnt extra;
 };
 
 /**
@@ -5723,7 +6012,7 @@ struct hostPartUserInfo {
     int      numReserveJobs;             
        	 /**< The number of job slots that are reserved for the PEND jobs
        	  * belonging to the user or user group in the host partition.*/
-    int      runTime;  /**< The time unfinished jobs spend  in RUN state */
+    long     runTime;  /**< The time unfinished jobs spend  in RUN state */
     float    shareAdjustment;           
          /**< The fairshare adjustment value from the fairshare plugin 
        	  * (libfairshareadjust*). The adjustment is enabled and weighted
@@ -5789,7 +6078,7 @@ struct shareAcctInfoEnt {
     int      numReserveJobs;             
             /**< The number of job slots that are reserved for the PEND jobs
              * belonging to the user or user group in the host partition.*/
-    int      runTime;     /**< The time unfinished jobs spend in the RUN state. */
+    long     runTime;     /**< The time unfinished jobs spend in the RUN state. */
     float    shareAdjustment;            
             /**< The fairshare adjustment value from the fairshare plugin 
              * (libfairshareadjust.SOEXT). The adjustment is enabled and weighted
@@ -5907,7 +6196,7 @@ struct parameterInfo {
                                 * if more than 10% changes*/
     int  condCheckTime;        /**< Time period to check for reconfig*/
     int  maxSbdConnections;    /**< The maximum number of connections between
-                                * master and slave batch daemons*/
+                                * master and server batch daemons*/
     int  rschedInterval;       /**< The interval for rescheduling jobs*/
     int  maxSchedStay;         /**< Max time mbatchd stays in scheduling routine,
                                 * after which take a breather*/
@@ -6197,12 +6486,12 @@ struct parameterInfo {
     char * enableDiagnose;	       /**< Enable diagnose class types: query */ 
     char * diagnoseLogdir;     /**< The log directory for query diagnosis */
     char * mcResourceMatchingCriteria; /**< The MC scheduling resource criterion */
-    int lsbEgroupUpdateInterval; /** <Interval to dynamically update egroup managed host and user groups */
-    int lsbEgroupUpdateIntervalUnit; /** Unit of interval to update egroup. 0: Hours, 1: Minutes */
-    int isPerJobSortEnableFlg; /** <TURE if SCHED_PER_JOB_SORT=Y/y */
+    int lsbEgroupUpdateInterval; /**< Interval to dynamically update egroup managed host and user groups */
+    int lsbEgroupUpdateIntervalUnit; /**< Unit of interval to update egroup. 0: Hours, 1: Minutes */
+    int isPerJobSortEnableFlg; /**< TRUE if SCHED_PER_JOB_SORT=Y/y */
     char * defaultJobCwd;      /**< default job cwd*/
     int    jobCwdTtl;          /**< job cwd TTL*/
-    int    ac_def_job_memsize;      /**< Default memory requirement for a VM job (MB) */
+    long    ac_def_job_memsize;      /**< Default memory requirement for a VM job (MB) */
     int    ac_job_memsize_round_up_unit; /**< The round-up unit of the memory size for a VM job (MB) */
     int    ac_job_dispatch_retry_num;  /**< The number of times that a Dynamic Cluster job can be retried after a dispatch failure */
     int    ac_jobvm_restore_delay_time;  /**< The job vm restore delay time */
@@ -6280,7 +6569,7 @@ struct parameterInfo {
     int depJobsEvalTimeout; /* limit the amount of time mbatchd spends on evaluating job dependencies in a mbatchd session. */
     int bwaitTimeout;       /* DEFAULT_BWAIT_TIMEOUT */
     int condWaitEvalTimeout; /* EVALUATE_WAIT_CONDITION_TIMEOUT */
-    int logJobSignal4HostUnavail; /**< When slave hosts become available, we log job requeue signal into
+    int logJobSignal4HostUnavail; /**< When server hosts become available, we log job requeue signal into
                                    * lsb.stream file for rerunnable jobs running on those hosts*/
     int disableMetricLog;   /* Disable METRIC_LOG in lsb.stream*/
     float fwdJobFactor;     /**< Job slots weighting factor for fairshare
@@ -6311,6 +6600,31 @@ struct parameterInfo {
     int overRunlimitWaitTime;      /**< wait time before the job runs over runlimit */
     float gpuTimeFactor; /**< GPU run time weighting factor for fairshare scheduling */
     int enableGpuHistTime; /**< Enable GPU historical run time for fairshare scheduling */
+    int nValidSmtValues;
+    int *validSmtValues; /** CSM_VALID_SMT, validSmtValues[0] is default  */
+    int enableDockerImgAff;
+    int gpuReqMerge;
+    int shareHostsForCompoundResreq; /* internal parameter. used by krs. */
+    int kbRecvTimeout; /* internal parameter. used by krs. */ 
+    int attrMaxNum; /* max account attribtue in cluster */
+    int attrTTL; /* each attribute time-to-live */
+    char *attrCreator; /* A blank_separated list of users to create attributes */
+    int enableSameJobAff;
+    int simplifiedGuarantee;
+    int rsvPreferGpuHosts; /* internal parameter. used by krs. */
+#define RELAX_JOB_DISPATCH_SHARE_USER    0x01
+#define RELAX_JOB_DISPATCH_SHARE_PROJECT 0x02
+#define RELAX_JOB_DISPATCH_SHARE_GROUP   0x04
+    int allocReuseShare; /**< Relaxed job order policy by re-using the following allocations: user | project | group */
+    char *roundValueDigits;
+    int jobDispatchPackSize; /**< mbschd publishes decisions if the current decision number reaches the size */
+    int maxJobSchedulingInterval; /**< mbschd stops further scheduling if it has spent time over the interval */    
+    char *requeueSetupCsmApiError; 
+    int enableGlobalLimit;
+    int enableDefaultRCAccountPerProject; /* DEFAULT_RC_ACCOUNT_PER_PROJECT set rcAccount to project name by default */
+    int enableJobLevelRCAccount; /* ENABLE_RC_ACCOUNT_REQUEST_BY_USER enable rc account set at job level */
+    int schGPDTimeout; /**< Timeout for scheduler connect GPD */
+    int maxReportIdleJobs; /**< Maximum number of report idle jobs each time eadmin is triggered */
 }; /* struct parameterInfo */
        	      
 #define ACL_SECURE_LEVEL0 0
@@ -6318,6 +6632,11 @@ struct parameterInfo {
 #define ACL_SECURE_LEVEL2 2
 #define ACL_SECURE_LEVEL3 3
 #define ACL_SECURE_LEVEL4 4
+#define ACL_SECURE_LEVEL5 5
+
+#define ACL_NO_RIGHTS 0
+#define ACL_BASIC_RIGHTS    1
+#define ACL_DETAIL_RIGHTS 2
 
 #define ACL_RESTICTCLUSTER_FLAG 1
 #define ACL_RESTICTQUEUE_FLAG 2
@@ -6687,7 +7006,11 @@ struct runJobRequest {
 #define EXT_MSG_SYSTEM 0x40    /**< Internal use only. */
 #define EXT_MSG_SYSTEM_JSON   0x80 /**< Show full serialized JSON if it exists
 				    */   
-#define EXT_MSG_NOLOG 0x100   /**< Do not persistent the message */
+#define EXT_MSG_NOLOG  0x100   /**< Do not persistent the message */
+#define EXT_MSG_NOTIFYAC 0x200   /**< Notify the message to AC/PNC */
+#define EXT_MSG_SYSTEM_ONLYJSON 0x400 /**< internal. show just the json */
+#define EXT_MSG_PACK  0x800    /**< internal. client is sending multiple messages
+                                * in a single rpc. */
                                    
 /*@}*/
 #define UCONF_HAS_PRIORITY   0x40  /**< LSF XDR has priority encoded */
@@ -6725,6 +7048,8 @@ struct jobExternalMsgReq {
                          * attached, the size is 0. */
     time_t postTime;    /**< The time the author posted the message. */
     char   *userName;   /**< The author of the message. */
+    int    notify_level; /**< The AC/PNC notification level */
+    int    desc_len;     /**< The length of description */
 };
 
 /**
@@ -6766,6 +7091,7 @@ struct jobExternalMsgReply {
                      	       *\n The message's data file is corrupt.
                      	       */
     char   *userName;         /**< The author of the msg */
+    int    notify_level;      /**< The AC/PNC notification level */
 };
 
 
@@ -7085,6 +7411,17 @@ struct appInfoEnt {
     char    *execDriverControl;       /* execdriver control script*/
     char    *execDriverMonitor;       /* execdriver Monitor script*/ 
     int     priority;                 /**< Application priority used by APS **/
+
+    LS_LONG_INT defLimits64[LSF_RLIM_NLIMITS];  
+                  /**< The limits over INT_MAX (2^31-1) are stored here.
+                   * The -1 means there is no limit over INT_MAX for the resource.*/
+
+    char *watchdog_script;
+    int watchdog_delay;
+    int watchdog_period;
+    int dockerAffinity;  /* enable docker image affinity feature */
+    int usePamExt;      /* Linux-PAM */
+    int rcReclaimAction;      /* RC job action on host reclaim */
 };
 
 /* application attributes
@@ -7111,6 +7448,16 @@ struct appInfoEnt {
 					       */
 #define A_ATTRIB_NO_RESERVE        0x40000    /* explicitly do not reserve
 					       */
+#define A_ATTRIB_KUBERNETES        0x80000  /* Kubernetes Job */
+
+typedef enum {
+    RC_RECLAIM_ACTION_REQUEUE = 0,     /* Default: requeue job on host reclaim */
+    RC_RECLAIM_ACTION_TERM    = 1,     /* terminate job on host reclaim */
+    RC_RECLAIM_ACTION_MAX     = 2      /* max number of actions */
+} RC_RECLAIM_ACTION_T;
+
+extern const char * getRcReclaimActStr(int);
+
 
 /* apply to acmachine type 
  */
@@ -7447,6 +7794,38 @@ struct hostListCtrlReq {
     char  *message;    /**< Message attached by the administrator. */
 };
 
+/**
+ * \addtogroup hclosure_lockIds_option hclosure_lockIds_option
+ * options for \ref lsb_hclosure_lock_id_control call
+ */
+/*@{*/
+#define   HCLOSURE_LOCK_ID_ATTACH    1 /**< Attaches a lock ID to hosts  */
+#define   HCLOSURE_LOCK_ID_REMOVE    2 /**< Removes a lock ID from hosts  */
+/*@}*/
+
+/**
+ * \brief  Host Closure Lock IDs Request
+ */
+struct hclosureLockIDsReq  {
+    int    opCode;     /**< Operations to be applied in \ref hclosure_lockIds_option. */
+    char  *lockIDs;    /**< Multiple lock IDs are delimited by a space. */
+    int    numHosts;  /**< The number of hosts. */
+    char  **hostList;  /**< A list of host names. If hostList is NULL, the local host is assumed. */
+    char  *message;    /**< Message attached by the administrator. */
+
+};
+
+/**
+ * \brief  Host Closure Lock IDs Reply
+ */
+struct hclosureLockIDsReply {
+    int numsucc;       /**< The number of successfully-operated hosts. */
+    char **succHosts;  /**< Array of names of the successfully operated hosts */
+    int numfail;       /**< The number of hosts that failed. */
+    char **failHosts; /**< Array of names of the failed hosts  */
+    int *failReasons; /**< For each host that failed, its failure reason is recorded in this array */
+};
+
 /* options for lsb_hgcontrol() call */
 #define    HGHOST_ADD        1
 #define    HGHOST_DEL        2
@@ -7496,6 +7875,10 @@ struct mbdCtrlReq {
 
 #define DEF_PERFMON_PERIOD      60      /* defualt sample period 60 */
 
+struct perfmonMetricsEntExt {
+    float curUtil;
+    float totalUtil;
+};
 
 struct perfmonMetricsEnt{       
     char* name;               /* metrice name */
@@ -7504,6 +7887,7 @@ struct perfmonMetricsEnt{
     long min;       	/* min of (counter/interval)*sample period for one period */
     long avg;       	/* avg of (total/interval)*sample period for one period */
     char* total;       /* total counters from performance monitor turn on  */
+    struct perfmonMetricsEntExt *ext;
 };
 
 /*performance monitor info*/
@@ -7680,7 +8064,7 @@ struct jobNewLog {
     char   *jobDescription;             /**< Job description. */
     struct submit_ext *submitExt;       /**< For new options in future */
 #if defined(LSF_SIMULATOR)
-    int    maxmem;                     /**< maximum memory */
+    long    maxmem;                     /**< maximum memory */
     int    exitstatus;                 /**< exit status */
     int    runtime;                    /**< job run time */
     int    cputime;                    /**< system cpu time */
@@ -7711,6 +8095,12 @@ struct jobNewLog {
     int    nStinFile;           /**< Number of files requested for stage in */
     struct stinfile *stinFile;  /**< Array of files requested for stage in */
     char *dataGrp;  /**< Data group name to be used when cache permissions is set to group */
+
+    LS_LONG_INT rLimits64[LSF_RLIM_NLIMITS];  
+                  /**< The limits over INT_MAX (2^31-1) are stored here.
+                   * The -1 means there is no limit over INT_MAX for the resource.*/
+    char   **excludeUsrGroups;         /** The number of excluded fairshare user groups specified in bsub -G */
+    int    numExcludeUsrGroups;        /** Array of the exluded fairshare user groups specified in bsub -G */
 };
 
 #if defined(LSF_SIMULATOR)
@@ -7718,7 +8108,7 @@ struct jobArrayElementLog {
     int jobId;
     int idx;
     /* Copy LSF simulator related fields from jobNewLog  */
-    int maxmem;
+    long maxmem;
     int exitstatus;
     int runtime;
     int cputime;
@@ -7867,6 +8257,12 @@ struct jobModLog {
                                      generated by this modify request. 0 means no remote control
                                      session */
     struct rmtJobCtrlRecord2 *rmtCtrlResult2; /**< remote job modifcation records */
+
+    LS_LONG_INT rLimits64[LSF_RLIM_NLIMITS];  
+                  /**< The limits over INT_MAX (2^31-1) are stored here.
+                   * The -1 means there is no limit over INT_MAX for the resource.*/
+    char   **excludeUsrGroups;         /** The number of excluded fairshare user groups specified in bsub -G */
+    int    numExcludeUsrGroups;        /** Array of the exluded fairshare user groups specified in bsub -G */
 }; /* struct jobModLog */
 
 /* Data structures representing job affinity allocation.
@@ -7921,6 +8317,18 @@ struct nvlink {
     int            *mask;
 };
 
+struct migJobInfo {
+    int                 giIdSize;
+    int                 ciIdSize;
+    int                 migMem;
+    int                 numRUN;
+    LS_LONG_INT         *runJobIDs;
+    int                 numSUSP;
+    LS_LONG_INT         *suspJobIDs;
+    int                 numPEND;
+    LS_LONG_INT         *pendJobIDs;
+};
+
 struct gpuExtData {
     int                 jexcl;
     int                 mode;
@@ -7937,6 +8345,8 @@ struct gpuExtData {
     LS_LONG_INT         *suspJobIDs;
     int                 numPEND;
     LS_LONG_INT         *pendJobIDs;
+    int                 numMigs;
+    struct migJobInfo  *migJobInfo;
 };
 
 struct gpuBasicData {
@@ -7948,6 +8358,22 @@ struct gpuBasicData {
     int                 rsv_mem;        /**< total reserved GPU memory in MB */
     char                *socketid;
     struct nvlink       nvbits;
+    int                 gFlag;           /** currently only used for MIG */
+};
+
+#define MIGDATA_ALLOC_FAIL      0x00
+#define MIGDATA_ALLOC_REUSE     0x01
+#define MIGDATA_ALLOC_CI        0x02
+#define MIGDATA_ALLOC_GI_CI     0x04
+struct migData {
+    int                 gpuId;
+    int                 allocType;
+    int                 giIdSize;
+    int                 ciIdSize;
+    int                 giStaticId;
+    int                 ciStaticId;
+    int                 migMem;
+    struct gpuBasicData *bdata;
 };
 
 struct gpuData {
@@ -7965,10 +8391,14 @@ struct gpuTaskData {
     struct gpuData      **gdata;         /**< all gpus of the task */
     int                 numkvs;
     struct keyVal       *kvs;    
+    int                 numMigs;
+    struct migData      *migs;
 };
 
 #define FLAG_GPU_HOST_EXCL_MODE       0x1 /**< exlcusively use GPU on the host */
 #define FLAG_GPU_HOST_SHARED_MODE     0x2 /**< use GPU in shared mode on the host */
+#define FLAG_GPU_HOST_MIG_DYN         0x4 /**< dynamic GPU MIG allocation on the host */
+#define FLAG_GPU_HOST_MIG_STATIC      0x8 /**< static GPU MIG allocation on the host */
 
 struct gpuJobHostData {
     char                *hostname;       /**< hostname in string*/
@@ -7981,9 +8411,15 @@ struct gpuJobHostData {
     struct keyVal       *kvs;
 };
 
+#define FLAG_GPU_JOB_MIG_DYN             0x1 /**< GPU MIG dynamic allocation of job */
+#define FLAG_GPU_JOB_MIG_STATIC          0x2 /**< GPU MIG static allocation of job */
+#define FLAG_GPU_JOB_RECOVER_COMPAT      0x4 /**< GPU job recovered from compatible str*/
 struct gpuJobData {
+    int                    flag;        /**< flag of job gpu allocation */
     int                    num_hosts;   /**< number of hosts */
     struct gpuJobHostData  *hData;      /**< GPU info on each host */
+    int                 numkvs;
+    struct keyVal       *kvs;
 };
 
 struct gpuHostData {
@@ -8050,11 +8486,24 @@ struct jobStartLog {
     
     int    numkvs;      /** < The number of key-value pair */ 
     struct keyVal *kvs; /** < The key-value pair */
+    char   **excludeUsrGroups;         /** The number of excluded fairshare user groups specified in bsub -G */
+    int    numExcludeUsrGroups;        /** Array of the exluded fairshare user groups specified in bsub -G */
 };
 
 /* the image name in key value pair */
 #define IMAGE_NAME_MESSAGE  "IMAGE_NAME"
-
+#define IMAGE_CONTEXT_USER  "IMAGE_CONTEXT_USER"
+#define IMAGE_CONTAINER_NAME "IMAGE_CONTAINER_NAME"
+#define GPU_MEM_RSV_KEY     "GPU_MEM_RSV"
+#define GSLA_LOAN_FLAG      "GSLA_LOAN_FLAG"
+#define GSLA_NPOOL          "GSLA_NPOOL"
+#define GSLA_POOL_NAME      "GSLA_POOL_NAME"
+#define GSLA_POOL_TYPE      "GSLA_POOL_TYPE"
+#define GSLA_RSRC_NUM       "GSLA_RSRC_NUM"
+#define GSLA_RSRC_MEM       "GSLA_RSRC_MEM"
+#define GSLA_RSRC_SLOTS       "GSLA_RSRC_SLOTS"
+#define SCHEDULING_OVERHEAD   "SCHEDULING_OVERHEAD"
+#define JDATA_JFLAG3          "JDATA_JFLAG3"
 /**
  * \brief logged in lsb.events when a job start request is accepted.
  */
@@ -8147,8 +8596,8 @@ struct jobStatusLog {
     int    exitInfo;    /**< Job termination reason, see <lsf/lsbatch.h>*/
     int   numhRusages;  /**< The number of host based rusage entries, only logged in case of JOB_STAT_DONE/JOB_STAT_EXIT */
     struct hRusage * hostRusage; /**< Host based rusage list, one item per host, only logged in case of JOB_STAT_DONE/JOB_STAT_EXIT */
-    int   maxMem;  /**< job maximum memory usage*/
-    int   avgMem;  /**< job average memory usage */
+    long   maxMem;  /**< job maximum memory usage*/
+    long   avgMem;  /**< job average memory usage */
 
     /* the four fields are only used for external programs like RTM */
     char *srcCluster;                  /**< source cluster name */
@@ -8229,8 +8678,8 @@ struct sbdUnreportedStatusLog {
     int    exitInfo;       /**< The termination reason of a job */
     int    numhRusages;  /**< The number of host based rusage entries, only logged in case of JOB_STAT_DONE/JOB_STAT_EXIT */
     struct hRusage * hostRusage; /**< Host based rusage list, one per host, only logged in case of JOB_STAT_DONE/JOB_STAT_EXIT */
-    int   maxMem;         /**< job maximum memory usage */
-    int   avgMem;         /**< job average memory usage */
+    long   maxMem;         /**< job maximum memory usage */
+    long   avgMem;         /**< job average memory usage */
     char   *outdir;       /**< output directory*/
 };
 
@@ -8470,6 +8919,19 @@ struct hostCtrlLog {
 };
 
 /**
+ * \brief log the hclosure lock ID information.
+ */
+struct hclosureLockIdLog { 
+    char   host[MAXHOSTNAMELEN];       /**< The name of the host*/
+    int    opCode;                     /**< The host closure lock ID operation (See 
+                                        * \ref hclosure_lockIds_option */
+    int   numLockIds;       /**< The number of host closure lock IDs */
+    char   **lockIds;       /**< host closure lock IDs */
+    int    userId;                     /**< The user ID of the submitter*/
+    char   userName[MAX_LSB_NAME_LEN]; /**< The name of the submitter*/
+    char   message[MAXLINELEN];        /**< Host control message*/
+};
+/**
  * \brief log the host control information.
  */
 #define TRIGGER_BY_ADMIN_SUSPEND    0x01
@@ -8592,9 +9054,11 @@ struct unfulfillLog {
 #define TERM_ORPHAN_SYSTEM     27
 #define TERM_PRE_EXEC_FAIL     28
 #define TERM_DATA              29
-#define TERM_MC_RECALL 		   30
-#define TERM_RC_RECLAIM        31
+#define TERM_MC_RECALL 	       30
+#define TERM_REQUEUE_RC        31
 #define TERM_CSM_ALLOC         32
+#define TERM_KUBE              33
+#define TERM_RC                34
 
 /**
  * \brief logged in lsb.acct when a job finished.
@@ -8658,8 +9122,8 @@ struct jobFinishLog {
                                          * specified for the job*/
     char   *loginShell;                 /**< Login shell specified by user */
     int    idx;                         /**< Job array index*/
-    int    maxRMem;               	/**< Maximum memory used by job */
-    int    maxRSwap;               	/**< Maximum swap used by job */
+    long    maxRMem;               	/**< Maximum memory used by job */
+    long    maxRSwap;               	/**< Maximum swap used by job */
     char   *rsvId;                 	/**< Advanced reservation ID */
     char   *sla;               		/**< Service class of the job*/
     int    exceptMask;               	/**< Job exception handling mask*/
@@ -8686,7 +9150,7 @@ struct jobFinishLog {
     struct submit_ext *submitExt;       /**< For new options in future */
     int numhRusages;                    /**< The number of host based rusages */
     struct hRusage * hostRusage;        /**< The list of host based rusages */
-    int avgMem;                         /**< job average memory usage */
+    long avgMem;                         /**< job average memory usage */
     char   *effectiveResReq;            /**< Effective resreq which scheduler used to dispatch job */
 
     /* the four fields are only used for external programs like RTM */
@@ -8721,6 +9185,7 @@ struct jobFinishLog {
     struct gpuRusage* gRusage;       /**< Array of host based GPU rusage record*/
     int    storageInfoC;
     char   **storageInfoV; /**< storage staging information */
+    struct KVPair finishKVP; /**< 10_1_0_8 AND LATER!!! Use this struct to handle all new entries*/
 };
 
 /**
@@ -8784,8 +9249,8 @@ struct jobFinish2Log {
     char   *clusterName;
     char   *userGroup;                  /**< jData->userGroup */
     int    runtime;                     /**< jData->runTime */
-    int    maxMem;                      /**< job maximum memory usage*/
-    int    avgMem;                      /**< job average memory usage */
+    long    maxMem;                      /**< job maximum memory usage*/
+    long    avgMem;                      /**< job average memory usage */
     char   *effectiveResReq;            /**< Effective resreq which scheduler used to dispatch job */
 
     /* the four fields are only used for external programs like RTM */
@@ -8825,6 +9290,8 @@ struct jobFinish2Log {
     struct gpuRusage* gRusage;       /**< Array of host based GPU rusage record*/
     time_t effectiveRunTime;         /**< effective estimated job run time */
     time_t effectiveRunLimit;        /**< effective job run limit */
+    char   **excludeUsrGroups;         /** The number of excluded fairshare user groups specified in bsub -G */
+    int    numExcludeUsrGroups;        /** Array of the exluded fairshare user groups specified in bsub -G */
 };
 
 /**
@@ -8837,6 +9304,8 @@ struct jobStartLimitLog {
     int    options;                      /**< Whether SUB_RLIMIT_UNIT_IS_KB  is set */
     int    lsfLimits[LSF_RLIM_NLIMITS];   /**< Job start rlimits */
     int    jobRlimits[LSF_RLIM_NLIMITS];  /**< submission rlimits */
+    LS_LONG_INT    lsfLimits64[LSF_RLIM_NLIMITS];   /**< 64-bit Job start rlimits */
+    LS_LONG_INT    jobRlimits64[LSF_RLIM_NLIMITS];  /**< 64-bit submission rlimits */
 };
 
 /**
@@ -8872,8 +9341,8 @@ struct jobStatus2Log {
     char*       execRusage;                 /**< rusage part of resreq */
     int         num_processors;             /**< rusage part of resreq */
     int         reason;                     /**< Used to store suspend reasonq */
-    int         maxMem;                     /**< job maximum memory usage*/
-    int         avgMem;                     /**< job average memory usage */
+    long         maxMem;                     /**< job maximum memory usage*/
+    long         avgMem;                     /**< job average memory usage */
 
     /* the four fields are only used for external programs like RTM */
     char *srcCluster;                  /**< source cluster name */
@@ -9135,15 +9604,14 @@ struct sbdAsyncJobStatusReqLog {
     int    exitInfo;       /**< The termination reason of a job */
     int    numhRusages;  /**< The number of host based rusage entries, only logged in case of JOB_STAT_DONE/JOB_STAT_EXIT */
     struct hRusage * hostRusage; /**< Host based rusage list, one per host, only logged in case of JOB_STAT_DONE/JOB_STAT_EXIT */
-    int   maxMem;         /**< job maximum memory usage */
-    int   avgMem;         /**< job average memory usage */
+    long   maxMem;         /**< job maximum memory usage */
+    long   avgMem;         /**< job average memory usage */
     int   resizeEvent;    /**< resize event */
     char   *outdir;       /**< output directory*/
     char   *additionalInfo; /**< additionalInfo */
 
     int dispatchSeq; /**< The sequence number for dispatching the job */
     time_t dispatchTimeStamp; /**< The time stamp for dispatching the job */
-    
 }; /* sbdAsyncJobStatusReqLog */
 
 
@@ -9203,6 +9671,7 @@ struct sbdJobStartAcceptLog{
  */
 #define JEML_OPT_REMOTEJOB_REMOTEPOST   2
 
+#define JEML_OPT_INTERNAL_NOTIFYAC   4
 
 
 /**
@@ -9225,6 +9694,7 @@ struct jobExternalMsgLog {
                               *  from local client.
                               */
     int    nextStatusNo;               /**< next status number for statusUpd in MC/XL */
+    int    notify_level;     /** The level of notification to AC*/
 };
 
 /**
@@ -9599,6 +10069,8 @@ struct jobDataStageLog {
     LS_LONG_INT stageJobId;        /**< Stage in/out transfer job ID */
     int stageJobExitStatus;        /**< Stage-in job exit code */
     int exitStatus;                /**< Job exit code */
+    int nStinFile; /* DMD caching, number of files requested for stage in */
+    struct stinfile *stinFile; /* DMD caching, files requested for stage in */
 };
 
 typedef struct {
@@ -9638,6 +10110,81 @@ struct jobMigTimeoutLog {
     int    jobId;              /**<  JobId */
     int    idx;                /**<  Index */
 };
+
+/**
+ * \brief  Attribute information entry 
+ */
+typedef struct attrInfoEntry {
+    char   *user;                 /**< The user name that created or deleted this attribute */
+    int    attrNum;               /**< The number of attributes */
+    char   **attrs;               /**< The attribute name array */
+    int    hostNum;               /**< The number of hosts */
+    char   **hosts;               /**< The host name array */
+    time_t createTime;            /**< The creation time of the attribute */
+    char   *desc;                 /**< The description of the attribute */
+} attrInfoEntry_T; 
+
+/**
+ * \brief  Attribute information of one creator 
+ */
+typedef struct _attrUserHostInfo {
+    char  * creator;    /**< The creator of this attribute */
+    char  * desc;       /**< The description of this attribute */
+    int     hostNum;    /**< The number of hosts that have this attribute */
+    char ** hosts;      /**< The host name array */
+} attrUserHostInfo_t;
+
+/**
+ * \brief  Attribute information
+ */
+typedef struct _attrInfo {
+    char               * attrName;   /**< The attribute name */
+    time_t               ttl;        /**< Time-to-live(TTL) of this attribute */
+    int                  uNum;       /**< The number of creators of this attribute */
+    attrUserHostInfo_t * uHostInfos; /**< The attribute information array */
+} attrInfo_t;
+
+/**
+ * \brief  Attribute request type
+ */
+typedef enum {
+    ATTR_ACTION_CREATE = 0,
+    ATTR_ACTION_DELETE,
+    ATTR_ACTION_SHOW
+} attrAction_t;
+
+/**
+  * \brief  Attribute request information
+  */
+typedef struct _attrInfoReq {
+    attrAction_t  action;    /**< Action: create, delete, or show */
+    int           attrNum;   /**< The number of requested attributes */
+    char       ** attrs;     /**< The attribute name array */
+    int           hostNum;   /**< The number of hosts in the request */
+    char       ** hosts;     /**< The host name array */
+    char        * user;      /**< The user name in the request, only valid for the show action */
+    char        * desc;      /**< The description of the attribute */
+} attrInfoReq_t;
+
+/**
+  * \brief  The attribute information reply from mbatchd for battr show
+  */
+typedef struct _attrInfoReply {
+    int            attrNum;   /**< The number of attributes */
+    attrInfo_t   * attrInfos; /**< The attribute information array */
+} attrInfoReply_t;
+
+/**
+  * \brief  The error reply for battr create or delete 
+  */
+typedef struct _attrErrReply {
+    char * attrName;  /**< The bad attribute name */
+    char * hostName;  /**< The bad host name */
+} attrErrReply_t;
+
+typedef attrInfoEntry_T attrCreateLog_T;   
+typedef attrInfoEntry_T attrDeleteLog_T;   
+typedef attrInfo_t attrInfoLog_T;
 
 /**
  * \brief  Log event types.
@@ -9739,7 +10286,10 @@ union  eventLog {
     struct sbdAsyncJobStatusReplyLog sbdAsyncJobStatusReplyLog; /*Job async status reply event */
     struct sbdJobStartAcceptLog sbdJobStartAcceptLog; /*Job start accept event in sbd*/
     struct jobDataStageLog jobDataStageLog; /**< Job Data Allocation event */
-    
+    attrCreateLog_T attrCreateLog; /**< Attribute creation log */
+    attrDeleteLog_T attrDeleteLog; /**< Attribute deletion log */
+    attrInfoLog_T attrInfoLog;     /**< Attribute information log */
+    struct hclosureLockIdLog hclosureLockIdLog;       	/**<  Host closure lock ID operation event*/
 };
 
 
@@ -10286,7 +10836,9 @@ typedef enum _consumertype {
     LIMIT_LIC_PROJECTS      = 9,   /**< License Projects*/
     LIMIT_PER_LIC_PROJECT   = 10,   /**< Per-License project*/
     LIMIT_CLUSTERS      = 11, /**< Clusters*/
-    LIMIT_PER_CLUSTER   = 12 /**< Per-Cluster*/
+    LIMIT_PER_CLUSTER   = 12, /**< Per-Cluster*/
+    LIMIT_APPS          = 13,   /**< Applications */
+    LIMIT_PER_APP       = 14    /**< Per-application */
 } consumerType;                /**< Type definitions */
  /*@}*/
 
@@ -10344,10 +10896,30 @@ typedef struct _limitInfoEnt {
     char        *ineligible; /**< The ineligible configuration */
 } limitInfoEnt;
 
+
+/**
+ * \brief  Cluster limit information entry
+ */
+typedef struct _clsLimitInfoEnt {
+        char        * clsName; /**< The cluster name */
+        limitInfoEnt  ent;     /**< The limit information entry for this cluster */
+} clsLimitInfoEnt;
+
+/**
+ * \brief  Global limit information entry
+ */
+typedef struct _globalLimitInfoEnt {
+    char             * name;         /**< The limit name */
+    limitInfoEnt       accumInfoEnt; /**< The accumulated usage of all clusters for this limit */
+    int                clsNum;       /**< The number of clusters */
+    clsLimitInfoEnt  * clsEnts;      /**< The limit usage entry array for each cluster */
+} globalLimitInfoEnt;
+
 /*
  * options field flags for struct _limitInfoReq
  */
 #define BLIMIT_NON_INTERACTIVE 0x001
+#define BLIMIT_GLOBAL_LIMIT_GETCONF 0x002
 
 /* action code for threshold based on type/model, is used for
  * predefinedThresholdTypeModel().
@@ -10515,8 +11087,110 @@ extern int lsb_limitInfo( limitInfoReq *req,  limitInfoEnt **limitItemRef, int *
  *
  * @see \ref lsb_limitInfo 
  */
-
 extern void lsb_freeLimitInfoEnt( limitInfoEnt* item, int size);
+
+/**
+ * \page lsb_globalLimitInfo lsb_globalLimitInfo
+ * \brief Gets the global resource allocation limit configuration and 
+ * dynamic usage information among clusters. 
+ *
+ * Displays each cluster's usage of the global resource allocation limits 
+ * that are configured in the Limit sections in the lsb.globalpolicies file:
+ * \li    Configured limit policy name
+ * \li    USERS
+ * \li    QUEUES
+ * \li    PROJECTS
+ * \li    LIC_PROJECTS
+ * \li    APPS
+ *
+ * <b>\#include <lsf/lsbatch.h>
+ * 
+ * int lsb_globalLimitInfo( limitInfoReq *req,  globalLimitInfoEnt **gLimitEntRef, 
+ *                int *size )</b>
+ *  
+ * @param *req input, the user request for global limit information
+ * @param **gLimitEntRef output, the global limit information array 
+ * @param *size output, the size of the global limit information array
+ *
+ * <b>Data Structures:</b>
+ * \par
+ * _limitInfoReq
+ * \n _globalLimitInfoEnt
+ * \n _clsLimitInfoEnt
+ * \n _limitConsumer
+ * \n _limitInfoEnt
+ * \n _limitItem
+ * \n _limitResource
+ *
+ * <b>Define Statements:</b>
+ * \par
+ * \ref _consumertype
+ *
+ * @return int: 0
+ * \n Function was successful.
+ *
+ * @return int:-1
+ * \n Function failed.
+ *
+ * @note The caller must free up the memory used by gLimitEntRef.
+ *
+ * \b Errors:
+ * \par
+ * On failure, lsberrno is set to indicate the error.
+ *
+ * <b>Equivalent line command:</b>
+ * \par
+ * blimits -gl
+ *
+ * \b Files
+ * \par
+ * $LSB_CONFDIR/cluster_name/configdir/lsb.globalpolicies
+ *
+ * @see \ref lsb_freeGlobalLimitInfoEnt 
+ */
+extern int lsb_globalLimitInfo( limitInfoReq *req, globalLimitInfoEnt **gLimitEntRef, int *size); 
+/**
+ * \page lsb_freeGlobalLimitInfoEnt lsb_freeGlobalLimitInfoEnt
+ * \brief Frees the memory allocated by \ref lsb_globalLimitInfo.
+ *
+ * <b>\#include <lsf/lsbatch.h>
+ *
+ * void lsb_freeGlobalLimitInfoEnt(globalLimitInfoEnt * ent, int size)</b>
+ *
+ * @param *ent input, the array of global limit information
+ * @param size input, the size of the global limit information array
+ *
+ * <b>Data Structures:</b>
+ * \par
+ * _globalLimitInfoEnt
+ * \n _clsLimitInfoEnt
+ * \n _limitInfoEnt
+ * \n _limitItem
+ * \n _limitConsumer
+ * \n _limitResource
+ *
+ * <b>Define Statements:</b>
+ * \par
+ * \ref _consumertype
+ *
+ * @return void
+ * \n There's no return value.
+ *
+ * \b Errors:
+ * \par
+ * On failure, lsberrno is set to indicate the error.
+ *
+ * <b>Equivalent line commands:</b>
+ * \par
+ * blimits -gl
+ *
+ * <b>Files:</b>
+ * \par
+ * $LSB_CONFDIR/cluster_name/configdir/lsb.globalpolicies
+ *
+ * @see \ref lsb_globalLimitInfo 
+ */
+extern void lsb_freeGlobalLimitInfoEnt(globalLimitInfoEnt * ent, int size);
 
 /**
  * \addtogroup resizablejob_related resizablejob_related
@@ -10720,6 +11394,7 @@ extern void freeHgrpInfo4GridBroker();
 #define  IS_WAIT(s) ((s) & JOB_STAT_WAIT )
 
 #define  IS_DONE_NOT_POST_FINISH(s) ( ((s) & JOB_STAT_DONE) && !IS_POST_FINISH(s) )
+#define  IS_ONLY_POST_FINISH(s) ( IS_POST_FINISH(s) && (!((s) & ~(JOB_STAT_PDONE | JOB_STAT_PERR))) ) 
 
 #define  FACTORS_CHECK(queue, Qparam, Gparam) ((((queue)->qAttrib & Q_ATTRIB_FAIRSHARE) \
 		                                  && ((Qparam) > 0)) || \
@@ -11548,10 +12223,10 @@ extern int lsb_readframejob P_((LS_LONG_INT, char *, char *, char *, char *, int
 extern void lsb_closejobinfo P_((void));
 /**
  * \page  lsb_hostcontrol lsb_hostcontrol
- * Opens or closes a host, or restarts or shuts down its slave batch daemon.
+ * Opens or closes a host, or restarts or shuts down its server batch daemon.
  *
  * \ref lsb_hostcontrol opens or closes a host, or restarts or shuts down its
- * slave batch daemon. Any program using this API must be setuid to root if
+ * server batch daemon. Any program using this API must be setuid to root if
  * LSF_AUTH is not defined in the lsf.conf file.
  *
  * To restart the master batch daemon, mbatchd, in order to use updated
@@ -11593,6 +12268,52 @@ extern void lsb_closejobinfo P_((void));
 extern int  lsb_hostcontrol P_((struct hostCtrlReq *));
 extern int  lsb_hghostcontrol P_((struct hgCtrlReq *, struct hgCtrlReply* reply));
 extern int lsb_hostListControl (struct hostListCtrlReq *req, int * retArray);
+/**
+ * \page  lsb_hclosure_lock_ids lsb_hclosure_lock_ids
+ * Attaches a lock ID to hosts or removes a lock ID from hosts.
+ *
+ * \ref lsb_hclosure_lock_ids attaches a lock ID to hosts
+ * \n or removes a lock ID from hosts.
+ * This call is successfully invoked only by root or by the LSF administrator.
+ *
+ * <b>\#include <lsf/lsbatch.h>
+ *
+ * int lsb_hclosure_lock_ids (struct hclosureLockIDsReq *req, struct hclosureLockIDsReply  **replyPtr)</b>
+ *
+ * @param *req 
+ * Describes the request for the lock ID operation
+ * @param *replyPtr 
+ * Describes the results of the lock ID operation 
+ *
+ * <b>Data Structures:</b>
+ * \par
+ * hclosureLockIDsReq
+ * hclosureLockIDsReply
+ *
+ * <b>Define Statements:</b>
+ * \par
+ * \ref hclosure_lockIds_option
+ *
+ * @return int:0 \n
+ * The function was successful.
+ * @return int:-1 \n
+ * Function failed.
+ *
+ * <b>Errors:</b>
+ * \par
+ * If the function fails, replyPtr->failHosts indicates which hosts are not acceptable and replyPtr->failReasons (an array of lsberrno error numbers) is set to indicate errors over failed hosts.
+ *
+ * <b>Equivalent line commands:</b>
+ * \par
+ * none
+ *    
+ * <b>Files:</b>
+ * \par
+ * ${LSF_ENVDIR:-/etc}/lsf.conf
+ *
+ * @see \ref lsb_hostcontrol
+ */
+extern int  lsb_hclosure_lock_ids P_((struct hclosureLockIDsReq *, struct hclosureLockIDsReply **));
 /**
  * \page lsb_queueinfo lsb_queueinfo
  * \brief Returns information about batch queues.
@@ -11692,7 +12413,7 @@ extern struct queueInfoEnt *lsb_queueinfo P_((char **queues, int *numQueues, cha
  * configuration parameters and changes to the job queue setup since system
  * startup or the last reconfiguration (see lsb.queues).
  *
- * To restart a slave batch daemon, use \ref lsb_hostcontrol. This call is
+ * To restart a server batch daemon, use \ref lsb_hostcontrol. This call is
  * successfully invoked only by root or by the LSF administrator.
  *
  * Any program using this API must be setuid to root if LSF_AUTH is not
@@ -14735,9 +15456,6 @@ extern int lsb_postjobmsg P_((struct jobExternalMsgReq *, char *));
  */
 extern int lsb_readjobmsg P_((struct jobExternalMsgReq *, struct jobExternalMsgReply *));
 
-/* API for symphony job information update in bulk mode */
-extern int lsb_bulkJobInfoUpdate P_((struct symJobStatusUpdateReqArray *, struct symJobStatusUpdateReplyArray *));
-
 /* API for advance reservation */
 /**
  * \page lsb_addreservation lsb_addreservation
@@ -15067,8 +15785,7 @@ extern void free_simStatusReply(struct simStatusReply *);
 #define LSB_HOST_OPTION_EXPORT 0x1
 /* bhosts -x option */
 #define LSB_HOST_OPTION_EXCEPT 0x2
-/* retrieve hosts that belong to batch partition */
-#define LSB_HOST_OPTION_BATCH  0x4
+#define LSB_HOST_RESOURCE_LOCATION_CONDENSE 0x4  /* do not expand shared resource location "all" */
 
 #define LSB_HOST_OPTION_CONDENSED 0x08    /* Display condensed host output */
 
@@ -15082,6 +15799,9 @@ extern void free_simStatusReply(struct simStatusReply *);
 #define LSB_HOST_OPTION_RELINQUISHED_IGN 0x400 /* ignore hosts relinquished to host factory */
 #define LSB_HOST_NON_INTERACTIVE         0x800 /* Set non-interactive request bit for bhosts */
 #define LSB_HOST_OPTION_GPU             0x1000  /* bhosts -gpu */
+#define LSB_HOST_OPTION_UNREACH_IGN     0x2000  /* ignore unreach host for "badmin hrestart/shutdown all" */
+#define LSB_HOST_OPTION_COMMENTS_IN_JSON   0x4000  /* for bhosts api use only */
+#define LSB_HOST_OPTION_MIG             0x8000  /* for bhosts supporting MIG */
 
 /* error codes, structures and routines for syntax check of RMS external scheduler options */
 #define	RMS_NON_RMS_OPTIONS_ERR  (-1)     /*  non-rms option shown up in RMS[] */
@@ -16301,6 +17021,7 @@ extern int lsb_getallocFromHostfile P_((char ***, char *));
 #define STR_EST_NUM_ESTIMATED_JOBS "Number of estimated jobs"
 #define STR_EST_PIDS "Active estimator PIDs"
 #define STR_JOBINFO_MEM  "Memory used by the jobinfo cache"
+#define STR_NUM_KUBE_SERVERS  "Number of Kubernetes nodes"
 
 
 struct  statusInfo {
@@ -16356,6 +17077,9 @@ struct  statusInfo {
     time_t nextEstimateTime;
     char   *estPids;
     double   jobinfoDataInMem;
+
+    /* kubernetes nodes */
+    int numKubeServers;
 };
 
 enum {
@@ -16777,6 +17501,17 @@ typedef struct _rsrcInfoReq {
 
 #define POWER_RESOURCE  1    /**< Power policy resource */
 
+/* additional guarantee consumer usage info
+ **/
+struct extConInfo {
+    int   slotUse;
+    int   memUse;
+    int   usedInOwnerPool;
+    int   slotUseInOwnerPool;
+    int   memUseInOwnerPool;
+    int   memLoanUse;
+    int   slotsLoanUse;
+};
 
 /**
  * \brief guaranteed resource pool consumer information
@@ -16791,23 +17526,53 @@ typedef struct _guarConsumer {
     int            deserved;   /**< Number of guaranteed resources*/
     int            guarUsed;   /**< Number of guaranteed resources used*/
     int            totalUsed;  /**< Total number of resources used*/
-    int            numkvs;	   /* The total number of key-value pair */
-    struct keyVal  *kvs;	   /* Array of key-value pair struct */
+    int            numkvs;     /**  The total number of key-value pair */
+    struct keyVal  *kvs;       /**  Array of key-value pair struct */
+    struct extConInfo info;    /**  Additional consumer info */
 } guarConsumer;
 
+/* additional guarantee host info
+ **/
+struct extHostInfo {
+    int totalSlot;
+    int totalMem;
+    int totalPkg;
+    int availSlot;
+    int availMem;
+    int availPkg;
+    int ownerSlotUse;
+    int ownerMemUse;
+    int otherSlotUse;
+    int otherMemUse;
+    int loanSlotUse;
+    int loanMemUse;
+    char *owner;
+};
+
+/** Guaranteed Resources loaned by a Job 
+ **/  
+struct guarPoolForJob {
+    char *name;
+    int numRsrc;
+    int type;
+    int mem;
+    int slots;
+};
 
 /**
  * \brief guaranteed resource pool host information
  */
 typedef struct _guarHost {
     char *name;
-
 #define GUARHOST_FLAGS_UNAVAIL    0x01
+#define GUARHOST_FLAGS_RESERVE    0x02
+#define GUARHOST_FLAGS_NOLOAN     0x04
     int flags;
     int total;
     int avail;
     int consumerUse;
     int otherUse;
+    struct extHostInfo info;
 } guarHost;
 
 typedef struct _preempt_info_t {
@@ -16823,6 +17588,19 @@ typedef struct _extrainfo_gpoolent {
     char * admins;        /**< A list of administrators of the guaranteed resource pool. 
                             * The users whose names are here are allowed to operate on the pool
                             * by bconf command. */
+    int memPerPackage;
+    int slotsPerPackage;
+    int availSlots;
+    int availMem;
+    int totalSlots;
+    int totalMem;
+    int totalUsedSlots;
+    int totalUsedMem;
+    int slotsUsedByOwner;
+    int memUsedByOwner;
+    int loanUse;
+    int slotsUsedByLoaning;
+    int memUsedByLoaning;
 } ExtraInfo_GPoolEnt_T;
 
 /**
@@ -16844,6 +17622,7 @@ typedef struct _guaranteedResourcePoolEnt {
 #define GUAR_RESOURCE_POOL_STATUS_OVERCOMMIT    0x1 /* GRP_STATUS_OVERCOMMIT */
 #define GUAR_RESOURCE_POOL_STATUS_UNKNOWN       0x2 /* GRP_STATUS_UNKNOWN */
 #define GUAR_RESOURCE_POOL_STATUS_LOANSUSP      0x4 /* GRP_STATUS_LOANSUSP */
+#define GUAR_RESOURCE_POOL_STATUS_SIMPLE        0x8 /* simplified package pool */
     int            status;            /**< Status of pool*/
     int            total;             /**< Total resources in pool*/
     int            free;              /**< Free resources in pool*/
@@ -16860,6 +17639,7 @@ typedef struct _guaranteedResourcePoolEnt {
 #define GUAR_RESOURCE_POOL_POLICIES_LOAN_DELAY      (0x01)
 #define GUAR_RESOURCE_POOL_POLICIES_LOAN_RESTRICT   (0x02)
 #define GUAR_RESOURCE_POOL_POLICIES_RETAIN_PERCENT  (0x04)
+#define GUAR_RESOURCE_POOL_POLICIES_LOAN_ALLOCATED_HOSTS  (0x08)
     int            policies;          /**< Policies, bit field*/
     int            loanDelay;         /**< Loan delay (minutes, 0 == any)*/
     int            queuesC;           /**< Number of queues*/
@@ -17106,6 +17886,8 @@ extern int lsb_rsrcInfo (rsrcInfoReq *, rsrcInfoEnt	*);
 
 
 extern struct jobQueryCounters* lsb_queryjobcounters P_((struct queryInfo *));
+extern struct jobQueryJobFile* lsb_queryjob_jobfile P_((struct queryInfo *));
+extern void free_jobQueryJobFile(struct jobQueryJobFile * jobqueryjobfile);
 
 /**
  * \page  lsb_jobpendingsummary lsb_jobpendingsummary
@@ -17433,7 +18215,7 @@ lsb_globalFairshareLoad P_((char **policyNames,
  * int lsb_gpdCtrl(int ctrlCode, char *msg, int options);</b>
  *
  * @param ctrlCode [IN] operation applied, defined in \ref gpd_control_code
- * @param message [IN] the message attached by admin
+ * @param msg [IN] the message attached by admin
  * @param options not used so far
  *
  * <b>Define Statements:</b>
@@ -17541,12 +18323,14 @@ struct rcHostInfoEnt {
  *
  *<b>\#include <lsf/lsbatch.h>
  *
- * struct rcHostInfoEnt *lsb_rc_hostinfo ( char* provider, char** hosts, int* numHosts, int options )</b>
+ * struct rcHostInfoEnt *lsb_rc_hostinfo ( char* provider, char** hosts, char** instIds, int* numHosts, int options )</b>
  *
  * @param *provider
  * A provider name. If NULL, hosts from all providers will be returned.
  * @param **hosts
  * An array of host names. If NULL, all hosts will be returned.
+ * @param **instIds
+ * An array of host Ids. If NULL, RC information may be missing.
  * @param *numHosts
  * The number of host names in the array.
  * To get information on all hosts, set *numHosts to 0; *numHosts will be set to the
@@ -17581,7 +18365,7 @@ struct rcHostInfoEnt {
  * N/A
  *
  */
-extern struct rcHostInfoEnt * lsb_rc_hostinfo P_(( char* provider, char** hosts, int* numHosts, int options));
+extern struct rcHostInfoEnt * lsb_rc_hostinfo P_(( char* provider, char** hosts, char** instIds, int* numHosts, int options));
 
 /**
  * \page lsb_rc_free_hostinfo lsb_rc_free_hostinfo
@@ -17617,6 +18401,120 @@ extern struct rcHostInfoEnt * lsb_rc_hostinfo P_(( char* provider, char** hosts,
  *
  */
 extern void lsb_rc_free_hostinfo P_((struct rcHostInfoEnt* , int ));
+
+typedef enum {
+    EBD_HOSTATTR_TYPE_BOOLEAN,
+    EBD_HOSTATTR_TYPE_NUMERIC,
+    EBD_HOSTATTR_TYPE_STRING
+} EBD_HF_AttributeType;
+
+struct EBD_HF_HostAttribute {
+    char *name;                 /* name of LSF resource */
+    EBD_HF_AttributeType type;  /* type of LSF resource */
+    struct {
+        int boolean;
+        char* string;
+        struct {
+            float min;
+            float max;
+        } numeric;
+    } val;
+};
+
+struct EBD_HF_Policy {
+    char *name;
+    int nProviders;
+    char **providers;
+    int nTemplates;
+    char **templates;
+    int  nRcAccounts;
+    char **rcAccounts;
+#define EBD_POLICY_PER_NONE 		0x0
+#define EBD_POLICY_PER_PROVIDER 	0x01
+#define EBD_POLICY_PER_TEMPLATE 	0x02
+#define EBD_POLICY_PER_RCACCOUNT 	0x04
+#define EBD_POLICY_FROM_AVAILABILITY    0x08
+    int flags;
+    int max;
+    char *step;
+};
+
+
+struct rcProviderStatusReq {
+    int providerCount;
+    char **providers;
+    int options;
+#define RC_SHOWSTATUS_DEMAND    0x01
+#define RC_SHOWSTATUS_TEMPLATES 0x02
+#define RC_SHOWSTATUS_POLICIES  0x04
+};
+
+struct rcDemandStatus {
+    char *templName;
+    char *account;
+    int demand;
+    int processing;
+    int waiting;
+    int joined;
+};
+
+struct rcPolicyWrapper {
+    struct EBD_HF_Policy *policy;
+};
+
+struct rcTemplateStatus {
+    char *name;
+    struct KVPair *KVP;
+    int numAttributes;
+    struct EBD_HF_HostAttribute *attributes;
+    int availNumber;
+};
+
+struct rcProviderStatus {
+    char *name;
+    int numDemands;
+    struct rcDemandStatus *demand;
+    int numTemplates;
+    struct rcTemplateStatus *tmpl;
+};
+
+struct rcProviderStatusRep {
+    int numProviders;
+    struct rcProviderStatus* providers;
+    int numPolicies;
+    struct rcPolicyWrapper *policies;
+    char *status;
+    time_t schDemandTime;
+    time_t ebdDemandTime;
+};
+
+/**
+ * \page lsb_rc_showstatus lsb_rc_showstatus
+ * Displays each host provider information from the resource connector plugin
+ *
+ *<b>\#include <lsf/lsbatch.h>
+ *
+ * void lsb_rc_showstatus(struct rcProviderStatusReq* req, struct rcProviderStatusRep* rep)</b>
+ *
+ * @param *req
+ * Request options for rc show status
+ *
+ * <b>Data Structures:</b>
+ *\par
+ * rcProviderStatusReq
+ * rcProviderStatusRep
+ *
+ * @return void 
+ *
+ * <b>Errors:</b>
+ * \par
+ * Check lsberrno to determine if the function has completed successfully. 
+ * 
+ * <b>Files:</b>
+ * \par
+ * N/A
+ */
+extern int lsb_rc_showstatus(struct rcProviderStatusReq*, struct rcProviderStatusRep*);
 
 /**
  * \brief  host container related info.
@@ -17696,7 +18594,10 @@ typedef struct container_full_info_set {
     fullImageInfo_t **fImageInfo;  /**< the host based container/image full info data array */
 }containerFullInfoSet_t;
 
+#ifndef WIN32
 int lsb_image_info(containerInfoReq_t* inforeq, containerFullInfoSet_t *imageinfo) ;
+#endif
+
 #undef P_
 
 #if defined(__cplusplus)
@@ -17756,6 +18657,101 @@ int lsb_image_info(containerInfoReq_t* inforeq, containerFullInfoSet_t *imageinf
  */
 
 /**
+ * \page lsb_attrReq lsb_attrReq
+ * \brief Create or delete attributes on specific hosts.
+ *
+ * <b>\#include <lsf/lsbatch.h>
+ * 
+ * int lsb_attrReq(attrInfoReq_t *req, char **errReply)</b>
+ *  
+ * @param *req input, the request that specifies the attribute 
+ * creation or deletion information
+ * @param **errReply output, the error messages from mbatchd
+ *
+ * <b>Data Structures:</b>
+ * \par
+ * _attrInfoReq
+ *
+ * <b>Define Statements:</b>
+ * \par
+ * \ref attrAction_t
+ *
+ * @return int: 0
+ * \n Function was successful. 
+ * \n lsberrno is LSBE_NO_ERROR.
+ *
+ * @return int: -1
+ * \n Function failed. The request was rejected.
+ * \n A detailed error message in the reply gives failure reasons.
+ *
+ * @note The caller must free up errReply regardless of 
+ * whether the return value is 0 or -1.
+ *
+ * \b Errors:
+ * \par
+ *   If the request fails, lsberrno is set to indicate the error and
+ *   the reply gives the detailed error messages.
+ *
+ * <b>Equivalent line command:</b>
+ * \par
+ * battr create
+ *  \n battr delete
+ *
+ * \b Files
+ * \par
+ * $LSB_CONFDIR/cluster_name/configdir/lsb.params
+ *
+ * @see none
+ */
+extern int lsb_attrReq(attrInfoReq_t *req, char **errReply);
+/**
+ * \page lsb_attrInfo lsb_attrInfo
+ * \brief Display attributes information from the cluster.
+ *
+ * <b>\#include <lsf/lsbatch.h>
+ * 
+ * int lsb_attrInfo(attrInfoReq_t *req, attrInfoReply_t **reply)</b>
+ *  
+ * @param *req input, the request that specifies the attribute 
+ * display information
+ * @param **reply output, the attribute information array
+ *
+ * <b>Data Structures:</b>
+ * \par
+ * _attrInfoReq
+ * \n _attrInfoReply
+ * \n _attrInfo
+ * \n _attrUserHostInfo
+ *
+ * <b>Define Statements:</b>
+ * \par
+ * \ref attrAction_t
+ *
+ * @return int: 0
+ * \n Function was successful. Got attributes information from mbatchd. 
+ * \n lsberrno is LSBE_NO_ERROR.
+ * @return int: -1
+ * \n Function failed.
+ * \n An error occured or there was no attribute information found 
+ * \n in the cluster.
+ *
+ * \b Errors:
+ * \par
+ *   If the request fails, lsberrno is set to indicate the error.
+ *
+ * <b>Equivalent line command:</b>
+ * \par
+ * battr show
+ *
+ * \b Files
+ * \par
+ * $LSB_CONFDIR/cluster_name/configdir/lsb.params
+ *
+ * @see none
+ */
+extern int lsb_attrInfo(attrInfoReq_t *req, attrInfoReply_t **reply);
+
+/**
  * \page lsblib lsblib
  * \brief Application Programming Interface (API) library functions for batch jobs
  *
@@ -17807,7 +18803,6 @@ int lsb_image_info(containerInfoReq_t* inforeq, containerFullInfoSet_t *imageinf
  *
  * @see lsblibapis
  */
-
 
 /*TODO: add comments*/
 extern struct acHostInfoEnt * lsb_ac_vminfo (char **, int *, int );
@@ -17881,6 +18876,7 @@ struct explorerInfo{
     struct explorerInfo *forw, *back;
     char ip[1025];
     int port;
+    char url[MAXFULLFILENAMELEN];
 };
 
 
@@ -17893,7 +18889,11 @@ struct explorerInfo{
 #define SYSTEM_MSG_EXTENDABLE_RUNLIMIT  0    /* extendable runlimit messages */
 #define SYSTEM_MSG_GPUERROR_GPURUSAGE   1    /* GPU related messages */
 #define SYSTEM_MSG_DATA_MANAGER         2    /* Data manager messages */
-#define SYSTME_MSG_GPUJOB_ALLOCATION    3    /* job gpu allocation message */
+#define SYSTEM_MSG_GPUJOB_ALLOCATION    3    /* job gpu allocation message */
+#define SYSTEM_MSG_KUBE_PODNAME         4    /* names of pods */
+#define SYSTEM_MSG_KUBE_PODSPEC         5    /* pod specifications */
+#define SYSTEM_MSG_KUBE_PODALLOC        6    /* pod allocation */
+#define SYSTEM_MSG_KUBE_PODSTAT         7    /* pod status */
 
 /* Default Parameters for ALLOCATION_PLANNER
  */
@@ -17903,5 +18903,21 @@ struct explorerInfo{
 
 #define EGROUP_UPDATE_INTERVAL_UNIT_H   0   /* Unit: Hours */
 #define EGROUP_UPDATE_INTERVAL_UNIT_M   1   /* Unit: Minutes */
+
+enum usePamCredsValues {
+    USE_PAM_CREDS_NOT_DEFINED = -1,
+    USE_PAM_CREDS_NO,
+    USE_PAM_CREDS_YES,       
+    USE_PAM_CREDS_LIMITS,        
+    USE_PAM_CREDS_SESSION,     
+    USE_PAM_CREDS_LIMITS_SESSION
+};  
+
+/* usePamExt field */
+#define USE_PAM_EXT_Y        0x01
+#define USE_PAM_EXT_LIMITS   0x02
+#define USE_PAM_EXT_SESSION  0x04
+
+#define FLOAT_CLIENT_SUBMIT_RETRY 0x01
 
 #endif
