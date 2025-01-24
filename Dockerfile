@@ -39,7 +39,6 @@ RUN export DEBIAN_FRONTEND=noninteractive && apt-get update && \
     pciutils \
     pkg-config \
     python3 \
-    python2 \
     swig \
     tk-dev \
     tzdata \
@@ -54,7 +53,11 @@ ENV PLATFORM=x86_64
 
 RUN wget -q http://content.mellanox.com/ofed/MLNX_OFED-${MOFED_VERSION}/MLNX_OFED_LINUX-${MOFED_VERSION}-${OS_VERSION}-${PLATFORM}.tgz && \
     tar -xvf MLNX_OFED_LINUX-${MOFED_VERSION}-${OS_VERSION}-${PLATFORM}.tgz && \
-    MLNX_OFED_LINUX-${MOFED_VERSION}-${OS_VERSION}-${PLATFORM}/mlnxofedinstall --user-space-only --without-fw-update  --with-neohost-backend -q && \
+    MLNX_OFED_LINUX-${MOFED_VERSION}-${OS_VERSION}-${PLATFORM}/mlnxofedinstall \
+      --user-space-only \
+      --without-fw-update  \
+      #--with-neohost-backend \
+      -q && \
     cd .. && \
     rm -rf ${MOFED_DIR} && \
     rm -rf *.tgz
