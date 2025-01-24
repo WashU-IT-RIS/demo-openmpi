@@ -21,17 +21,15 @@ RUN export DEBIAN_FRONTEND=noninteractive && apt-get update && \
     graphviz \
     iproute2 \
     kmod \
-    libelf1 \
+    libelf-dev \
     libfind-lib-perl \
-    libgfortran4 \
     libglib2.0-0 \
     libltdl-dev \
     libmnl0 \
-    libnl-3-200 \
-    libnl-route-3-200 \
-    libnuma1 \
+    libnl-3-dev \
+    libnl-route-3-dev \
     libnuma-dev \
-    libssl1.1 \
+    libssl-dev \
     lsb-release \
     lsof \
     m4 \
@@ -40,9 +38,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && apt-get update && \
     pkg-config \
     python \
     swig \
-    tcl \
-    tk \
-    tk8.6 \
+    tk-dev \
     tzdata \
     wget && \
     apt-get clean all
