@@ -1,0 +1,407 @@
+.TH "lsb_freeGlobalLimitInfoEnt" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_freeGlobalLimitInfoEnt \- lsb_freeGlobalLimitInfoEnt 
+Frees the memory allocated by \fBlsb_globalLimitInfo\fP.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB void lsb_freeGlobalLimitInfoEnt(globalLimitInfoEnt * ent, int size)\fP
+.PP
+.SH "Parameters:"
+\fI*ent\fP input, the array of global limit information 
+.br
+\fIsize\fP input, the size of the global limit information array
+.PP
+.SH "Data Structures:" 
+.PP
+\fB_globalLimitInfoEnt\fP 
+.br
+\fB_clsLimitInfoEnt\fP 
+.br
+\fB_limitInfoEnt\fP 
+.br
+\fB_limitItem\fP 
+.br
+\fB_limitConsumer\fP 
+.br
+\fB_limitResource\fP
+.PP
+.SH "Define Statements:" 
+.PP
+\fB_consumertype\fP
+.PP
+.SH "Returns:"
+void 
+.br
+ There's no return value.
+.PP
+.SH "Errors:" 
+.PP
+On failure, lsberrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+blimits -gl
+.PP
+.SH "Files:" 
+.PP
+$LSB_CONFDIR/cluster_name/configdir/lsb.globalpolicies
+.PP
+.SH "See also:"
+\fBlsb_globalLimitInfo\fP 
+.PP
+
+.ad l
+.nh
+.SH NAME
+_globalLimitInfoEnt \- Global limit information entry.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBname\fP"
+.br
+.ti -1c
+.RI "\fBlimitInfoEnt\fP \fBaccumInfoEnt\fP"
+.br
+.ti -1c
+.RI "int \fBclsNum\fP"
+.br
+.ti -1c
+.RI "\fBclsLimitInfoEnt\fP * \fBclsEnts\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Global limit information entry. 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fB_globalLimitInfoEnt::name\fP"
+.PP
+The limit name. 
+.PP
+.SS "\fBlimitInfoEnt\fP \fB_globalLimitInfoEnt::accumInfoEnt\fP"
+.PP
+The accumulated usage of all clusters for this limit. 
+.PP
+.SS "int \fB_globalLimitInfoEnt::clsNum\fP"
+.PP
+The number of clusters. 
+.PP
+.SS "\fBclsLimitInfoEnt\fP* \fB_globalLimitInfoEnt::clsEnts\fP"
+.PP
+The limit usage entry array for each cluster. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+_clsLimitInfoEnt \- Cluster limit information entry.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBclsName\fP"
+.br
+.ti -1c
+.RI "\fBlimitInfoEnt\fP \fBent\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Cluster limit information entry. 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fB_clsLimitInfoEnt::clsName\fP"
+.PP
+The cluster name. 
+.PP
+.SS "\fBlimitInfoEnt\fP \fB_clsLimitInfoEnt::ent\fP"
+.PP
+The limit information entry for this cluster. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+_limitInfoEnt \- limit information entry .  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBname\fP"
+.br
+.ti -1c
+.RI "\fBlimitItem\fP \fBconfInfo\fP"
+.br
+.ti -1c
+.RI "int \fBusageC\fP"
+.br
+.ti -1c
+.RI "\fBlimitItem\fP * \fBusageInfo\fP"
+.br
+.ti -1c
+.RI "char * \fBineligible\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+limit information entry . 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fB_limitInfoEnt::name\fP"
+.PP
+Limit policy name given by the user. 
+.PP
+.SS "\fBlimitItem\fP \fB_limitInfoEnt::confInfo\fP"
+.PP
+Limit configuration. 
+.PP
+.SS "int \fB_limitInfoEnt::usageC\fP"
+.PP
+Size of limit dynamic usage info array. 
+.PP
+.SS "\fBlimitItem\fP* \fB_limitInfoEnt::usageInfo\fP"
+.PP
+Limit dynamic usage info array. 
+.PP
+.SS "char* \fB_limitInfoEnt::ineligible\fP"
+.PP
+The ineligible configuration. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+_limitItem \- limit item.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBconsumerC\fP"
+.br
+.ti -1c
+.RI "\fBlimitConsumer\fP * \fBconsumerV\fP"
+.br
+.ti -1c
+.RI "int \fBresourceC\fP"
+.br
+.ti -1c
+.RI "\fBlimitResource\fP * \fBresourceV\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+limit item. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fB_limitItem::consumerC\fP"
+.PP
+Number of consumers. 
+.PP
+.SS "\fBlimitConsumer\fP* \fB_limitItem::consumerV\fP"
+.PP
+Consumers, such as queue, host, user or project. 
+.PP
+.SS "int \fB_limitItem::resourceC\fP"
+.PP
+Number of resources. 
+.PP
+.SS "\fBlimitResource\fP* \fB_limitItem::resourceV\fP"
+.PP
+Resources list. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+_limitConsumer \- limit consumer  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "\fBconsumerType\fP \fBtype\fP"
+.br
+.ti -1c
+.RI "char * \fBname\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+limit consumer 
+.SH "Field Documentation"
+.PP 
+.SS "\fBconsumerType\fP \fB_limitConsumer::type\fP"
+.PP
+Consumer type ( _consumertype ):
+.IP "\(bu" 2
+Queues per-queue
+.IP "\(bu" 2
+Users and per-user
+.IP "\(bu" 2
+Hosts and per-host
+.IP "\(bu" 2
+Projects and per-project
+.IP "\(bu" 2
+License Projects and per-License Project. 
+.PP
+
+.PP
+.SS "char* \fB_limitConsumer::name\fP"
+.PP
+Consumer name. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+_limitResource \- limit resource.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBname\fP"
+.br
+.ti -1c
+.RI "int \fBtype\fP"
+.br
+.ti -1c
+.RI "float \fBval\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+limit resource. 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fB_limitResource::name\fP"
+.PP
+Resource name. 
+.PP
+.SS "int \fB_limitResource::type\fP"
+.PP
+Resource type. 
+.PP
+.SS "float \fB_limitResource::val\fP"
+.PP
+Resource val. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+_consumertype \- consumer types  
+
+.PP
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef enum \fB_consumertype\fP \fBconsumerType\fP"
+.br
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fB_consumertype\fP { \fBLIMIT_QUEUES\fP =  1, \fBLIMIT_PER_QUEUE\fP =  2, \fBLIMIT_USERS\fP =  3, \fBLIMIT_PER_USER\fP =  4, \fBLIMIT_HOSTS\fP =  5, \fBLIMIT_PER_HOST\fP =  6, \fBLIMIT_PROJECTS\fP =  7, \fBLIMIT_PER_PROJECT\fP =  8, \fBLIMIT_LIC_PROJECTS\fP =  9, \fBLIMIT_PER_LIC_PROJECT\fP =  10, \fBLIMIT_CLUSTERS\fP =  11, \fBLIMIT_PER_CLUSTER\fP =  12, \fBLIMIT_APPS\fP =  13, \fBLIMIT_PER_APP\fP =  14 }"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+consumer types 
+.SH "Typedef Documentation"
+.PP 
+.SS "typedef enum \fB_consumertype\fP  \fBconsumerType\fP"
+.PP
+Type definitions. 
+.PP
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fB_consumertype\fP"
+.PP
+\fBEnumerator: \fP
+.in +1c
+.TP
+\fB\fILIMIT_QUEUES \fP\fP
+Queues. 
+.TP
+\fB\fILIMIT_PER_QUEUE \fP\fP
+Per-queue. 
+.TP
+\fB\fILIMIT_USERS \fP\fP
+Users. 
+.TP
+\fB\fILIMIT_PER_USER \fP\fP
+Per-users. 
+.TP
+\fB\fILIMIT_HOSTS \fP\fP
+Hosts. 
+.TP
+\fB\fILIMIT_PER_HOST \fP\fP
+Per-host. 
+.TP
+\fB\fILIMIT_PROJECTS \fP\fP
+Projects. 
+.TP
+\fB\fILIMIT_PER_PROJECT \fP\fP
+Per-project. 
+.TP
+\fB\fILIMIT_LIC_PROJECTS \fP\fP
+License Projects. 
+.TP
+\fB\fILIMIT_PER_LIC_PROJECT \fP\fP
+Per-License project. 
+.TP
+\fB\fILIMIT_CLUSTERS \fP\fP
+Clusters. 
+.TP
+\fB\fILIMIT_PER_CLUSTER \fP\fP
+Per-Cluster. 
+.TP
+\fB\fILIMIT_APPS \fP\fP
+Applications. 
+.TP
+\fB\fILIMIT_PER_APP \fP\fP
+Per-application. 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

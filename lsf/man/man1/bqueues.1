@@ -1,0 +1,1520 @@
+
+.ad l
+
+.TH bqueues 1 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBbqueues\fR
+.ce 0
+
+.sp 2
+Displays information about queues.
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBbqueues\fR [\fB-w\fR | \fB-l\fR | \fB-r\fR | \fB-o
+"\fRfield_name[\fB:\fR[\fB-\fR][output_width]] ...
+[\fBdelimiter=\(aq\fRcharacter\fB\(aq\fR]\fB"\fR [\fB-json\fR]]
+[\fB-m\fR host_name | \fB-m\fR host_group | \fB-m\fR cluster_name
+| \fB-m all\fR] [\fB-u\fR user_name |\fB-u\fR user_group | \fB-u
+all\fR] [queue_name ...] [\fB-alloc\fR]
+.sp 2
+\fBbqueues\fR [\fB-w\fR | \fB-o
+"\fRfield_name[\fB:\fR[\fB-\fR][output_width]] ...
+[\fBdelimiter=\(aq\fRcharacter\fB\(aq\fR]\fB"\fR ] [\fB-m\fR host_name
+| \fB-m\fR host_group | \fB-m\fR cluster_name | \fB-m all\fR]
+[\fB-u\fR user_name |\fB-u\fR user_group | \fB-u all\fR]
+[queue_name ...] [\fB-alloc\fR] [\fB-noheader\fR]
+.sp 2
+\fBbqueues\fR [\fB-h\fR | \fB-V\fR]
+.SH Description
+
+.sp 2
+By default, returns the following information about all queues:
+queue name, queue priority, queue status, task statistics, and
+job state statistics.
+.sp 2
+When a resizable job has a resize allocation request, bqueues
+displays pending requests. When LSF adds more resources to a
+running resizable job, bqueues decreases job PEND counts and
+displays the added resources. When LSF removes resources from a
+running resizable job, bqueues displays the updated resources.
+.sp 2
+In LSF multicluster capability, returns the information about all
+queues in the local cluster.
+.sp 2
+Returns job slot statistics if the -alloc option is used.
+.sp 2
+Batch queue names and characteristics are set up by the LSF
+administrator in the lsb.queues file.
+.sp 2
+CPU time is normalized.
+.SH CPU time output is not consistent with the bacct command
+
+.sp 2
+The bacct command displays the sum of CPU time that is used by
+all past jobs in event files. If you specify a begin and end
+time, the execution host type and run time are also considered in
+the CPU time. For a specified job, the bacct and bhist commands
+have the same result.
+.sp 2
+Because the value of CPU time for the bqueues command is used by
+the mbatchd daemon to calculate fairshare priority, it does not
+display the actual CPU time for the queue. CPU time is normalized
+by CPU factor. Normalized CPU time results in a different CPU
+time output in the bacct and bqueues commands.
+.SH Options
+
+.sp 2
+\fB-alloc\fR
+.br
+         Shows counters for slots in \fRRUN\fR, \fRSSUSP\fR,
+         \fRUSUSP\fR, and \fRRSV\fR. The slot allocation is
+         different depending on whether the job is an exclusive
+         job or not.
+.sp 2
+\fB-json\fR
+.br
+         Displays the customized output in JSON format.
+.sp 2
+         When specified, bqueues -o displays the customized
+         output in the JSON format.
+.sp 2
+         This option only applies to output for the bqueues -o
+         command for customized output. This has no effect when
+         running bqueues without the -o option and the
+         \fBLSB_BQUEUES_FORMAT\fR environment variable or
+         parameter are not defined.
+.sp 2
+\fB-l \fR
+.br
+         Displays queue information in a long multiline format.
+         The -l option displays the following additional
+         information:
+.sp 2
+         *  Queue description
+.sp 2
+         *  Queue characteristics and statistics
+.sp 2
+         *  Scheduling parameters
+.sp 2
+         *  Resource usage limits
+.sp 2
+         *  Scheduling policies
+.sp 2
+         *  Users
+.sp 2
+         *  Hosts
+.sp 2
+         *  Associated commands
+.sp 2
+         *  Dispatch and run windows
+.sp 2
+         *  Success exit values
+.sp 2
+         *  Host limits per parallel job
+.sp 2
+         *  Pending time limits and eligible pending time limits
+.sp 2
+         *  Job controls
+.sp 2
+         *  User shares
+.sp 2
+         *  Normalized fairshare factors
+.sp 2
+         *  Containers
+.sp 2
+         If you specified an administrator comment with the -C
+         option of the queue control commands (qclose, qopen,
+         qact, and qinact), qhist displays the comment text.
+.sp 2
+         Displays absolute priority scheduling (APS) information
+         for queues that are configured with the
+         \fBAPS_PRIORITY\fR parameter.
+.sp 2
+\fB-noheader\fR
+.br
+         Removes the column headings from the output.
+.sp 2
+         When specified, bqueues displays the values of the
+         fields without displaying the names of the fields. This
+         is useful for script parsing, when column headings are
+         not necessary.
+.sp 2
+         This option applies to output for the bqueues command
+         with no options, and to output for all bqueues options
+         with output that uses column headings, including the
+         following: -alloc, -m, -o, -u, -w.
+.sp 2
+         This option does not apply to output for bqueues options
+         that do not use column headings, including the
+         following: -json, -l, -r.
+.sp 2
+\fB-o\fR
+.br
+         Sets the customized output format.
+.sp 2
+         *  Specify which bqueues fields (or aliases instead of
+            the full field names), in which order, and with what
+            width to display.
+.sp 2
+         *  Specify only the bqueues field name or alias to set
+            its output to unlimited width and left justification.
+.sp 2
+         *  Specify the colon (\fR:\fR) without a width to set
+            the output width to the recommended width for that
+            field.
+.sp 2
+         *  Specify the colon (\fR:\fR) with a width to set the
+            maximum number of characters to display for the
+            field. When its value exceeds this width, bqueues
+            truncates the ending characters.
+.sp 2
+         *  Specify a hyphen (\fR-\fR) to set right justification
+            when bqueues displays the output for the specific
+            field. If not specified, the default is to set left
+            justification when bqueues displays output for a
+            field.
+.sp 2
+         *  Use \fRdelimiter=\fR to set the delimiting character
+            to display between different headers and fields. This
+            delimiter must be a single character. By default, the
+            delimiter is a space.
+.sp 2
+         Output customization applies only to the output for
+         certain bqueues options:
+.sp 2
+         *  \fBLSB_BQUEUES_FORMAT\fR and bqueues -o both apply to
+            output for the bqueues command with no options, and
+            for bqueues options with output that filter
+            information, including the following options: -alloc,
+            -m, -u.
+.sp 2
+         *  \fBLSB_BQUEUES_FORMAT\fR and bqueues -o do not apply
+            to output for bqueues options that use a modified
+            format, including the following options: -l, -r, -w.
+.sp 2
+         The bqueues -o option overrides the
+         \fBLSB_BQUEUES_FORMAT\fR environment variable, which
+         overrides the \fBLSB_BQUEUES_FORMAT\fR setting in
+         lsf.conf.
+.sp 2
+         The following are the field names used to specify the
+         bqueues fields to display, recommended width, aliases
+         you can use instead of field names, and units of
+         measurement for the displayed field:
+.sp 2
+         \fBTable 1. Output fields for bqueues\fR
+.sp 2
++------------------------+------+------------+-----------------+
+| Field name             | Widt | Aliases    | Unit            |
+|                        | h    |            |                 |
++------------------------+------+------------+-----------------+
+| queue_name             | 15   | qname      |                 |
++------------------------+------+------------+-----------------+
+| description            | 50   | desc       |                 |
++------------------------+------+------------+-----------------+
+| priority               | 10   | prio       |                 |
++------------------------+------+------------+-----------------+
+| status                 | 12   | stat       |                 |
++------------------------+------+------------+-----------------+
+| max                    | 10   |            |                 |
++------------------------+------+------------+-----------------+
+| jl_u                   | 10   | jlu        |                 |
++------------------------+------+------------+-----------------+
+| jl_p                   | 10   | jlp        |                 |
++------------------------+------+------------+-----------------+
+| jl_h                   | 10   | jlh        |                 |
++------------------------+------+------------+-----------------+
+| njobs                  | 10   |            |                 |
++------------------------+------+------------+-----------------+
+| pend                   | 10   |            |                 |
++------------------------+------+------------+-----------------+
+| run                    | 10   |            |                 |
++------------------------+------+------------+-----------------+
+| susp                   | 10   |            |                 |
++------------------------+------+------------+-----------------+
+| rsv                    | 10   |            |                 |
++------------------------+------+------------+-----------------+
+| ususp                  | 10   |            |                 |
++------------------------+------+------------+-----------------+
+| ssusp                  | 10   |            |                 |
++------------------------+------+------------+-----------------+
+| nice                   | 6    |            |                 |
++------------------------+------+------------+-----------------+
+.sp 2
+         Field names and aliases are not case-sensitive. Valid
+         values for the output width are any positive integer 1 -
+         4096.
+.sp 2
+         For example,
+.sp 2
+         \fRbqueues -o "queue_name description:10 priority:-
+         status: max:-6 delimiter=\(aq^\(aq"\fR
+.sp 2
+         This command displays the following fields:
+.sp 2
+         *  QUEUE_NAME with unlimited width and left justified.
+.sp 2
+         *  DESCRIPTION with a maximum width of ten characters
+            and left justified.
+.sp 2
+         *  PRIORITY with a maximum width of ten characters
+            (which is the recommended width) and right justified.
+.sp 2
+         *  STATUS with a maximum width of 12 characters (which
+            is the recommended width) and left justified.
+.sp 2
+         *  MAX with a maximum width of six characters and right
+            justified.
+.sp 2
+         *  The \fR^\fR character is displayed between different
+            headers and fields.
+.sp 2
+\fB-r\fR
+.br
+         Displays the same information as the -l option. In
+         addition, if fairshare is defined for the queue,
+         displays recursively the share account tree of the
+         fairshare queue. When queue-based fairshare is used
+         along with the bsub -G command and the
+         \fBLSB_SACCT_ONE_UG=Y\fR parameter in the lsf.conf file,
+         share accounts are only created for active users and for
+         the default user group (if defined).
+.sp 2
+         Displays the global fairshare policy name for the
+         participating queue. Displays remote share load
+         (\fRREMOTE_LOAD\fR column) for each share account in the
+         queue.
+.sp 2
+         Displays the normalized fairshare factor, if it is not
+         zero.
+.sp 2
+\fB-w \fR
+.br
+         Displays queue information in a wide format. Fields are
+         displayed without truncation.
+.sp 2
+\fB-m \fIhost_name\fB | -m \fIhost_group\fB | -m
+\fIcluster_name\fB | -m all \fR
+.br
+         Displays the queues that can run jobs on the specified
+         host. If the keyword all is specified, displays the
+         queues that can run jobs on all hosts.
+.sp 2
+         If a host group is specified, displays the queues that
+         include that group in their configuration. For a list of
+         host groups, use the bmgroup command.
+.sp 2
+         In LSF multicluster capability, if the \fRall\fR keyword
+         is specified, displays the queues that can run jobs on
+         all hosts in the local cluster. If a cluster name is
+         specified, displays all queues in the specified cluster.
+.sp 2
+\fB-u \fIuser_name\fB | -u \fIuser_group\fB | -u all \fR
+.br
+         Displays the queues that can accept jobs from the
+         specified user. If the keyword \fRall\fR is specified,
+         displays the queues that can accept jobs from all users.
+.sp 2
+         If a user group is specified, displays the queues that
+         include that group in their configuration. For a list of
+         user groups, use the bugroup command.
+.sp 2
+\fB\fIqueue_name\fB ... \fR
+.br
+         Displays information about the specified queues.
+.sp 2
+\fB-h \fR
+.br
+         Prints command usage to stderr and exits.
+.sp 2
+\fB-V \fR
+.br
+         Prints LSF release version to stderr and exits.
+.SH Default Output
+
+.sp 2
+Displays the following fields:
+.sp 2
+\fBQUEUE_NAME\fR
+.br
+         The name of the queue. Queues are named to correspond to
+         the type of jobs that are usually submitted to them, or
+         to the type of services they provide.
+.sp 2
+         \fBlost_and_found\fR
+.br
+                  If the LSF administrator removes queues from
+                  the system, LSF creates a queue that is called
+                  \fRlost_and_found\fR and places the jobs from
+                  the removed queues into the
+                  \fRlost_and_found\fR queue. Jobs in the
+                  \fRlost_and_found\fR queue are not started
+                  unless they are switched to other queues the
+                  bswitch command.
+.sp 2
+\fBPRIO\fR
+.br
+         The priority of the queue. The larger the value, the
+         higher the priority. If job priority is not configured,
+         determines the queue search order at job dispatch,
+         suspend, and resume time. Contrary to usual order of
+         UNIX process priority, jobs from higher priority queues
+         are dispatched first and jobs from lower priority queues
+         are suspended first when hosts are overloaded.
+.sp 2
+\fBSTATUS\fR
+.br
+         The status of the queue. The following values are
+         supported:
+.sp 2
+         \fBOpen \fR
+.br
+                  The queue can accept jobs.
+.sp 2
+         \fBClosed \fR
+.br
+                  The queue cannot accept jobs.
+.sp 2
+         \fBActive \fR
+.br
+                  Jobs in the queue can be started.
+.sp 2
+         \fBInactive\fR
+.br
+                  Jobs in the queue cannot be started.
+.sp 2
+         At any moment, each queue is in either \fROpen\fR or
+         \fRClosed\fR state, and is in either \fRActive\fR or
+         \fRInactive\fR state. The queue can be opened, closed,
+         inactivated, and reactivated with the badmin command.
+.sp 2
+         Jobs that are submitted to a queue that is later closed
+         are still dispatched while the queue is active. The
+         queue can also become inactive when either its dispatch
+         window is closed or its run window is closed. In this
+         case, the queue cannot be activated by using badmin. The
+         queue is reactivated by LSF when one of its dispatch
+         windows and one of its run windows are open again. The
+         initial state of a queue at LSF startup \fROpen\fR, and
+         either \fRActive\fR or \fRInactive\fR depending on its
+         dispatch windows.
+.sp 2
+\fBMAX\fR
+.br
+         The maximum number of job slots that can be used by the
+         jobs from the queue. These job slots are used by
+         dispatched jobs that are not yet finished, and by
+         pending jobs that reserve slots.
+.sp 2
+         A sequential job uses one job slot when it is dispatched
+         to a host, while a parallel job uses as many job slots
+         as is required by bsub -n command when it is dispatched.
+         A dash (\fR-\fR) indicates no limit.
+.sp 2
+\fBJL/U\fR
+.br
+         The maximum number of job slots each user can use for
+         jobs in the queue. These job slots are used by your
+         dispatched jobs that are not yet finished, and by
+         pending jobs that reserve slots. A dash (\fR-\fR)
+         indicates no limit.
+.sp 2
+\fBJL/P\fR
+.br
+         The maximum number of job slots a processor can process
+         from the queue. This number includes job slots of
+         dispatched jobs that are not yet finished, and job slots
+         reserved for some pending jobs. The job slot limit per
+         processor controls the number of jobs that are sent to
+         each host. This limit is configured per processor so
+         that multiprocessor hosts are automatically allowed to
+         run more jobs. A dash (\fR-\fR) indicates no limit.
+.sp 2
+\fBJL/H\fR
+.br
+         The maximum number of job slots a host can allocate from
+         this queue. This number includes the job slots of
+         dispatched jobs that are not yet finished, and slots
+         that are reserved for some pending jobs. The job slot
+         limit per host (JL/H) controls the number of jobs that
+         are sent to each host, regardless of whether a host is a
+         uniprocessor host or a multiprocessor host. A dash
+         (\fR-\fR) indicates no limit.
+.sp 2
+\fBNJOBS \fR
+.br
+         The total number of slots for jobs in the queue. This
+         number includes slots for pending, running, and
+         suspended jobs. Batch job states are described in the
+         bjobs command.
+.sp 2
+         If the -alloc option is used, the total is the sum of
+         the \fRRUN\fR, \fRSSUSP\fR, \fRUSUSP\fR, and \fRRSV\fR
+         counters.
+.sp 2
+\fBPEND \fR
+.br
+         The total number of tasks for all pending jobs in the
+         queue. If used with the -alloc option, total is zero.
+.sp 2
+\fBRUN\fR
+.br
+         The total number of tasks for all running jobs in the
+         queue. If the -alloc option is used, the total is
+         allocated slots for the jobs in the queue.
+.sp 2
+\fBSUSP\fR
+.br
+         The total number of tasks for all suspended jobs in the
+         queue.
+.sp 2
+\fBPJOBS\fR
+.br
+         The total number of pending jobs (including both PEND
+         and PSUSP job) in this queue
+.SH Long Output (-l)
+
+.sp 2
+In addition to the default fields, the -l option displays the
+following fields:
+.sp 2
+\fBDescription\fR
+.br
+         A description of the typical use of the queue.
+.sp 2
+\fBDefault queue indication\fR
+.br
+         Indicates the default queue.
+.sp 2
+\fBPARAMETERS/ STATISTICS\fR
+.br
+         \fBNICE \fR
+.br
+                  The UNIX nice value at which jobs in the queue
+                  are run. The nice value reduces process
+                  priority.
+.sp 2
+         \fBSTATUS\fR
+.br
+                  \fBInactive\fR
+.br
+                           The long format for the -l option
+                           gives the possible reasons for a queue
+                           to be inactive:
+.sp 2
+                  \fBInact_Win\fR
+.br
+                           The queue is out of its dispatch
+                           window or its run window.
+.sp 2
+                  \fBInact_Adm\fR
+.br
+                           The queue is inactivated by the LSF
+                           administrator.
+.sp 2
+         \fBSSUSP\fR
+.br
+                  The number of tasks for all jobs in the queue
+                  that are suspended by LSF because of load
+                  levels or run windows. If -alloc is used, the
+                  total is the allocated slots for the jobs in
+                  the queue.
+.sp 2
+         \fBUSUSP \fR
+.br
+                  The number of tasks for all jobs in the queue
+                  that are suspended by the job submitter or by
+                  the LSF administrator. If -alloc is used, the
+                  total is the allocated slots for the jobs in
+                  the queue.
+.sp 2
+         \fBRSV\fR
+.br
+                  For pending jobs in the queue, the number of
+                  tasks that LSF reserves slots for. If -alloc is
+                  used, the total is the allocated slots for the
+                  jobs in the queue.
+.sp 2
+\fBMigration threshold\fR
+.br
+         The length of time in seconds that a job that is
+         dispatched from the queue remains suspended by the
+         system before LSF attempts to migrate the job to another
+         host. See the \fBMIG\fR parameter in the lsb.queues and
+         lsb.hosts files.
+.sp 2
+\fBSchedule delay for a new job\fR
+.br
+         The delay time in seconds for scheduling after a new job
+         is submitted. If the schedule delay time is zero, a new
+         scheduling session is started as soon as the job is
+         submitted to the queue. See the
+         \fBNEW_JOB_SCHED_DELAY\fR parameter in the
+         \fRlsb.queues\fR file.
+.sp 2
+\fBInterval for a host to accept two jobs\fR
+.br
+         The length of time in seconds to wait after a job is
+         dispatched to a host and before a second job is
+         dispatched to the same host. If the job accept interval
+         is zero, a host can accept more than one job in each
+         dispatching interval. See the \fBJOB_ACCEPT_INTERVAL\fR
+         parameter in the lsb.queues and lsb.params files.
+.sp 2
+\fBRESOURCE LIMITS \fR
+.br
+         The hard resource usage limits that are imposed on the
+         jobs in the queue (see getrlimit and the lsb.queues
+         file). These limits are imposed on a per-job and a
+         per-process basis.
+.sp 2
+         The following per-job limits are supported:
+.sp 2
+         \fBCPULIMIT\fR
+.br
+                  The maximum CPU time a job can use, in minutes,
+                  relative to the CPU factor of the named host.
+                  \fRCPULIMIT\fR is scaled by the CPU factor of
+                  the execution host so that jobs are allowed
+                  more time on slower hosts.
+.sp 2
+                  When the job-level \fRCPULIMIT\fR is reached, a
+                  \fRSIGXCPU\fR signal is sent to all processes
+                  that belong to the job. If the job has no
+                  signal handler for \fRSIGXCPU\fR, the job is
+                  killed immediately. If the \fRSIGXCPU\fR signal
+                  is handled, blocked, or ignored by the
+                  application, then after the grace period
+                  expires, LSF sends \fRSIGINT\fR, \fRSIGTERM\fR,
+                  and \fRSIGKILL\fR signals to the job to kill
+                  it.
+.sp 2
+         \fBTASKLIMIT\fR
+.br
+                  The maximum number of tasks that are allocated
+                  to a job. Jobs that have fewer tasks than the
+                  minimum \fRTASKLIMIT\fR or more tasks than the
+                  maximum \fRTASKLIMIT\fR are rejected. Maximum
+                  tasks that are requested cannot be less than
+                  the minimum \fRTASKLIMIT\fR, and minimum tasks
+                  that are requested cannot be more than the
+                  maximum \fRTASKLIMIT\fR.
+.sp 2
+         \fBMEMLIMIT\fR
+.br
+                  The maximum running set size (RSS) of a
+                  process. If a process uses more memory than the
+                  limit allows, its priority is reduced so that
+                  other processes are more likely to be paged in
+                  to available memory. This limit is enforced by
+                  the setrlimit system call if it supports the
+                  RLIMIT_RSS option.
+.sp 2
+                  By default, the limit is shown in KB. Use the
+                  \fBLSF_UNIT_FOR_LIMITS\fR parameter in the
+                  lsf.conf file to specify a larger unit for
+                  display (MB, GB, TB, PB, or EB).
+.sp 2
+         \fBSWAPLIMIT\fR
+.br
+                  The swap space limit that a job can use. If
+                  \fRSWAPLIMIT\fR is reached, the system sends
+                  the following signals in sequence to all
+                  processes in the job: \fRSIGINT\fR,
+                  \fRSIGTERM\fR, and \fRSIGKILL\fR.
+.sp 2
+                  By default, the limit is shown in KB. Use the
+                  \fBLSF_UNIT_FOR_LIMITS\fR parameter in the
+                  lsf.conf file to specify a larger unit for
+                  display (MB, GB, TB, PB, or EB).
+.sp 2
+         \fBPROCESSLIMIT \fR
+.br
+                  The maximum number of concurrent processes that
+                  are allocated to a job. If \fRPROCESSLIMIT\fR
+                  is reached, the system sends the following
+                  signals in sequence to all processes that
+                  belong to the job: \fRSIGINT\fR, \fRSIGTERM\fR,
+                  and \fRSIGKILL\fR.
+.sp 2
+         \fBTHREADLIMIT \fR
+.br
+                  The maximum number of concurrent threads that
+                  are allocated to a job. If \fRTHREADLIMIT\fR is
+                  reached, the system sends the following signals
+                  in sequence to all processes that belong to the
+                  job: \fRSIGINT\fR, \fRSIGTERM\fR, and
+                  \fRSIGKILL\fR.
+.sp 2
+         \fBRUNLIMIT\fR
+.br
+                  The maximum wall clock time a process can use,
+                  in minutes. \fRRUNLIMIT\fR is scaled by the CPU
+                  factor of the execution host. When a job is in
+                  \fRRUN\fR state for a total of \fRRUNLIMIT\fR
+                  minutes, LSF sends a \fRSIGUSR2\fR signal to
+                  the job. If the job does not exit within 10
+                  minutes, LSF sends a \fRSIGKILL\fR signal to
+                  kill the job.
+.sp 2
+         \fBFILELIMIT\fR
+.br
+                  The maximum file size a process can create, in
+                  KB. This limit is enforced by the UNIX
+                  setrlimit system call if it supports the
+                  RLIMIT_FSIZE option, or the ulimit system call
+                  if it supports the UL_SETFSIZE option.
+.sp 2
+         \fBDATALIMIT\fR
+.br
+                  The maximum size of the data segment of a
+                  process, in KB. The data limit restricts the
+                  amount of memory a process can allocate.
+                  \fRDATALIMIT\fR is enforced by the setrlimit
+                  system call if it supports the RLIMIT_DATA
+                  option, and unsupported otherwise.
+.sp 2
+         \fBSTACKLIMIT\fR
+.br
+                  The maximum size of the stack segment of a
+                  process. This limit restricts the amount of
+                  memory a process can use for local variables or
+                  recursive function calls. \fRSTACKLIMIT\fR is
+                  enforced by the setrlimit system call if it
+                  supports the RLIMIT_STACK option.
+.sp 2
+                  By default, the limit is shown in KB. Use the
+                  \fBLSF_UNIT_FOR_LIMITS\fR parameter in the
+                  lsf.conf file to specify a larger unit for
+                  display (MB, GB, TB, PB, or EB).
+.sp 2
+         \fBCORELIMIT\fR
+.br
+                  The maximum size of a core file. This limit is
+                  enforced by the setrlimit system call if it
+                  supports the RLIMIT_CORE option.
+.sp 2
+                  If a job submitted to the queue specifies any
+                  of these limits, then the lower of the
+                  corresponding job limits and queue limits are
+                  used for the job.
+.sp 2
+                  If no resource limit is specified, the resource
+                  is assumed to be unlimited.
+.sp 2
+                  By default, the limit is shown in KB. Use the
+                  \fBLSF_UNIT_FOR_LIMITS\fR parameter in the
+                  lsf.conf file to specify a larger unit for
+                  display (MB, GB, TB, PB, or EB).
+.sp 2
+         \fBHOSTLIMIT_PER_JOB\fR
+.br
+                  The maximum number of hosts that a job in this
+                  queue can use. LSF verifies the host limit
+                  during the allocation phase of scheduling. If
+                  the number of hosts that are requested for a
+                  parallel job exceeds this limit and LSF cannot
+                  satisfy the minimum number of request slots,
+                  the parallel job pends.
+.sp 2
+\fBSCHEDULING PARAMETERS \fR
+.br
+         The scheduling and suspending thresholds for the queue.
+.sp 2
+         The scheduling threshold \fRloadSched\fR and the
+         suspending threshold \fRloadStop\fR are used to control
+         batch job dispatch, suspension, and resumption. The
+         queue thresholds are used in combination with the
+         thresholds that are defined for hosts. If both queue
+         level and host level thresholds are configured, the most
+         restrictive thresholds are applied.
+.sp 2
+         The \fRloadSched\fR and \fRloadStop\fR thresholds have
+         the following fields:
+.sp 2
+         \fBr15s \fR
+.br
+                  The 15 second exponentially averaged effective
+                  CPU run queue length.
+.sp 2
+         \fBr1m\fR
+.br
+                  The 1 minute exponentially averaged effective
+                  CPU run queue length.
+.sp 2
+         \fBr15m\fR
+.br
+                  The 15 minute exponentially averaged effective
+                  CPU run queue length.
+.sp 2
+         \fBut\fR
+.br
+                  The CPU usage exponentially averaged over the
+                  last minute, expressed as a percentage between
+                  0 and 1.
+.sp 2
+         \fBpg\fR
+.br
+                  The memory paging rate exponentially averaged
+                  over the last minute, in pages per second.
+.sp 2
+         \fBio\fR
+.br
+                  The disk I/O rate exponentially averaged over
+                  the last minute, in KB per second.
+.sp 2
+         \fBls \fR
+.br
+                  The number of current login users.
+.sp 2
+         \fBit\fR
+.br
+                  On UNIX, the idle time of the host (keyboard
+                  has not been touched on all logged in
+                  sessions), in minutes.
+.sp 2
+                  On Windows, the \fRit\fR index is based on the
+                  time a screen saver becomes active on a
+                  particular host.
+.sp 2
+         \fBtmp \fR
+.br
+                  The amount of free space in /tmp, in MB.
+.sp 2
+         \fBswp \fR
+.br
+                  The amount of currently available swap space.
+                  By default, swap space is shown in MB. Use the
+                  \fBLSF_UNIT_FOR_LIMITS\fR in lsf.conf to
+                  specify a different unit for display (KB, MB,
+                  GB, TB, PB, or EB).
+.sp 2
+         \fBmem \fR
+.br
+                  The amount of currently available memory. By
+                  default, memory is shown in MB. Use the
+                  \fBLSF_UNIT_FOR_LIMITS\fR in lsf.conf to
+                  specify a different unit for display (KB, MB,
+                  GB, TB, PB, or EB).
+.sp 2
+         \fBcpuspeed \fR
+.br
+                  The speed of each individual cpu, in megahertz
+                  (MHz).
+.sp 2
+         \fBbandwidth \fR
+.br
+                  The maximum bandwidth requirement, in megabits
+                  per second (Mbps).
+.sp 2
+         In addition to these internal indices, external indices
+         are also displayed if they are defined in lsb.queues
+         (see lsb.queues(5)).
+.sp 2
+         The \fRloadSched\fR threshold values specify the job
+         dispatch thresholds for the corresponding load indices.
+         If a dash (\fR-\fR) is displayed as the value, it means
+         that the threshold is not applicable. Jobs in the queue
+         might be dispatched to a host if the values of all the
+         load indices of the host are within the corresponding
+         thresholds of the queue and the host. Load indices can
+         be below or above the threshold, depending on the
+         meaning of the load index. The same conditions are used
+         to resume jobs that are dispatched from the queue that
+         are suspended on this host.
+.sp 2
+         Similarly, the \fRloadStop\fR threshold values specify
+         the thresholds for job suspension. If any of the load
+         index values on a host go beyond the corresponding
+         threshold of the queue, jobs in the queue are suspended.
+.sp 2
+\fBJOB EXCEPTION PARAMETERS \fR
+.br
+         Configured job exception thresholds and number of jobs
+         in each exception state for the queue.
+.sp 2
+         \fRThreshold\fR and \fRNumOfJobs\fR have the following
+         fields:
+.sp 2
+         \fBoverrun\fR
+.br
+                  Configured threshold in minutes for overrun
+                  jobs, and the number of jobs in the queue that
+                  triggered an overrun job exception by running
+                  longer than the overrun threshold.
+.sp 2
+         \fBunderrun\fR
+.br
+                  Configured threshold in minutes for underrun
+                  jobs, and the number of jobs in the queue that
+                  triggered an underrun job exception by
+                  finishing sooner than the underrun threshold.
+.sp 2
+         \fBidle\fR
+.br
+                  Configured threshold (CPU time/runtime) for
+                  idle jobs, and the number of jobs in the queue
+                  that triggered an overrun job exception by
+                  having a job idle factor less than the
+                  threshold.
+.sp 2
+\fBSCHEDULING POLICIES\fR
+.br
+         Scheduling policies of the queue. Optionally, one or
+         more of the following policies can be configured in the
+         lsb.queues file:
+.sp 2
+         \fBAPS_PRIORITY\fR
+.br
+                  Absolute Priority Scheduling is enabled.
+                  Pending jobs in the queue are ordered according
+                  to the calculated APS value.
+.sp 2
+         \fBFAIRSHARE\fR
+.br
+                  Queue-level fairshare scheduling is enabled.
+                  Jobs in this queue are scheduled based on a
+                  fairshare policy instead of the first-come,
+                  first-served (FCFS) policy.
+.sp 2
+         \fBBACKFILL \fR
+.br
+                  A job in a backfill queue can use the slots
+                  that are reserved by other jobs if the job can
+                  run to completion before the slot-reserving
+                  jobs start.
+.sp 2
+                  Backfilling does not occur on queue limits and
+                  user limit but only on host-based limits. That
+                  is, backfilling is only supported when
+                  \fRMXJ\fR, \fRJL/U\fR,\fR JL/P\fR,
+                  \fRPJOB_LIMIT\fR, and \fRHJOB_LIMIT\fR limits
+                  are reached. Backfilling is not supported when
+                  \fRMAX_JOBS\fR, \fRQJOB_LIMIT\fR, and
+                  \fRUJOB_LIMIT\fR are reached.
+.sp 2
+         \fBIGNORE_DEADLINE\fR
+.br
+                  If the \fBIGNORE_DEADLINE=Y\fR parameter is set
+                  in the queue, starts all jobs regardless of the
+                  run limit.
+.sp 2
+         \fBEXCLUSIVE\fR
+.br
+                  Jobs that are dispatched from an exclusive
+                  queue can run exclusively on a host if the user
+                  so specifies at job submission time. Exclusive
+                  execution means that the job is sent to a host
+                  with no other running batch jobs. No further
+                  jobs are dispatched to that host while the job
+                  is running. The default is not to allow
+                  exclusive jobs.
+.sp 2
+         \fBNO_INTERACTIVE \fR
+.br
+                  This queue does not accept batch interactive
+                  jobs that are submitted with the -I, -Is, and
+                  -Ip options of the bsub command. The default is
+                  to accept both interactive and non-interactive
+                  jobs.
+.sp 2
+         \fBONLY_INTERACTIVE\fR
+.br
+                  This queue accepts only batch interactive jobs.
+                  Jobs must be submitted with the -I, -Is, and
+                  -Ip options of the bsub command. The default is
+                  to accept both interactive and non-interactive
+                  jobs.
+.sp 2
+         \fBSLA_GUARANTEES_IGNORE\fR
+.br
+                  This queue is allowed to ignore SLA resource
+                  guarantees when scheduling jobs.
+.sp 2
+\fBFAIRSHARE_QUEUES\fR
+.br
+         Lists queues that participate in cross-queue fairshare.
+         The first queue that is listed is the parent queue,
+         which is the queue where fairshare is configured. All
+         other queues that are listed inherit the fairshare
+         policy from the parent queue. Fairshare information
+         applies to all the jobs that are running in all the
+         queues in the fair share tree.
+.sp 2
+\fBQUEUE_GROUP\fR
+.br
+         Lists queues that participate in an absolute priority
+         scheduling (APS) queue group.
+.sp 2
+         If both the \fBFAIRSHARE\fR and \fBAPS_PRIORITY\fR
+         parameters are enabled in the same queue, the
+         \fRFAIRSHARE_QUEUES\fR are not displayed. These queues
+         are instead displayed as \fRQUEUE_GROUP\fR.
+.sp 2
+\fBDISPATCH_ORDER\fR
+.br
+         The \fBDISPATCH_ORDER=QUEUE\fR parameter is set in the
+         parent queue. Jobs from this queue are dispatched
+         according to the order of queue priorities first, then
+         user fairshare priority. Within the queue, dispatch
+         order is based on user share quota. Share quotas avoid
+         job dispatch from low-priority queues for users with
+         higher fairshare priority.
+.sp 2
+\fBUSER_SHARES\fR
+.br
+         A list of \fR[\fIuser_name\fR, \fIshare\fR]\fR pairs.
+         The \fIuser_name\fR is either a user name or a user
+         group name. The \fIshare\fR is the number of shares of
+         resources that are assigned to the user or user group. A
+         consumer receives a portion of the resources
+         proportional to that consumer\(aqs share that is divided by
+         the sum of the shares of all consumers that are
+         specified in the queue.
+.sp 2
+\fBDEFAULT HOST SPECIFICATION \fR
+.br
+         The default host or host model that is used to normalize
+         the CPU time limit of all jobs.
+.sp 2
+         Use the lsinfo command to view a list of the CPU factors
+         that are defined for the hosts in your cluster. The CPU
+         factors are configured in the lsf.shared file.
+.sp 2
+         The appropriate CPU scaling factor of the host or host
+         model is used to adjust the actual CPU time limit at the
+         execution host (the \fBCPULIMIT\fR parameter in the
+         lsb.queues file). The \fBDEFAULT_HOST_SPEC\fR parameter
+         in lsb.queues overrides the system
+         \fBDEFAULT_HOST_SPEC\fR parameter in the lsb.params
+         file. If you explicitly give a host specification when
+         you submit a job with the \fRbsub -c
+         \fIcpu_limit\fR[/\fIhost_name\fR | /\fIhost_model\fR]\fR
+         command, the job-level specification overrides the
+         values that are defined in the lsb.params and lsb.queues
+         files.
+.sp 2
+\fBRUN_WINDOWS\fR
+.br
+         The time windows in a week during which jobs in the
+         queue can run.
+.sp 2
+         When a queue is out of its window or windows, no job in
+         this queue is dispatched. In addition, when the end of a
+         run window is reached, any running jobs from this queue
+         are suspended until the beginning of the next run
+         window, when they are resumed. The default is no
+         restriction, or always open.
+.sp 2
+\fBDISPATCH_WINDOWS\fR
+.br
+         Dispatch windows are the time windows in a week during
+         which jobs in the queue can be dispatched.
+.sp 2
+         When a queue is out of its dispatch window or windows,
+         no job in this queue is dispatched. Jobs that are
+         already dispatched are not affected by the dispatch
+         windows. The default is no restriction, or always open
+         (that is, twenty-four hours a day, seven days a week).
+         Dispatch windows are only applicable to batch jobs.
+         Interactive jobs that are scheduled by LIM are
+         controlled by another set of dispatch windows. Similar
+         dispatch windows can be configured for individual hosts.
+.sp 2
+         A window is displayed in the format
+         \fR\fIbegin_time\fR-\fIend_time\fR\fR. Time is specified
+         in the format
+         [\fR\fIday\fR:]\fIhour\fR[:\fIminute\fR]\fR, where all
+         fields are numbers in their respective legal ranges:
+         0(Sunday)-6 for \fIday\fR, 0-23 for \fIhour\fR, and 0-59
+         for \fIminute\fR. The default value for \fIminute\fR is
+         0 (on the hour). The default value for \fIday\fR is
+         every day of the week. The \fIbegin_time\fR and
+         \fIend_time\fR of a window are separated by a dash
+         (\fR-\fR), with no blank characters (SPACE and TAB) in
+         between. Both \fIbegin_time\fR and \fIend_time\fR must
+         be present for a window. Windows are separated by blank
+         characters.
+.sp 2
+\fBUSERS\fR
+.br
+         A list of users who are allowed to submit jobs to this
+         queue. LSF administrators can submit jobs to the queue
+         even if they are not listed here.
+.sp 2
+         User group names have a slash (\fR/\fR) added at the end
+         of the group name. Use the bugroup command to see
+         information about user groups.
+.sp 2
+         If the fairshare scheduling policy is enabled, users and
+         LSF administrators cannot submit jobs to the queue
+         unless they also have a share assignment.
+.sp 2
+\fBHOSTS\fR
+.br
+         A list of hosts where jobs in the queue can be
+         dispatched.
+.sp 2
+         Host group names have a slash (\fR/\fR) added at the end
+         of the group name. Use the bmgroup command to see
+         information about host groups.
+.sp 2
+\fBNQS DESTINATION QUEUES\fR
+.br
+         A list of NQS destination queues to which this queue can
+         dispatch jobs.
+.sp 2
+         When you submit a job with the \fRbsub -q
+         \fIqueue_name\fR\fR command, and the specified queue is
+         configured to forward jobs to the NQS system, LSF routes
+         your job to one of the NQS destination queues. The job
+         runs on an NQS batch server host, which is not a member
+         of the LSF cluster. Although the job runs on an NQS
+         system outside the LSF cluster, it is still managed by
+         LSF in almost the same way as jobs that run inside the
+         cluster. Your batch jobs might be transparently sent to
+         an NQS system to run. You can use any supported user
+         interface, including LSF commands and NQS commands (see
+         the lsnqs command) to submit, monitor, signal, and
+         delete your batch jobs that are running in an NQS
+         system.
+.sp 2
+\fBADMINISTRATORS\fR
+.br
+         A list of queue administrators. The users whose names
+         are specified here are allowed to operate on the jobs in
+         the queue and on the queue itself.
+.sp 2
+\fBPRE_EXEC\fR
+.br
+         The job-based pre-execution command for the queue. The
+         \fBPRE_EXEC\fR command runs on the execution host before
+         the job that is associated with the queue is dispatched
+         to the execution host (or to the first host selected for
+         a parallel batch job).
+.sp 2
+\fBPOST_EXEC \fR
+.br
+         The job-based post-execution command for the queue. The
+         \fBPOST_EXEC\fR command runs on the execution host after
+         the job finishes.
+.sp 2
+\fBHOST_PRE_EXEC \fR
+.br
+         The host-based pre-execution command for the queue. The
+         \fBHOST_PRE_EXEC\fR command runs on all execution hosts
+         before the job that is associated with the queue is
+         dispatched to the execution hosts. If a job-based
+         pre-execution \fBPRE_EXEC\fR command is defined at the
+         queue-level, application-level, or job-level, the
+         \fBHOST_PRE_EXEC\fR command runs before \fBPRE_EXEC\fR
+         command of any level. The host-based pre-execution
+         command cannot be run on Windows systems.
+.sp 2
+\fBHOST_POST_EXEC \fR
+.br
+         The host-based post-execution command for the queue. The
+         \fBHOST_POST_EXEC\fR command runs on all execution hosts
+         after the job finishes. If a job-based post-execution
+         \fBPOST_EXEC\fR command is defined at the queue-level,
+         application-level, or job-level, the
+         \fBHOST_POST_EXEC\fR command runs after \fBPOST_EXEC\fR
+         command of any level. The host-based post-execution
+         command cannot be run on Windows systems.
+.sp 2
+\fBLOCAL_MAX_PREEXEC_RETRY_ACTION\fR
+.br
+         The action to take on a job when the number of times to
+         attempt its pre-execution command on the local cluster
+         (\fBLOCAL_MAX_PREEXEC_RETRY\fR value) is reached.
+.sp 2
+\fBREQUEUE_EXIT_VALUES \fR
+.br
+         Jobs that exit with these values are automatically
+         requeued.
+.sp 2
+\fBRES_REQ\fR
+.br
+         Resource requirements of the queue. Only the hosts that
+         satisfy these resource requirements can be used by the
+         queue.
+.sp 2
+\fBRESRSV_LIMIT\fR
+.br
+         Resource requirement limits of the queue. Queue-level
+         \fBRES_REQ\fR rusage values (set in the lsb.queues file)
+         must be in the range set by \fRRESRSV_LIMIT\fR, or the
+         queue-level \fBRES_REQ\fR value is ignored. Merged
+         \fBRES_REQ\fR rusage values from the job and application
+         levels must be in the range that is shown by the
+         \fRRESRSV_LIMIT\fR, or the job is rejected.
+.sp 2
+\fBMaximum slot reservation time \fR
+.br
+         The maximum time in seconds a slot is reserved for a
+         pending job in the queue. For more information, see the
+         \fBSLOT_RESERVE=MAX_RESERVE_TIME[n]\fR parameter in the
+         lsb.queues file.
+.sp 2
+\fBRESUME_COND\fR
+.br
+         The conditions that must be satisfied to resume a
+         suspended job on a host.
+.sp 2
+\fBSTOP_COND \fR
+.br
+         The conditions that determine whether a job that is
+         running on a host needs to be suspended.
+.sp 2
+\fBJOB_STARTER\fR
+.br
+         An executable file that runs immediately before the
+         batch job, taking the batch job file as an input
+         argument. All jobs that are submitted to the queue are
+         run through the job starter, which is used to create a
+         specific execution environment before the jobs
+         themselves are processed.
+.sp 2
+\fBSEND_JOBS_TO\fR
+.br
+         LSF multicluster capability. List of remote queue names
+         to which the queue forwards jobs.
+.sp 2
+\fBRECEIVE_JOBS_FROM\fR
+.br
+         LSF multicluster capability. List of remote cluster
+         names from which the queue receives jobs.
+.sp 2
+\fBPREEMPTION\fR
+.br
+         \fBPREEMPTIVE\fR
+.br
+                  The queue is preemptive. Jobs in this queue can
+                  preempt running jobs from lower-priority
+                  queues, even if the lower-priority queues are
+                  not specified as preemptive.
+.sp 2
+         \fBPREEMPTABLE\fR
+.br
+                  The queue is preemptable. Running jobs in this
+                  queue can be preempted by jobs in
+                  higher-priority queues, even if the
+                  higher-priority queues are not specified as
+                  preemptive.
+.sp 2
+\fBRC_ACCOUNT\fR
+.br
+         The account name (tag) that is assigned to hosts
+         borrowed through LSF resource connector, so that they
+         cannot be used by other user groups, users, or jobs.
+.sp 2
+\fBRC_HOSTS\fR
+.br
+         The list of Boolean resources that represent the host
+         resources that LSF resource connector can borrow from a
+         resource provider.
+.sp 2
+\fBRERUNNABLE\fR
+.br
+         If the \fRRERUNNABLE\fR field displays \fRyes\fR, jobs
+         in the queue are rerunnable. Jobs in the queue are
+         automatically restarted or rerun if the execution host
+         becomes unavailable. However, a job in the queue is not
+         restarted if you remove the rerunnable option from the
+         job.
+.sp 2
+\fBCHECKPOINT\fR
+.br
+         If the \fRCHKPNTDIR\fR field is displayed, jobs in the
+         queue are checkpointable. Jobs use the default
+         checkpoint directory and period unless you specify other
+         values. A job in the queue is not checkpointed if you
+         remove the checkpoint option from the job.
+.sp 2
+         \fBCHKPNTDIR\fR
+.br
+                  Specifies the checkpoint directory by using an
+                  absolute or relative path name.
+.sp 2
+         \fBCHKPNTPERIOD\fR
+.br
+                  Specifies the checkpoint period in seconds.
+.sp 2
+                  Although the output of the bqueues command
+                  reports the checkpoint period in seconds, the
+                  checkpoint period is defined in minutes. The
+                  checkpoint period is defined with the \fRbsub
+                  -k "\fIcheckpoint_dir \fR[]"\fR option, or in
+                  the lsb.queues file.
+.sp 2
+\fBJOB CONTROLS \fR
+.br
+         The configured actions for job control. See the
+         \fBJOB_CONTROLS\fR parameter in the lsb.queues file.
+.sp 2
+         The configured actions are displayed in the format
+         [\fIaction_type\fR, \fIcommand\fR] where
+         \fIaction_type\fR is either \fRSUSPEND\fR, \fRRESUME\fR,
+         or \fRTERMINATE\fR.
+.sp 2
+\fBADMIN ACTION COMMENT\fR
+.br
+         If the LSF administrator specified an administrator
+         comment with the -C option of a queue control commands
+         (qclose, qopen, qact, qinact, or qhist), the comment
+         text is displayed.
+.sp 2
+\fBSLOT_SHARE\fR
+.br
+         Share of job slots for queue-based fairshare. Represents
+         the percentage of running jobs (job slots) in use from
+         the queue. The \fRSLOT_SHARE\fR value must be greater
+         than zero.
+.sp 2
+         The sum of \fRSLOT_SHARE\fR for all queues in the pool
+         does not need to be 100%. It can be more or less,
+         depending on your needs.
+.sp 2
+\fBSLOT_POOL\fR
+.br
+         Name of the pool of job slots the queue belongs to for
+         queue-based fairshare. A queue can belong to only one
+         pool. All queues in the pool must share hosts.
+.sp 2
+\fBMAX_SLOTS_IN_POOL\fR
+.br
+         Maximum number of job slots available in the slot pool
+         the queue belongs to for queue-based fairshare. Defined
+         in the first queue of the slot pool.
+.sp 2
+\fBUSE_PRIORITY_IN_POOL\fR
+.br
+         Queue-based fairshare only. After job scheduling occurs
+         for each queue, this parameter enables LSF to dispatch
+         jobs to any remaining slots in the pool in first-come
+         first-served order across queues.
+.sp 2
+\fBNO_PREEMPT_INTERVAL\fR
+.br
+         The uninterrupted running time (minutes) that must pass
+         before preemption is permitted. Configured in the
+         lsb.queues file.
+.sp 2
+\fBMAX_TOTAL_TIME_PREEMPT\fR
+.br
+         The maximum total preemption time (minutes) above which
+         preemption is not permitted. Configured in the
+         lsb.queues file.
+.sp 2
+\fBSHARE_INFO_FOR\fR
+.br
+         User shares and dynamic priority information based on
+         the scheduling policy in place for the queue.
+.sp 2
+         \fBUSER/GROUP\fR
+.br
+                  Name of users or user groups who have access to
+                  the queue.
+.sp 2
+         \fBSHARES \fR
+.br
+                  Number of shares of resources that are assigned
+                  to each user or user group in this queue, as
+                  configured in the file lsb.queues. The shares
+                  affect dynamic user priority for when fairshare
+                  scheduling is configured at the queue level.
+.sp 2
+         \fBPRIORITY \fR
+.br
+                  Dynamic user priority for the user or user
+                  group. Larger values represent higher
+                  priorities. Jobs belonging to the user or user
+                  group with the highest priority are considered
+                  first for dispatch.
+.sp 2
+                  In general, users or user groups with the
+                  following properties have higher
+                  \fRPRIORITY\fR:
+.sp 2
+                  *  Larger \fRSHARES\fR
+.sp 2
+                  *  Fewer \fRSTARTED\fR and \fRRESERVED\fR jobs
+.sp 2
+                  *  Lower \fRCPU_TIME\fR and \fRRUN_TIME\fR
+.sp 2
+         \fBSTARTED \fR
+.br
+                  Number of job slots that are used by running or
+                  suspended jobs that are owned by users or user
+                  groups in the queue.
+.sp 2
+         \fBRESERVED \fR
+.br
+                  Number of job slots that are reserved by the
+                  jobs that are owned by users or user groups in
+                  the queue.
+.sp 2
+         \fBCPU_TIME \fR
+.br
+                  Cumulative CPU time that is used by jobs that
+                  are run from the queue. Measured in seconds, to
+                  one decimal place.
+.sp 2
+                  LSF calculates the cumulative CPU time by using
+                  the actual (not normalized) CPU time. LSF uses
+                  a decay factor such that 1 hour of recently
+                  used CPU time decays to 0.1 hours after an
+                  interval of time that is specified by the
+                  \fBHIST_HOURS\fR parameter in the lsb.params
+                  file. The default for the \fBHIST_HOURS\fR
+                  parameter is 5 hours.
+.sp 2
+         \fBRUN_TIME \fR
+.br
+                  Wall-clock run time plus historical run time of
+                  jobs of users or user groups that are run in
+                  the queue. Measured in seconds.
+.sp 2
+                  LSF calculates the historical run time by using
+                  the actual run time of finished jobs. LSF uses
+                  a decay factor such that 1 hour of recently
+                  used run time decays to 0.1 hours after an
+                  interval of time that is specified by the
+                  \fBHIST_HOURS\fR parameter in the lsb.params
+                  file. The default for the \fBHIST_HOURS\fR
+                  parameter is 5 hours. Wall-clock run time is
+                  the run time of running jobs.
+.sp 2
+         \fBADJUST \fR
+.br
+                  Dynamic priority calculation adjustment that is
+                  made by the user-defined fairshare
+                  plug-in(libfairshareadjust.*).
+.sp 2
+                  The fairshare adjustment is enabled and
+                  weighted by the parameter
+                  \fBFAIRSHARE_ADJUSTMENT_FACTOR\fR in the
+                  lsb.params file.
+.sp 2
+         \fBRUN_TIME_FACTOR\fR
+.br
+                  The weighting parameter for run_time within the
+                  dynamic priority calculation. If not defined
+                  for the queue, the cluster-wide value that is
+                  defined in the lsb.params file is used.
+.sp 2
+         \fBCPU_TIME_FACTOR\fR
+.br
+                  The dynamic priority calculation weighting
+                  parameter for CPU time. If not defined for the
+                  queue, the cluster-wide value that is defined
+                  in the lsb.params file is used.
+.sp 2
+         \fBENABLE_HIST_RUN_TIME\fR
+.br
+                  Enables the use of historic run time (run time
+                  for completed jobs) in the dynamic priority
+                  calculation. If not defined for the queue, the
+                  cluster-wide value that is defined in the
+                  lsb.params file is used.
+.sp 2
+         \fBRUN_TIME_DECAY\fR
+.br
+                  Enables the decay of run time in the dynamic
+                  priority calculation. The decay rate is set by
+                  the parameter \fBHIST_HOURS\fR (set for the
+                  queue in the lsb.queues file or set for the
+                  cluster in the lsb.params file). If not defined
+                  for the queue, the cluster-wide value that is
+                  defined in the lsb.params file is used.
+.sp 2
+         \fBHIST_HOURS\fR
+.br
+                  Decay parameter for CPU time, run time, and
+                  historic run time. If not defined for the
+                  queue, the cluster-wide value that is defined
+                  in the lsb.params file is used.
+.sp 2
+         \fBFAIRSHARE_ADJUSTMENT_FACTOR\fR
+.br
+                  Enables and weights the dynamic priority
+                  calculation adjustment that is made by the
+                  user-defined fairshare
+                  plug-in(libfairshareadjust.*). If not defined
+                  for the queue, the cluster-wide value that is
+                  defined in the lsb.params file is used.
+.sp 2
+         \fBRUN_JOB_FACTOR\fR
+.br
+                  The dynamic priority calculation weighting
+                  parameter for the number of job slots that are
+                  reserved and in use by a user. If not defined
+                  for the queue, the cluster-wide value that is
+                  defined in the lsb.params file is used.
+.sp 2
+         \fBCOMMITTED_RUN_TIME_FACTOR\fR
+.br
+                  The dynamic priority calculation weighting
+                  parameter for committed run time. If not
+                  defined for the queue, the cluster-wide value
+                  that is defined in the lsb.params file is used.
+.sp 2
+         \fBJOB_SIZE_LIST\fR
+.br
+                  A list of job sizes (number of tasks) allowed
+                  on this queue, including the default job size
+                  that is assigned if the job submission does not
+                  request a job size. Configured in the
+                  lsb.queues file.
+.sp 2
+         \fBPEND_TIME_LIMIT\fR
+.br
+                  The pending time limit for a job in the queue.
+                  If a job remains pending for longer than this
+                  specified time limit, LSF sends a notification
+                  to IBM Spectrum LSF RTM. Configured in the
+                  lsb.queues file.
+.sp 2
+         \fBELIGIBLE_PEND_TIME_LIMIT\fR
+.br
+                  The eligible pending time limit for a job in
+                  the queue. If a job remains in an eligible
+                  pending state for longer than this specified
+                  time limit, LSF sends a notification to IBM
+                  Spectrum LSF RTM. Configured in the lsb.queues
+                  file.
+.sp 2
+         \fBRELAX_JOB_DISPATCH_ORDER\fR
+.br
+                  If the \fBRELAX_JOB_DISPATCH_ORDER\fR parameter
+                  is configured in the lsb.params or lsb.queues
+                  file, the allocation reuse duration, in
+                  minutes, is displayed.
+.sp 2
+         \fBNORM_FS\fR
+.br
+                  Normalized fairshare factors, if the factors
+                  are not zero.
+.SH Recursive Share Tree Output (-r)
+
+.sp 2
+In addition to the fields displayed for the -l option, the -r
+option displays the following fields:
+.sp 2
+\fBSCHEDULING POLICIES\fR
+.br
+         \fBFAIRSHARE\fR
+.br
+                  The bqueues -r command recursively displays the
+                  entire share information tree that is
+                  associated with the queue.
+.SH See also
+
+.sp 2
+bugroup, nice, getrlimit, lsb.queues, bsub, bjobs, bhosts,
+badmin, mbatchd

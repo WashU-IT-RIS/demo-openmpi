@@ -1,0 +1,112 @@
+.TH "lsb_readstream" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_readstream \- lsb_readstream 
+Reads a current version \fBeventRec\fP structure from the lsb_stream file.
+.PP
+\fBlsb_readstream\fP reads an eventrRec from the open streamFile.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB struct \fBeventRec\fP lsb_readstream(int *nline)\fP
+.PP
+.SH "Parameters:"
+\fI*nline\fP Line number in the stream file to be read.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBeventRec\fP
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+int:0 
+.br
+ The function was successful. 
+.PP
+int:-1 
+.br
+ The function failed.
+.PP
+.SH "Errors:" 
+.PP
+On failure, lsberrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+$LSB_CONFDIR/cluster_name/configdir/lsb.params
+.PP
+.SH "See also:"
+\fBlsb_closestream\fP 
+.PP
+\fBlsb_geteventrec\fP 
+.PP
+\fBlsb_openstream\fP 
+.PP
+\fBlsb_puteventrec\fP 
+.PP
+\fBlsb_readstreamline\fP 
+.PP
+\fBlsb_streamversion\fP 
+.PP
+\fBlsb_writestream\fP 
+.PP
+
+.ad l
+.nh
+.SH NAME
+eventRec \- event records.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char \fBversion\fP [MAX_VERSION_LEN]"
+.br
+.ti -1c
+.RI "int \fBtype\fP"
+.br
+.ti -1c
+.RI "time_t \fBeventTime\fP"
+.br
+.ti -1c
+.RI "union \fBeventLog\fP \fBeventLog\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+event records. 
+.SH "Field Documentation"
+.PP 
+.SS "char \fBeventRec::version\fP[MAX_VERSION_LEN]"
+.PP
+The mbatchd version number. 
+.PP
+.SS "int \fBeventRec::type\fP"
+.PP
+Event type in \fBevent_types\fP. 
+.PP
+.SS "time_t \fBeventRec::eventTime\fP"
+.PP
+The time the event occurred. 
+.PP
+.SS "union \fBeventLog\fP \fBeventRec::eventLog\fP"
+.PP
+The information for this type of event, contained in a structure corresponding to type. 
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

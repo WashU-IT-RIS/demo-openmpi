@@ -1,0 +1,56 @@
+.TH "lsb_removereservation" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_removereservation \- lsb_removereservation 
+Removes a reservation.
+.PP
+Use \fBlsb_removereservation\fP to remove a reservation. mbatchd removes the reservation with the specified reservation ID.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB int lsb_removereservation(char *rsvId)\fP
+.PP
+.SH "Parameters:"
+\fI*rsvId\fP Reservation ID of the reservation that you wish to remove.
+.PP
+.SH "Data Structures:" 
+.PP
+none
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+int:0 
+.br
+ The reservation was removed successfully. 
+.PP
+int:-1 
+.br
+ The reservation removal failed.
+.PP
+.SH "Errors:" 
+.PP
+On failure, lsberrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+brsvdel
+.PP
+.SH "Files:" 
+.PP
+none
+.PP
+.SH "See also:"
+\fBlsb_addreservation\fP 
+.PP
+\fBlsb_modreservation\fP 
+.PP
+\fBlsb_reservationinfo\fP 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

@@ -1,0 +1,70 @@
+.ds ]W %
+.ds ]L
+.hy 0
+.nh
+.na
+.TH egosetsudoers 8 "Mar 2014   EGO 3.4.0"
+.br
+
+.SH NAME
+\fBegosetsudoers\fR - Creates a default /etc/ego.sudoers file to determine accounts with root privileges 
+on the UNIX host within a EGO cluster.
+
+.SH Synopsis
+.BR
+.PP
+ egosetsudoers.sh  egosetsudoers.sh -f | -p | -h 
+.SH Description
+.BR
+.PP
+
+.PP
+Creates a default /etc/ego.sudoers file in a UNIX host. The /etc/ego.sudoers 
+file specifies accounts that are granted root privileges within a EGO 
+cluster. This file is owned by root and has the permissions set at 600.The default file 
+is automatically configured to grant root privileges to the egoadmin account.
+
+.PP
+note:  
+
+.PP
+The cluster administrator UNIX user account is described during installation as "egoadmin" 
+(default setting). If you indicated a different account for cluster administrator during the 
+installation process, substitute it when you see references in the documentation to "egoadmin". 
+Note that this is different from the cluster administrator account that you use when you log into 
+the IBM Spectrum management console.
+
+.PP
+This command runs setuid for the egosh command and changes the owner of 
+egosh to root.
+
+.PP
+This is an administrative command. You must be logged on as root to issue this 
+command.
+
+.PP
+You should grant root privileges to egoadmin so that egoadmin can start a local 
+host in the cluster and shut down or restart any hosts in the cluster from the local 
+host. For egoadmin or root to start the cluster, or start any hosts specified by name, 
+you need to be able to run rsh across all hosts in the cluster without having to enter 
+a password. See your operating system documentation for information about 
+configuring rsh.
+
+.SS -f
+.BR
+.PP
+
+.PP
+Use for hosts that belong to just one cluster and when the /etc/ego.sudoers file 
+already exists. Changes the cluster, preserves the existing user list, removes all other 
+contents in the file, and saves a backup copy of the old file.
+
+.SS -p
+.BR
+.PP
+
+.PP
+Use for hosts that belong to multiple clusters and the /etc/ego.sudoers file already 
+exists. Adds a new cluster to the path, preserves the existing user list, removes all 
+other contents in the file, and saves a backup copy of the old file.
+

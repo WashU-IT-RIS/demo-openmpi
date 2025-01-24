@@ -1,0 +1,834 @@
+.TH "lsb_writependingreasons" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_writependingreasons \- lsb_writependingreasons 
+Writes a current version \fBeventRec\fP structure into the lsb_pendingreasons file.
+.PP
+\fBlsb_writependingreasons\fP writes an eventrRec to the open pendingreasonsFile. This API function is inside liblsbstream.so.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB int lsb_writependingreasons(struct eventRec *logPtr)\fP
+.PP
+.SH "Parameters:"
+\fI*logPtr\fP Pointer to the \fBeventRec\fP structure. 
+.br
+ see \fBlsb_geteventrec\fP for details on the \fBeventRec\fP structure.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBeventRec\fP 
+.br
+\fBeventLog\fP 
+.br
+\fBeventEOSLog\fP 
+.br
+\fBjobPendingReasonsLog\fP
+.PP
+.SH "Define Statements:" 
+.PP
+
+.PP
+.SH "Returns:"
+int:0 
+.br
+ The function was successful. 
+.PP
+int:-1 
+.br
+ The function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lsberrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+$LSB_CONFDIR/cluster_name/configdir/lsb.params
+.PP
+.SH "See also:"
+\fBlsb_closependingreasons\fP 
+.PP
+\fBlsb_geteventrec\fP 
+.PP
+\fBlsb_openpendingreasons\fP 
+.PP
+\fBlsb_puteventrec\fP 
+.PP
+\fBlsb_readstreamline\fP 
+.PP
+\fBlsb_readpendingreasons\fP 
+.PP
+
+.ad l
+.nh
+.SH NAME
+eventRec \- event records.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char \fBversion\fP [MAX_VERSION_LEN]"
+.br
+.ti -1c
+.RI "int \fBtype\fP"
+.br
+.ti -1c
+.RI "time_t \fBeventTime\fP"
+.br
+.ti -1c
+.RI "union \fBeventLog\fP \fBeventLog\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+event records. 
+.SH "Field Documentation"
+.PP 
+.SS "char \fBeventRec::version\fP[MAX_VERSION_LEN]"
+.PP
+The mbatchd version number. 
+.PP
+.SS "int \fBeventRec::type\fP"
+.PP
+Event type in \fBevent_types\fP. 
+.PP
+.SS "time_t \fBeventRec::eventTime\fP"
+.PP
+The time the event occurred. 
+.PP
+.SS "union \fBeventLog\fP \fBeventRec::eventLog\fP"
+.PP
+The information for this type of event, contained in a structure corresponding to type. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+eventLog \- Log event types.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "struct \fBjobNewLog\fP \fBjobNewLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobStartLog\fP \fBjobStartLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobStatusLog\fP \fBjobStatusLog\fP"
+.br
+.ti -1c
+.RI "struct \fBsbdJobStatusLog\fP \fBsbdJobStatusLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobSwitchLog\fP \fBjobSwitchLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobSwitchLog2\fP \fBjobSwitchLog2\fP"
+.br
+.ti -1c
+.RI "struct \fBjobMoveLog\fP \fBjobMoveLog\fP"
+.br
+.ti -1c
+.RI "struct \fBqueueCtrlLog\fP \fBqueueCtrlLog\fP"
+.br
+.ti -1c
+.RI "struct \fBhostCtrlLog\fP \fBhostCtrlLog\fP"
+.br
+.ti -1c
+.RI "struct \fBmbdStartLog\fP \fBmbdStartLog\fP"
+.br
+.ti -1c
+.RI "struct \fBmbdDieLog\fP \fBmbdDieLog\fP"
+.br
+.ti -1c
+.RI "struct \fBunfulfillLog\fP \fBunfulfillLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobFinishLog\fP \fBjobFinishLog\fP"
+.br
+.ti -1c
+.RI "struct \fBloadIndexLog\fP \fBloadIndexLog\fP"
+.br
+.ti -1c
+.RI "struct \fBmigLog\fP \fBmigLog\fP"
+.br
+.ti -1c
+.RI "struct \fBcalendarLog\fP \fBcalendarLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobForwardLog\fP \fBjobForwardLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobAcceptLog\fP \fBjobAcceptLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobAcceptAckLog\fP \fBjobAcceptAckLog\fP"
+.br
+.ti -1c
+.RI "struct \fBstatusAckLog\fP \fBstatusAckLog\fP"
+.br
+.ti -1c
+.RI "struct \fBsignalLog\fP \fBsignalLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobExecuteLog\fP \fBjobExecuteLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobMsgLog\fP \fBjobMsgLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobMsgAckLog\fP \fBjobMsgAckLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobRequeueLog\fP \fBjobRequeueLog\fP"
+.br
+.ti -1c
+.RI "struct \fBchkpntLog\fP \fBchkpntLog\fP"
+.br
+.ti -1c
+.RI "struct \fBsigactLog\fP \fBsigactLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobOccupyReqLog\fP \fBjobOccupyReqLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobVacatedLog\fP \fBjobVacatedLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobStartAcceptLog\fP \fBjobStartAcceptLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobCleanLog\fP \fBjobCleanLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobExceptionLog\fP \fBjobExceptionLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjgrpNewLog\fP \fBjgrpNewLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjgrpCtrlLog\fP \fBjgrpCtrlLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobForceRequestLog\fP \fBjobForceRequestLog\fP"
+.br
+.ti -1c
+.RI "struct \fBlogSwitchLog\fP \fBlogSwitchLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobModLog\fP \fBjobModLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjgrpStatusLog\fP \fBjgrpStatusLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobAttrSetLog\fP \fBjobAttrSetLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobExternalMsgLog\fP \fBjobExternalMsgLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobChunkLog\fP \fBjobChunkLog\fP"
+.br
+.ti -1c
+.RI "struct \fBsbdUnreportedStatusLog\fP \fBsbdUnreportedStatusLog\fP"
+.br
+.ti -1c
+.RI "struct \fBrsvFinishLog\fP \fBrsvFinishLog\fP"
+.br
+.ti -1c
+.RI "struct \fBhgCtrlLog\fP \fBhgCtrlLog\fP"
+.br
+.ti -1c
+.RI "struct \fBcpuProfileLog\fP \fBcpuProfileLog\fP"
+.br
+.ti -1c
+.RI "struct \fBdataLoggingLog\fP \fBdataLoggingLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobRunRusageLog\fP \fBjobRunRusageLog\fP"
+.br
+.ti -1c
+.RI "struct \fBeventEOSLog\fP \fBeventEOSLog\fP"
+.br
+.ti -1c
+.RI "struct \fBslaLog\fP \fBslaLog\fP"
+.br
+.ti -1c
+.RI "struct \fBperfmonLog\fP \fBperfmonLog\fP"
+.br
+.ti -1c
+.RI "struct \fBtaskFinishLog\fP \fBtaskFinishLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobResizeNotifyStartLog\fP \fBjobResizeNotifyStartLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobResizeNotifyAcceptLog\fP \fBjobResizeNotifyAcceptLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobResizeNotifyDoneLog\fP \fBjobResizeNotifyDoneLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobResizeReleaseLog\fP \fBjobResizeReleaseLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobResizeCancelLog\fP \fBjobResizeCancelLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobResizeLog\fP \fBjobResizeLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobFinish2Log\fP \fBjobFinish2Log\fP"
+.br
+.ti -1c
+.RI "struct \fBjobStartLimitLog\fP \fBjobStartLimitLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobStatus2Log\fP \fBjobStatus2Log\fP"
+.br
+.ti -1c
+.RI "struct \fBjobPendingReasonsLog\fP \fBjobPendingReasonsLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobProvisionStartLog\fP \fBjobProvisionStartLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobFanoutInfoLog\fP \fBjobFanoutInfoLog\fP"
+.br
+.ti -1c
+.RI "struct \fBhostPowerStatusLog\fP \fBhostPowerStatusLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobProvHostLog\fP \fBjobProvHostLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobMigTimeoutLog\fP \fBjobMigTimeoutLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobDataStageLog\fP \fBjobDataStageLog\fP"
+.br
+.ti -1c
+.RI "\fBattrCreateLog_T\fP \fBattrCreateLog\fP"
+.br
+.ti -1c
+.RI "\fBattrDeleteLog_T\fP \fBattrDeleteLog\fP"
+.br
+.ti -1c
+.RI "\fBattrInfoLog_T\fP \fBattrInfoLog\fP"
+.br
+.ti -1c
+.RI "struct \fBhclosureLockIdLog\fP \fBhclosureLockIdLog\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Log event types. 
+.SH "Field Documentation"
+.PP 
+.SS "struct \fBjobNewLog\fP \fBeventLog::jobNewLog\fP"
+.PP
+Job new event. 
+.PP
+.SS "struct \fBjobStartLog\fP \fBeventLog::jobStartLog\fP"
+.PP
+Job start event. 
+.PP
+.SS "struct \fBjobStatusLog\fP \fBeventLog::jobStatusLog\fP"
+.PP
+Job status event. 
+.PP
+.SS "struct \fBsbdJobStatusLog\fP \fBeventLog::sbdJobStatusLog\fP"
+.PP
+sbatchd job status event 
+.PP
+.SS "struct \fBjobSwitchLog\fP \fBeventLog::jobSwitchLog\fP"
+.PP
+Job switch event. 
+.PP
+.SS "struct \fBjobSwitchLog2\fP \fBeventLog::jobSwitchLog2\fP"
+.PP
+Job array switch event. 
+.PP
+.SS "struct \fBjobMoveLog\fP \fBeventLog::jobMoveLog\fP"
+.PP
+Job move event. 
+.PP
+.SS "struct \fBqueueCtrlLog\fP \fBeventLog::queueCtrlLog\fP"
+.PP
+Queue control event. 
+.PP
+.SS "struct \fBhostCtrlLog\fP \fBeventLog::hostCtrlLog\fP"
+.PP
+Host control event. 
+.PP
+.SS "struct \fBmbdStartLog\fP \fBeventLog::mbdStartLog\fP"
+.PP
+mbatchd start event 
+.PP
+.SS "struct \fBmbdDieLog\fP \fBeventLog::mbdDieLog\fP"
+.PP
+mbatchd die event 
+.PP
+.SS "struct \fBunfulfillLog\fP \fBeventLog::unfulfillLog\fP"
+.PP
+Unfulfill event. 
+.PP
+.SS "struct \fBjobFinishLog\fP \fBeventLog::jobFinishLog\fP"
+.PP
+Job finish event. 
+.PP
+.SS "struct \fBloadIndexLog\fP \fBeventLog::loadIndexLog\fP"
+.PP
+Load index event. 
+.PP
+.SS "struct \fBmigLog\fP \fBeventLog::migLog\fP"
+.PP
+Migration initiated event. 
+.PP
+.SS "struct \fBcalendarLog\fP \fBeventLog::calendarLog\fP"
+.PP
+Calendar event. 
+.PP
+.SS "struct \fBjobForwardLog\fP \fBeventLog::jobForwardLog\fP"
+.PP
+Job forward event. 
+.PP
+.SS "struct \fBjobAcceptLog\fP \fBeventLog::jobAcceptLog\fP"
+.PP
+Job accept event. 
+.PP
+.SS "struct \fBjobAcceptAckLog\fP \fBeventLog::jobAcceptAckLog\fP"
+.PP
+Job accept ack event. 
+.PP
+.SS "struct \fBstatusAckLog\fP \fBeventLog::statusAckLog\fP"
+.PP
+Job accepted from another cluster event. 
+.PP
+.SS "struct \fBsignalLog\fP \fBeventLog::signalLog\fP"
+.PP
+Job signal event. 
+.PP
+.SS "struct \fBjobExecuteLog\fP \fBeventLog::jobExecuteLog\fP"
+.PP
+Job execution event. 
+.PP
+.SS "struct \fBjobMsgLog\fP \fBeventLog::jobMsgLog\fP"
+.PP
+Job message event. 
+.PP
+.SS "struct \fBjobMsgAckLog\fP \fBeventLog::jobMsgAckLog\fP"
+.PP
+Job message ackknowledge event. 
+.PP
+.SS "struct \fBjobRequeueLog\fP \fBeventLog::jobRequeueLog\fP"
+.PP
+Job requeue event. 
+.PP
+.SS "struct \fBchkpntLog\fP \fBeventLog::chkpntLog\fP"
+.PP
+Checkpoint event. 
+.PP
+.SS "struct \fBsigactLog\fP \fBeventLog::sigactLog\fP"
+.PP
+Signal with action event. 
+.PP
+.SS "struct \fBjobOccupyReqLog\fP \fBeventLog::jobOccupyReqLog\fP"
+.PP
+Job occupy request event. 
+.PP
+.SS "struct \fBjobVacatedLog\fP \fBeventLog::jobVacatedLog\fP"
+.PP
+Job vacate event. 
+.PP
+.SS "struct \fBjobStartAcceptLog\fP \fBeventLog::jobStartAcceptLog\fP"
+.PP
+Job start accept event. 
+.PP
+.SS "struct \fBjobCleanLog\fP \fBeventLog::jobCleanLog\fP"
+.PP
+Job clean event. 
+.PP
+.SS "struct \fBjobExceptionLog\fP \fBeventLog::jobExceptionLog\fP"
+.PP
+Job exception event. 
+.PP
+.SS "struct \fBjgrpNewLog\fP \fBeventLog::jgrpNewLog\fP"
+.PP
+Job group new event. 
+.PP
+.SS "struct \fBjgrpCtrlLog\fP \fBeventLog::jgrpCtrlLog\fP"
+.PP
+Job group Ctrl event. 
+.PP
+.SS "struct \fBjobForceRequestLog\fP \fBeventLog::jobForceRequestLog\fP"
+.PP
+Job Force Request event. 
+.PP
+.SS "struct \fBlogSwitchLog\fP \fBeventLog::logSwitchLog\fP"
+.PP
+Event switch event. 
+.PP
+.SS "struct \fBjobModLog\fP \fBeventLog::jobModLog\fP"
+.PP
+Job modify event. 
+.PP
+.SS "struct \fBjgrpStatusLog\fP \fBeventLog::jgrpStatusLog\fP"
+.PP
+Job group stratus event. 
+.PP
+.SS "struct \fBjobAttrSetLog\fP \fBeventLog::jobAttrSetLog\fP"
+.PP
+Job attribute setting event. 
+.PP
+.SS "struct \fBjobExternalMsgLog\fP \fBeventLog::jobExternalMsgLog\fP"
+.PP
+Job external message event. 
+.PP
+.SS "struct \fBjobChunkLog\fP \fBeventLog::jobChunkLog\fP"
+.PP
+Job chunk event. 
+.PP
+.SS "struct \fBsbdUnreportedStatusLog\fP \fBeventLog::sbdUnreportedStatusLog\fP"
+.PP
+sbatchd unreported status event 
+.PP
+.SS "struct \fBrsvFinishLog\fP \fBeventLog::rsvFinishLog\fP"
+.PP
+Reservation finish event. 
+.PP
+.SS "struct \fBhgCtrlLog\fP \fBeventLog::hgCtrlLog\fP"
+.PP
+Host group control Log. 
+.PP
+.SS "struct \fBcpuProfileLog\fP \fBeventLog::cpuProfileLog\fP"
+.PP
+cpu profile event 
+.PP
+.SS "struct \fBdataLoggingLog\fP \fBeventLog::dataLoggingLog\fP"
+.PP
+Data logging event. 
+.PP
+.SS "struct \fBjobRunRusageLog\fP \fBeventLog::jobRunRusageLog\fP"
+.PP
+Job run rusage event. 
+.PP
+.SS "struct \fBeventEOSLog\fP \fBeventLog::eventEOSLog\fP"
+.PP
+Event EOS event. 
+.PP
+.SS "struct \fBslaLog\fP \fBeventLog::slaLog\fP"
+.PP
+SLA event. 
+.PP
+.SS "struct \fBperfmonLog\fP \fBeventLog::perfmonLog\fP"
+.PP
+Performance event. 
+.PP
+.SS "struct \fBtaskFinishLog\fP \fBeventLog::taskFinishLog\fP"
+.PP
+Task finish event. 
+.PP
+.SS "struct \fBjobResizeNotifyStartLog\fP \fBeventLog::jobResizeNotifyStartLog\fP"
+.PP
+Job resize notify start event. 
+.PP
+.SS "struct \fBjobResizeNotifyAcceptLog\fP \fBeventLog::jobResizeNotifyAcceptLog\fP"
+.PP
+Job resize notify accept event. 
+.PP
+.SS "struct \fBjobResizeNotifyDoneLog\fP \fBeventLog::jobResizeNotifyDoneLog\fP"
+.PP
+Job resize notify done event. 
+.PP
+.SS "struct \fBjobResizeReleaseLog\fP \fBeventLog::jobResizeReleaseLog\fP"
+.PP
+Job resize request event. 
+.PP
+Job resize release event 
+.SS "struct \fBjobResizeCancelLog\fP \fBeventLog::jobResizeCancelLog\fP"
+.PP
+Job resize cancel event. 
+.PP
+.SS "struct \fBjobResizeLog\fP \fBeventLog::jobResizeLog\fP"
+.PP
+Job resize event. 
+.PP
+.SS "struct \fBjobFinish2Log\fP \fBeventLog::jobFinish2Log\fP"
+.PP
+JOB_FINISH2 stream event. 
+.PP
+.SS "struct \fBjobStartLimitLog\fP \fBeventLog::jobStartLimitLog\fP"
+.PP
+JOB_STATRTLIMIT stream event. 
+.PP
+.SS "struct \fBjobStatus2Log\fP \fBeventLog::jobStatus2Log\fP"
+.PP
+JOB_STATUS2 status event. 
+.PP
+.SS "struct \fBjobPendingReasonsLog\fP \fBeventLog::jobPendingReasonsLog\fP"
+.PP
+JOB_PENDINGREASONS event. 
+.PP
+.SS "struct \fBjobProvisionStartLog\fP \fBeventLog::jobProvisionStartLog\fP"
+.PP
+Job provisioning start event. 
+.PP
+.SS "struct \fBjobFanoutInfoLog\fP \fBeventLog::jobFanoutInfoLog\fP"
+.PP
+< Job provisioning end event 
+.PP
+Job fan-out Information event 
+.SS "struct \fBhostPowerStatusLog\fP \fBeventLog::hostPowerStatusLog\fP"
+.PP
+host power status event 
+.PP
+.SS "struct \fBjobProvHostLog\fP \fBeventLog::jobProvHostLog\fP"
+.PP
+job prov host info event 
+.PP
+.SS "struct \fBjobMigTimeoutLog\fP \fBeventLog::jobMigTimeoutLog\fP"
+.PP
+Job migration timeout event. 
+.PP
+.SS "struct \fBjobDataStageLog\fP \fBeventLog::jobDataStageLog\fP"
+.PP
+Job Data Allocation event. 
+.PP
+.SS "\fBattrCreateLog_T\fP \fBeventLog::attrCreateLog\fP"
+.PP
+Attribute creation log. 
+.PP
+.SS "\fBattrDeleteLog_T\fP \fBeventLog::attrDeleteLog\fP"
+.PP
+Attribute deletion log. 
+.PP
+.SS "\fBattrInfoLog_T\fP \fBeventLog::attrInfoLog\fP"
+.PP
+Attribute information log. 
+.PP
+.SS "struct \fBhclosureLockIdLog\fP \fBeventLog::hclosureLockIdLog\fP"
+.PP
+Host closure lock ID operation event. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+eventEOSLog \- End of stream event.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBeos\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+End of stream event. 
+
+The stream is moved to lsb.stream.0 and a new lsb.stream is opened. Readers of lsb.stream when encounter the event EVENT_END_OF_STREAM should close and reopen the lsb.stream file. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBeventEOSLog::eos\fP"
+.PP
+Event end of stream. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jobPendingReasonsLog \- Logged into lsb.pendingreasons periodically.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char \fBuserName\fP [MAX_LSB_NAME_LEN]"
+.br
+.ti -1c
+.RI "char \fBqueue\fP [MAX_LSB_NAME_LEN]"
+.br
+.ti -1c
+.RI "char * \fBprojectName\fP"
+.br
+.ti -1c
+.RI "char * \fBlicenseProject\fP"
+.br
+.ti -1c
+.RI "char * \fBresReq\fP"
+.br
+.ti -1c
+.RI "char * \fBapp\fP"
+.br
+.ti -1c
+.RI "int \fBnum_processors\fP"
+.br
+.ti -1c
+.RI "int \fBmainReason\fP"
+.br
+.ti -1c
+.RI "int \fBsubReason\fP"
+.br
+.ti -1c
+.RI "int \fBdetailedReason\fP"
+.br
+.ti -1c
+.RI "char * \fBdetail\fP"
+.br
+.ti -1c
+.RI "int \fBnumJobs\fP"
+.br
+.ti -1c
+.RI "int \fBpendingTime\fP"
+.br
+.ti -1c
+.RI "int \fBsumDetailReasonHosts\fP"
+.br
+.ti -1c
+.RI "int \fBaveragePendingTime\fP"
+.br
+.ti -1c
+.RI "time_t \fBexpectedLogTime\fP"
+.br
+.ti -1c
+.RI "int \fBsampleInterval\fP"
+.br
+.ti -1c
+.RI "char * \fBclusterName\fP"
+.br
+.ti -1c
+.RI "char * \fBpendingTimeRanking\fP"
+.br
+.ti -1c
+.RI "char * \fBhostType\fP"
+.br
+.ti -1c
+.RI "char * \fBcombinedResReq\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Logged into lsb.pendingreasons periodically. 
+.SH "Field Documentation"
+.PP 
+.SS "char \fBjobPendingReasonsLog::userName\fP[MAX_LSB_NAME_LEN]"
+.PP
+User name, default key. 
+.PP
+.SS "char \fBjobPendingReasonsLog::queue\fP[MAX_LSB_NAME_LEN]"
+.PP
+Queue name, default key. 
+.PP
+.SS "char* \fBjobPendingReasonsLog::projectName\fP"
+.PP
+Project name, if defined in key. 
+.PP
+.SS "char* \fBjobPendingReasonsLog::licenseProject\fP"
+.PP
+License Project name, if defined in key. 
+.PP
+.SS "char* \fBjobPendingReasonsLog::resReq\fP"
+.PP
+ResReq of the job, if defined in key. 
+.PP
+.SS "char* \fBjobPendingReasonsLog::app\fP"
+.PP
+Application name, if defined in key. 
+.PP
+.SS "int \fBjobPendingReasonsLog::num_processors\fP"
+.PP
+Number of asked slots. 
+.PP
+.SS "int \fBjobPendingReasonsLog::mainReason\fP"
+.PP
+Main pending reason. 
+.PP
+.SS "int \fBjobPendingReasonsLog::subReason\fP"
+.PP
+Subreason to main reason. 
+.PP
+.SS "int \fBjobPendingReasonsLog::detailedReason\fP"
+.PP
+detail reason 
+.PP
+.SS "char* \fBjobPendingReasonsLog::detail\fP"
+.PP
+Addition resource info for the detailed reason. 
+.PP
+
+.SS "int \fBjobPendingReasonsLog::numJobs\fP"
+.PP
+Number of pending jobs. 
+.PP
+.SS "int \fBjobPendingReasonsLog::pendingTime\fP"
+.PP
+Sum of pending time delta. 
+.PP
+.SS "int \fBjobPendingReasonsLog::sumDetailReasonHosts\fP"
+.PP
+Sum of hosts for jobs with this reason. 
+.PP
+.SS "int \fBjobPendingReasonsLog::averagePendingTime\fP"
+.PP
+Average pending time of the jobs. 
+.PP
+.SS "time_t \fBjobPendingReasonsLog::expectedLogTime\fP"
+.PP
+Expected log time. 
+.PP
+.SS "int \fBjobPendingReasonsLog::sampleInterval\fP"
+.PP
+Time since last log. 
+.PP
+.SS "char* \fBjobPendingReasonsLog::clusterName\fP"
+.PP
+Name of the cluster. 
+.PP
+.SS "char* \fBjobPendingReasonsLog::pendingTimeRanking\fP"
+.PP
+Ranking of the pending time, as configured. 
+.PP
+.SS "char* \fBjobPendingReasonsLog::hostType\fP"
+.PP
+Host type of the detailed reason. 
+.PP
+.SS "char* \fBjobPendingReasonsLog::combinedResReq\fP"
+.PP
+Combined resource requirement of job, if defined in key. 
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

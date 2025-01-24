@@ -1,0 +1,120 @@
+.TH "lsb_mig" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_mig \- lsb_mig 
+Migrates a job from one host to another.
+.PP
+\fBlsb_mig\fP migrates a job from one host to another. Any program using this API must be setuid to root if LSF_AUTH is not defined in the lsf.conf file.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB int lsb_mig(struct submig *mig, int *badHostIdx)\fP
+.PP
+.SH "Parameters:"
+\fI*mig\fP The job to be migrated. 
+.br
+\fI*badHostIdx\fP If the call fails, (**askedHosts)[*badHostIdx] is not a host known to the LSF system.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBsubmig\fP
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+int:0 
+.br
+ The function was successful. 
+.PP
+int:-1 
+.br
+ Function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lsberrno is set to indicate the error and badHostIdx indicates which askedHost is not acceptable.
+.PP
+.SH "Equivalent line command:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+${LSF_ENVDIR:-/etc}/lsf.conf
+.PP
+.SH "See also:"
+\fBlsb_submit\fP 
+.PP
+
+.ad l
+.nh
+.SH NAME
+submig \- \fBsubmit\fP migration request.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "LS_LONG_INT \fBjobId\fP"
+.br
+.ti -1c
+.RI "int \fBoptions\fP"
+.br
+.ti -1c
+.RI "int \fBnumAskedHosts\fP"
+.br
+.ti -1c
+.RI "char ** \fBaskedHosts\fP"
+.br
+.ti -1c
+.RI "int \fBacAction\fP"
+.br
+.ti -1c
+.RI "char * \fBacActionStr\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+\fBsubmit\fP migration request. 
+.SH "Field Documentation"
+.PP 
+.SS "LS_LONG_INT \fBsubmig::jobId\fP"
+.PP
+The job ID of the job to be migrated. 
+.PP
+
+.SS "int \fBsubmig::options\fP"
+.PP
+Please refer to \fBlsb_submit_options\fP. 
+.PP
+
+.SS "int \fBsubmig::numAskedHosts\fP"
+.PP
+The number of hosts supplied as candidates for migration. 
+.PP
+
+.SS "char** \fBsubmig::askedHosts\fP"
+.PP
+An array of pointers to the names of candidate hosts for migration. 
+.PP
+
+.SS "int \fBsubmig::acAction\fP"
+.PP
+Dynamic Cluster provision action. 
+.PP
+.SS "char* \fBsubmig::acActionStr\fP"
+.PP
+Dynamic Cluster action. 
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

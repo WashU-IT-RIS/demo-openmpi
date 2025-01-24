@@ -1,0 +1,776 @@
+
+.ad l
+
+.TH brsvmod 8 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBbrsvmod\fR
+.ce 0
+
+.sp 2
+Modifies an advance reservation.
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBbrsvmod\fR [\fB-o\fR | \fB-on\fR] [\fB-d
+"\fRdescription\fB"\fR] [\fB-u\fR "user_name ..." | "user_group
+ ..." ] [\fB-nosusp\fR | \fB-nonsuspn\fR] [\fB-q "\fRqueue_name
+ ...\fB"\fR | \fB-qn\fR] [\fB-E\fR pre_ar_script | \fB-En\fR]
+[\fB-Et\fR pre_ar_time | \fB-Etn\fR] [\fB-Ep\fR post_ar_script |
+\fB-Epn\fR] [\fB-Ept\fR post_ar_time | \fB-Eptn\fR] [[\fB-b\fR
+begin_time | [\fB+\fR|\fB-\fR]minutes] [\fB-e\fR end_time |
+[\fB+\fR|\fB-\fR]minutes]] | [\fB-t\fR time_window]
+reservation_ID
+.sp 2
+\fBbrsvmod addhost\fR {\fB-n\fR number_unit \fB-R
+"\fRres_req\fB"\fR [\fB-m "\fRhost_name ... | host_group
+ ...\fB"\fR]} | {[\fB-n\fR number_unit] \fB-m "\fRhost_name ... |
+host_group ...\fB"\fR} \fB-f\fR reservation_ID
+.sp 2
+\fBbrsvmod\fR \fBadduser\fR \fB-u\fR "user_name ..." |
+"user_group ..." reservation_ID
+.sp 2
+\fBbrsvmod disable\fR {\fB-td
+"\fRbegin_date\fB-\fRend_date\fB"\fR | \fB-tn\fR} [\fB-f\fR]
+reservation_ID
+.sp 2
+\fBbrsvmod rmhost\fR {\fB-n\fR number_unit [\fB-m "\fRhost_name
+ ... | host_group ...\fB"\fR]} | {[\fB-n\fR number_unit] \fB-m
+"\fRhost_name ... | host_group ...\fB"\fR} reservation_ID
+.sp 2
+\fBbrsvmod\fR \fBrmuser\fR \fB-u\fR "user_name ..." | "user_group
+ ..."] reservation_ID
+.sp 2
+\fBbrsvmod\fR {\fB-h\fR | \fB-V\fR}
+.SH Description
+
+.sp 2
+\fBImportant: \fR
+.sp 2
+By default, this command can be used only by LSF administrators
+or root.
+.sp 2
+Replaces advance reservation option values previously created,
+extends or reduces the reservation time window, or adds or
+removes reserved hosts of the advance reservation that is
+specified by \fIreservation_ID\fR. For a recurring reservation,
+can disable specified occurrences of the reservation.
+.sp 2
+Administrators and root can modify any reservations. Users who
+are listed in the \fRResourceReservation\fR section of the
+lsb.resources file can modify only reservations that they created
+themselves.
+.sp 2
+The original value for user, user group, or time window, can be
+overridden with a new value by specifying the option as in
+brsvadd. Change a reservation from closed (the default) to open
+with the -o option, or from \fRopen\fR to \fRclosed\fR with the
+-on option. You can also use the subcommands adduser and rmuser
+to add or remove users and user groups that are assigned to the
+advance reservation.
+.sp 2
+Options -n, -m, and -R must be used with the subcommands addhost
+or rmhost. These options allow adding or removing from the
+original values.
+.sp 2
+The -td and -tn options are only allowed in the disable
+subcommand.
+.sp 2
+All subcommands are mutually exclusive. The time window options
+-b, -e, and -t are not valid in any of the subcommands.
+.sp 2
+You cannot modify the start time of an active reservation.
+.sp 2
+The brsvmod command does not support the
+\fR\fIreservation_ID\fR@\fIcluster_name\fR\fR notation for
+advance reservations on remote clusters, or the
+\fR\fIuser_name\fR@\fIcluster_name\fR\fR notation for
+reservations with remote users.
+.sp 2
+The \fInumber_unit\fR requirement of the -n option must be
+satisfied. The -m or -R option provides a candidate list for
+processing, and triggers an error only if no valid hosts are in
+the list. For instance, the following option requires three
+slots:
+.sp 2
+-n 3 -m "host1 host2"
+.sp 2
+LSF tries to find as many slots as possible from \fRhost1\fR. If
+three slots are not available on \fRhost1\fR, LSF tries to find
+the rest from \fRhost2\fR. Hosts with no slots available are
+removed from the list when the request is handled.
+.sp 2
+If you do not use the brsvsub command to create a dynamically
+scheduled reservation, you can manually add a time window to a
+reservation placeholder that was created with the brsvadd -p
+option. Use the \fRbrsvmod -b \fIbegin_time\fR -e \fIend_time\fR
+\fIreservation_ID\fR\fR command.
+.sp 2
+To add resources to a placeholder, use the brsvmod addhost
+command.
+.sp 2
+*  By default, a placeholder reservation is a one-time
+   reservation. You can’t change a placeholder to a recurring
+   reservation.
+.sp 2
+*  A placeholder reservation with a time window is cleaned when
+   the reservation expires.
+.SH Subcommands
+
+.sp 2
+\fBaddhost {-n \fInumber_unit\fB -R "\fIres_req\fB" [-m
+"\fIhost_name\fB ... | \fIhost_group\fB ..."]} | {[-n
+\fInumber_unit\fB] -m "\fIhost_name\fB ... | \fIhost_group\fB
+ ..."} [-f] \fIreservation_ID\fB\fR
+.br
+         Adds hosts and slots on hosts into the original
+         reservation allocation. The hosts can be local to the
+         cluster or hosts that are leased from remote clusters.
+.sp 2
+         Adding a host without the -n option reserves all
+         available hosts or slots on the host that are not
+         already reserved by other reservations. The -n cannot be
+         used alone. You can specify the number of slots to be
+         added from the host list that is specified with the -n
+         option. The -m option can be used alone if no host group
+         is specified in the list. If you specify the -R option,
+         you must also specify the -n option.
+.sp 2
+         The specified number of units (slots or hosts) must be
+         less than or equal to the available number of slots for
+         the hosts or hosts themselves.
+.sp 2
+         \fBRestriction: \fROnly hosts can be added (with the -m
+         option) to a system reservation. Slots cannot be added
+         (with the -n option) to a system reservation.
+.sp 2
+\fBadduser -u "\fIuser_name\fB ... | \fIuser_group\fB ..."
+\fIreservation_ID\fB\fR
+.br
+         Adds users and user groups to an advance reservation.
+.sp 2
+\fBdisable {-td "\fIbegin_date\fB\fR-\fB\fIend_date\fB" | -tn}
+[-f] \fIreservation_ID\fB\fR
+.br
+         Disables specified periods, or instances, of a recurring
+         advance reservation. The \fIstart_date\fR and
+         \fIend_date\fR represent the start and end date of a
+         period in which the reservation is disabled. These
+         periods must take one of the following forms:
+.sp 2
+         *  \fRyyyy:mm:dd-yyyy:mm:dd\fR
+.sp 2
+         *  \fRmm:dd-mm:dd\fR - the current year is assumed
+.sp 2
+         *  \fRdd-dd\fR - the current month and year are assumed
+.sp 2
+         The start date must be the same as or earlier than the
+         end date.
+.sp 2
+         If a reservation is disabled for a specified day, then
+         it does not become active on that day, and remains
+         inactive during the reservation time window.
+         Non-recurring reservations are able to use slots of the
+         recurring reservation during the time window. The -tn
+         option is a shortcut that disables a reservation on the
+         starting day of the next instance of the reservation
+         time window; that is, the instance that starts nearest
+         in the future. If the reservation is disabled for this
+         day, the modification request is rejected.
+.sp 2
+         For example, for a weekly reservation with time window
+         from Wednesday 9 AM to Friday 10 PM, if the current day
+         is Monday, then running the command with the -tn option
+         disables the reservation from Wednesday to Friday of the
+         current week. However, if the current day is Thursday,
+         then the reservation is disabled from Wednesday to
+         Friday of the following week. If it is Wednesday, then
+         whether to disable in the current week or following week
+         depends on whether the start time of the instance is
+         passed. If not, then the reservation is disabled in the
+         current week, otherwise the following week\(aqs reservation
+         is disabled.
+.sp 2
+         Running the disable command with the -tn option twice on
+         Monday tries to disable twice in the current week. The
+         second run has no effect, but is rejected because the
+         specified reservation instance is already disabled.
+.sp 2
+         After a reservation is disabled for a period, it cannot
+         be enabled; that is, the disabled periods remain fixed.
+         Before a reservation is disabled, you are prompted to
+         confirm whether to continue disabling the reservation.
+         Use the -f option to silently force the command to run
+         without prompting for confirmation; for example, to
+         allow for automating disabling reservations from a
+         script.
+.sp 2
+\fBrmhost {-n \fInumber_unit\fB [-m "\fIhost_name\fB ... |
+\fIhost_group\fB ..."]} | {[-n \fInumber_unit\fB]-m
+"\fIhost_name\fB ... | \fIhost_group\fB ..."}\fI
+reservation_ID\fB\fR
+.br
+         Removes hosts or slots on hosts from the original
+         reservation allocation. You must specify either the -n
+         or -m option. Use the -n option to specify the number of
+         hosts to be released or slots to be released from
+         reserved hosts. Removing a host without the -n option
+         releases all hosts or reserved free slots on the host.
+         The specified number of units (slots or hosts) must be
+         less than or equal to the available number of hosts or
+         slots for the hosts.
+.sp 2
+         You can remove only a whole host from a system
+         reservation.
+.sp 2
+         How many slots or hosts can be removed depends on the
+         number of slots that are free while the reservation is
+         active. The rmhost subcommand cannot remove more slots
+         than are free on the host on both one-time and recurring
+         reservations that are active. If you want to remove more
+         slots from the reservation, you must wait until running
+         jobs finish or the reservation is inactive.
+.sp 2
+\fBrmuser -u "\fIuser_name\fB ... | \fIuser_group\fB ..."
+\fIreservation_ID\fB\fR
+.br
+         Removes users and user groups from an advance
+         reservation.
+.SH Options
+
+.sp 2
+\fB-nosusp | -nosuspn\fR
+.br
+         If specified, LSF no longer suspends non-advance
+         reservation jobs that are running on the advance
+         reservation hosts when the first advance reservation job
+         starts. Non-advance reservation jobs continue to run,
+         and advance reservation jobs do not start until resource
+         are available. This ensures that resources are not
+         over-committed. If the -nosuspn option is specified, LSF
+         suspends non-advance reservation jobs that are running
+         on the advance reservation hosts when the first advance
+         reservation job starts.
+.sp 2
+         This flag is only valid with user advance reservations
+         if the advance reservation is inactive and not within
+         the pre-time period.
+.sp 2
+\fB-o\fR
+.br
+         Changes a closed advance reservation to open, or cancels
+         an open reservation.
+.sp 2
+         If the reservation is open, all jobs in the reservation
+         become normal jobs, not subject to termination when the
+         reservation window closes. The -on option closes the
+         reservation when it expires. The running jobs of an open
+         reservation are terminated when the reservation is
+         changed into closed. The termination times of running
+         jobs of a closed reservation are removed if the
+         reservation is changed to open. The termination time of
+         running jobs is set by the mbatchd daemon but checked by
+         the sbatchd daemon. Termination time is an absolute time
+         based on management host, so all hosts in the cluster
+         must be synchronized with the local time on the
+         management host. If the sbatchd daemon and the mbatchd
+         daemon are not synchronized, termination might not occur
+         at the correct time.
+.sp 2
+\fB-b \fIbegin_time\fB | [+ | -]\fIminutes\fB\fR
+.br
+         Replaces the begin time for a one-time reservation, or
+         gives an offset in minutes to the current begin time.
+.sp 2
+         \fBRestriction: \fRYou cannot modify the begin time of
+         an active reservation.
+.sp 2
+         The begin time is in the following form:
+.sp 2
+         [[[year:]month:]day:]hour:minute
+.sp 2
+         The begin time has the following ranges:
+.sp 2
+         \fB\fIyear\fB\fR
+.br
+                  Any year after 1900 (\fRYYYY\fR).
+.sp 2
+         \fB\fImonth\fB\fR
+.br
+                  1-12 (\fRMM\fR).
+.sp 2
+         \fB\fIday of the month\fB\fR
+.br
+                  1-31 (\fRdd\fR).
+.sp 2
+         \fB\fIhour\fB\fR
+.br
+                  0-23 (\fRhh\fR).
+.sp 2
+         \fB\fIminute\fB\fR
+.br
+                  0-59 (\fRmm\fR).
+.sp 2
+         Year, month, and day are optional. You must specify at
+         least \fR\fIhour\fR:\fIminute\fR\fR:
+.sp 2
+         *  Three fields are assumed to be
+            \fR\fIday\fR:\fIhour\fR:\fIminute\fR\fR
+.sp 2
+         *  Four fields are assumed to be
+            \fR\fImonth\fR:\fIday\fR:\fIhour\fR:\fIminute\fR\fR
+.sp 2
+         *  Five fields are
+            \fIyear\fR\fR:\fR\fImonth\fR\fR:\fR\fIday\fR\fR:\fR\fIhour\fR\fR:\fR\fIminute\fR
+.sp 2
+         If you do not specify a day, LSF assumes the current
+         day. If you do not specify a month, LSF assumes the
+         current month. If you specify a year, you must specify a
+         month.
+.sp 2
+         The offset is in minutes, an integer with a prefix + or
+         -. For example, \fR-b+5\fR moves the begin time 5
+         minutes later, and \fR-b-5\fR moves the begin time 5
+         minutes earlier.
+.sp 2
+         The modified time value for the begin time (-b option)
+         must use the same syntax as the time value for the end
+         time (-e option). The begin time must be earlier than
+         the time value for the end time. The begin time cannot
+         be earlier than the current time.
+.sp 2
+\fB-d "\fIdescription\fB"\fR
+.br
+         Replaces or sets a description for the reservation. The
+         description must be provided as a double quoted text
+         string. The maximum length is 512 characters.
+.sp 2
+\fB-E \fIpre_ar_script\fB | -En\fR
+.br
+         Replaces the absolute file path to the script that is
+         run to create the advance reservation. The -En option
+         removes the script so that no scripts are run. If the
+         creator is not root or an LSF administrator, the
+         creator\(aqs user group should be an an LSF or queue
+         administrator so that this pre-script can take action on
+         other users\(aq jobs. \fRLSB_START_EBROKERD=Y\fR must be
+         specified in the lsf.conf file for LSF to run the
+         script.
+.sp 2
+         \fBNote: \fRThe file path can contain up to 4094
+         characters for UNIX and Linux, or up to 255 characters
+         for Windows, including the directory and file name.
+.sp 2
+         The following environment variables are available for
+         use in the script:
+.sp 2
+         \fBAR_NAME\fR
+.br
+                  Name of the advance reservation.
+.sp 2
+         \fBAR_QUEUE_LIST\fR
+.br
+                  List of queues whose jobs can be run in this
+                  advance reservation.
+.sp 2
+         \fBAR_HOST_LIST\fR
+.br
+                  List of hosts in this advance reservation. The
+                  host is reported even if the advance
+                  reservation does not use all slots on the host.
+.sp 2
+         \fBAR_START_TIME\fR
+.br
+                  Start time of this advance reservation as a UTC
+                  time stamp.
+.sp 2
+         \fBAR_END_TIME\fR
+.br
+                  End time of this advance reservation as a UTC
+                  time stamp.
+.sp 2
+         \fBAR_JOBIDS\fR
+.br
+                  The job IDs of jobs that are currently running
+                  on this advance reservation\(aqs hosts.
+.sp 2
+         \fBAR_CREATOR\fR
+.br
+                  Name of the user that created this advance
+                  reservation.
+.sp 2
+         \fBAR_OWNERS\fR
+.br
+                  Name of the owners of this advance reservation.
+.sp 2
+         The script is run at the start time of the advance
+         reservation unless a pre-time is set with the -Et
+         option, then the script is run at the start time minus
+         the specified pre-time. If the script is modified before
+         the script is to be run, the latest version of the
+         script is run at the start time of the script.
+.sp 2
+         When the AR_END_TIME is changed, the pending jobs should
+         not be dispatched if the specified runlimit exceeds the
+         end time of the AR.
+.sp 2
+         The script can use the bpost command to notify the job
+         owner that the job was killed by the script. The script
+         can also create its own logs and send notifications to
+         the creator and owner of the advance reservation. LSF
+         does not take any specific action based on the success
+         or failure of the script, and there is no timeout period
+         or action that is associated with this script.
+.sp 2
+         If the conditions of the advance reservation or the job
+         change while the script is running (for example, with
+         the brsvmod or bmod command), the scripts are not
+         notified and the environment variables do not change. It
+         is the responsibility of the script to handle these
+         changes. In addition, after the script is run, any kill
+         or requeue actions on the jobs cannot be undone if the
+         advance reservation or the job itself is changed with
+         the brsvmod or bmod command.
+.sp 2
+\fB-Ep \fIpost_ar_script\fB | -Epn\fR
+.br
+         Replaces the absolute file path to the script that is
+         run as the creator of the advance reservation when it
+         expires. The -En option removes the script so that no
+         scripts are run. If the creator is not root or an LSF
+         administrator, the creator\(aqs user group should be an an
+         LSF or queue administrator so that this post-script can
+         take action on other users\(aq jobs.
+         \fRLSB_START_EBROKERD=Y\fR must be specified in the
+         lsf.conf file for LSF to run the script.
+.sp 2
+         \fBNote: \fRThe file path can contain up to 4094
+         characters for UNIX and Linux, or up to 255 characters
+         for Windows, including the directory and file name.
+.sp 2
+         The following environment variables are available for
+         use in the script:
+.sp 2
+         \fBAR_NAME\fR
+.br
+                  Name of the advance reservation.
+.sp 2
+         \fBAR_QUEUE_LIST\fR
+.br
+                  List of queues whose jobs can be run in this
+                  advance reservation.
+.sp 2
+         \fBAR_HOST_LIST\fR
+.br
+                  List of hosts in this advance reservation. The
+                  host is reported even if the advance
+                  reservation does not use all slots on the host.
+.sp 2
+         \fBAR_START_TIME\fR
+.br
+                  Start time of this advance reservation as a UTC
+                  time stamp.
+.sp 2
+         \fBAR_END_TIME\fR
+.br
+                  End time of this advance reservation as a UTC
+                  time stamp.
+.sp 2
+         \fBAR_JOBIDS\fR
+.br
+                  The job IDs of jobs that are currently running
+                  on this advance reservation\(aqs hosts.
+.sp 2
+         \fBAR_CREATOR\fR
+.br
+                  Name of the user that created this advance
+                  reservation.
+.sp 2
+         \fBAR_OWNERS\fR
+.br
+                  Name of the owners of this advance reservation.
+.sp 2
+         The script is run at the expiry time of the advance
+         reservation unless a pre-time is set with the -Ept
+         option, then the script is run at the expiry time minus
+         the specified pre-time. If the script is modified before
+         the script is to be run, the latest version of the
+         script is run at the start time of the script.
+.sp 2
+         When the AR_END_TIME is changed, the pending jobs should
+         not be dispatched if the specified runlimit exceeds the
+         end time of the AR.
+.sp 2
+         The script can use the bpost command to notify the job
+         owner that the job was killed by the script. The script
+         can also create its own logs and send notifications to
+         the creator and owner of the advance reservation. LSF
+         does not take any specific action based on the success
+         or failure of the script, and there is no timeout period
+         or action that is associated with this script.
+.sp 2
+         If the conditions of the advance reservation or the job
+         change while the script is running (for example, with
+         the brsvmod or bmod command), the scripts are not
+         notified and the environment variables do not change. It
+         is the responsibility of the script to handle these
+         changes. In addition, after the script is run, any kill
+         or requeue actions on the jobs cannot be undone if the
+         advance reservation or the job itself is changed with
+         the brsvmod or bmod command.
+.sp 2
+\fB-Ept \fIpost_ar_time\fB | -Eptn\fR
+.br
+         Changes the amount of time, in minutes, before the
+         expiry of the advance reservation for LSF to run the
+         post-script (as specified by the -Ep option). The -Ept
+         option is ignored if the -Ep option is not enabled.
+.sp 2
+         If you specify the -Eptn option, the post-script is run
+         at the expiry time of the advance reservation
+.sp 2
+\fB-Et \fIpre_ar_script\fB | -Etn\fR
+.br
+         Changes the amount of time, in minutes, before the start
+         of the advance reservation for LSF to run the pre-script
+         (as specified by the -E option) and to stop dispatching
+         new jobs to the advance reservation hosts.
+.sp 2
+         If the -E option is not enabled, specifying the -Et
+         option means that LSF stops dispatching jobs to this
+         advance reservation\(aqs hosts at pre-time without running
+         a pre-script.
+.sp 2
+         If you specify the -Etn option, the pre-script is run at
+         the start time of the advance reservation
+.sp 2
+\fB-e \fIend_time\fB | [+ | -]\fIminutes\fB\fR
+.br
+         Replaces the end time for a one-time reservation, or
+         gives an offset in minutes to the current end time.
+.sp 2
+         By giving a positive offset to the end time, you extend
+         the duration of a reservation so that the jobs in the
+         reservation can run longer. Shrinking the reservation
+         with a negative value terminates running jobs earlier.
+.sp 2
+         The end time is in the following form:
+.sp 2
+         [[[year:]month:]day:]hour:minute
+.sp 2
+         The end time has the following ranges:
+.sp 2
+         \fB\fIyear\fB\fR
+.br
+                  Any year after 1900 (\fRYYYY\fR).
+.sp 2
+         \fB\fImonth\fB\fR
+.br
+                  1-12 (\fRMM\fR).
+.sp 2
+         \fB\fIday of the month\fB\fR
+.br
+                  1-31 (\fRdd\fR).
+.sp 2
+         \fB\fIhour\fB\fR
+.br
+                  0-23 (\fRhh\fR).
+.sp 2
+         \fB\fIminute\fB\fR
+.br
+                  0-59 (\fRmm\fR).
+.sp 2
+         Year, month, and day are optional. You must specify at
+         least \fR\fIhour\fR:\fIminute\fR\fR:
+.sp 2
+         *  Three fields are assumed to be
+            \fR\fIday\fR:\fIhour\fR:\fIminute\fR\fR
+.sp 2
+         *  Four fields are assumed to be
+            \fR\fImonth\fR:\fIday\fR:\fIhour\fR:\fIminute\fR\fR
+.sp 2
+         *  Five fields are
+            \fIyear\fR\fR:\fR\fImonth\fR\fR:\fR\fIday\fR\fR:\fR\fIhour\fR\fR:\fR\fIminute\fR
+.sp 2
+         If you do not specify a day, LSF assumes the current
+         day. If you do not specify a month, LSF assumes the
+         current month. If you specify a year, you must specify a
+         month.
+.sp 2
+         The time value for the end time (-e option) must use the
+         same syntax as the time value for the (-b option). The
+         end time must be later than the time value for the begin
+         time.
+.sp 2
+\fB-f\fR
+.br
+         Dynamically selects hosts based on the specified
+         resource requirements (-R/-m option).
+.sp 2
+         \fBNote: \fRIf \fIAR_AVAILABLE_STATUS\fR in lsb.params
+         is defined, then hosts with that status are preferred in
+         the AR creation.
+.sp 2
+
+.sp 2
+\fB-m "\fIhost_name\fB... | \fIhost_group\fB..."\fR
+.br
+         Changes the list of hosts for which job slots or number
+         of hosts that are specified with the -n option are
+         reserved. At job submission, LSF uses the hosts in the
+         specified order.
+.sp 2
+         If you also specify a resource requirement string with
+         the -R option, the -m option is not required.
+.sp 2
+         The hosts can be local to the cluster or hosts that are
+         leased from remote clusters.
+.sp 2
+\fB-n \fInumber_unit\fB\fR
+.br
+         Changes the number of either job slots or hosts to
+         reserve (based on the unit that is specified by the
+         \fRbrsvadd -unit slot | host\fR command. The
+         \fInumber_unit\fR variable must be less than or equal to
+         the actual number of slots for the hosts that are
+         selected by the -m or -R option for the reservation.
+.sp 2
+         If you also specify the reservation for system, use the
+         -n option with the -s option. The -n option is not
+         required.
+.sp 2
+\fB-q "\fIqueue_name\fB ..." | -qn\fR
+.br
+         Changes the queues whose jobs are allowed to run on the
+         advance reservation hosts even if the jobs\(aq run limits
+         are greater than the amount of time until the advance
+         reservation starts. The -qn option removes the list of
+         allowed queues.
+.sp 2
+\fB-R "\fIres_req\fB"\fR
+.br
+         Changes the host selection for the reservation according
+         to the specified resource requirements. Only hosts that
+         satisfy the resource requirement expression are
+         reserved. The -R option accepts any valid resource
+         requirement string, but only the \fRselect\fR and
+         \fRsame\fR strings take effect.
+.sp 2
+         If you also specify a host list with the -m option, the
+         -R option is not required.
+.sp 2
+         For more information about specifying resource
+         requirement strings, see Administering IBM Spectrum LSF.
+.sp 2
+\fB-t \fItime_window\fB\fR
+.br
+         Replaces the time window with a new one to shift a
+         recurring reservation. You cannot modify the start time
+         of a recurring reservation that has current active
+         instance.
+.sp 2
+         To specify a time window, specify two time values.
+         Separate the time values by a hyphen (\fR-\fR) with no
+         space in between:
+.sp 2
+         time_window = begin_time-end_time
+.br
+
+.sp 2
+         Times are specified in the following format:
+.sp 2
+         [day:]hour[:minute]
+.br
+
+.sp 2
+         where all fields are numbers with the following ranges:
+.sp 2
+         \fB\fIday of the week\fB\fR
+.br
+                  0-6 (0 is Sunday).
+.sp 2
+         \fB\fIhour\fB\fR
+.br
+                  0-23
+.sp 2
+         \fB\fIminute\fB\fR
+.br
+                  0-59
+.sp 2
+         Specify a time window:
+.sp 2
+         *  \fR\fIhour\fR-\fIhour\fR\fR
+.sp 2
+         *  \fR\fIhour\fR:\fIminute\fR-\fIhour\fR:\fIminute\fR\fR
+.sp 2
+         *  \fR\fIday\fR:\fIhour\fR:\fIminute\fR-\fIday\fR:\fIhour\fR:\fIminute\fR\fR
+.sp 2
+         The default value for minute is 0 (on the hour). The
+         default value for day is every day of the week.
+.sp 2
+         You must specify at least the hour. Day of the week and
+         minute are optional. Both the start time and end time
+         values must use the same syntax. If you do not specify a
+         minute, LSF assumes the first minute of the hour
+         (\fR:00\fR). If you do not specify a day, LSF assumes
+         every day of the week. If you do specify the day, you
+         must also specify the minute.
+.sp 2
+         LSF administrators can prevent running jobs from being
+         killed when the reservation expires by changing the
+         termination time of the job that uses the reservation
+         with the bmod -t command before the reservation window
+         closes.
+.sp 2
+         When the job starts running, the run limit of the
+         reservation is set to the minimum of the job run limit
+         (if specified), the queue run limit (if specified), or
+         the duration of the time window.
+.sp 2
+\fB-u "\fIuser_name\fB... | \fIuser_group\fB ..."\fR
+.br
+         Replaces the list of users or groups who are able to
+         submit jobs to a reservation. Replacing the list of
+         users or groups does not affect the currently running
+         jobs.
+.sp 2
+         Jobs that are submitted by the original users or groups
+         to the reservation still belong to the reservation and
+         scheduled as advance reservation jobs, but newly
+         submitted jobs from the users or groups that were
+         removed from the reservation cannot use the reservation
+         any longer.
+.sp 2
+         The \fR-u \fI"user_name\fR ... | \fIuser_group\fR
+         ..."\fR option does not support the \fR@cluster\fR
+         notation for advance reservations on remote clusters.
+.sp 2
+\fB-h\fR
+.br
+         Prints command usage and exits.
+.sp 2
+\fB-V\fR
+.br
+         Prints LSF release version and exits.
+.SH Examples
+
+.sp 2
+The following command adds a host to an existing reservation.
+.sp 2
+brsvmod addhost -m hostB user1#0
+.br
+Reservation user1#0 is modified
+.br
+
+.sp 2
+The following example disables the advance reservation between
+January 1 and January 6, 2008, inclusive.
+.sp 2
+brsvmod disable {-td "2008:01:01-2008:01:06"}
+.SH See also
+
+.sp 2
+brsvadd, brsvdel, brsvs, lsb.resources

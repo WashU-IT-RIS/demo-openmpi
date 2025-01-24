@@ -1,0 +1,292 @@
+.TH "freeDmParams" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+freeDmParams \- freeDmParams 
+Use this function to free a dynamically-allocated \fBdmParams\fP structure.
+.PP
+\fB#include <lsf/dm.def.h>
+.br
+ include <lsf/dm.api.h>\fP
+.PP
+\fB void freeDmParams(struct dmParams **ppDasParams)\fP
+.PP
+.SH "Parameters:"
+\fI**ppDasParams\fP The pointer pointed to is set to NULL after the call.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBstruct\fP \fBdmParams\fP
+.PP
+.SH "Returns:"
+void:This function returns no value. 
+.PP
+
+.ad l
+.nh
+.SH NAME
+dmParams \- dm_params() API data structure  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBadmins\fP"
+.br
+.ti -1c
+.RI "char * \fBhosts\fP"
+.br
+.ti -1c
+.RI "int \fBport\fP"
+.br
+.ti -1c
+.RI "char * \fBstagingArea\fP"
+.br
+.ti -1c
+.RI "int \fBcacheInputGracePeriod\fP"
+.br
+.ti -1c
+.RI "int \fBcacheOutputGracePeriod\fP"
+.br
+.ti -1c
+.RI "char * \fBfileTransferCmd\fP"
+.br
+.ti -1c
+.RI "char * \fBcachePermissions\fP"
+.br
+.ti -1c
+.RI "int \fBremoteDmdHeartbeatInterval\fP"
+.br
+.ti -1c
+.RI "int \fBremoteCacheRefreshInterval\fP"
+.br
+.ti -1c
+.RI "int \fBremoteCacheSize\fP"
+.br
+.ti -1c
+.RI "int \fBlocalNJobs\fP"
+.br
+.ti -1c
+.RI "int \fBlocalNFiles\fP"
+.br
+.ti -1c
+.RI "int \fBlocalNTags\fP"
+.br
+.ti -1c
+.RI "int \fBqueryNThreads\fP"
+.br
+.ti -1c
+.RI "int \fBinputFileProcessingNThreads\fP"
+.br
+.ti -1c
+.RI "int \fBoutputFileProcessingNThreads\fP"
+.br
+.ti -1c
+.RI "int \fBrecoveryNThreads\fP"
+.br
+.ti -1c
+.RI "int \fBrecvTimeout\fP"
+.br
+.ti -1c
+.RI "int \fBconnTimeout\fP"
+.br
+.ti -1c
+.RI "int \fBnRemoteDMs\fP"
+.br
+.ti -1c
+.RI "struct \fBremoteDMs\fP * \fBremoteDMList\fP"
+.br
+.ti -1c
+.RI "int \fBtimeDmd\fP"
+.br
+.ti -1c
+.RI "char * \fBlogDir\fP"
+.br
+.ti -1c
+.RI "char * \fBlogMask\fP"
+.br
+.ti -1c
+.RI "int \fBcacheAccessibleFiles\fP"
+.br
+.ti -1c
+.RI "int \fBcacheAccessControl\fP"
+.br
+.ti -1c
+.RI "int \fBpermissionMask\fP"
+.br
+.ti -1c
+.RI "int \fBpermissionCheckInterval\fP"
+.br
+.ti -1c
+.RI "char * \fBsshCmd\fP"
+.br
+.ti -1c
+.RI "char * \fBscpCmd\fP"
+.br
+.ti -1c
+.RI "int \fBlockFileCheckInterval\fP"
+.br
+.ti -1c
+.RI "int \fBcacheRefreshInterval\fP"
+.br
+.ti -1c
+.RI "int \fBdisableBsubEnh\fP"
+.br
+.ti -1c
+.RI "int \fBaccessibleFilesCheck\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+dm_params() API data structure 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fBdmParams::admins\fP"
+.PP
+DM admins. 
+.PP
+.SS "char* \fBdmParams::hosts\fP"
+.PP
+DM hosts. 
+.PP
+.SS "int \fBdmParams::port\fP"
+.PP
+DM listening port. 
+.PP
+.SS "char* \fBdmParams::stagingArea\fP"
+.PP
+staging area path 
+.PP
+.SS "int \fBdmParams::cacheInputGracePeriod\fP"
+.PP
+cache input grace period 
+.PP
+.SS "int \fBdmParams::cacheOutputGracePeriod\fP"
+.PP
+cache output grace period 
+.PP
+.SS "char* \fBdmParams::fileTransferCmd\fP"
+.PP
+file transfer command 
+.PP
+.SS "char* \fBdmParams::cachePermissions\fP"
+.PP
+cache permissions 
+.PP
+.SS "int \fBdmParams::remoteDmdHeartbeatInterval\fP"
+.PP
+remote dmd heartbeat interval 
+.PP
+.SS "int \fBdmParams::remoteCacheRefreshInterval\fP"
+.PP
+remote cache refresh interval 
+.PP
+.SS "int \fBdmParams::remoteCacheSize\fP"
+.PP
+remote cache size 
+.PP
+.SS "int \fBdmParams::localNJobs\fP"
+.PP
+local number of jobs 
+.PP
+.SS "int \fBdmParams::localNFiles\fP"
+.PP
+local number of files 
+.PP
+.SS "int \fBdmParams::localNTags\fP"
+.PP
+local number of tags 
+.PP
+.SS "int \fBdmParams::queryNThreads\fP"
+.PP
+number of query threads 
+.PP
+.SS "int \fBdmParams::inputFileProcessingNThreads\fP"
+.PP
+number of input file process threads 
+.PP
+.SS "int \fBdmParams::outputFileProcessingNThreads\fP"
+.PP
+number of output file process threads 
+.PP
+.SS "int \fBdmParams::recoveryNThreads\fP"
+.PP
+number of recovery threads 
+.PP
+.SS "int \fBdmParams::recvTimeout\fP"
+.PP
+receive timeout 
+.PP
+.SS "int \fBdmParams::connTimeout\fP"
+.PP
+connection timeout 
+.PP
+.SS "int \fBdmParams::nRemoteDMs\fP"
+.PP
+number of remote DMs 
+.PP
+.SS "struct \fBremoteDMs\fP* \fBdmParams::remoteDMList\fP"
+.PP
+info from RemoteDataManagers section 
+.PP
+.SS "int \fBdmParams::timeDmd\fP"
+.PP
+dmd timing 
+.PP
+.SS "char* \fBdmParams::logDir\fP"
+.PP
+log dir 
+.PP
+.SS "char* \fBdmParams::logMask\fP"
+.PP
+log mask 
+.PP
+.SS "int \fBdmParams::cacheAccessibleFiles\fP"
+.PP
+cache accessible files flag 
+.PP
+.SS "int \fBdmParams::cacheAccessControl\fP"
+.PP
+cache access control flag 
+.PP
+.SS "int \fBdmParams::permissionMask\fP"
+.PP
+permission mask 
+.PP
+.SS "int \fBdmParams::permissionCheckInterval\fP"
+.PP
+check interval for permissions 
+.PP
+.SS "char* \fBdmParams::sshCmd\fP"
+.PP
+ssh command 
+.PP
+.SS "char* \fBdmParams::scpCmd\fP"
+.PP
+scp command 
+.PP
+.SS "int \fBdmParams::lockFileCheckInterval\fP"
+.PP
+check interval for lock file 
+.PP
+.SS "int \fBdmParams::cacheRefreshInterval\fP"
+.PP
+cache refresh interval in minutes 
+.PP
+.SS "int \fBdmParams::disableBsubEnh\fP"
+.PP
+disable submission enhancement flag 
+.PP
+.SS "int \fBdmParams::accessibleFilesCheck\fP"
+.PP
+check accessible files and stage area on the same NFS point flag 
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

@@ -1,0 +1,66 @@
+.TH "ls_isconnected" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ls_isconnected \- ls_isconnected 
+Tests if the specified host is currently connected with the application.
+.PP
+\fBls_isconnected\fP tests if the specified host is currently connected with the application. A connection is established on the first successful return from an \fBls_connect\fP, \fBls_rtask\fP, \fBls_rtaske\fP, \fBls_rexecv\fP, or \fBls_rexecve\fP call.
+.PP
+Any program using these routines must call \fBls_initrex\fP first.
+.PP
+Any program using these routines must be setuid to root if LSF_AUTH is not defined in the lsf.conf file.
+.PP
+\fB#include <lsf/lsf.h> 
+.br
+ int ls_isconnected(char *hostName)\fP
+.PP
+.SH "Parameters:"
+\fI*hostname\fP The host that is tested for connection with an application.
+.PP
+.SH "Data Structures:" 
+.PP
+none
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+int:non-zero 
+.br
+ Function was successful. 
+.PP
+int:0 
+.br
+ Function failed.
+.PP
+.SH "Errors:" 
+.PP
+Systems that conform to the Single UNIX specification are not required to detect error conditions for this function.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+none
+.PP
+.SH "See also:"
+\fBls_connect\fP 
+.PP
+\fBls_findmyconnections\fP 
+.PP
+\fBls_rtask\fP 
+.PP
+\fBls_rtaske\fP 
+.PP
+\fBls_rexecv\fP 
+.PP
+\fBls_rexecve\fP 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

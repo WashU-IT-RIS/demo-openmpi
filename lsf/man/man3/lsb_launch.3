@@ -1,0 +1,145 @@
+.TH "lsb_launch" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_launch \- lsb_launch 
+Launch commands on remote hosts in parallel.
+.PP
+\fBlsb_launch\fP is a synchronous API call to allow source level integration with vendor MPI implementations. This API will launch the specified command (argv) on the remote nodes in parallel. 
+.br
+ LSF must be installed before integrating your MPI implementation with \fBlsb_launch\fP. The \fBlsb_launch\fP API requires the full set of liblsf.so, libbat.so (or liblsf.a, libbat.a).
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB int lsb_launch (char** where, char** argv, int userOptions, char** envp)\fP
+.PP
+.SH "Parameters:"
+\fI**where\fP [IN] A NULL-terminated list of hosts. A task will be launched for each slot.If this parameter is NULL then the environment variable LSB_MCPU_HOSTS will be used. 
+.br
+\fI**argv\fP [IN] The command to be executed 
+.br
+\fIuserOptions\fP [IN] Options to modify the behavior of \fBlsb_launch\fP Multiple option values can be specified. For example option values can be separated by OR (|): 
+.br
+ \fBlsb_launch\fP (where, argv, LSF_DJOB_REPLACE_ENV | LSF_DJOB_DISABLE_STDIN, envp); 
+.br
+\fI**envp\fP [IN] A NULL-terminated list of environment variables specifying the environment to set for each task.If envp is NULL, \fBlsb_launch\fP uses the same environment used to start the first task on the first execution host. If non-NULL, envp values are appended to the environment used for the first task.If the LSF_DJOB_REPLACE_ENV option is specified, envp entries will overwrite all existing environment values except those needed by LSF.
+.PP
+.SH "Data Structures:" 
+.PP
+none
+.PP
+.SH "Define Statements:" 
+.PP
+\fBdefs_lsb_launch\fP
+.PP
+.SH "Returns:"
+> 0 
+.br
+ Function was successful (the number of tasks launched). 
+.PP
+< 0 
+.br
+ Function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lsberrno is set to indicate the error.
+.PP
+.SH "Equivalent line command:" 
+.PP
+blaunch
+.PP
+.SH "Files:" 
+.PP
+none
+.PP
+.SH "See also:"
+none 
+.PP
+
+.ad l
+.nh
+.SH NAME
+defs_lsb_launch \- lsb_launch() Valid options are:  
+
+.PP
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBLSF_DJOB_DISABLE_STDIN\fP   0x01"
+.br
+.ti -1c
+.RI "#define \fBLSF_DJOB_REPLACE_ENV\fP   0x02"
+.br
+.ti -1c
+.RI "#define \fBLSF_DJOB_NOWAIT\fP   0x04"
+.br
+.ti -1c
+.RI "#define \fBLSF_DJOB_STDERR_WITH_HOSTNAME\fP   0x08"
+.br
+.ti -1c
+.RI "#define \fBLSF_DJOB_STDOUT_WITH_HOSTNAME\fP   0x10"
+.br
+.ti -1c
+.RI "#define \fBLSF_DJOB_USE_LOGIN_SHELL\fP   0x20"
+.br
+.ti -1c
+.RI "#define \fBLSF_DJOB_USE_BOURNE_SHELL\fP   0x40"
+.br
+.ti -1c
+.RI "#define \fBLSF_DJOB_STDERR\fP   0x80"
+.br
+.ti -1c
+.RI "#define \fBLSF_DJOB_POE\fP   0x100"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+lsb_launch() Valid options are: 
+.SH "Define Documentation"
+.PP 
+.SS "#define LSF_DJOB_DISABLE_STDIN   0x01"
+.PP
+Disable standard input and redirect input from the special device /dev/null. 
+.PP
+This is equivalent to blaunch -n. 
+.SS "#define LSF_DJOB_REPLACE_ENV   0x02"
+.PP
+Replace existing enviornment variable values with envp. 
+.PP
+
+.SS "#define LSF_DJOB_NOWAIT   0x04"
+.PP
+Non-blocking mode; the parallel job does not wait once all tasks start. 
+.PP
+This forces \fBlsb_launch\fP not to wait for its tasks to finish. 
+.SS "#define LSF_DJOB_STDERR_WITH_HOSTNAME   0x08"
+.PP
+Display standard error messages with a corresponding host name where the message was generated.Cannot be specified with LSF_DJOB_NOWAIT. 
+.PP
+
+.SS "#define LSF_DJOB_STDOUT_WITH_HOSTNAME   0x10"
+.PP
+Display standard output messages with a corresponding host name where the message was generated. 
+.PP
+Cannot be specified with LSF_DJOB_NOWAIT. 
+.SS "#define LSF_DJOB_USE_LOGIN_SHELL   0x20"
+.PP
+Use user's login shell to launch tasks. 
+.PP
+.SS "#define LSF_DJOB_USE_BOURNE_SHELL   0x40"
+.PP
+Use /bin/sh to launch tasks. 
+.PP
+.SS "#define LSF_DJOB_STDERR   0x80"
+.PP
+Separate stderr from stdout. 
+.PP
+.SS "#define LSF_DJOB_POE   0x100"
+.PP
+POE job. 
+.PP
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

@@ -1,0 +1,62 @@
+
+.ad l
+
+.TH lsfshutdown 8 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBlsfshutdown\fR
+.ce 0
+
+.sp 2
+Shuts down the LIM, RES, sbatchd, and mbatchd daemons on all
+hosts in the cluster.
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBlsfshutdown\fR [\fB-f\fR | \fB-pdsh\fR]
+.sp 2
+\fBlsfshutdown\fR [\fB-h\fR | \fB-V\fR]
+.SH Description
+
+.sp 2
+\fBImportant: \fR
+.sp 2
+This command can be used only by root, the primary cluster
+administrator, or users who are listed in the lsf.sudoers file.
+.sp 2
+Shuts down the sbatchd, RES, LIM, and mbatchd daemons, in that
+order, on all hosts.
+.sp 2
+By default, prompts for confirmation of the next operation if an
+error is encountered.
+.sp 2
+To be able to control all daemons in the cluster, the file
+/etc/lsf.sudoers must be set up properly.
+.SH Options
+
+.sp 2
+\fB-f \fR
+.br
+         Force mode. Continues to shut down daemons even if an
+         error is encountered.
+.sp 2
+\fB-pdsh\fR
+.br
+         Enable parallel remote command execution with the PDSH
+         tool. The PDSH tool is required on management hosts and
+         management candidates. The chunk size is 400 hosts.
+.sp 2
+\fB-h\fR
+.br
+         Prints command usage to stderr and exits.
+.sp 2
+\fB-V\fR
+.br
+         Prints LSF release version to stderr and exits.
+.SH See also
+
+.sp 2
+lsadmin, badmin, lsfrestart, lsfstartup, lsf.sudoerslsf.sudoers

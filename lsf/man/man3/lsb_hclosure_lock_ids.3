@@ -1,0 +1,142 @@
+.TH "lsb_hclosure_lock_ids" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_hclosure_lock_ids \- lsb_hclosure_lock_ids 
+Attaches a lock ID to hosts or removes a lock ID from hosts.
+.PP
+\fBlsb_hclosure_lock_ids\fP attaches a lock ID to hosts 
+.br
+ or removes a lock ID from hosts. This call is successfully invoked only by root or by the LSF administrator.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB int lsb_hclosure_lock_ids (struct \fBhclosureLockIDsReq\fP *req, struct \fBhclosureLockIDsReply\fP **replyPtr)\fP
+.PP
+.SH "Parameters:"
+\fI*req\fP Describes the request for the lock ID operation 
+.br
+\fI*replyPtr\fP Describes the results of the lock ID operation
+.PP
+.SH "Data Structures:" 
+.PP
+\fBhclosureLockIDsReq\fP \fBhclosureLockIDsReply\fP
+.PP
+.SH "Define Statements:" 
+.PP
+\fBhclosure_lockIds_option\fP
+.PP
+.SH "Returns:"
+int:0 
+.br
+ The function was successful. 
+.PP
+int:-1 
+.br
+ Function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, replyPtr->failHosts indicates which hosts are not acceptable and replyPtr->failReasons (an array of lsberrno error numbers) is set to indicate errors over failed hosts.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+${LSF_ENVDIR:-/etc}/lsf.conf
+.PP
+.SH "See also:"
+\fBlsb_hostcontrol\fP 
+.PP
+
+.ad l
+.nh
+.SH NAME
+hclosureLockIDsReply \- Host Closure Lock IDs Reply.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBnumsucc\fP"
+.br
+.ti -1c
+.RI "char ** \fBsuccHosts\fP"
+.br
+.ti -1c
+.RI "int \fBnumfail\fP"
+.br
+.ti -1c
+.RI "char ** \fBfailHosts\fP"
+.br
+.ti -1c
+.RI "int * \fBfailReasons\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Host Closure Lock IDs Reply. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBhclosureLockIDsReply::numsucc\fP"
+.PP
+The number of successfully-operated hosts. 
+.PP
+
+.SS "char** \fBhclosureLockIDsReply::succHosts\fP"
+.PP
+Array of names of the successfully operated hosts. 
+.PP
+.SS "int \fBhclosureLockIDsReply::numfail\fP"
+.PP
+The number of hosts that failed. 
+.PP
+
+.SS "char** \fBhclosureLockIDsReply::failHosts\fP"
+.PP
+Array of names of the failed hosts. 
+.PP
+.SS "int* \fBhclosureLockIDsReply::failReasons\fP"
+.PP
+For each host that failed, its failure reason is recorded in this array. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+hclosure_lockIds_option \- options for \fBlsb_hclosure_lock_id_control\fP call  
+
+.PP
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBHCLOSURE_LOCK_ID_ATTACH\fP   1"
+.br
+.ti -1c
+.RI "#define \fBHCLOSURE_LOCK_ID_REMOVE\fP   2"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+options for \fBlsb_hclosure_lock_id_control\fP call 
+.SH "Define Documentation"
+.PP 
+.SS "#define HCLOSURE_LOCK_ID_ATTACH   1"
+.PP
+Attaches a lock ID to hosts. 
+.PP
+.SS "#define HCLOSURE_LOCK_ID_REMOVE   2"
+.PP
+Removes a lock ID from hosts. 
+.PP
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

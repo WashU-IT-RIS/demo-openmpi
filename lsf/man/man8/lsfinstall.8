@@ -1,0 +1,210 @@
+
+.ad l
+
+.TH lsfinstall 8 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBlsfinstall\fR
+.ce 0
+
+.sp 2
+The LSF installation and configuration script.
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBlsfinstall -f install.config\fR
+.sp 2
+\fBlsfinstall -s -f server.config\fR
+.sp 2
+\fBlsfinstall -h\fR
+.SH Description
+
+.sp 2
+The lsfinstall script runs the LSF installation scripts and
+configuration utilities to install a new LSF cluster or upgrade
+LSF from a previous release.
+.sp 2
+To install a fully operational LSF cluster that all users can
+access, run the lsfinstall script as root.
+.sp 2
+You can run the lsfinstall script as a non-root user, with
+limitations.
+.SH Required install.config variables
+
+.sp 2
+The following parameters are required for installation with the
+install.config configuration file:
+.sp 2
+*  \fRLSF_TOP="/\fIpath\fR"\fR
+.sp 2
+*  \fRLSF_ADMINS="\fIuser_name\fR [\fIuser_name\fR ...]"\fR
+.sp 2
+*  \fRLSF_CLUSTER_NAME="\fIcluster_name\fR"\fR
+.SH Required server.config variables
+
+.sp 2
+If you use the server.config file to install dynamic server
+hosts, the following parameters are required:
+.sp 2
+*  \fRLSF_TOP="/\fIpath\fR"\fR
+.sp 2
+*  \fRLSF_TARDIR="/\fIpath\fR"\fR
+.sp 2
+*  \fRLSF_SERVER_HOSTS="\fIhost_name\fR [\fIhost_name\fR ...]"\fR
+.SH Variables that require an absolute path
+
+.sp 2
+*  \fRLSF_TOP="\fI/path\fR"\fR
+.sp 2
+*  \fRLSF_TARDIR="/\fIpath\fR"\fR
+.sp 2
+*  \fRLSF_ENTITLEMENT_FILE="\fI/path\fR"\fR
+.SH What lsfinstall does
+
+.sp 2
+Before it installs and configures LSF, the lsfinstall script
+checks the installation prerequisites, and outputs the results to
+the lsfprechk.rpt file. The lsfinstall script writes any
+unrecoverable errors to the Install.err file and exits. You must
+correct these errors before you continue to install and configure
+LSF.
+.sp 2
+During installation, the lsfinstall script logs installation
+progress in the Install.log file and calls other utilities to
+decompress, extract, and copy product files. After it copies
+files to the installation location, the script configures the
+cluster.
+.SH (Optional) run hostsetup
+
+.sp 2
+After installation, you can run the hostsetup command to set up
+LSF hosts and automatic LSF startup. After you set up the server
+hosts, start your cluster and test the installation by running
+some basic commands.
+.sp 2
+Run the hostsetup command on each LSF server host.
+.sp 2
+For complete usage of the hostsetup command, run the hostsetup -h
+command to see the command usage and options help.
+.sp 2
+\fBNote: \fRRunning the hostsetup command is only required if you
+plan to run IBM POE jobs by using IBM Parallel Environment (IBM
+PE).
+.sp 2
+\fBImportant: \fRBefore you run the hostsetup command, make sure
+that the hosts you want to set up are in the
+lsf.cluster.\fIcluster_name\fR file.
+.sp 2
+For example, run the following commands to use the LSF cluster
+that is installed in the /usr/share/lsf directory and configure
+LSF daemons to start automatically at system startup time:
+.sp 2
+# cd /usr/share/lsf/10.1/install
+.br
+# ./hostsetup --top="/usr/share/lsf" --boot="y"
+.br
+
+.SH Where lsfinstall is located
+
+.sp 2
+lsfinstall is included in the LSF installation script TAR file
+lsf10.1_lsfinstall.tar.Z and is located in the lsf10.1_lsfinstall
+directory that is created when you decompress and extract
+installation script TAR file.
+.sp 2
+After you install LSF, the lsfinstall script is located in the
+LSF_TOP/10.1/install/ directory.
+.SH Options
+
+.sp 2
+\fB-f \fIoption_file\fB\fR
+.br
+         Name of the file that specifies the installation
+         options. The file can be any name that you choose. The
+         name of the default template file for normal
+         installation is install.config. To install server hosts
+         for dynamic host configuration, use the template file
+         server.config.
+.sp 2
+\fB-s\fR
+.br
+         Install a dynamic server host.
+.sp 2
+         Specify installation options in the server.config file.
+.sp 2
+         The following parameters are required:
+.sp 2
+         *  \fRLSF_SERVER_HOSTS="\fIhost_name\fR [\fIhost_name\fR
+            ...]"\fR
+.sp 2
+         *  \fRLSF_TOP="/\fIpath\fR"\fR
+.sp 2
+         *  \fRLSF_TARDIR="/\fIpath\fR"\fR
+.sp 2
+         The following parameters are optional:
+.sp 2
+         \fB\fRLSF_LIM_PORT=\fIport_number\fR\fB\fR
+.br
+                  If the management host does not use the default
+                  LSF_LIM_PORT, you must specify the same
+                  LSF_LIM_PORT defined in lsf.conf on the
+                  management host.
+.sp 2
+         \fB\fRLSF_LOCAL_RESOURCES="\fIresource\fR ..."\fB\fR
+.br
+                  Defines the local resources for a dynamic host.
+.sp 2
+                  *  For numeric resources, use name-value pairs:
+.sp 2
+                     "[resourcemap value*resource_name]"
+.br
+
+.sp 2
+                  *  For Boolean resources, define resource
+                     names:
+.sp 2
+                     "[resource resource_name]"
+.br
+
+.sp 2
+                  The following example defines a numeric
+                  resource for \fRverilog\fR licenses and Boolean
+                  resource \fRlinux\fR:
+.sp 2
+                  LSF_LOCAL_RESOURCES="[hostname hostA] [server 1] [resourcemap 1*verilog] [resource linux]"
+.br
+
+.sp 2
+                  \fBTip: \fRIf \fBLSF_LOCAL_RESOURCES\fR are
+                  already defined in a local lsf.conf file on the
+                  server host, the lsfinstall script does not add
+                  resources that you defined in
+                  \fBLSF_LOCAL_RESOURCES\fR in the server.config
+                  file.
+.sp 2
+         The lsfinstall script creates a local lsf.conf file for
+         the server host, which sets the following parameters:
+.sp 2
+         *  \fRLSF_CONFDIR="/\fIpath\fR"\fR
+.sp 2
+         *  \fRLSF_GET_CONF=lim\fR
+.sp 2
+         *  \fRLSF_LIM_PORT=\fIport_number \fR\fR
+.sp 2
+         *  \fRLSF_LOCAL_RESOURCES="\fIresource\fR ..."\fR
+.sp 2
+         *  \fRLSF_SERVER_HOSTS="\fIhost_name\fR [\fIhost_name\fR
+            ...]"\fR
+.sp 2
+         *  \fRLSF_VERSION=10.1\fR
+.sp 2
+\fB-h\fR
+.br
+         Prints command usage and exits.
+.SH See also
+
+.sp 2
+lsf.conf, install.configinstall.config, server.config

@@ -1,0 +1,106 @@
+
+.ad l
+
+.TH blcollect 1 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBblcollect\fR
+.ce 0
+
+.sp 2
+License information collection daemon for LSF License Scheduler.
+The blcollect daemon collects license usage information.
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBblcollect\fR \fB-c\fR collector_name \fB-m\fR host_name [...]
+\fB-p\fR license_scheduler_port [\fB-i\fR lmstat_interval |
+\fB-D\fR lmstat_path] [\fB-t\fR timeout]
+.sp 2
+
+.sp 2
+\fBblcollect\fR [\fB-h\fR | \fB-V\fR]
+.SH Description
+
+.sp 2
+Periodically collects license usage information from the license
+manager. It queries the license manager for license usage
+information and passes the information to the LSF License
+Scheduler daemon (bld). The blcollect daemon improves performance
+by allowing you to distribute license information queries on
+multiple hosts.
+.sp 2
+By default, license information is collected from the license
+manager on one host. Use the blcollect daemon to distribute the
+license collection on multiple hosts.
+.sp 2
+For each service domain configuration in the lsf.licensescheduler
+file, specify one name for the blcollect daemon to use. You can
+only specify one collector per service domain, but you can
+specify one collector to serve multiple service domains. You can
+choose any collector name you want, but must use that exact name
+when you run the blcollect daemon.
+.SH Options
+
+.sp 2
+\fB-c\fR
+.br
+         Required. Specify the collector name you set in the
+         lsf.licensescheduler file. You must use the collector
+         name (\fRLIC_COLLECTOR\fR) you define in the
+         \fRServiceDomain\fR section of the configuration file.
+.sp 2
+\fB-m\fR
+.br
+         Required. Specifies a space-separated list of hosts to
+         which license information is sent. The hosts do not need
+         to be running LSF License Scheduler or a license
+         manager. Use fully qualified host names.
+.sp 2
+\fB-p\fR
+.br
+         Required. You must specify the LSF License Scheduler
+         listening port, which is set in the lsf.licensescheduler
+         file and has a default value of 9581.
+.sp 2
+\fB-i \fIlmstat_interval\fB\fR
+.br
+         Optional. The frequency in seconds of the calls that LSF
+         License Scheduler makes to the lmstat command to collect
+         license usage information from the license manager.
+.sp 2
+         The default interval is 60 seconds.
+.sp 2
+\fB-D \fIlmstat_path\fB\fR
+.br
+         Optional. Location of the FlexNet command lmstat or the
+         Reprise License Manager command rlmstat, overriding the
+         value defined by the \fBLMSTAT_PATH\fR or
+         \fBRLMSTAT_PATH\fR parameter in the Parameters section
+         of the lsf.licensescheduler file.
+.sp 2
+\fB-t \fItimeout\fB\fR
+.br
+         Optional. Timeout value passed to the lmstat command,
+         overwriting the value defined by the
+         \fBLM_STAT_TIMEOUT\fR parameter in the Parameters or
+         ServiceDomain section of the lsf.licensescheduler file.
+.sp 2
+         This option is ignored if the \fBLM_TYPE=RLM\fR
+         parameter is defined in the Parameters section of the
+         lsf.licensescheduler file.
+.sp 2
+\fB-h\fR
+.br
+         Prints command usage to stderr and exits.
+.sp 2
+\fB-V\fR
+.br
+         Prints release version to stderr and exits.
+.SH See also
+
+.sp 2
+lsf.licensescheduler

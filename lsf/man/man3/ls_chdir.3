@@ -1,0 +1,64 @@
+.TH "ls_chdir" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ls_chdir \- ls_chdir 
+\fBls_chdir\fP sets the application's working directory on the remote host to the directory specified by clntdir.
+.PP
+If the application subsequently requests remote execution with the flag REXF_CLNTDIR, the Remote Execution Server (RES) uses the application's working directory on the remote host, instead of the application's local current working directory, as the current working directory for the remote execution. The RES keeps a working directory for each application, which is initialized as the user's home directory. The application can call this routine to change its working directory on a particular host. clntdir must be the full pathname of a valid directory on the host host.
+.PP
+Any program using this routine must call \fBls_initrex\fP first.
+.PP
+Any program using this API must be setuid to root if LSF_AUTH is not defined in the lsf.conf file.
+.PP
+Sets an application's working directory on a remote host to a specified directory.
+.PP
+\fB #include <lsf/lsf.h>\fP
+.PP
+\fB int ls_chdir(char *host, char *clntdir) \fP
+.PP
+.SH "Parameters:"
+\fI*host\fP The remote host containing the client directory. 
+.br
+\fI*clntdir\fP The full pathname of a valid directory on the host host.
+.PP
+.SH "Data Structures:" 
+.PP
+none
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+int:0 
+.br
+ Function was successful. 
+.PP
+int:-1 
+.br
+ Function failed. 
+.PP
+int:-2 
+.br
+ A warning if the RES fails to check clntdir due to permission denial. This is a temporary mechanism to get around the root uid mapping problem of NFS.
+.PP
+.SH "Errors:" 
+.PP
+Systems that conform to the Single UNIX specification are not required to detect error conditions for this function.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+${LSF_ENVDIR:-/etc}/lsf.conf
+.PP
+.SH "See also:"
+none 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

@@ -1,0 +1,161 @@
+
+.ad l
+
+.TH brsvs 1 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBbrsvs\fR
+.ce 0
+
+.sp 2
+Displays advance reservations.
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBbrsvs\fR [\fB-l\fR | \fB-w\fR] [\fB-p all\fR | \fB-p
+"\fRhost_name ...\fB"\fR]
+.sp 2
+\fBbrsvs\fR [\fB-l\fR | \fB-w\fR] [\fB-z all\fR | \fB-z
+"\fRhost_name ...\fB"\fR]
+.sp 2
+\fBbrsvs\fR [\fB-l\fR | \fB-w\fR] reservation_name
+.sp 2
+\fBbrsvs\fR [\fB-c all\fR | \fB-c\fR \fB"\fRpolicy_name\fB"\fR]
+.sp 2
+\fBbrsvs\fR [\fB-h\fR | \fB-V\fR]
+.SH Description
+
+.sp 2
+By default, displays the current advance reservations for all
+hosts, users, and groups.
+.sp 2
+You can also see advance reservations across clusters:
+.sp 2
+*  The default all option includes both local and remote
+   reservations.
+.sp 2
+*  \fIhost_name\fR does not take the
+   \fR\fIhost_name\fR@\fIcluster_name\fR\fR argument.
+.sp 2
+By default, the brsvs command truncates the reservation ID
+(\fRRSVID\fR) at 11 characters. Use the -w option to see the full
+reservation ID.
+.SH Options
+
+.sp 2
+\fB-l\fR
+.br
+         Displays advance reservations in a long multiline
+         format. In addition to the standard output, the -l
+         option displays queues that can use the advance
+         reservation hosts before the advance reservation starts,
+         the pre-script, pre-script time, post-script,
+         post-script time, the reservation type (\fRopen\fR or
+         \fRclosed\fR), whether non-advance reservation jobs are
+         allowed to continue running after the first advance
+         reservation starts, and the job IDs of any jobs that are
+         associated with the specified advance reservation.
+         Reservations are sorted by status.
+.sp 2
+         The \fRNCPUS\fR field displays real-time advance
+         reservation usage, in the format: used slots/total
+         slots.
+.sp 2
+\fB-w\fR
+.br
+         Wide format. Displays reservation information without
+         truncating fields.
+.sp 2
+\fB-c all | -c "\fIpolicy_name\fB ..."\fR
+.br
+         Shows advance reservation policies that are defined in
+         the lsb.resources file. By default, displays all policy
+         names.
+.sp 2
+         The all keyword shows detailed information for all
+         policies.
+.sp 2
+\fB-p all | -p "\fIhost_name\fB ..."\fR
+.br
+         Shows a weekly planner for specified hosts that use
+         advance reservations.
+.sp 2
+         The all keyword shows a weekly planner for all hosts
+         with reservations.
+.sp 2
+\fB-z all | -z "\fIhost_name\fB"\fR
+.br
+         Shows a planner with only the weekly items that have
+         reservation configurations. Empty lines are omitted.
+.sp 2
+         The all keyword shows a weekly planner for all hosts
+         with reservations.
+.sp 2
+\fB-h\fR
+.br
+         Prints command usage and exits.
+.sp 2
+\fB-V\fR
+.br
+         Prints LSF release version and exits.
+.SH Output
+
+.sp 2
+\fBRSVID\fR
+.br
+         The advance reservation ID.
+.sp 2
+\fBTIME_WINDOW\fR
+.br
+         Time window for a recurring reservation.
+.sp 2
+         Values are separated by a hyphen (\fR-\fR), with no
+         space in between:
+.sp 2
+         time_window = begin_time-end_time
+.br
+
+.sp 2
+         Times are specified in the following format:
+.sp 2
+         [day:]hour[:minute]
+.br
+
+.sp 2
+         All fields are numbers with the following ranges:
+.sp 2
+         \fB\fIday of the week\fB\fR
+.br
+                  0-6 (0 is Sunday).
+.sp 2
+         \fB\fIhour\fB\fR
+.br
+                  0-23.
+.sp 2
+         \fB\fIminute\fB\fR
+.br
+                  0-59.
+.sp 2
+         A time window can be specified in any of the following
+         ways:
+.sp 2
+         *  \fR\fIhour\fR-\fIhour\fR\fR
+.sp 2
+         *  \fR\fIhour\fR:\fIminute\fR-\fIhour\fR:\fIminute\fR\fR
+.sp 2
+         *  \fR\fIday\fR:\fIhour\fR:\fIminute\fR-\fIday\fR:\fIhour\fR:\fIminute\fR\fR
+.sp 2
+         The default value for minute is 0 (on the hour). The
+         default value for day is every day of the week.
+.sp 2
+\fBUSER\fR
+.br
+         The list of users and user groups that are specified for
+         the advance reservation.
+.SH See also
+
+.sp 2
+brsvadd, brsvmod, brsvdel, lsb.resources

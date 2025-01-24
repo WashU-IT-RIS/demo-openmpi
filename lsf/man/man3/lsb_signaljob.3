@@ -1,0 +1,68 @@
+.TH "lsb_signaljob" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_signaljob \- lsb_signaljob 
+Sends a signal to a job.
+.PP
+Use \fBlsb_signaljob\fP when migrating a job from one host to another. Use \fBlsb_signaljob\fP to stop or kill a job on a host before using \fBlsb_mig\fP to migrate the job. Next, use \fBlsb_signaljob\fP to continue the stopped job at the specified host.
+.PP
+Generally, use \fBlsb_signaljob\fP to apply any UNIX signal to a job or process.
+.PP
+Any program using this API must be setuid to root if LSF_AUTH is not defined in the lsf.conf file.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB int lsb_signaljob (LS_LONG_INT jobId, int sigValue)\fP
+.PP
+.SH "Parameters:"
+\fIjobId\fP The job to be signaled. If a job in a job array is to be signaled, use the array form jobID[ i ] where jobID is the job array name, and i is the index value. 
+.br
+\fIsigValue\fP SIGSTOP, SIGCONT, SIGKILL or some other UNIX signal.
+.PP
+.SH "Data Structures:" 
+.PP
+none
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+int:0 
+.br
+ The function was successful. 
+.PP
+int:-1 
+.br
+ The function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lsberrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+bkill 
+.br
+bstop 
+.br
+bresume
+.PP
+.SH "Files:" 
+.PP
+${LSF_ENVDIR:-/etc}/lsf.conf
+.PP
+.SH "See also:"
+\fBlsb_chkpntjob\fP 
+.PP
+\fBlsb_forcekilljob\fP 
+.PP
+\fBlsb_mig\fP 
+.PP
+\fBlsb_signaljob_ex\fP 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

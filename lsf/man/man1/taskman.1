@@ -1,0 +1,124 @@
+
+.ad l
+
+.TH taskman 1 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBtaskman\fR
+.ce 0
+
+.sp 2
+Checks out a license token and manages interactive UNIX
+applications.
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBtaskman \fR\fB-R\fR \fB“rusage\fR[token=number
+[\fB:duration=\fRminutes | hours \fBh\fR]
+[\fB:\fRtoken\fB=\fRnumber[\fB:duration=\fRminutes | hours
+\fBh\fR] [\fB||\fR token\fB=\fRnumber[\fB:duration=\fRminutes |
+hours \fBh\fR] \fB[:\fRtoken\fB=\fRnumber
+\fB[:duration\fR=minutes | hours \fBh]]\fR ...] [\fB-Lp\fR
+project] [\fB-N\fR n_retries] [\fB-v\fR] command
+.sp 2
+\fBtaskman\fR [\fB-h\fR | \fB-V\fR]
+.SH Description
+
+.sp 2
+Runs the interactive UNIX application on behalf of the user. When
+it starts, the task manager connects to LSF License Scheduler to
+request the application license tokens. When all the requested
+licenses are available, the task manager starts the application.
+While the application is running, the task manager monitors
+resource usage, CPU, and memory, and reports the usage to LSF
+License Scheduler. When the application ends, the task manager
+exits.
+.sp 2
+By default, a license is reserved for the duration of the task,
+so the application can check out the license at any time. Use the
+\fRduration\fR keyword to reallocate unused licenses if the
+application fails to check out the license before the reservation
+expires.
+.sp 2
+By default, the taskman command does not detect or use batch
+resources. To allow the taskman command to detect batch
+resources, set \fBENABLE_INTERACTIVE=y\fR parameter in the
+lsf.licensescheduler file.
+.SH Options
+
+.sp 2
+\fB\fIcommand\fB\fR
+.br
+         Required. The command to start the job that requires the
+         license.
+.sp 2
+\fB-v\fR
+.br
+         Verbose mode. Displays detailed messages about the
+         status of configuration files.
+.sp 2
+\fB-N \fIn_retries\fB\fR
+.br
+         Specifies the maximum number of retry attempts that the
+         taskman command makes to connect to the daemon. If this
+         option is not specified, the taskman command retries
+         indefinitely.
+.sp 2
+\fB-Lp \fIproject\fB\fR
+.br
+         Optional. Specifies the interactive license project that
+         is requesting tokens. The client must be known to LSF
+         License Scheduler.
+.sp 2
+         License project limits do not apply to the taskman
+         command jobs even with -Lp specified.
+.sp 2
+\fB-R rusage[\fItoken\fB=\fInumber\fB [:duration=\fIminutes\fB |
+\fIhours\fB h] [:\fItoken\fB=\fInumber\fB
+[:\fIduration=minutes\fB | \fIhours\fB h][||
+\fItoken\fB=\fInumber\fB [:\fIduration=minutes\fB | \fIhours\fB
+h] [:\fItoken\fB=\fInumber\fB [:\fIduration=minutes\fB |
+\fIhours\fB h]]] ...]\fR
+.br
+         Required. Specifies the type and number of license
+         tokens to request from LSF License Scheduler.
+         Optionally, specifies a time limit for the license
+         reservation, expressed as an integer (the keyword h
+         following the number indicates hours instead of
+         minutes). You can specify multiple license types, with
+         different duration values. Separate each requirement
+         with a colon (\fR:\fR) as a logical AND operator, and a
+         double-pipe (\fR||\fR) as a logical OR operator. Enclose
+         the entire list in one set of square brackets.
+.sp 2
+         \fBNote: \fRIf you specify alternative or compound
+         resource requirements, the taskman command accepts only
+         the first resource requirement string and ignores the
+         other resource requirement strings.
+.sp 2
+         For example,
+.sp 2
+         \fBAlternative resource requirement\fR
+.br
+                  \fRtaskman -R "{rusage[f2=2]}||{rusage[f2=1]}"
+                  myjob\fR
+.sp 2
+         \fBCompound resource requirement\fR
+.br
+                  \fRtaskman -R "{rusage[f2=2]}+{rusage[f2=1]}"
+                  myjob\fR
+.sp 2
+         In both cases, the taskman command accepts only the
+         \fRrusage[f2=2]\fR string.
+.sp 2
+\fB-h\fR
+.br
+         Prints command usage to stderr and exits.
+.sp 2
+\fB-V\fR
+.br
+         Prints the LSF License Scheduler release version to
+         stderr and exits.

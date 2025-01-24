@@ -1,0 +1,399 @@
+
+.ad l
+
+.TH bkill 1 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBbkill\fR
+.ce 0
+
+.sp 2
+Sends signals to kill, suspend, or resume unfinished jobs
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBbkill\fR [\fB-l\fR] [\fB-app\fR application_profile_name]
+[\fB-g\fR job_group_name] [\fB-sla\fR service_class_name]
+[\fB-J\fR job_name] [\fB-m\fR host_name | \fB-m\fR host_group]
+[\fB-q\fR queue_name] [\fB-r\fR | \fB-s\fR signal_value |
+signal_name] [\fB-u\fR user_name | \fB-u\fR user_group | \fB-u
+all\fR] [job_ID ... | \fB0\fR | \fB"\fRjob_ID\fB[\fRindex\fB]"\fR
+ ...]
+.sp 2
+\fBbkill\fR [\fB-l\fR] [\fB-b\fR] [\fB-app\fR
+application_profile_name] [\fB-g\fR job_group_name] [\fB-sla\fR
+service_class_name] [\fB-J\fR job_name] [\fB-m\fR host_name |
+\fB-m\fR host_group] [\fB-q\fR queue_name] [\fB-u\fR user_name |
+\fB-u\fR user_group | \fB-u all\fR] [\fB-C\fR kill_reason]
+[job_ID ... | \fB0\fR | \fB"\fRjob_ID\fB[\fRindex\fB]"\fR ...]
+.sp 2
+\fBbkill\fR [\fB-h\fR | \fB-V\fR]
+.SH Description
+
+.sp 2
+By default, sends a set of signals to kill the specified jobs. On
+UNIX, \fRSIGINT\fR and \fRSIGTERM\fR signals are sent to give the
+job a chance to clean up before termination, then the
+\fRSIGKILL\fR signal is sent to kill the job. The time interval
+between sending each signal is defined by the
+\fBJOB_TERMINATE_INTERVAL\fR parameter in the lsb.params file.
+.sp 2
+By default, kills the last job that was submitted by the user who
+ran the command. You must specify a job ID or the -app, -g, -J,
+-m, -u, or -q option. If you specify the -app, -g, -J, -m, -u, or
+-q option without a job ID, the bkill command kills the last job
+that was submitted by the user who ran the command. Specify job
+ID 0 to kill multiple jobs.
+.sp 2
+On Windows, job control messages replace the \fRSIGINT\fR and
+\fRSIGTERM\fR signals, but only customized applications can
+process them. The \fRTerminateProcess()\fR system call is sent to
+kill the job.
+.sp 2
+The bkill command sends the signals \fRINT\fR, \fRTERM\fR, and
+\fRKILL\fR in sequence. The exit code that is returned when a
+dispatched job is killed with the bkill command depends on which
+signal killed the job.
+.sp 2
+If \fBPRIVILEGED_USER_FORCE_BKILL=y\fR parameter is set in the
+lsb.params file, only root and LSF administrators can run the
+bkill -r command. The -r option is ignored for other users.
+.sp 2
+Users can operate only on their own jobs. Only root and LSF
+administrators can operate on jobs that are submitted by other
+users.
+.sp 2
+If a signal request fails to reach the job execution host, LSF
+tries the operation later when the host becomes reachable. LSF
+retries the most recent signal request.
+.SH Options
+
+.sp 2
+\fB0\fR
+.br
+         Kills all the jobs that satisfy other options (-app. -g,
+         -m, -q, -u, and -J options).
+.sp 2
+\fB-b\fR
+.br
+         Kills large numbers of jobs as soon as possible. Local
+         pending jobs are killed immediately and cleaned up as
+         soon as possible, ignoring the time interval specified
+         by the \fBCLEAN_PERIOD\fR parameter in the lsb.params
+         file. Jobs that are killed in this manner are not logged
+         to the lsb.acct file.
+.sp 2
+         Other jobs, such as running jobs, are killed as soon as
+         possible and cleaned up normally.
+.sp 2
+         If the -b option is used with the 0 subcommand, the
+         bkill command kills all applicable jobs and silently
+         skips the jobs that cannot be killed.
+.sp 2
+         bkill -b 0
+.br
+         Operation is in progress
+.br
+
+.sp 2
+         The -b option is ignored if used with the -r or -s
+         options.
+.sp 2
+\fB-l\fR
+.br
+         Displays the signal names that are supported by the
+         bkill command. The supported signals are a subset of
+         signals that are supported by the /bin/kill command and
+         is operating system-dependent.
+.sp 2
+\fB-r\fR
+.br
+         Removes a job from the LSF system without waiting for
+         the job to terminate in the operating system.
+.sp 2
+         If the \fBPRIVILEGED_USER_FORCE_BKILL=y\fR parameter is
+         set in the lsb.params file, only root and LSF
+         administrators can run the bkill -r command. The -r
+         option is ignored for other users.
+.sp 2
+         Sends the same series of signals as the bkill command
+         without the -r option, except that the job is removed
+         from the system immediately. If the job is in
+         \fRUNKNWN\fR state, the bkill -r command marks the job
+         as \fRZOMBIE\fR state. The bkill -r command changes jobs
+         in \fRZOMBIE\fR state to \fREXIT\fR state. The job
+         resources that LSF monitors are released as soon as LSF
+         receives the first signal.
+.sp 2
+         Use the bkill -r command only on jobs that cannot be
+         killed in the operating system, or on jobs that cannot
+         be otherwise removed by using the bkill command.
+.sp 2
+         The -r option cannot be used with the -s option.
+.sp 2
+\fB-app \fIapplication_profile_name\fB\fR
+.br
+         Operates only on jobs that are associated with the
+         specified application profile. You must specify an
+         existing application profile. If \fIjob_ID\fR or 0 is
+         not specified, only the most recently submitted
+         qualifying job is operated on.
+.sp 2
+\fB-C \fIkill_reason\fB\fR
+.br
+         Gives the user the option to add a reason as to why the
+         job is being killed. The length of the reason is limited
+         to 4095 characters.
+.sp 2
+         \fBNote: \fR This option cannot be used in combination
+         with the -s option unless the signal is \fRSIGSTOP\fR,
+         \fRSIGCONT\fR, or \fRSIGKILL\fR.
+.sp 2
+\fB-g \fIjob_group_name\fB\fR
+.br
+         Operates only on jobs in the job group that is specified
+         by \fIjob_group_name\fR.
+.sp 2
+         Use the -g option with the -sla option to kill jobs in
+         job groups that are attached to a service class.
+.sp 2
+         The bkill command does not kill jobs in lower-level job
+         groups in the path. For example, jobs are attached to
+         job groups \fR/risk_group\fR and
+         \fR/risk_group/consolidate\fR:
+.sp 2
+         bsub -g /risk_group  myjob
+.br
+         Job <115> is submitted to default queue <normal>.
+.br
+
+.sp 2
+         bsub -g /risk_group/consolidate myjob2
+.br
+         Job <116> is submitted to default queue <normal>.
+.br
+
+.sp 2
+         The following bkill command kills only jobs in the
+         \fR/risk_group\fR job group, not the subgroup
+         \fR/risk_group/consolidate\fR:
+.sp 2
+         bkill -g /risk_group 0
+.br
+         Job <115> is being terminated
+.sp 2
+         bkill -g /risk_group/consolidate 0
+.br
+         Job <116> is being terminated
+.br
+
+.sp 2
+\fB-J \fIjob_name\fB\fR
+.br
+         Operates only on jobs with the specified job name. The
+         -J option is ignored if a job ID other than 0 is
+         specified in the \fIjob_ID\fR option.
+.sp 2
+         The job name can be up to 4094 characters long. Job
+         names are not unique.
+.sp 2
+         The wildcard character (\fR*\fR) can be used anywhere
+         within a job name, but it cannot appear within an array
+         index. For example, the pattern \fRjob*\fR returns
+         \fRjobA\fR and \fRjobarray[1]\fR. The \fR*AAA*[1]\fR
+         pattern returns the first element in job arrays with
+         names that contain \fRAAA\fR. However, the pattern
+         \fRjob1[*]\fR does not return anything since the
+         wildcard is within the array index.
+.sp 2
+\fB-m \fIhost_name\fB | -m \fIhost_group\fB\fR
+.br
+         Operates only on jobs that are dispatched to the
+         specified host or host group.
+.sp 2
+         If \fIjob_ID\fR is not specified, only the most recently
+         submitted qualifying job is operated on. The -m option
+         is ignored if a job ID other than 0 is specified in the
+         \fIjob_ID\fR option. Use the bhosts and bmgroup commands
+         to see information about hosts and host groups.
+.sp 2
+\fB-q \fIqueue_name\fB\fR
+.br
+         Operates only on jobs in the specified queue.
+.sp 2
+         If \fIjob_ID\fR is not specified, only the most recently
+         submitted qualifying job is operated on.
+.sp 2
+         The -q option is ignored if a job ID other than 0 is
+         specified in the \fIjob_ID\fR option.
+.sp 2
+         Use the bqueuescommand to see information about queues.
+.sp 2
+\fB-s \fIsignal_value\fB | \fIsignal_name\fB\fR
+.br
+         Sends the specified signal to specified jobs. You can
+         specify either a name, stripped of the \fRSIG\fR prefix
+         (such as \fRKILL\fR), or a number (such as 9).
+.sp 2
+         Eligible UNIX signal names are listed by the bkill -l
+         command.
+.sp 2
+         The -s option cannot be used with the -r option.
+.sp 2
+         Use the bkill -s command to suspend and resume jobs by
+         using the appropriate signal instead of using the bstop
+         or bresume command. Sending the \fRSIGCONT\fR signal is
+         the same as using the bresume command.
+.sp 2
+         Sending the \fRSIGSTOP\fR signal to sequential jobs or
+         the \fRSIGTSTP\fR signal to parallel jobs is the same as
+         using the bstop command.
+.sp 2
+         You cannot suspend a job that is already suspended, or
+         resume a job that is not suspended. Using the
+         \fRSIGSTOP\fR or \fRSIGTSTP\fR signal on a job that is
+         in the \fRUSUSP\fR state has no effect. Using the
+         \fRSIGCONT\fR signal on a job that is not in either the
+         \fRPSUSP\fR or the \fRUSUSP\fR state has no effect. Use
+         the bjobs command to see information about job states.
+.sp 2
+         Limited Windows signals are supported:
+.sp 2
+         *  \fRbkill -s 7\fR or \fRbkill SIGKILL\fR to terminate
+            a job
+.sp 2
+         *  \fRbkill -s 16\fR or \fRbkill SIGSTOP\fR to suspend a
+            job
+.sp 2
+         *  \fRbkill -s 15\fR to resume a job
+.sp 2
+\fB-sla \fIservice_class_name\fB\fR
+.br
+         Operates on jobs that belong to the specified service
+         class.
+.sp 2
+         If a job ID is not specified, only the most recently
+         submitted job is operated on.
+.sp 2
+         Use the -sla option with the -g option to kill jobs in
+         job groups that are attached to a service class.
+.sp 2
+         The -sla option is ignored if a job ID other than 0 is
+         specified in the \fIjob_ID\fR option.
+.sp 2
+         Use the bsla command to display the configuration
+         properties of service classes that are configured in the
+         lsb.serviceclasses file. The bsla command also shows the
+         default SLA configured with the
+         \fBENABLE_DEFAULT_EGO_SLA\fR parameter in the lsb.params
+         file, and dynamic information about the state of each
+         service class.
+.sp 2
+\fB-u \fIuser_name\fB | -u \fIuser_group\fB | -u all\fR
+.br
+         Operates only on jobs that are submitted by the
+         specified user or user group, or by all users if the
+         reserved user name \fRall\fR is specified. To specify a
+         Windows user account, include the domain name in
+         uppercase letters and use a single backslash
+         (\fR\fIDOMAIN_NAME\fR\\fIuser_name\fR\fR) in a Windows
+         command line or a double backslash
+         (\fR\fIDOMAIN_NAME\fR\\\fIuser_name\fR\fR) in a UNIX
+         command line.
+.sp 2
+         If a job ID is not specified, only the most recently
+         submitted qualifying job is operated on. The -u option
+         is ignored if a job ID other than 0 is specified in the
+         \fIjob_ID\fR option.
+.sp 2
+\fB\fIjob_ID\fB ... | 0 | "\fIjob_ID\fB[\fIindex\fB]" ...\fR
+.br
+         Operates only on jobs that are specified by \fIjob_ID\fR
+         or \fR"\fIjob_ID\fR[\fIindex\fR]"\fR, where
+         \fR"\fIjob_ID\fR[\fIindex\fR]"\fR specifies selected job
+         array elements. Use the bjobs command to see the array
+         elements for the job. For job arrays, quotation marks
+         must enclose the job ID and index, and index must be
+         enclosed in square brackets.
+.sp 2
+         Kill an entire job array by specifying the job array ID
+         instead of the job ID.
+.sp 2
+         Jobs that are submitted by any user can be specified
+         here without using the -u option. If you use the
+         reserved job ID 0, all the jobs that satisfy other
+         options (that is, -m, -q, -u, and -J options) are
+         operated on. All other job IDs are ignored.
+.sp 2
+         The options -u, -q, -m, and -J have no effect if a job
+         ID other than 0 is specified. Job IDs are returned at
+         job submission time. Use the bjobs command to find the
+         job IDs.
+.sp 2
+         Any jobs or job arrays that are killed are logged in the
+         lsb.acctfile.
+.sp 2
+\fB-h\fR
+.br
+         Prints command usage to stderr and exits.
+.sp 2
+\fB-V\fR
+.br
+         Prints LSF release version to stderr and exits.
+.SH Examples
+
+.sp 2
+bkill -s 17 -q night
+.br
+
+.sp 2
+Sends signal 17 to the last job that was submitted by the invoker
+to queue \fRnight\fR.
+.sp 2
+bkill -q short -u all 0
+.br
+
+.sp 2
+Kills all the jobs that are in the queue \fRshort\fR.
+.sp 2
+bkill -r 1045
+.br
+
+.sp 2
+Forces the removal of unkillable job 1045.
+.sp 2
+bkill -sla Tofino 0
+.br
+
+.sp 2
+Kills all jobs that belong to the service class named
+\fRTofino\fR.
+.sp 2
+bkill -g /risk_group 0
+.br
+
+.sp 2
+Kills all jobs in the job group \fR/risk_group\fR.
+.sp 2
+bkill -app fluent
+.br
+
+.sp 2
+Kills the most recently submitted job that is associated with the
+application profile \fRfluent\fR for the current user.
+.sp 2
+bkill -app fluent 0
+.br
+
+.sp 2
+Kills all jobs that are associated with the application profile
+\fRfluent\fR for the current user.
+.SH See also
+
+.sp 2
+bsub, bjobs, bqueues, bhosts, bresume, bapp, bsla, bstop, bgadd,
+bgdel, bjgroup, bparams, lsb.params, lsb.serviceclasses, mbatchd,
+kill, signal

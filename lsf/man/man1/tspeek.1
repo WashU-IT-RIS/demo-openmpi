@@ -1,0 +1,63 @@
+
+.ad l
+
+.TH tspeek 1 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBtspeek\fR
+.ce 0
+
+.sp 2
+Displays the stdout and stderr output of an unfinished Terminal
+Services job.
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBtspeek\fR job_ID
+.sp 2
+\fBtspeek\fR [\fB-h\fR | \fB-V\fR]
+.SH Description
+
+.sp 2
+Displays the standard output and standard error output that was
+produced by one of your unfinished Terminal Services jobs, up to
+the time that this command is started.
+.sp 2
+This command is useful for monitoring the progress of a job and
+identifying errors. If errors are observed, valuable user time
+and system resources can be saved by terminating an erroneous
+job.
+.sp 2
+The tspeek command is supported on Windows and Linux. You cannot
+use the tspeek commands to monitor job output from UNIX. The
+tspeek command on Linux requires the rdesktop application.
+.sp 2
+You can use the tspeek command from any Linux host where the
+rdesktop application is installed to view the output of a
+Terminal Services job. For example, if your job ID is 23245, run
+the following command:
+.sp 2
+tspeek 23245
+.br
+
+.SH Options
+
+.sp 2
+\fB\fIjob_ID\fB \fR
+.br
+         Operates on the specified Terminal Services job.
+.sp 2
+\fB-h \fR
+.br
+         Prints command usage to stderr and exits.
+.sp 2
+\fB-V \fR
+.br
+         Prints LSF release version to stderr and exits.
+.SH See also
+
+.sp 2
+tssub

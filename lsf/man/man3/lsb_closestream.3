@@ -1,0 +1,62 @@
+.TH "lsb_closestream" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_closestream \- lsb_closestream 
+Close an lsb_stream file.
+.PP
+\fBlsb_closestream\fP closes the streamFile.
+.PP
+This API function is inside liblsbstream.so.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB int lsb_closestream(const char *config)\fP
+.PP
+.SH "Parameters:"
+\fI*\fP config Pointer to the handle of the stream file.
+.PP
+.SH "Data Structures:" 
+.PP
+none
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+int:0 
+.br
+ The function was successful. 
+.PP
+int:-1 
+.br
+ The function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lsberrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+$LSB_CONFDIR/cluster_name/configdir/lsb.params
+.PP
+.SH "See also:"
+\fBlsb_openstream\fP 
+.PP
+\fBlsb_readstreamline\fP 
+.PP
+\fBlsb_writestream\fP 
+.PP
+\fBlsb_readstream\fP 
+.PP
+\fBlsb_streamversion\fP 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

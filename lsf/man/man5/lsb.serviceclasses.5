@@ -1,0 +1,980 @@
+
+.ad l
+
+.TH lsb.serviceclasses 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBlsb.serviceclasses\fR
+.ce 0
+
+.sp 2
+The lsb.serviceclasses file defines the service-level agreements
+(SLAs) in an LSF cluster as \fIservice classes\fR, which define
+the properties of the SLA.
+.sp 2
+This file is optional.
+.sp 2
+You can configure as many service class sections as you need.
+.sp 2
+Use bsla to display the properties of service classes configured
+in lsb.serviceclasses and dynamic information about the state of
+each configured service class.
+.sp 2
+By default, lsb.serviceclasses is installed in
+LSB_CONFDIR/\fIcluster_name\fR/configdir.
+.SH Changing lsb.serviceclasses configuration
+
+.sp 2
+After making any changes to lsb.serviceclasses, run badmin
+reconfig to reconfigure mbatchd.
+.SH lsb.serviceclasses structure
+
+.sp 2
+Each service class definition begins with the line Begin
+ServiceClass and ends with the line End ServiceClass.
+.SH Syntax
+
+.sp 2
+Begin ServiceClass
+.br
+NAME           = string
+.br
+PRIORITY       = integer
+.br
+GOALS          = [throughput | velocity | deadline] [\...]
+.br
+CONTROL_ACTION = VIOLATION_PERIOD[minutes] CMD [action]
+.br
+USER_GROUP     = all | [user_name] [user_group] ...
+.br
+DESCRIPTION    = text
+.br
+
+.br
+End ServiceClass
+.br
+
+.br
+Begin ServiceClass
+.sp 2
+NAME           = string
+.br
+GOALS          = guarantee
+.br
+ACCESS_CONTROL = [QUEUES[ queue ...]] [USERS[ [user_name] [user_group] ...]] 
+.br
+[FAIRSHARE_GROUPS[user_group ...]] [APPS[app_name ...]] 
+.br
+[PROJECTS[proj_name...]] 
+.br
+AUTO_ATTACH = Y | y | N | n
+.br
+DESCRIPTION    = text
+.br
+
+.br
+End ServiceClass
+.br
+
+.br
+
+.sp 2
+You must specify:
+.sp 2
+*  
+   Service class name
+.sp 2
+*  
+   Goals
+.sp 2
+Service classes with guarantee goals cannot have \fBPRIORITY\fR,
+\fBCONTROL_ACTION\fR or \fBUSER_GROUP\fR defined.
+.sp 2
+To configure EGO-enabled SLA scheduling, you must specify an
+existing EGO consumer name to allow the SLA to get host
+allocations from EGO.
+.sp 2
+All other parameters are optional.
+.SH Example
+
+.sp 2
+Begin ServiceClass 
+.br
+
+.br
+NAME=Sooke
+.br
+PRIORITY=20
+.br
+GOALS=[DEADLINE timeWindow (8:30-16:00)] 
+.br
+DESCRIPTION="working hours"
+.br
+
+.br
+End ServiceClass
+.br
+
+.br
+Begin ServiceClass 
+.br
+NAME=Newmarket 
+.br
+GOALS=[GUARANTEE] 
+.br
+ACCESS_CONTROL = QUEUES[batch] FAIRSHARE_GROUPS[team2]
+.br
+AUTO_ATTACH = Y
+.br
+DESCRIPTION="guarantee for team2 batch jobs" 
+.br
+
+.br
+End ServiceClass
+.br
+
+.br
+
+.br
+
+.SH Parameters
+
+.sp 2
+*  
+   ACCESS_CONTROL
+.sp 2
+*  
+   AUTO_ATTACH
+.sp 2
+*  
+   CONSUMER
+.sp 2
+*  
+   CONTROL_ACTION
+.sp 2
+*  
+   DESCRIPTION
+.sp 2
+*  
+   EGO_RES_REQ
+.sp 2
+*  
+   EGO_RESOURCE_GROUP
+.sp 2
+*  
+   GOALS
+.sp 2
+*  
+   MAX_HOST_IDLE_TIME
+.sp 2
+*  
+   NAME
+.sp 2
+*  
+   PRIORITY
+.sp 2
+*  
+   USER_GROUP
+.sp 2
+Parent topic: Configuration files
+.sp 2
+
+.ce 1000
+\fBACCESS_CONTROL\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRACCESS_CONTROL=\fR[\fR\fBQUEUES\fR[\fR\fIqueue\fR ...\fR]\fR]
+[\fR\fBUSERS\fR[\fR [\fIuser_name\fR] [\fIuser_group\fR]
+ ...\fR]\fR] [\fR\fBFAIRSHARE_GROUPS\fR[\fR\fIuser_group\fR
+ ...\fR]\fR] [\fR\fBAPPS\fR[\fR\fIapp_name\fR ...\fR]\fR]
+[\fR\fBPROJECTS\fR[\fR\fIproj_name\fR...\fR]\fR]
+[\fR\fBLIC_PROJECTS\fR[\fR\fIlic_proj\fR...\fR]\fR]
+.SH Description
+
+.sp 2
+Guarantee SLAs (with \fRGOALS=[GUARANTEE]\fR) only.
+.sp 2
+Restricts access to a guarantee SLA. If more than one restriction
+is configured, all must be satisfied.
+.sp 2
+*  
+   \fBQUEUES\fR restricts access to the queues listed; the queue
+   is specified for jobs at submission using bsub -q.
+.sp 2
+*  
+   \fBUSERS\fR restricts access to jobs submitted by the users or
+   user groups specified.
+.sp 2
+   User names must be valid login names. To specify a Windows
+   user account, include the domain name in uppercase letters
+   (\fIDOMAIN_NAME\user_name\fR).User group names can be LSF user
+   groups or UNIX and Windows user groups. To specify a Windows
+   user group, include the domain name in uppercase letters
+   (\fIDOMAIN_NAME\user_group\fR).
+.sp 2
+*  
+   \fBFAIRSHARE_GROUPS\fR restricts access to the fairshare
+   groups listed; the fairshare group is specified for jobs at
+   submission using bsub -G.
+.sp 2
+*  
+   \fBAPPS\fR restricts access to the application profiles
+   listed; the application profile is specified for jobs at
+   submission using bsub -app.
+.sp 2
+*  
+   \fBPROJECTS\fR restricts access to the projects listed; the
+   project is specified for jobs at submission using bsub -P.
+.SH Example
+
+.sp 2
+ACCESS_CONTROL = QUEUES[normal short] USERS[ug1]
+.br
+
+.sp 2
+Jobs submitted to the queues normal or short by users in
+usergroup ug1 are the only jobs accepted by the guarantee SLA.
+.SH Default
+
+.sp 2
+None. Access to the guarantee SLA is not restricted.
+.sp 2
+
+.ce 1000
+\fBAUTO_ATTACH\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRAUTO_ATTACH=Y | y | N | n\fR
+.SH Description
+
+.sp 2
+Guarantee SLAs (with \fRGOALS=[GUARANTEE]\fR) only. Used with
+\fBACCESS_CONTROL\fR.
+.sp 2
+Enabling \fBAUTO_ATTACH\fR when a guarantee SLA has
+\fBACCESS_CONTROL\fR configured results in submitted jobs
+automatically attaching to the guarantee SLA if they have access.
+If a job can access multiple guarantee SLAs with
+\fBAUTO_ATTACH\fR enabled, the job is automatically attached to
+the first accessible SLA based on configuration order in the
+lsb.serviceclasses file.
+.sp 2
+During restart or reconfiguration, automatic attachments to
+guarantee SLAs are checked and jobs may be attached to a
+different SLA. During live reconfiguration (using the bconf
+command) automatic attachments are not checked, and jobs remain
+attached to the same guarantee SLAs regardless of configuration
+changes.
+.SH Example
+
+.sp 2
+Begin ServiceClass
+.br
+ ...
+.br
+
+.br
+NAME = Maple
+.br
+GOALS = [GUARANTEE]
+.br
+ACCESS_CONTROL = QUEUES[priority] USERS[ug1]
+.br
+AUTO_ATTACH = Y
+.br
+
+.br
+ ...
+.br
+End ServiceClass
+.sp 2
+All jobs submitted to the priority queue by users in user group
+ug1 and submitted without an SLA specified are automatically
+attached to the service class Maple.
+.SH Default
+
+.sp 2
+N
+.sp 2
+
+.ce 1000
+\fBCONSUMER\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRCONSUMER=\fR\fIego_consumer_name\fR
+.SH Description
+
+.sp 2
+For EGO-enabled SLA service classes, the name of the EGO consumer
+from which hosts are allocated to the SLA. This parameter is not
+mandatory, but must be configured for the SLA to receive hosts
+from EGO.
+.sp 2
+Guarantee SLAs (with \fRGOALS=[GUARANTEE]\fR) cannot have
+\fBCONSUMER\fR set. If defined, it will be ignored.
+.sp 2
+\fBImportant: \fRCONSUMER must specify the name of a valid
+consumer in EGO. If a default SLA is configured with
+ENABLE_DEFAULT_EGO_SLA in lsb.params, all services classes
+configured in lsb.serviceclasses must specify a consumer name.
+.SH Default
+
+.sp 2
+None
+.sp 2
+
+.ce 1000
+\fBCONTROL_ACTION\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRCONTROL_ACTION=\fBVIOLATION_PERIOD\fR[\fR\fIminutes\fR\fB]
+\fBCMD\fB [\fR\fIaction\fR\fR]\fR
+.SH Description
+
+.sp 2
+Optional. Configures a control action to be run if the SLA goal
+is delayed for a specified number of minutes.
+.sp 2
+If the SLA goal is delayed for longer than VIOLATION_PERIOD, the
+action specified by CMD is invoked. The violation period is reset
+and if the SLA is still active when the violation period expires
+again, the action runs again. If the SLA has multiple active
+goals that are in violation, the action is run for each of them.
+.sp 2
+Guarantee SLAs (with \fRGOALS=[GUARANTEE]\fR) cannot have
+\fBCONTROL_ACTION\fR set. If defined, it will be ignored.
+.SH Example
+
+.sp 2
+CONTROL_ACTION=VIOLATION_PERIOD[10] CMD [echo `date`: SLA is in violation >> 
+.br
+! /tmp/sla_violation.log]
+.SH Default
+
+.sp 2
+None
+.sp 2
+
+.ce 1000
+\fBDESCRIPTION\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRDESCRIPTION\fR=\fItext\fR
+.SH Description
+
+.sp 2
+Optional. Description of the service class. Use bsla to display
+the description text.
+.sp 2
+This description should clearly describe the features of the
+service class to help users select the proper service class for
+their jobs.
+.sp 2
+The text can include any characters, including white space. The
+text can be extended to multiple lines by ending the preceding
+line with a backslash (\).
+.SH Default
+
+.sp 2
+None
+.sp 2
+
+.ce 1000
+\fBEGO_RES_REQ\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fREGO_RES_REQ=\fR\fIres_req\fR
+.SH Description
+
+.sp 2
+For EGO-enabled SLA service classes, the EGO resource requirement
+that specifies the characteristics of the hosts that EGO will
+assign to the SLA.
+.sp 2
+Must be a valid EGO resource requirement. The EGO resource
+requirement string supports the select section, but the format is
+different from LSF resource requirements.
+.sp 2
+Guarantee SLAs (with \fRGOALS=[GUARANTEE]\fR) cannot have
+\fBEGO_RES_REQ\fR set. If defined, it will be ignored.
+.sp 2
+\fBNote: \fRAfter changing this parameter, running jobs using the
+allocation may be re-queued.
+.SH Example
+
+.sp 2
+EGO_RES_REQ=select(linux && maxmem > 100)
+.SH Default
+
+.sp 2
+None
+.sp 2
+
+.ce 1000
+\fBEGO_RESOURCE_GROUP\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fREGO_RESOURCE_GROUP=\fR\fIego resource group name\fR or a blank
+separated group list
+.SH Description
+
+.sp 2
+For EGO-enabled SLA service classes. A resource group or
+space-separated list of resource groups from which hosts are
+allocated to the SLA.
+.sp 2
+List must be a subset of or equal to the resource groups
+allocated to the consumer defined by the \fBCONSUMER\fR entry.
+.sp 2
+Guarantee SLAs (with \fRGOALS=[GUARANTEE]\fR) cannot have
+\fBEGO_RESOURCE_GROUP\fR set. If defined, it will be ignored.
+.sp 2
+\fBNote: \fRAfter changing this parameter, running jobs using the
+allocation may be re-queued.
+.SH Example
+
+.sp 2
+EGO_RESOURCE_GROUP=resource_group1 resource_group4 resource_group5
+.SH Default
+
+.sp 2
+Undefined (vemkd determines which resource groups to allocate
+slots to LSF).
+.sp 2
+
+.ce 1000
+\fBGOALS\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRGOALS=[\fR\fIthroughput\fR | \fIvelocity\fR |
+\fIdeadline\fR\fR]\fR [\fR\\fR
+.sp 2
+\fR[\fR\fIthroughput\fR | \fIvelocity\fR | \fIdeadline\fR\fR]\fR
+ ...]
+.sp 2
+\fRGOALS=[\fR\fIguarantee\fR\fR]\fR
+.SH Description
+
+.sp 2
+\fIRequired.\fR Defines the service-level goals for the service
+class. A service class can have more than one goal, each active
+at different times of the day and days of the week. Outside of
+the time window, the SLA is inactive and jobs are scheduled as if
+no service class is defined. LSF does not enforce any
+service-level goal for an inactive SLA.
+.sp 2
+\fBNote: \fRThe throughput, velocity, and deadline goals are
+deprecated and might be removed in a future release. Only the
+guarantee goals are supported.
+.sp 2
+The time windows of multiple service-level goals can overlap. In
+this case, the largest number of jobs is run.
+.sp 2
+An active SLA can have a status of On time if it is meeting the
+goal, and a status Delayed, if it is missing its goals.
+.sp 2
+A service-level goal defines:
+.sp 2
+\fIthroughput\fR - expressed as \fIfinished\fR jobs per hour and
+an optional time window when the goal is active. \fIthroughput\fR
+has the form:
+.sp 2
+GOALS=[THROUGHPUT num_jobs timeWindow [(time_window)]]
+.br
+
+.sp 2
+If no time window is configured, THROUGHPUT can be the only goal
+in the service class. The service class is always active, and
+bsla displays \fRACTIVE WINDOW: Always Open\fR.
+.sp 2
+\fIvelocity\fR - expressed as \fIconcurrently\fR running jobs and
+an optional time window when the goal is active. \fIvelocity\fR
+has the form:
+.sp 2
+GOALS=[VELOCITY num_jobs timeWindow [(time_window)]]
+.br
+
+.sp 2
+If no time window is configured, VELOCITY can be the only goal in
+the service class. The service class is always active, and bsla
+displays \fRACTIVE WINDOW: Always Open\fR.
+.sp 2
+\fIdeadline\fR - indicates that all jobs in the service class
+should complete by the end of the specified time window. The time
+window is required for a deadline goal. \fIdeadline\fR has the
+form:
+.sp 2
+GOALS=[DEADLINE timeWindow (time_window)]
+.br
+
+.sp 2
+\fIguarantee\fR - indicates the SLA has guaranteed resources
+defined in lsb.resources and is able to guarantee resources,
+depending on the scavenging policies configured. Guarantee goals
+cannot be combined with any other goals, and do not accept time
+windows.
+.sp 2
+GOALS=[GUARANTEE]
+.br
+
+.sp 2
+\fBRestriction: \fREGO-enabled SLA service classes only support
+velocity goals. Deadline, throughput, and guarantee goals are not
+supported. The configured velocity value for EGO-enabled SLA
+service classes is considered to be a \fIminimum\fR number of
+jobs that should be in run state from the SLA
+.SH Time window format
+
+.sp 2
+The time window of an SLA goal has the standard form:
+.sp 2
+begin_time-end_time
+.br
+
+.sp 2
+Times are specified in the format:
+.sp 2
+[day:]hour[:minute]
+.br
+
+.sp 2
+where all fields are numbers with the following ranges:
+.sp 2
+*  \fIday of the week\fR: 0-6 (0 is Sunday)
+.sp 2
+*  \fIhour\fR: 0-23
+.sp 2
+*  \fIminute\fR: 0-59
+.sp 2
+Specify a time window one of the following ways:
+.sp 2
+*  \fIhour\fR-\fIhour\fR
+.sp 2
+*  \fIhour\fR:\fIminute\fR-\fIhour\fR:\fIminute\fR
+.sp 2
+*  \fIday\fR:\fIhour\fR:\fIminute\fR-\fIday\fR:\fIhour\fR:\fIminute\fR
+.sp 2
+The default value for minute is 0 (on the hour); the default
+value for day is every day of the week.
+.sp 2
+You must specify at least the hour. Day of the week and minute
+are optional. Both the start time and end time values must use
+the same syntax. If you do not specify a minute, LSF assumes the
+first minute of the hour (\fR:00\fR). If you do not specify a
+day, LSF assumes every day of the week. If you do specify the
+day, you must also specify the minute.
+.sp 2
+You can specify multiple time windows, but they cannot overlap.
+For example:
+.sp 2
+timeWindow(8:00-14:00 18:00-22:00)
+.br
+
+.sp 2
+is correct, but
+.sp 2
+timeWindow(8:00-14:00 11:00-15:00)
+.br
+
+.sp 2
+is not valid.
+.sp 2
+\fBTip: \fRTo configure a time window that is always open, use
+the timeWindow keyword with empty parentheses.
+.SH Examples
+
+.sp 2
+GOALS=[THROUGHPUT 2 timeWindow ()]
+.br
+
+.sp 2
+GOALS=[THROUGHPUT 10 timeWindow (8:30-16:30)]
+.br
+
+.sp 2
+GOALS=[VELOCITY 5 timeWindow ()]
+.br
+
+.sp 2
+GOALS=[DEADLINE timeWindow (16:30-8:30)] [VELOCITY 10 timeWindow (8:30-16:30)]
+.sp 2
+GOALS=[GUARANTEE]
+.br
+
+.sp 2
+
+.ce 1000
+\fBMAX_HOST_IDLE_TIME\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRMAX_HOST_IDLE_TIME=\fR\fIseconds\fR
+.SH Description
+
+.sp 2
+For EGO-enabled SLA service classes, number of seconds that the
+SLA will hold its idle hosts before LSF releases them to EGO.
+Each SLA can configure a different idle time. Do not set this
+parameter to a small value, or LSF may release hosts too quickly.
+.sp 2
+Guarantee SLAs (with \fRGOALS=[GUARANTEE]\fR) cannot have
+\fBMAX_HOST_IDLE_TIME\fR set. If defined, it will be ignored.
+.SH Default
+
+.sp 2
+120 seconds
+.sp 2
+
+.ce 1000
+\fBNAME\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRNAME\fR=\fIstring\fR
+.SH Description
+
+.sp 2
+\fIRequired.\fR A unique name that identifies the service class.
+.sp 2
+Specify any ASCII string 60 characters or less. You can use
+letters, digits, underscores (_) or dashes (-). You cannot use
+blank spaces.
+.sp 2
+\fBImportant: \fR
+.sp 2
+The name you use cannot be the same as an existing host
+partition, user group name, or fairshare queue name.
+.SH Example
+
+.sp 2
+NAME=Tofino
+.br
+
+.SH Default
+
+.sp 2
+None. You must provide a unique name for the service class.
+.sp 2
+
+.ce 1000
+\fBPRIORITY\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRPRIORITY\fR=\fIinteger\fR
+.SH Description
+
+.sp 2
+\fIRequired (time-based SLAs only).\fR The service class
+priority. A higher value indicates a higher priority, relative to
+other service classes. Similar to queue priority, service classes
+access the cluster resources in priority order.
+.sp 2
+LSF schedules jobs from one service class at a time, starting
+with the highest-priority service class. If multiple service
+classes have the same priority, LSF runs all the jobs from these
+service classes in first-come, first-served order.
+.sp 2
+Service class priority in LSF is completely independent of the
+UNIX scheduler’s priority system for time-sharing processes. In
+LSF, the NICE parameter is used to set the UNIX time-sharing
+priority for batch jobs.
+.sp 2
+Guarantee SLAs (with \fRGOALS=[GUARANTEE]\fR) cannot have
+\fBPRIORITY\fR set. If defined, it will be ignored.
+.SH Default
+
+.sp 2
+None.
+.sp 2
+
+.ce 1000
+\fBUSER_GROUP\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRUSER_GROUP=\fRall | [\fIuser_name\fR] [\fIuser_group\fR] ...
+.SH Description
+
+.sp 2
+Optional. A space-separated list of user names or user groups who
+can submit jobs to the service class. Administrators, root, and
+all users or groups listed can use the service class.
+.sp 2
+Use the reserved word all to specify all LSF users. LSF cluster
+administrators are automatically included in the list of users,
+so LSF cluster administrators can submit jobs to any service
+class, or switch any user’s jobs into this service class, even if
+they are not listed.
+.sp 2
+If user groups are specified in lsb.users, each user in the group
+can submit jobs to this service class. If a group contains a
+subgroup, the service class policy applies to each member in the
+subgroup recursively. If the group can define fairshare among its
+members, the SLA defined by the service class enforces the
+fairshare policy among the users of the SLA.
+.sp 2
+User names must be valid login names. User group names can be LSF
+user groups (in lsb.users) or UNIX and Windows user groups.
+.sp 2
+Guarantee SLAs (with \fRGOALS=[GUARANTEE]\fR) cannot have
+\fBUSER_GROUP\fR set. If defined, it will be ignored.
+.SH Example
+
+.sp 2
+USER_GROUP=user1 user2 ugroup1
+.br
+
+.SH Default
+
+.sp 2
+all (all users in the cluster can submit jobs to the service
+class)
+.sp 2
+
+.ce 1000
+\fBExamples\fR
+.ce 0
+
+.sp 2
+*  
+   The resource-based service class AccountingSLA guarantees
+   hosts to the user group accountingUG for jobs submitted to the
+   queue longjobs. Jobs submitted to this queue by this usergroup
+   without an SLA specified will be automatically attached to the
+   SLA. The guaranteed resource pools used by the SLA are
+   configured in lsb.resources.
+.sp 2
+   Begin ServiceClass 
+.br
+   
+.br
+   NAME=AccountingSLA 
+.br
+   GOALS=[GUARANTEE] 
+.br
+   DESCRIPTION="Guaranteed hosts for the accounting department" 
+.br
+   ACCESS_CONTROL = QUEUES[longjobs] USERS[accountingUG]
+.br
+   AUTO_ATTACH = Y
+.br
+   
+.br
+   End ServiceClass
+.br
+   
+.br
+
+.sp 2
+*  
+   The service class \fRSooke\fR defines one deadline goal that
+   is active during working hours between 8:30 AM and 4:00 PM.
+   All jobs in the service class should complete by the end of
+   the specified time window. Outside of this time window, the
+   SLA is inactive and jobs are scheduled without any goal being
+   enforced:
+.sp 2
+   Begin ServiceClass 
+.br
+   
+.br
+   NAME=Sooke
+.br
+   PRIORITY=20 
+.br
+   GOALS=[DEADLINE timeWindow (8:30-16:00)] 
+.br
+   DESCRIPTION="working hours" 
+.br
+   
+.br
+   End ServiceClass
+.br
+   
+.br
+
+.sp 2
+*  
+   The service class \fRNanaimo\fR defines a deadline goal that
+   is active during the weekends and at nights.
+.sp 2
+   Begin ServiceClass 
+.br
+   
+.br
+   NAME=Nanaimo 
+.br
+   PRIORITY=20 
+.br
+   GOALS=[DEADLINE timeWindow (5:18:00-1:8:30 20:00-8:30)] 
+.br
+   DESCRIPTION="weekend nighttime regression tests" 
+.br
+   
+.br
+   End ServiceClass
+.br
+   
+.br
+
+.sp 2
+*  
+   The service class \fRSidney\fR defines a throughput goal of 6
+   jobs per hour that is always active:
+.sp 2
+   Begin ServiceClass 
+.br
+   
+.br
+   NAME=Sidney
+.br
+   PRIORITY=20 
+.br
+   GOALS=[THROUGHPUT 6 timeWindow ()] 
+.br
+   DESCRIPTION="constant throughput" 
+.br
+   
+.br
+   End ServiceClass
+.br
+   
+.br
+
+.sp 2
+*  
+   The service class \fRTofino\fR defines two velocity goals in a
+   24 hour period. The first goal is to have a maximum of 10
+   concurrently running jobs during business hours (9:00 a.m. to
+   5:00 p.m). The second goal is a maximum of 30 concurrently
+   running jobs during off-hours (5:30 p.m. to 8:30 a.m.)
+.sp 2
+   Begin ServiceClass 
+.br
+   
+.br
+   NAME=Tofino 
+.br
+   PRIORITY=20 
+.br
+   GOALS=[VELOCITY 10 timeWindow (9:00-17:00)] [VELOCITY 30 timeWindow (17:30-8:30)]
+.br
+   DESCRIPTION="day and night velocity" 
+.br
+   
+.br
+   End ServiceClass
+.br
+   
+.br
+
+.sp 2
+*  
+   The service class \fRDuncan\fR defines a velocity goal that is
+   active during working hours (9:00 a.m. to 5:30 p.m.) and a
+   deadline goal that is active during off-hours (5:30 p.m. to
+   9:00 a.m.) Only users \fRuser1\fR and \fRuser2\fR can submit
+   jobs to this service class.
+.sp 2
+   Begin ServiceClass 
+.br
+   
+.br
+   NAME=Duncan
+.br
+   PRIORITY=23 
+.br
+   USER_GROUP=user1 user2 
+.br
+   GOALS=[VELOCITY 8 timeWindow (9:00-17:30)] [DEADLINE timeWindow (17:30-9:00)]
+.br
+   DESCRIPTION="Daytime/Nighttime SLA" 
+.br
+   
+.br
+   End ServiceClass
+.br
+   
+.br
+
+.sp 2
+*  
+   The service class \fRTevere\fR defines a combination similar
+   to \fRDuncan\fR, but with a deadline goal that takes effect
+   overnight and on weekends. During the working hours in
+   weekdays the velocity goal favors a mix of short and medium
+   jobs.
+.sp 2
+   Begin ServiceClass 
+.br
+   
+.br
+   NAME=Tevere 
+.br
+   PRIORITY=20 
+.br
+   GOALS=[VELOCITY 100 timeWindow (9:00-17:00)] [DEADLINE timeWindow (17:30-8:30 5:17:30-1:8:30)] 
+.br
+   DESCRIPTION="nine to five"
+.br
+   
+.br
+   End ServiceClass

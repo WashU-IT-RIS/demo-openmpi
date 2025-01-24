@@ -1,0 +1,25 @@
+.TH "extsched_rmEntAndFreeData" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+extsched_rmEntAndFreeData \- extsched_rmEntAndFreeData 
+Remove the given hash table entry and free memory associated with it, and free hData.
+.PP
+\fB#include <lssched.h>\fP
+.PP
+\fB void extsched_rmEntAndFreeData(INT_hTab *t, INT_hEnt *e, void (*freeFunc)(void *))\fP
+.PP
+.SH "Parameters:"
+\fIt\fP [IN|OUT] pointer to a hash table object 
+.br
+\fIe\fP [IN|OUT] pointer to entry object, after this call e is no longer valid 
+.br
+\fIfreeFunc\fP [IN] pointer to a custom free function, if NULL free() is used
+.PP
+.SH "Returns:"
+void  is no return value. 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

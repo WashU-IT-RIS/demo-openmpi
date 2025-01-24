@@ -1,0 +1,369 @@
+.TH "ls_getacctrec" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ls_getacctrec \- ls_getacctrec 
+Reads the next record from the opened log file created by RES.
+.PP
+\fBls_getacctrec\fP reads the next record from the opened log file created by RES (see lsf.acct). It returns a pointer to the \fBlsfAcctRec\fP structure.
+.PP
+Memory for the \fBlsfAcctRec\fP structure is statically allocated and will be overwritten by the next \fBls_getacctrec\fP call.
+.PP
+\fB #include <stdio.h> 
+.br
+#include <lsf/lsf.h>\fP
+.PP
+\fB struct \fBlsfAcctRec\fP *ls_getacctrec(FILE *fp, int *lineNum) struct lsfAcctRec_ext *ls_getacctrec_ext(FILE *fp, int *lineNum) \fP
+.PP
+.SH "Parameters:"
+\fI*fp\fP File pointer of lsf.acct file. 
+.br
+\fI*lineNum\fP Line number of lsf.acct file.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBlsfAcctRec\fP 
+.br
+\fBlsfRusage\fP 
+.br
+\fBhRusage\fP
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+struct \fBlsfAcctRec\fP *: A pointer to an \fBlsfAcctRec\fP record. 
+.br
+ Function was successful.
+.PP
+NULL 
+.br
+ Function failed.
+.PP
+.SH "Errors:" 
+.PP
+Systems that conform to the Single UNIX specification are not required to detect error conditions for this function.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+none
+.PP
+.SH "See also:"
+none 
+.PP
+
+.ad l
+.nh
+.SH NAME
+lsfAcctRec \- LSF Acct record.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBpid\fP"
+.br
+.ti -1c
+.RI "char * \fBusername\fP"
+.br
+.ti -1c
+.RI "int \fBexitStatus\fP"
+.br
+.ti -1c
+.RI "time_t \fBdispTime\fP"
+.br
+.ti -1c
+.RI "time_t \fBtermTime\fP"
+.br
+.ti -1c
+.RI "char * \fBfromHost\fP"
+.br
+.ti -1c
+.RI "char * \fBexecHost\fP"
+.br
+.ti -1c
+.RI "char * \fBcwd\fP"
+.br
+.ti -1c
+.RI "char * \fBcmdln\fP"
+.br
+.ti -1c
+.RI "struct \fBlsfRusage\fP \fBlsfRu\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+LSF Acct record. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBlsfAcctRec::pid\fP"
+.PP
+Pid. 
+.PP
+.SS "char* \fBlsfAcctRec::username\fP"
+.PP
+User name. 
+.PP
+.SS "int \fBlsfAcctRec::exitStatus\fP"
+.PP
+Exit status. 
+.PP
+.SS "time_t \fBlsfAcctRec::dispTime\fP"
+.PP
+Display time. 
+.PP
+.SS "time_t \fBlsfAcctRec::termTime\fP"
+.PP
+Terminate time. 
+.PP
+.SS "char* \fBlsfAcctRec::fromHost\fP"
+.PP
+From host. 
+.PP
+.SS "char* \fBlsfAcctRec::execHost\fP"
+.PP
+Execution host. 
+.PP
+.SS "char* \fBlsfAcctRec::cwd\fP"
+.PP
+Current working directory. 
+.PP
+.SS "char* \fBlsfAcctRec::cmdln\fP"
+.PP
+Command line. 
+.PP
+.SS "struct \fBlsfRusage\fP \fBlsfAcctRec::lsfRu\fP"
+.PP
+LSF resource usage. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+lsfRusage \- LSF resource usage.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "double \fBru_utime\fP"
+.br
+.ti -1c
+.RI "double \fBru_stime\fP"
+.br
+.ti -1c
+.RI "double \fBru_maxrss\fP"
+.br
+.ti -1c
+.RI "double \fBru_ixrss\fP"
+.br
+.ti -1c
+.RI "double \fBru_ismrss\fP"
+.br
+.ti -1c
+.RI "double \fBru_idrss\fP"
+.br
+.ti -1c
+.RI "double \fBru_isrss\fP"
+.br
+.ti -1c
+.RI "double \fBru_minflt\fP"
+.br
+.ti -1c
+.RI "double \fBru_majflt\fP"
+.br
+.ti -1c
+.RI "double \fBru_nswap\fP"
+.br
+.ti -1c
+.RI "double \fBru_inblock\fP"
+.br
+.ti -1c
+.RI "double \fBru_oublock\fP"
+.br
+.ti -1c
+.RI "double \fBru_ioch\fP"
+.br
+.ti -1c
+.RI "double \fBru_msgsnd\fP"
+.br
+.ti -1c
+.RI "double \fBru_msgrcv\fP"
+.br
+.ti -1c
+.RI "double \fBru_nsignals\fP"
+.br
+.ti -1c
+.RI "double \fBru_nvcsw\fP"
+.br
+.ti -1c
+.RI "double \fBru_nivcsw\fP"
+.br
+.ti -1c
+.RI "double \fBru_exutime\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+LSF resource usage. 
+.SH "Field Documentation"
+.PP 
+.SS "double \fBlsfRusage::ru_utime\fP"
+.PP
+User time used. 
+.PP
+.SS "double \fBlsfRusage::ru_stime\fP"
+.PP
+System time used. 
+.PP
+.SS "double \fBlsfRusage::ru_maxrss\fP"
+.PP
+Max rss. 
+.PP
+.SS "double \fBlsfRusage::ru_ixrss\fP"
+.PP
+Integral shared text size. 
+.PP
+.SS "double \fBlsfRusage::ru_ismrss\fP"
+.PP
+Ultrix only: integral shared memory size. 
+.PP
+.SS "double \fBlsfRusage::ru_idrss\fP"
+.PP
+Integral unshared data. 
+.PP
+.SS "double \fBlsfRusage::ru_isrss\fP"
+.PP
+Integral unshared stack. 
+.PP
+.SS "double \fBlsfRusage::ru_minflt\fP"
+.PP
+Page reclaims. 
+.PP
+.SS "double \fBlsfRusage::ru_majflt\fP"
+.PP
+Page faults. 
+.PP
+.SS "double \fBlsfRusage::ru_nswap\fP"
+.PP
+Swaps. 
+.PP
+.SS "double \fBlsfRusage::ru_inblock\fP"
+.PP
+Block input operations. 
+.PP
+.SS "double \fBlsfRusage::ru_oublock\fP"
+.PP
+Block output operations. 
+.PP
+.SS "double \fBlsfRusage::ru_ioch\fP"
+.PP
+Hp only: # of characters read/written. 
+.PP
+.SS "double \fBlsfRusage::ru_msgsnd\fP"
+.PP
+Messages sent. 
+.PP
+.SS "double \fBlsfRusage::ru_msgrcv\fP"
+.PP
+Messages received. 
+.PP
+.SS "double \fBlsfRusage::ru_nsignals\fP"
+.PP
+Signals received. 
+.PP
+.SS "double \fBlsfRusage::ru_nvcsw\fP"
+.PP
+Voluntary context switches. 
+.PP
+.SS "double \fBlsfRusage::ru_nivcsw\fP"
+.PP
+Involuntary. 
+.PP
+.SS "double \fBlsfRusage::ru_exutime\fP"
+.PP
+Convex only: exact user time used. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+hRusage \- rusage information per host  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBname\fP"
+.br
+.ti -1c
+.RI "long \fBmem\fP"
+.br
+.ti -1c
+.RI "long \fBswap\fP"
+.br
+.ti -1c
+.RI "long \fButime\fP"
+.br
+.ti -1c
+.RI "long \fBstime\fP"
+.br
+.ti -1c
+.RI "PKVP \fBhostExtendInfoPKVPs\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+rusage information per host 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fBhRusage::name\fP"
+.PP
+The host name. 
+.PP
+.SS "long \fBhRusage::mem\fP"
+.PP
+Total resident memory usage in kbytes of all currently running processes in given host. 
+.PP
+
+.SS "long \fBhRusage::swap\fP"
+.PP
+Total virtual memory usage in kbytes of all currently running processes in given process groups. 
+.PP
+
+.SS "long \fBhRusage::utime\fP"
+.PP
+Cumulative total user time in seconds on given host. 
+.PP
+.SS "long \fBhRusage::stime\fP"
+.PP
+Cumulative total system time in seconds on given host. 
+.PP
+.SS "PKVP \fBhRusage::hostExtendInfoPKVPs\fP"
+.PP
+extended info for future information passing, e.g. 
+.PP
+: exit code, pid/pgids 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

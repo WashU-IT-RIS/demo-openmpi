@@ -1,0 +1,218 @@
+
+.ad l
+
+.TH bimages 1 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBbimages\fR
+.ce 0
+
+.sp 2
+Displays information on Docker container images
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBbimages\fR [\fB-m\fR host_name ... | \fB-m\fR host_group ... ]
+[\fB-o "\fRfield_name ...\fB"\fR [\fB-json\fR]]
+[image-reponame[\fB:\fRimage-tagname]]
+.sp 2
+\fBbimages\fR [\fB-m\fR host_name ... | \fB-m\fR host_group ...]
+[\fB-o "\fRfield_name ...\fB"\fR ] [\fB-noheader\fR]
+[image-reponame[\fB:\fRimage-tagname]]
+.sp 2
+\fBbimages\fR [\fB-h\fR | \fB-V\fR]
+.SH Description
+
+.sp 2
+By default, returns the following information about all
+LSF-invoked Docker container images: container image name, size
+of the image file, how many pending job tasks will use the
+container image, LSF host name, how many running job tasks and
+container instances are using the container image.
+.sp 2
+Pending and running job tasks are not counted for container jobs
+with \fRUNKNOWN\fR status.
+.sp 2
+Job arrays are considered as multi-job elements in this command.
+.SH Options
+
+.sp 2
+\fB-json\fR
+.br
+         Displays the customized output in JSON format.
+.sp 2
+         When specified, bimages -o displays the customized
+         output in the JSON format.
+.sp 2
+         This option only applies to output for the bimages -o
+         command for customized output. This has no effect when
+         running bimages without the -o option.
+.sp 2
+\fB-m \fIhost_name\fB... | -m \fIhost_group\fB ...\fR
+.br
+         Displays information on containers that are invoked by
+         LSF on the specified hosts. If a host group is
+         specified, bimages displays containers that are invoked
+         by LSF on every host in the host group.
+.sp 2
+         If -m is not specified, bimages displays containers that
+         are invoked by LSF on every host in the cluster.
+.sp 2
+\fB-noheader\fR
+.br
+         Removes the column headings from the output.
+.sp 2
+         When specified, bimages displays the values of the
+         fields without displaying the names of the fields. This
+         is useful for script parsing, when column headings are
+         not necessary.
+.sp 2
+         This option cannot be used with the -json option.
+.sp 2
+\fB-o "\fIfield_name\fB ..."\fR
+.br
+         Sets the customized output format. Specify which bimages
+         fields and in which order to display.
+.sp 2
+         The following are the field names used to specify the
+         bimages fields to display and units of measurement for
+         the displayed field:
+.sp 2
+         \fBTable 1. Output fields for bimages\fR
+.sp 2
++------------------------------------+-------------------------+
+| Field name                         | Unit                    |
++------------------------------------+-------------------------+
+| REPO                               |                         |
++------------------------------------+-------------------------+
+| TAGS                               |                         |
++------------------------------------+-------------------------+
+| IMAGE_NAME                         |                         |
++------------------------------------+-------------------------+
+| SIZE                               | MB                      |
++------------------------------------+-------------------------+
+| DEMAND                             |                         |
++------------------------------------+-------------------------+
+| HOST_NAME                          |                         |
++------------------------------------+-------------------------+
+| NJOBS                              |                         |
++------------------------------------+-------------------------+
+| NCTNRS                             |                         |
++------------------------------------+-------------------------+
+| LAST_USED                          | time stamp              |
++------------------------------------+-------------------------+
+| TOTAL_NJOBS                        |                         |
++------------------------------------+-------------------------+
+| PULLED_TIME                        | time stamp              |
++------------------------------------+-------------------------+
+| IMAGE_ID                           |                         |
++------------------------------------+-------------------------+
+.sp 2
+         Field names are space-separated and case-sensitive.
+.sp 2
+         For example,
+.sp 2
+         \fRbimages -o "IMAGE_NAME SIZE HOST_NAME"\fR
+.sp 2
+\fB\fIimage-reponame\fB[:\fIimage-tagname\fB]\fR
+.br
+         Displays information about the specified container
+         image. If there are no specified image tags, bimages\fI
+         image-reponame\fR displays the latest container image.
+.sp 2
+         If this argument is not specified, bimages displays all
+         container images.
+.sp 2
+\fB-h \fR
+.br
+         Prints command usage to stderr and exits.
+.sp 2
+\fB-V \fR
+.br
+         Prints LSF release version to stderr and exits.
+.SH Default Output
+
+.sp 2
+Displays the following fields:
+.sp 2
+\fBIMAGE_NAME\fR
+.br
+         The name of the container image. This is a combination
+         of the container image repository and tag names.
+.sp 2
+\fBSIZE\fR
+.br
+         The size of the container image file.
+.sp 2
+\fBDEMAND\fR
+.br
+         The number of pending job tasks that will use the
+         container image. This number includes jobs in the
+         \fRPENDING\fR and \fRPSUSPEND\fR states, but does not
+         include jobs in the \fRFWD_PEND\fR or any other states.
+.sp 2
+\fBHOST_NAME\fR
+.br
+         Name of the LSF host.
+.sp 2
+\fBNJOBS\fR
+.br
+         The number of running job tasks that are using the
+         container image. This number includes jobs in the
+         \fRRUNNING\fR, \fRUSUSPEND\fR, and \fRSSUSPEND\fR
+         states.
+.sp 2
+\fBNCTNRS\fR
+.br
+         The number of running container instances that are using
+         the container image on the host. This number includes
+         container instances that are started by other
+         applications.
+.SH Customized Output (-o)
+
+.sp 2
+In addition to the fields displayed for the default output, the
+-o option can display the following specified fields:
+.sp 2
+\fBREPO\fR
+.br
+         The name of the container image repository.
+.sp 2
+\fBTAGS\fR
+.br
+         The name of the container image tags.
+.sp 2
+\fBLAST_USED\fR
+.br
+         The time that the container image was last used by an
+         LSF job. If a running job is using the container image,
+         the value is the current time, otherwise, this is the
+         time that the job ended. A hyphen (\fR-\fR) indicates
+         that the container image was never used.
+.sp 2
+\fBTOTAL_NJOBS\fR
+.br
+         The total number of running job tasks that are using the
+         container image on all hosts. This number is the sum of
+         all NJOBS values on all LSF hosts with the same
+         container image.
+.sp 2
+\fBPULLED_TIME\fR
+.br
+         The time that the container image was last pulled.
+.sp 2
+\fBIMAGE_ID\fR
+.br
+         The container image ID, in table format. This shows the
+         first 12 bits of the container image ID, which is the
+         same output format as the docker images command. When
+         shown in JSON format, this displays the full image ID.
+.SH See also
+
+.sp 2
+\fBLSF_IMAGE_INFO_PUBLISH_INTERVAL\fR and
+\fBLSF_IMAGE_INFO_EXPIRE_INTERVAL\fR parameters in the lsf.conf
+file.

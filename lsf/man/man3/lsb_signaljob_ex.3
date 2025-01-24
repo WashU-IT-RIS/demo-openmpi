@@ -1,0 +1,86 @@
+.TH "lsb_signaljob_ex" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_signaljob_ex \- lsb_signaljob_ex 
+Sends a signal to a job.
+.PP
+Generally, use \fBlsb_signaljob_ex\fP to apply any UNIX signal to a job or process.
+.PP
+Any program using this API must be setuid to root if LSF_AUTH is not defined in the lsf.conf file.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB int lsb_signaljob_ex (LS_LONG_INT jobId, int sigValue, struct \fBsignalExt\fP *)\fP
+.PP
+.SH "Parameters:"
+\fIjobId\fP The job to be signaled. If a job in a job array is to be signaled, use the array form jobID[ i ] where jobID is the job array name, and i is the index value. 
+.br
+\fIsigValue\fP SIGSTOP, SIGCONT, SIGKILL or some other UNIX signal. 
+.br
+\fI*sigExt\fP The external information.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBsignalExt\fP
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+int:0 
+.br
+ The function was successful. 
+.PP
+int:-1 
+.br
+ The function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lsberrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+bkill 
+.br
+.PP
+.SH "Files:" 
+.PP
+${LSF_ENVDIR:-/etc}/lsf.conf
+.PP
+.SH "See also:"
+\fBlsb_signaljob\fP 
+.PP
+
+.ad l
+.nh
+.SH NAME
+signalExt \- Exteral job signal information.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBreason\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Exteral job signal information. 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fBsignalExt::reason\fP"
+.PP
+Job kill/stop/resume reason. 
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

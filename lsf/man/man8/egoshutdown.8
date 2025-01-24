@@ -1,0 +1,37 @@
+.ds ]W %
+.ds ]L
+.hy 0
+.nh
+.na
+.TH egoshutdown 8 "Mar 2014   EGO 3.4.0"
+.br
+
+.SH NAME
+\fBegoshutdown\fR - Shuts down a EGO cluster.
+
+.SH Synopsis
+.BR
+.PP
+ egoshutdown.sh  egoshutdown.bat 
+.SH Description
+.BR
+.PP
+
+.PP
+Stops all EGO components (EGO daemons or processes such as lim, pem, 
+vemkd, egosc), stops the management console, and, if applicable, 
+stops various components belonging to clustered application managers that might be 
+running on EGO (for example, the IBM Spectrum Symphony Session Director).
+
+.PP
+Use this command when you want to shut down a cluster.
+
+.PP
+This is an administrative command. You must be a cluster administrator to issue 
+this command. On UNIX, you must also be logged on with root permissions to 
+issue this command; on Windows, you must be logged on as the OS account 
+administrator, egoadmin.
+
+.PP
+You can issue this command from any host in the cluster.
+

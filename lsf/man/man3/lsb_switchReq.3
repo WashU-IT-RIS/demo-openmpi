@@ -1,0 +1,56 @@
+.TH "lsb_switchReq" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_switchReq \- lsb_switchReq 
+Switches an unfinished job to another queue.
+.PP
+\fBlsb_switchReq\fP switches an unfinished job or an unfinished job array with elements list to another queue. Effectively, the target job or job array elements will be removed from its current queue and re-queued in the new queue.
+.PP
+The switch operation can be performed only when the job is acceptable to the new queue. If the switch operation is unsuccessful, the job will stay where it is.A user can only switch his/her own unfinished jobs, but root and the LSF administrator can switch any unfinished job.
+.PP
+Any program using this API must be setuid to root if LSF_AUTH is not defined in the lsf.conf file.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB int lsb_switchReq (SwitchReq *, SwitchRep *)\fP
+.PP
+.SH "Parameters:"
+\fIswitchReq\fP The switch request contains the job or job array elements to be switched. What's more, the switch request also contains the new queue for the job and eswitch application names pointed by bswitch -a if there has.
+.PP
+.SH "Data Structures:" 
+.PP
+switchReq
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+int:0 
+.br
+ The function was successful. 
+.PP
+int:-1 
+.br
+ Function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lsberrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+bswitch
+.PP
+.SH "Files:" 
+.PP
+${LSF_ENVDIR:-/etc}/lsf.conf
+.PP
+.SH "See also:"
+none 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

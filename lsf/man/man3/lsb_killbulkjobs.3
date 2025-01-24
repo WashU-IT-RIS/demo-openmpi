@@ -1,0 +1,114 @@
+.TH "lsb_killbulkjobs" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_killbulkjobs \- lsb_killbulkjobs 
+Kills bulk jobs as soon as possible.
+.PP
+Use \fBlsb_killbulkjobs\fP to kill bulk jobs on a local host immediately, or to kill other jobs as soon as possible. If mbatchd rejects the request, it issues NULL as the reservation ID.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB int lsb_killbulkjobs(struct signalBulkJobs *s)\fP
+.PP
+.SH "Parameters:"
+\fI*s\fP The signal to a group of jobs.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBsignalBulkJobs\fP
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+int:0 
+.br
+ The bulk jobs were successfully killed. 
+.PP
+int:-1 
+.br
+ The bulk jobs were not killed.
+.PP
+.SH "Error:" 
+.PP
+On failure, lsberrno is set to indicate the error.
+.PP
+.SH "Equivalent line command:" 
+.PP
+bkill -b
+.PP
+.SH "Files:" 
+.PP
+none
+.PP
+.SH "See also:"
+none 
+.PP
+
+.ad l
+.nh
+.SH NAME
+signalBulkJobs \- Signal a group of jobs.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBsignal\fP"
+.br
+.ti -1c
+.RI "int \fBnjobs\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT * \fBjobs\fP"
+.br
+.ti -1c
+.RI "int \fBflags\fP"
+.br
+.ti -1c
+.RI "int \fBnumkvs\fP"
+.br
+.ti -1c
+.RI "struct \fBkeyVal\fP * \fBkvs\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Signal a group of jobs. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBsignalBulkJobs::signal\fP"
+.PP
+Signal type. 
+.PP
+.SS "int \fBsignalBulkJobs::njobs\fP"
+.PP
+Number of jobs. 
+.PP
+.SS "LS_LONG_INT* \fBsignalBulkJobs::jobs\fP"
+.PP
+Jobids list. 
+.PP
+.SS "int \fBsignalBulkJobs::flags\fP"
+.PP
+Flags: reserved for future use. 
+.PP
+.SS "int \fBsignalBulkJobs::numkvs\fP"
+.PP
+Number of key value pair. 
+.PP
+.SS "struct \fBkeyVal\fP* \fBsignalBulkJobs::kvs\fP"
+.PP
+The key value pair used to pass signal reason and issue host to mbatchd. 
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

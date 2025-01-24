@@ -1,0 +1,58 @@
+.TH "ls_getclustername" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ls_getclustername \- ls_getclustername 
+Returns the name of the local load sharing cluster.
+.PP
+This routines provides access to LSF cluster configuration information. \fBls_getclustername\fP returns the name of the local load sharing cluster defined in the configuration files.
+.PP
+\fB#include <lsf/lsf.h> 
+.br
+ char *ls_getclustername(void)\fP
+.PP
+.SH "Parameters:"
+\fInone\fP 
+.PP
+.SH "Data Structures:" 
+.PP
+none
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+char *:A pointer to cluster name. 
+.br
+ Function successful. 
+.PP
+NULL 
+.br
+ Function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lserrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+$LSF_CONFDIR/lsf.shared 
+.br
+$LSF_CONFDIR/lsf.cluster.cluster_name
+.PP
+.SH "See also:"
+\fBls_info\fP 
+.PP
+\fBls_getmastername\fP 
+.PP
+\fBls_getmodelfactor\fP 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

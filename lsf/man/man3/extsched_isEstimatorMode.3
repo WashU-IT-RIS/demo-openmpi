@@ -1,0 +1,37 @@
+.TH "extsched_isEstimatorMode" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+extsched_isEstimatorMode \- extsched_isEstimatorMode 
+This function reports if the scheduler binary is running in estimator mode.
+.PP
+This is not the main scheduler. The scheduler is started in this mode to determine an estimate of job start times.
+.PP
+NOTE: If it is not appropriate for a plugin to be invoked if the scheduler is in estimator mode the plugin's sched_init() function should return 1 without registering any callbacks. This will disable the plugin.
+.PP
+int sched_init( void *p ) { if( extsched_isEstimatorMode() ) { return(1); }
+.PP
+... }
+.PP
+\fB#include <lssched.h>\fP
+.PP
+\fB int extsched_isEstimatorMode(void)\fP
+.PP
+.SH "Parameters:" 
+.PP
+none 
+.br
+.PP
+.SH "Returns:"
+int:1 
+.br
+ The scheduler is in estimator mode. 
+.PP
+int:0 
+.br
+ The scheduler is not in estimator mode. 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

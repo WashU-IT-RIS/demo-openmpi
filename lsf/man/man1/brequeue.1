@@ -1,0 +1,167 @@
+
+.ad l
+
+.TH brequeue 1 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBbrequeue\fR
+.ce 0
+
+.sp 2
+Kills and requeues a job.
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBbrequeue\fR [\fB-a\fR] [\fB-d\fR] [\fB-e\fR] [\fB-H\fR]
+[\fB-p\fR] [\fB-r\fR] [\fB-J\fR job_name | \fB-J
+"\fRjob_name\fB[\fRindex_list\fB]"\fR] [\fB-u\fR user_name |
+\fB-u all\fR] [job_ID | \fB"\fRjob_ID\fB[\fRindex_list\fB]"\fR
+ ...]
+.sp 2
+\fBbrequeue\fR [\fB-h\fR | \fB-V\fR]
+.SH Description
+
+.sp 2
+You can use the brequeue command only on jobs that you own. root
+or the LSF cluster administrator or LSF group administrator can
+requeue jobs for any user.
+.sp 2
+Kills a running (\fRRUN\fR), user-suspended (\fRUSUSP\fR), or
+system-suspended (\fRSSUSP\fR) job and returns it to the queue. A
+job that is killed and requeued retains its submit time but is
+dispatched according to its requeue time. When the job is
+requeued, it is assigned the \fRPEND\fR status or \fRPSUSP\fR if
+the -H option is used. after the job is dispatched, it starts
+over from the beginning. The requeued job keeps the same job ID.
+.sp 2
+When the \fBJOB_INCLUDE_POSTPROC=Y\fR parameter is set in the
+lsb.params file or in an application profile in the
+lsb.applications file, job requeue occurs only after
+post-execution processing, not when the job finishes. When used
+for host-based post-execution processing, configure a longer time
+period to allow the operation to run.
+.sp 2
+Use the brequeue command to requeue job arrays or job array
+elements.
+.sp 2
+By default, the brequeue command kills and requeues your most
+recently submitted job when no job ID is specified.
+.sp 2
+In the LSF multicluster capability lease model, you can use the
+brequeue command only on jobs in local queues. A job that is
+killed and requeued is assigned a new job ID on the execution
+cluster, but it retains the same job ID on the submission
+cluster. For example, a job that is submitted from cluster A that
+is killed and requeued and then runs on execution cluster B is
+assigned a new job ID on cluster B. However, when the bjobs
+command runs from submission cluster A, the job is displayed with
+the original job ID. When the bjobs command runs from execution
+cluster B, the job is displayed with the new job ID.
+.sp 2
+In the LSF multicluster capability job forwarding model, use the
+brequeue -p command to requeue specified remote pending jobs. Use
+the brequeue -a command to requeue all non-pending jobs
+(including running jobs, suspended jobs, jobs with \fREXIT\fR or
+\fRDONE\fR status) in the local cluster. The brequeue -a command
+does not requeue pending jobs in the local cluster.
+.sp 2
+The only difference between the -p and -a options is the job
+dispatch order. Running the brequeue -p command on the submission
+cluster requeues a remote job to the top of the queue so that the
+requeued job is dispatched first no matter which position it is
+in the pending job list. The brequeue -a command sends the remote
+job to the end of the queue the same way as in the local cluster.
+.sp 2
+When absolute job priority scheduling (APS) is configured in the
+queue, specified requeued jobs are treated as newly submitted
+jobs for APS calculation. The job priority, system, and the
+\fRADMIN\fR APS factors are reset on requeue.
+.sp 2
+When you use multi-phase rusage resource requirement strings,
+such as with the bsub -R command, the requeued job is treated as
+a new job and resources are reserved from the beginning of the
+first phase.
+.SH Options
+
+.sp 2
+\fB-a\fR
+.br
+         Requeues all local non-pending jobs, including running
+         jobs, suspending jobs, jobs with \fREXIT\fR or
+         \fRDONE\fR status, and pending remote jobs. It does not
+         requeue pending jobs in the local cluster.
+.sp 2
+\fB-d\fR
+.br
+         Requeues jobs that finished running with \fRDONE\fR job
+         status.
+.sp 2
+\fB-e\fR
+.br
+         Requeues jobs that terminated abnormally with \fREXIT\fR
+         job status.
+.sp 2
+\fB-H\fR
+.br
+         Requeues jobs to \fRPSUSP\fR job status.
+.sp 2
+\fB-p\fR
+.br
+         In the LSF multicluster capability job forwarding model,
+         requeues specified jobs that are pending in a remote
+         cluster for LSF multicluster capability job forwarding
+         modes.
+.sp 2
+\fB-r\fR
+.br
+         Requeues jobs that are running.
+.sp 2
+\fB-J \fIjob_name\fB | -J "\fIjob_name[index_list]\fB"\fR
+.br
+         Operates on the specified job.
+.sp 2
+         The job name can be up to 4094 characters long. Job
+         names are not unique.
+.sp 2
+         The wildcard character (\fR*\fR) can be used anywhere
+         within a job name, but it cannot appear within an array
+         index. For example, the pattern \fRjob*\fR returns
+         \fRjobA\fR and \fRjobarray[1]\fR. The \fR*AAA*[1]\fR
+         pattern returns the first element in job arrays with
+         names that contain \fRAAA\fR. However, the pattern
+         \fRjob1[*]\fR does not return anything since the
+         wildcard is within the array index.
+.sp 2
+\fB-u \fIuser_name\fB | -u all \fR
+.br
+         Operates on the specified user’s jobs or all jobs. To
+         specify a Windows user account, include the domain name
+         in uppercase letters and use a single backslash at a
+         Windows command prompt. On a UNIX or Linux command line,
+         use a double backslash.
+.sp 2
+         Only \fRroot\fR and LSF administrators can requeue jobs
+         that are submitted by other users.
+.sp 2
+\fB\fIjob_ID\fB |"\fIjob_ID[index_list]\fB"\fR
+.br
+         Operates on the specified job or job array elements.
+.sp 2
+         The value of 0 for \fIjob_ID\fR is ignored.
+.sp 2
+\fB-h\fR
+.br
+         Prints command usage to stderr and exits.
+.sp 2
+\fB-V\fR
+.br
+         Prints LSF release version to stderr and exits.
+.SH Limitations
+
+.sp 2
+The brequeue command cannot be used on interactive batch jobs.
+The brequeue command kills only interactive batch jobs, it does
+not restart them.

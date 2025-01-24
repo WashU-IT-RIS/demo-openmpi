@@ -1,0 +1,150 @@
+.TH "dm_list_tags" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+dm_list_tags \- dm_list_tags 
+Use this function to query the DM for a list of tags contained in its staging area.
+.PP
+\fB#include <lsf/dm.def.h>
+.br
+ include <lsf/dm.api.h>\fP
+.PP
+\fB struct \fBdmTagInfo\fP *dm_list_tags(char *user, int *numTags, struct \fBremoteDMs\fP *remoteDMD)\fP
+.PP
+.SH "Parameters:"
+\fI*user\fP The user name (can be 'all'), this is optional.
+.br
+\fI*numTags\fP The number of entries in the returned tags array.
+.br
+\fI*remoteDMD\fP The remote cluster, this is optional.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBstruct\fP \fBremoteDMs\fP 
+.br
+\fBstruct\fP \fBdmTagInfo\fP
+.PP
+.SH "Returns:"
+struct \fBdmTagInfo\fP *:An array of tags info structures for tags that are found in the DM's staging area. This memory is dynamically allocated inside the library and it is the caller's responsibility to free that memory 
+.br
+ Function was successful.
+.PP
+-1 
+.br
+ Function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, daserrno is set to indicate the error. 
+.PP
+
+.ad l
+.nh
+.SH NAME
+remoteDMs \- used by dm_cache(), dm_list_tags(), dm_delete_tag(), dm_chgrp(), dm_chmod(), getRegisteredDmdCluster() APIs  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBclustername\fP"
+.br
+.ti -1c
+.RI "char * \fBservers\fP"
+.br
+.ti -1c
+.RI "int \fBport\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+used by dm_cache(), dm_list_tags(), dm_delete_tag(), dm_chgrp(), dm_chmod(), getRegisteredDmdCluster() APIs 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fBremoteDMs::clustername\fP"
+.PP
+lsf cluster name 
+.PP
+.SS "char* \fBremoteDMs::servers\fP"
+.PP
+space separated list of host names where dmd runs 
+.PP
+.SS "int \fBremoteDMs::port\fP"
+.PP
+port dmd is listening on 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+dmTagInfo \- used by dm_list_tags() to provide results  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBtagName\fP"
+.br
+.ti -1c
+.RI "char * \fBtagOwner\fP"
+.br
+.ti -1c
+.RI "time_t \fBlastDownloadTime\fP"
+.br
+.ti -1c
+.RI "time_t \fBlastUploadTime\fP"
+.br
+.ti -1c
+.RI "int \fBchgrpErrno\fP"
+.br
+.ti -1c
+.RI "char * \fBgroupName\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+used by dm_list_tags() to provide results 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fBdmTagInfo::tagName\fP"
+.PP
+The tag name. 
+.PP
+
+.SS "char* \fBdmTagInfo::tagOwner\fP"
+.PP
+The owner of the tag. 
+.PP
+.SS "time_t \fBdmTagInfo::lastDownloadTime\fP"
+.PP
+Time of last download. 
+.PP
+
+.SS "time_t \fBdmTagInfo::lastUploadTime\fP"
+.PP
+Time of last upload. 
+.PP
+
+.SS "int \fBdmTagInfo::chgrpErrno\fP"
+.PP
+The chgrp error number. 
+.PP
+
+.SS "char* \fBdmTagInfo::groupName\fP"
+.PP
+The group of the tag. 
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

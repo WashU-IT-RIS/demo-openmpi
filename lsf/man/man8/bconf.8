@@ -1,0 +1,732 @@
+
+.ad l
+
+.TH bconf 8 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBbconf\fR
+.ce 0
+
+.sp 2
+Submits live reconfiguration requests, updating configuration
+settings in active memory without restarting daemons.
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBbconf\fR action object_type=object_name
+"value_pair[;value_pair...]"] [-c "comment"] [-f]
+.sp 2
+\fBbconf \fR\fBhist\fR [-l|-w] [-o object_type] [-u user_name]
+[-T time_period] [-a action] [-f config_file] [history_file]
+.sp 2
+\fBbconf\fR \fBdisable\fR
+.sp 2
+\fBbconf\fR \fB-h\fR [action [object_type]]
+.sp 2
+\fBbconf\fR \fB-pack\fR pack_file_name
+.sp 2
+\fBbconf\fR \fB-V\fR
+.SH Action synopsis
+
+.sp 2
+\fBaddmember\fR \fBusergroup\fR | \fBhostgroup\fR | \fBqueue\fR |
+\fBlimit\fR | \fBgpool\fR=object_name "value_pair[;value_pair
+ ...]" [-c "comment"]
+.sp 2
+\fBrmmember\fR \fBusergroup\fR | \fBhostgroup\fR | \fBqueue\fR |
+\fBlimit\fR | \fBgpool\fR=object_name "value_pair[;value_pair
+ ...]" [-c "comment"]
+.sp 2
+\fBupdate\fR \fBuser\fR | \fBusergroup\fR | \fBhost\fR |
+\fBhostgroup\fR | \fBqueue\fR | \fBlimit\fR |
+\fBgpool\fR=object_name "value_pair[;value_pair ...]" [-c
+"comment"]
+.sp 2
+\fBcreate\fR \fBusergroup\fR | \fBlimit\fR=object_name
+"value_pair[;value_pair ...]" [-c "comment"]
+.sp 2
+\fBdelete\fR \fBusergroup\fR | \fBlimit\fR=object_name
+"value_pair[;value_pair ...]" [-c "comment"] [-f]
+.sp 2
+\fBset\fR \fBuser\fR |\fBusergroup\fR | \fBlimit\fR=object_name
+"value_pair[;value_pair ...]" [-c "comment"]
+.sp 2
+\fBadd\fR \fBhost\fR=object_name "value_pair[;value_pair ...]"
+[-c "comment"]
+.SH Description
+
+.sp 2
+The bconf command is enabled when the \fBLSF_LIVE_CONFDIR\fR
+parameter is defined in the lsf.conf file.
+.sp 2
+The bconf command allows configuration changes without restarting
+LSF or any daemons. Changes are made in active LSF memory, and
+updated configuration files are written to the directory defined
+by parameter \fBLSF_LIVE_CONFDIR\fR. Original configuration files
+are not changed. However, LSF reloads files found in the
+\fBLSF_LIVE_CONFDIR\fR directory during restart or
+reconfiguration in place of permanent configuration files.
+.sp 2
+\fBImportant: \fRBefore you enable live reconfiguration, run the
+badmin reconfig command to make sure that all configuration files
+have no error or warning messages. Merge multiple sections in
+configuration files where possible. Keep the order of sections
+and the syntax used in the configuration file templates in all
+configuration files used with live reconfiguration.
+.sp 2
+Configuration changes made by using the bconf command cannot be
+rolled back. Use the bconf command to reverse the configuration
+requests and undo unwanted configuration changes. You can also
+manually remove or replace the configuration files in the
+\fBLSF_LIVE_CONFDIR\fR directory before restart or
+reconfiguration.
+.sp 2
+The first bconf command that is executed after restart or
+reconfiguration backs up the files that were loaded into memory.
+All files that the bconf command can change are backed up in the
+\fBLSF_LIVE_CONFDIR\fR directory as *.bak files. The backup files
+always represent the configuration before bconf commands were
+run.
+.sp 2
+Cluster administrators can run all bconf commands. All users can
+run bconf hist queries. All bconf command requests must be made
+from static servers.
+.sp 2
+The gpool administrators can manage the corresponding guaranteed
+resource pool.
+.sp 2
+User group administrators with usershares rights can adjust user
+shares.
+.sp 2
+User group administrators with full rights can change the
+following configurations:
+.sp 2
+*  Adjust user shares and group members
+.sp 2
+*  Delete the user group
+.sp 2
+*  Create new user groups
+.sp 2
+User group administrators with full rights can add a user group
+member to the user group only if they also have full rights for
+the member user group. User group administrators who add a user
+group through the bconf create command are automatically added to
+the \fBGROUP_ADMIN\fR list with full rights for the new user
+group.
+.sp 2
+\fBImportant: \fRRemove the configuration files in the
+\fBLSF_LIVE_CONFDIR\fR directory, or merge files into the
+\fBLSF_CONFDIR\fR directory before you disable live
+configuration, upgrade LSF, apply patches to LSF, or add server
+hosts.
+.sp 2
+The bconf command supports common configuration changes. The
+bconf command cannot change all configurations. For time-based
+configuration, global configurations are changed globally, and
+configuration for the active time window are changed only for the
+time window.
+.sp 2
+The bconf command changes the following configuration files:
+.sp 2
+*  lsb.resources
+.sp 2
+*  lsb.queues
+.sp 2
+*  lsb.users
+.sp 2
+*  lsb.hosts
+.sp 2
+*  lsf.cluster.\fIclustername\fR
+.sp 2
+*  lsb.serviceclasses
+.sp 2
+\fBImportant: \fRChanging these configuration files manually
+while live reconfiguration is enabled automatically disables the
+bconf command. Further live reconfiguration requests are
+rejected.
+.sp 2
+The bconf command changes objects, or configuration blocks
+enclosed in \fRBegin\fR and \fREnd\fR statements, in the
+configuration files. One bconf request can affect several
+configured objects. For example, deleting a user group that
+appears in the configuration for a limit and a queue also changes
+the limit and queue configuration, and returns the following
+confirmation messages:
+.sp 2
+bconf delete usergroup=ug1
+.br
+bconf: Request to delete usergroup <ug1> impacts the following:
+.br
+    <USERS> in limit <limit1>
+.br
+    <USERS FAIRSHARE > in queue <big_mem_queue>
+.br
+Are you sure you want to delete usergroup <ug1> (y/n)?
+.sp 2
+The API corresponding to the bconf command is lsb_liveconfig..
+.SH Subcommands and options
+
+.sp 2
+\fB\fIaction\fB \fIobject_type\fB=\fIobject_name\fB
+"\fIvalue_pair\fB[;\fIvalue_pair\fB...]"] [-c "\fIcomment\fB"]
+[-f] \fR
+.br
+         \fB\fIaction\fB\fR
+.br
+                  \fIaction\fR is the requested action that is
+                  supported by live reconfiguration. The
+                  following keywords can be an \fIaction\fR
+                  value: addmember, rmmember, update, create,
+                  add, delete, set.
+.sp 2
+                  \fBaddmember\fR
+.br
+                           Adds a member to the group or list of
+                           an existing field in an object, or
+                           updates the value of an existing
+                           member.
+.sp 2
+                           Cannot be used with reserved words
+                           such as all, excluded elements such as
+                           \fR~user1\fR or \fR!host1\fR, or
+                           members defined by regular expressions
+                           such as \fRhostA[01-10]\fR or
+                           \fRhostA*\fR.
+.sp 2
+                           When used with an existing member, the
+                           value of the member is updated within
+                           the object.
+.sp 2
+                  \fBrmmember\fR
+.br
+                           Removes a member from the group or
+                           list of an existing key (field) in an
+                           object.
+.sp 2
+                           \fBRestriction: \fRYou cannot remove
+                           all members from groups and lists
+                           cannot have all (except
+                           \fRUSER_SHARES\fR). The group or list
+                           cannot contain only reserved words
+                           such as others, all, or allremote, or
+                           contain only excluded members.
+.sp 2
+                           You cannot use the rmmember option
+                           with reserved words such as all,
+                           excluded elements such as \fR~user1\fR
+                           or \fR!host1\fR, or members defined by
+                           regular expressions such as
+                           \fRhostA[01-10]\fR or \fRhostA*\fR.
+                           Hosts added with the badmin hghostadd
+                           command cannot be removed with the
+                           bconf rmmember command.
+.sp 2
+                  \fBupdate\fR
+.br
+                           Updates by replacing the old value
+                           with the new value, or adding the
+                           field if it is not already configured.
+.sp 2
+                           Use the \fRupdate
+                           usergroup=\fIgroup_name\fR\fR or
+                           \fRupdate
+                           hostgroup=\fIgroup_name\fR\fR command
+                           to reload an external user group.
+.sp 2
+                  \fBcreate\fR
+.br
+                           Creates a new object.
+.sp 2
+                  \fBadd\fR
+.br
+                           Adds a new host.
+.sp 2
+                  \fBdelete\fR
+.br
+                           Deletes an existing object.
+.sp 2
+                           You cannot delete a user group under
+                           the following conditions:
+.sp 2
+                           *  The user group contains running or
+                              pending jobs (run the busers
+                              command to check)
+.sp 2
+                           *  The user group appears in a LSF
+                              multicluster capability
+                              \fRUserMap\fR section in the
+                              lsb.users file
+.sp 2
+                           *  The user group is the default user
+                              group defined by the
+                              \fBDEFAULT_USER_GROUP\fR parameter
+                              in the lsb.params file.
+.sp 2
+                           Deleted user groups are counted
+                           towards the maximum allowed number of
+                           user groups until the next restart or
+                           reconfig command is run. Deleted user
+                           groups might still show in the busers
+                           command output.
+.sp 2
+                  \fBset\fR
+.br
+                           Forces an update or a create action.
+.sp 2
+         \fB\fIobject_type\fB\fR
+.br
+                  Any block that is enclosed by \fRBeginSection
+                  ... EndSection\fR in a configuration file that
+                  is changed by a bconf command request. An
+                  object includes a type and name and contains
+                  attributes that are called keys, which are
+                  fields that are defined in the object section
+                  of the file. The following keywords can be an
+                  \fIobject_type\fR value: user, usergroup, host,
+                  hostgroup, queue, limit, gpool. Not all actions
+                  apply to all object types.
+.sp 2
+                  \fBuser\fR
+.br
+                           Can be used with the following actions
+                           and keywords:
+.sp 2
+                           *  \fIaction\fR - update, set
+.sp 2
+                           *  \fIvalue_pair\fR - the following
+                              keywords in the lsb.users file:
+                              \fBMAX_JOBS\fR, \fBJL/P\fR,
+                              \fBMAX_PEND_JOBS\fR
+.sp 2
+                  \fBusergroup\fR
+.br
+                           Can be used with the following actions
+                           and keywords:
+.sp 2
+                           *  \fIaction\fR - addmember, rmmember,
+                              update, create, delete, set
+.sp 2
+                           *  \fIvalue_pair\fR - the following
+                              keywords in the lsb.users file:
+                              \fBGROUP_ADMIN\fR,
+                              \fBGROUP_MEMBER\fR, \fBJL/P\fR,
+                              \fBMAX_JOBS\fR,
+                              \fBMAX_PEND_JOBS\fR,
+                              \fBPRIORITY\fR, \fBUSER_SHARES\fR
+.sp 2
+                  \fBhost\fR
+.br
+                           Can be used with the following actions
+                           and keywords:
+.sp 2
+                           *  \fIaction\fR - update, add
+.sp 2
+                           *  \fIvalue_pair\fR the following
+                              keywords in the lsb.hosts file:
+                              \fBMXJ\fR, \fBJL/U\fR,
+                              \fBEXIT_RATE\fR, \fBio\fR,
+                              \fBit\fR, \fBls\fR, \fBmem\fR,
+                              \fBpg\fR, \fBr15s\fR, \fBr1m\fR,
+                              \fBr15m\fR, \fBswp\fR, \fBtmp\fR,
+                              \fBut\fR
+.sp 2
+                           *  \fIvalue_pair\fR - the following
+                              keywords in the
+                              lsf.cluster.\fIclustername\fR file:
+                              \fBmodel\fR, \fBtype\fR,
+                              \fBresources\fR
+.sp 2
+                  \fBhostgroup\fR
+.br
+                           Can be used with the following actions
+                           and keywords:
+.sp 2
+                           *  \fIaction\fR addmember, rmmember,
+                              update
+.sp 2
+                           *  \fIvalue_pair\fR - the following
+                              keyword in the lsb.hosts file:
+                              \fBGROUP_MEMBER\fR
+.sp 2
+                  \fBqueue\fR
+.br
+                           Can be used with the following actions
+                           and keywords:
+.sp 2
+                           *  \fIaction\fR - addmember, rmmember,
+                              update
+.sp 2
+                           *  \fIvalue_pair\fR - the following
+                              keywords in the lsb.queues file:
+                              \fBUJOB_LIMIT\fR, \fBPJOB_LIMIT\fR,
+                              \fBQJOB_LIMIT\fR, \fBHJOB_LIMIT\fR,
+                              \fBFAIRSHARE\fR
+.sp 2
+                  \fBlimit\fR
+.br
+                           Can be used with the following actions
+                           and keywords:
+.sp 2
+                           *  \fIaction\fR - addmember, rmmember,
+                              update, create, delete
+.sp 2
+                           *  \fIvalue_pair\fR - the following
+                              keywords in the lsb.resources file:
+                              \fBQUEUES\fR, \fBPER_QUEUE\fR,
+                              \fBUSERS\fR, \fBPER_USER\fR,
+                              \fBHOSTS\fR, \fBPER_HOST\fR,
+                              \fBPROJECTS\fR, \fBPER_PROJECT\fR,
+                              \fBSLOTS\fR,
+                              \fBSLOTS_PER_PROCESSOR\fR,
+                              \fBMEM\fR, \fBTMP\fR, \fBSWP\fR,
+                              \fBJOBS\fR, \fBRESOURCE\fR
+.sp 2
+                  \fBgpool\fR
+.br
+                           Can be used with the following actions
+                           and keywords:
+.sp 2
+                           *  \fIaction\fR - addmember, rmmember,
+                              update
+.sp 2
+                           *  \fIvalue_pair\fR - the following
+                              keyword in the lsb.resources file:
+                              \fBDISTRIBUTION\fR
+.sp 2
+         \fB\fIobject_name\fB\fR
+.br
+                  The name of the existing object, or the object
+                  that is being created.
+.sp 2
+         \fB\fIvalue_pair\fB\fR
+.br
+                  The key (object attribute) and allowed values
+                  that are used in a bconf command request. The
+                  \fIvalue_pair\fR has the form
+                  \fIkeyword=value\fR, and it uses the same
+                  keywords and syntax as in LSF configuration
+                  files. Not all LSF configuration keywords can
+                  be used with all actions.
+.sp 2
+                  Use a semicolon to separate multiple
+                  \fIvalue_pair\fR entries. Use a dash \fR-\fR or
+                  empty parentheses \fR()\fR to reset keywords to
+                  default values, depending on the keyword in the
+                  LSF configuration files.
+.sp 2
+         For more information about allowed actions, objects, and
+         keywords, use the help command \fRbconf -h \fIaction\fR
+         \fIobject\fR\fR.
+.sp 2
+         \fBExamples\fR
+.sp 2
+         bconf -h addmember hostgroup
+.br
+
+.sp 2
+         bconf addmember hostgroup=hgroupA "GROUP_MEMBER = host1"
+.br
+         
+.br
+
+.sp 2
+         bconf rmmember hostgroup=hgroupA "GROUP_MEMBER=host1 host2"
+.br
+         
+.br
+
+.sp 2
+         bconf update host=host1 "MXJ=10; JL/U=5"
+.br
+         
+.br
+
+.sp 2
+         bconf create usergroup=groupA "GROUP_MEMBER=(elaine tina toby); USER_SHARES=([elaine,10] 
+.br
+         [default,5]); MAX_JOBS=500; MAX_PEND_JOBS=10000"
+.br
+         
+.br
+
+.sp 2
+         bconf rmmember queue=normal "FAIRSHARE=USER_SHARES[[joe, 10]]"
+.br
+         
+.br
+
+.sp 2
+\fB-c "\fIcomment\fB"\fR
+.br
+         Logs the text of \fIcomment\fR as an administrator
+         comment in the liveconf.hist file. The maximum length of
+         the comment string is 512 characters. Embed the
+         \fIcomment\fR in double quotation marks, and do not
+         include the new line character (\fR\n\fR).
+.sp 2
+\fB-f\fR
+.br
+         Disables interaction and forces bconf delete command
+         requests to run without confirmation. Applies only to
+         the delete action.
+.sp 2
+\fBhist [-l|-w] [-o \fIobject_type\fB] [-u \fIuser_name\fB] [-T
+\fItime_period\fB] [-a \fIaction\fB] [-f \fIconfig_file\fB]
+[\fIhistory_file\fB]\fR
+.br
+         Queries the bconf command history file liveconf.hist
+         located under the
+         $LSB_SHAREDIR/\fIcluster_name\fR/logdir directory, or
+         queries a specific history file (\fIhistory_file\fR).
+         Output is filtered by the specified criteria. By
+         default, only bconf command requests made by the current
+         user are displayed.
+.sp 2
+         \fB-l\fR
+.br
+                  Long display format.
+.sp 2
+         \fB-w\fR
+.br
+                  Wide display format.
+.sp 2
+         \fB-o \fIobject_type\fB\fR
+.br
+                  Displays entries that include the specified
+                  \fIobject_type\fR. The following
+                  \fIobject_type\fR values are supported: user,
+                  usergroup, host, hostgroup, queue, limit,
+                  gpool, .
+.sp 2
+         \fB-u \fIuser_name\fB\fR
+.br
+                  Displays entries for requests that are made by
+                  the specified \fIuser\fR. To display bconf
+                  command requests from all users, specify the -u
+                  all option.
+.sp 2
+         \fB-T \fItime_period\fB\fR
+.br
+                  Displays entries within the specified time
+                  period. For syntax, see "Time Interval Format"
+                  in the bhist command reference.
+.sp 2
+         \fB-a \fIaction\fB\fR
+.br
+                  Displays entries that include the specified
+                  \fIaction\fR. The following \fIaction\fR values
+                  are supported: addmember, rmmember, update,
+                  create, add, delete.
+.sp 2
+         \fB-f \fIconfig_file\fB\fR
+.br
+                  Displays entries that include the specified
+                  \fIconfig_file\fR. The following
+                  \fIconfig_file\fR values are supported:
+                  lsb.resources, lsb.queues, lsb.users,
+                  lsb.hosts, lsf.cluster.\fIclustername\fR, or
+                  lsb.serviceclasses.
+.sp 2
+         \fB\fIhistory_file\fB\fR
+.br
+                  Displays entries from the specified history
+                  file. By default, the history file is
+                  liveconf.hist.
+.sp 2
+\fBdisable\fR
+.br
+         Blocks all bconf command requests until the next
+         reconfiguration or restart of daemons with the badmin
+         reconfig, badmin mbdrestart, or lsadmin reconfig
+         commands (for manual changes to lsf.cluster file). Use
+         the disable option before you change configuration
+         manually files to make sure that you are editing files
+         corresponding to the current configuration. Only the
+         primary cluster administrator can disable live
+         reconfiguration.
+.sp 2
+\fB-h [\fIaction\fB [\fIobject_type\fB]]\fR
+.br
+         Prints command usage to stderr and exits. Use for more
+         information about allowed actions, objects, and the
+         keywords that can be used with each object type.
+.sp 2
+         \fB\fRbconf -h \fIaction\fR\fB\fR
+.br
+                  Lists allowed object types for the specified
+                  action.
+.sp 2
+         \fB\fRbconf -h \fIaction\fR \fIobject_type\fR\fB\fR
+.br
+                  Lists allowed value pairs for the specified
+                  \fIaction\fR and \fIobject_type\fR. If both
+                  \fIaction\fR and \fIobject_type\fR are
+                  specified, you can omit the -h option.
+.sp 2
+\fB-pack\fR
+.br
+         Reads multiple requests and sends them to mbatchd at the
+         same time. bconf reads and parses the text file, with
+         each line an individual bconf request. However, the
+         requests are grouped together and sent to mbatchd at one
+         time. If a line in the request fails, bconf -pack stops
+         at that line.
+.sp 2
+\fB-V\fR
+.br
+         Prints LSF release version to stderr and exits.
+.SH bconf hist default output
+
+.sp 2
+The bconf hist command displays the bconf command events in
+shortened form, without comments or details of affected objects.
+Column content is truncated as required and marked with an
+asterisk (\fR*\fR).
+.sp 2
+\fBTIME\fR
+.br
+         Time of the bconf request.
+.sp 2
+\fBOBJECT\fR
+.br
+         The type of object specified.
+.sp 2
+\fBNAME\fR
+.br
+         The name of the object specified.
+.sp 2
+\fBACTION\fR
+.br
+         Action that is performed on the object.
+.sp 2
+\fBUSER\fR
+.br
+         User who made the bconf request.
+.sp 2
+\fBIMPACTED_OBJ\fR
+.br
+         All objects that are changed as a result of the bconf
+         request.
+.sp 2
+bconf hist -u all
+.br
+TIME                 OBJECT    NAME   ACTION   USER   IMPACTED_OBJ 
+.br
+Nov 9 15:19:50 2010  limit     aaa    create   ellen  limit=aaa 
+.br
+Nov 9 15:19:46 2010  limit     aaa    update   leyang limit=aaa 
+.br
+Nov 9 15:19:37 2010  usergroup ug1    delete   ellen  queue=normal owners* 
+.br
+                                                      limit=bbb
+.br
+                                                      usergroupr=ug1
+.br
+Nov 9 15:19:28 2010  queue     normal update   leyang queue=normal 
+.br
+Nov 9 15:19:10 2010  host      host1  update   ellen  host=host1 
+.SH bconf hist wide output (-w)
+
+.sp 2
+Wide output displays the same columns, but without truncating
+column contents.
+.sp 2
+bconf hist -w
+.br
+TIME                 OBJECT    NAME    ACTION   USER     IMPACTED_OBJ 
+.br
+Nov  9 15:19:50 2011 limit     aaa     create   ellen    limit=aaa 
+.br
+Nov  9 15:19:46 2011 limit     aaa     update   leyang   limit=aaa 
+.br
+Nov  9 15:19:37 2011 usergroup ug1     delete   ellen    queue=normal owners q1 q2 q3; limit=bbb; 
+.br
+usergroup=ug1
+.SH bconf hist long output with the -l option
+
+.sp 2
+Long output displays all details of the requested bconf command
+events, including the new value of each affected object. Names of
+changed configuration files are included.
+.sp 2
+bconf hist -l
+.br
+Mon Nov 18 15:19:45 2009: Limit <aaa> created by user <admin1> with requested values 
+.br
+<PER_HOST=all; RESOURCE=[A,5]; USERS=ug1 ug2 ug3> and comments <This is an example of a create
+.br
+ action on a limit object named aaa.>
+.br
+Changes made:
+.br
+Limit <aaa> created in lsb.resources with <PER_HOST=all; RESOURCE=[A,5]; USERS=ug1 ug2 ug3>
+.br
+---------------------------------------------------------
+.br
+Mon Nov 18 15:19:45 2009: Usergroup <ug1> deleted by user <admin1> with comments <This is an 
+.br
+example of a delete action on a usergroup object named ug1.>
+.br
+Changes made:
+.br
+Usergroup <ug1> deleted in lsb.users
+.br
+Limit <aaa> updated in lsb.resources with <USERS=ug2>
+.br
+Queue <owners> updated in lsb.queues with <USERS=ug2 ug3>
+.br
+---------------------------------------------------------
+.br
+Mon Nov 18 15:19:45 2009: Queue <q1> updated by user <admin2> with requested values 
+.br
+<FAIRSHARE=USERSHARE[[ellen, 2]];QJOB_LIMIT=10> and comments <This is an example of an update
+.br
+ action on a queue object named q1.>
+.br
+Changes made:
+.br
+Queue <q1> updated in lsb.queues with <QJOB_LIMIT=10>
+.br
+---------------------------------------------------------
+.br
+Mon Nov 18 15:19:45 2009: Limit <aaa> member added by user <admin2> with requested values 
+.br
+<USERS=julie> and comments <This is an example of an addmember action on a limit object named 
+.br
+aaa.>
+.br
+Changes made:
+.br
+Limit <aaa> updated in lsb.resources with <USERS=ellen user4 julie>
+.br
+---------------------------------------------------------
+.br
+Wed Jul 28 17:16:28 2010: Host <host78> added by user <usr9> with requested value <mem=500/100>
+.br
+Changes made:
+.br
+Host <host78> added in <lsf.cluster.x123> with <hostname=host78>
+.br
+Host <host78> added in <lsb.hosts> with <HOST_NAME=host78; MXJ=!; mem=500/100>
+.br
+---------------------------------------------------------
+.br
+Wed Jul 28 17:17:08 2010: Host <host78> updated by user <usr9> with requested value <mem=500/100>
+.br
+Changes made:
+.br
+Host <host78> updated in <lsb.hosts> with <mem=500/100>
+.SH Diagnostics
+
+.sp 2
+If the command ran correctly, the exit code is \fR0\fR. A
+negative exit code the number of key-value pairs that contain
+errors.
+.SH See also
+
+.sp 2
+lsb.queues, lsb.hosts, lsb.resources, lsb.serviceclasses,
+lsb.users, lsf.cluster, lsf.conf

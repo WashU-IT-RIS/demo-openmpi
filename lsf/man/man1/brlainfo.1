@@ -1,0 +1,152 @@
+
+.ad l
+
+.TH brlainfo 1 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBbrlainfo\fR
+.ce 0
+
+.sp 2
+Displays host topology information.
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBbrlainfo\fR [\fB-l\fR] [host_name ...]
+.sp 2
+\fBbrlainfo\fR [\fB-h\fR | \fB-V\fR]
+.SH Description
+
+.sp 2
+The brlainfo command contacts the LSF topology adapter (RLA) on
+the specified host and presents topology information to the user.
+By default, displays information about all hosts that run the
+RLA.
+.SH Options
+
+.sp 2
+\fB-l\fR
+.br
+         Long format. Displays more host topology information.
+.sp 2
+\fB\fIhost_name\fB ...\fR
+.br
+         Displays information only about the specified host.
+.sp 2
+\fB-h\fR
+.br
+         Prints command usage to stderr and exits.
+.sp 2
+\fB-V\fR
+.br
+         Prints LSF release version to stderr and exits.
+.SH Default output
+
+.sp 2
+Displays the following fields:
+.sp 2
+\fBHOSTNAME\fR
+.br
+         Name of the host that runs the RLA.
+.sp 2
+\fBCPUSET_OS \fR
+.br
+         RLA host operating system.
+.sp 2
+\fBNCPUS \fR
+.br
+         Total number of CPUs.
+.sp 2
+\fBFREECPUS\fR
+.br
+         Number of free CPUS.
+.sp 2
+\fBNNODES\fR
+.br
+         Number of nodes allocated.
+.sp 2
+\fBNCPU/NODE \fR
+.br
+         Number of CPUs per node.
+.sp 2
+\fBNSTATIC_CPUSETS\fR
+.br
+         Number of static cpusets allocated.
+.SH Long output (-l)
+
+.sp 2
+The \fR-l\fR option displays a long format listing with the
+following extra fields:
+.sp 2
+\fBFREE CPU LIST\fR
+.br
+         List of free CPUs in the Usenet.
+.sp 2
+         0-2
+.br
+
+.sp 2
+\fBNFREECPUS ON EACH NODE\fR
+.br
+         Number of free CPUs on each node.
+.sp 2
+         2/0,1/1
+.br
+
+.sp 2
+\fBSTATIC CPUSETS\fR
+.br
+         List of static cpuset names.
+.sp 2
+         NO STATIC CPUSETS
+.br
+
+.sp 2
+\fBCPU_RADIUS\fR
+.br
+         2,3,3,3,3,3,3,3
+.br
+
+.sp 2
+         *  2 CPUs are available within radius 0
+.sp 2
+         *  3 CPUs are available within radius 1, 2, 3, 4, 5, 6,
+            and 7.
+.sp 2
+         CPUs grouped within a smaller radius can be thought of
+         as being closer together and have better communications
+         performance.
+.SH Examples
+
+.sp 2
+brlainfo hostA hostB hostC
+.br
+HOSTNAME          CPUSET_OS  NCPUS  NFREECPUS NNODES  NCPU/NODE NSTATIC_CPUSETS
+.br
+hostA             LINUX_4     2      2         1       2         0
+.br
+hostB             LINUX_4     4      4         2       2         0
+.br
+hostC             LINUX_4     4      3         2       2         0
+.br
+
+.br
+brlainfo -l
+.br
+HOST: hostC
+.br
+CPUSET_OS   NCPUS  NFREECPUS NNODES  NCPU/NODE NSTATIC_CPUSETS
+.br
+LINUX_4       4      3         2       2         0
+.br
+FREE CPU LIST: 0-2
+.br
+NFREECPUS ON EACH NODE: 2/0,1/1
+.br
+STATIC CPUSETS: NO STATIC CPUSETS
+.br
+CPU_RADIUS: 2,3,3,3,3,3,3,3
+.br

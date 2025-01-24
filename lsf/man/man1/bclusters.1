@@ -1,0 +1,213 @@
+
+.ad l
+
+.TH bclusters 1 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBbclusters\fR
+.ce 0
+
+.sp 2
+Displays information about IBM Spectrum LSF multicluster
+capability
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBbclusters\fR [\fB-app\fR] [\fB-w\fR]
+.sp 2
+\fBbclusters\fR [\fB-h\fR | \fB-V\fR]
+.SH Description
+
+.sp 2
+For the job forwarding model, displays a list of LSF multicluster
+capability queues together with their relationship with queues in
+remote clusters.
+.sp 2
+For the resource leasing model, displays remote resource provider
+and consumer information, resource flow information, and
+connection status between the local and remote cluster.
+.SH Options
+
+.sp 2
+\fB-app\fR
+.br
+         Displays available application profiles in remote
+         clusters.
+.sp 2
+\fB-w\fR
+.br
+         Wide format. Displays the information in a wide format.
+.sp 2
+\fB-h\fR
+.br
+         Prints command usage to stderr and exits.
+.sp 2
+\fB-V\fR
+.br
+         Prints LSF release version to stderr and exits.
+.SH Output: Job forwarding information
+
+.sp 2
+Displays a list of LSF multicluster capability queues together
+with their relationship with queues in remote clusters.
+.sp 2
+Information that is related to the job forwarding model is
+displayed under the heading Job Forwarding Information.
+.sp 2
+\fBLOCAL_QUEUE\fR
+.br
+         Name of a local LSF multicluster capability send-jobs or
+         receive-jobs queue.
+.sp 2
+\fBJOB_FLOW\fR
+.br
+         Indicates direction of job flow.
+.sp 2
+         \fBsend \fR
+.br
+                  The local queue is a LSF multicluster
+                  capability send-jobs queue (SNDJOBS_TO is
+                  defined in the local queue).
+.sp 2
+         \fBrecv \fR
+.br
+                  The local queue is a LSF multicluster
+                  capability receive-jobs queue (RCVJOBS_FROM is
+                  defined in the local queue).
+.sp 2
+\fBREMOTE\fR
+.br
+         For send-jobs queues, shows the name of the receive-jobs
+         queue in a remote cluster.
+.sp 2
+         For receive-jobs queues, always a dash (\fR-\fR).
+.sp 2
+\fBCLUSTER\fR
+.br
+         For send-jobs queues, shows the name of the remote
+         cluster that contains the receive-jobs queue.
+.sp 2
+         For receive-jobs queues, shows the name of the remote
+         cluster that can send jobs to the local queue.
+.sp 2
+\fBSTATUS\fR
+.br
+         Indicates the connection status between the local queue
+         and remote queue.
+.sp 2
+         \fBok \fR
+.br
+                  The two clusters can exchange information and
+                  the system is properly configured.
+.sp 2
+         \fBdisc\fR
+.br
+                  Communication between the two clusters is not
+                  established. The \fRdisc\fR status might occur
+                  because no jobs are waiting to be dispatched,
+                  or because the remote management host cannot be
+                  located.
+.sp 2
+         \fBreject\fR
+.br
+                  The remote queue rejects jobs from the
+                  send-jobs queue. The local queue and remote
+                  queue are connected and the clusters
+                  communicate, but the queue-level configuration
+                  is not correct. For example, the send-jobs
+                  queue in the submission cluster points to a
+                  receive-jobs queue that does not exist in the
+                  remote cluster.
+.sp 2
+                  If the job is rejected, it returns to the
+                  submission cluster.
+.SH Output: Resource lease information
+
+.sp 2
+Displays remote resource provider and consumer information,
+resource flow information, and connection status between the
+local and remote cluster.
+.sp 2
+Information that is related to the resource leasing model is
+displayed under the heading Resource Lease Information.
+.sp 2
+\fBREMOTE_CLUSTER\fR
+.br
+         For borrowed resources, name of the remote cluster that
+         is the provider.
+.sp 2
+         For exported resources, name of the remote cluster that
+         is the consumer.
+.sp 2
+\fBRESOURCE_FLOW\fR
+.br
+         Indicates direction of resource flow.
+.sp 2
+         \fBIMPORT\fR
+.br
+                  Local cluster is the consumer and borrows
+                  resources from the remote cluster (\fBHOSTS\fR
+                  parameter in one or more local queue
+                  definitions includes remote resources).
+.sp 2
+         \fBEXPORT\fR
+.br
+                  Local cluster is the provider and exports
+                  resources to the remote cluster.
+.sp 2
+\fBSTATUS\fR
+.br
+         Indicates the connection status between the local and
+         remote cluster.
+.sp 2
+         \fBok\fR
+.br
+                  LSF multicluster capability jobs can run.
+.sp 2
+         \fBdisc\fR
+.br
+                  No communication between the two clusters. The
+                  \fRdisc\fR status might be a temporary
+                  situation or might indicate a LSF multicluster
+                  capability configuration error.
+.sp 2
+         \fBconn\fR
+.br
+                  The two clusters communicate, but the lease is
+                  not established. The \fRconn\fR status is
+                  typically a temporary situation, lasting only
+                  until jobs are submitted.
+.SH Output: Remote cluster application information
+
+.sp 2
+The bcluster -app command displays information that is related to
+application profile configuration under the heading \fRRemote
+Cluster Application Information\fR. Application profile
+information is only displayed for the job forwarding model. The
+bclusters command does not show local cluster application profile
+information.
+.sp 2
+\fBREMOTE_CLUSTER\fR
+.br
+         The name of the remote cluster.
+.sp 2
+\fBAPP_NAME\fR
+.br
+         The name of the application profile available in the
+         remote cluster.
+.sp 2
+\fBDESCRIPTION\fR
+.br
+         The description of the application profile.
+.SH Files
+
+.sp 2
+Reads the lsb.queues and lsb.applications files.
+.SH See also
+
+.sp 2
+bapp, bhosts, bqueues, lsclusters, lsinfo, lsb.applications,
+lsb.queues

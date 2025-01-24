@@ -1,0 +1,174 @@
+
+.ad l
+
+.TH bpost 1 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBbpost\fR
+.ce 0
+
+.sp 2
+Sends external status messages and attaches data files to a job.
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBbpost\fR [\fB-i\fR message_index] [\fB-d\fR "description" ]
+[\fB-a\fR data_file] job_ID | \fB"\fRjob_ID\fB[\fRindex\fB]"\fR |
+\fB-J\fR job_name
+.sp 2
+\fBbpost\fR [\fB-h\fR | \fB-V\fR]
+.SH Description
+
+.sp 2
+Provides external status information or sends data to a job in
+the system.
+.sp 2
+By default, operates on the message index \fR0\fR. By default,
+posts the message \fR"no description"\fR.
+.sp 2
+If you specify a job ID, the bpost command has the following
+restrictions:
+.sp 2
+*  You can send messages and data only to your own jobs.
+.sp 2
+*  You cannot send messages and data to jobs submitted by other
+   users.
+.sp 2
+*  Only root and LSF administrators can send messages to jobs
+   submitted by other users.
+.sp 2
+*  Root and LSF administrators cannot attach data files to jobs
+   submitted by other users.
+.sp 2
+Job names are not unique. If you specify the -J \fIjob_name\fR
+option, the bpost command has the following restrictions:
+.sp 2
+*  You can send messages and data only to your own jobs.
+.sp 2
+*  You cannot send messages and data to jobs submitted by other
+   users.
+.sp 2
+*  Root and the LSF administrators can send messages and data
+   only to their own jobs.
+.sp 2
+A job can accept messages until it is cleaned from the system. If
+your application requires transfer of data from one job to
+another, use the -a option of the bpost command to attach a data
+file to the job. Then, use the bread command to copy the
+attachment to another file.
+.sp 2
+You can associate several messages and attached data files with
+the same job. As the job is processed, use the bread or bstatus
+command to retrieve the messages posted to the job. Use the bread
+to copy message attachments to external files.
+.sp 2
+For example, your application might require job status
+descriptions besides the ones that LSF provides internally
+(\fRPEND\fR, \fRRUN\fR, \fRSUSP\fR). Use the -d option to place
+your own status or job description text as a message to the job.
+.sp 2
+You can also use bstatus -d command to update the external job
+status. The following command
+.sp 2
+bstatus -d "description" myjob
+.br
+
+.sp 2
+Is equivalent to the following command:
+.sp 2
+bpost -i 0 -d "description" myjob
+.sp 2
+With LSF multicluster capability, both clusters must run LSF
+Version 7 or later. You cannot attach files to LSF multicluster
+capability jobs.
+.sp 2
+If the LSF multicluster capability connection is lost (the
+mbatchd daemon is down), messages can be saved and resent when
+the connection is recovered. The messages are backed up on the
+local cluster and resent in their original order.
+.SH Options
+
+.sp 2
+\fB-a \fIdata_file\fB\fR
+.br
+         Attaches the specified data file to the job external
+         storage. This option is ignored for LSF multicluster
+         capability jobs; you can attach a file only if the job
+         runs in the local cluster.
+.sp 2
+         Use the \fBJOB_ATTA_DIR\fR parameter in the lsb.params
+         file to specify the directory where attachment data
+         files are saved. The directory must have at least 1 MB
+         of free space. The mbatchd daemon checks for available
+         space in the job attachment directory before it
+         transfers the file.
+.sp 2
+         Use the \fBMAX_JOB_ATTA_SIZE\fR parameter in the
+         lsb.params file to set a maximum size for job message
+         attachments.
+.sp 2
+\fB-d "\fIdescription\fB"\fR
+.br
+         Places your own status text as a message to the job. The
+         message description has a maximum length of 512
+         characters.
+.sp 2
+         For example, your application might require job status
+         descriptions besides the ones that LSF provides
+         internally (\fRPEND\fR, \fRRUN\fR, \fRSUSP\fR).
+.sp 2
+         The default description is \fR"no description"\fR.
+.sp 2
+\fB-i \fImessage_index\fB\fR
+.br
+         Operates on the specified message index.
+.sp 2
+         The default message index is \fR0\fR.
+.sp 2
+         Use the \fBMAX_JOB_MSG_NUM\fR parameter in the
+         lsb.params file to set a maximum number of messages for
+         a job. With LSF multicluster capability, to avoid
+         conflicts, the \fBMAX_JOB_MSG_NUM\fR parameter must be
+         the same in all clusters.
+.sp 2
+\fB\fIjob_ID\fB | "\fIjob_ID[index]\fB" | -J \fIjob_name\fB \fR
+.br
+         Required. Operates on the specified job. With LSF
+         multicluster capability job forwarding model, you must
+         always use the local job ID.
+.sp 2
+         The job name can be up to 4094 characters long. Job
+         names are not unique.
+.sp 2
+         The wildcard character (\fR*\fR) can be used anywhere
+         within a job name, but it cannot appear within an array
+         index. For example, the pattern \fRjob*\fR returns
+         \fRjobA\fR and \fRjobarray[1]\fR. The \fR*AAA*[1]\fR
+         pattern returns the first element in job arrays with
+         names that contain \fRAAA\fR. However, the pattern
+         \fRjob1[*]\fR does not return anything since the
+         wildcard is within the array index.
+.sp 2
+\fB-h\fR
+.br
+         Prints command usage to stderr and exits.
+.sp 2
+\fB-V\fR
+.br
+         Prints LSF release version to stderr and exits.
+.SH Example
+
+.sp 2
+bpost -i 1-d "step 1" -a step1.out 2500
+.br
+
+.sp 2
+Puts the message text \fRstep 1\fR into message index 1, and
+attaches the file step1.out to job 2500.
+.SH See also
+
+.sp 2
+bread, bstatus, \fBMAX_JOB_ATTA_SIZE\fR, \fBMAX_JOB_MSG_NUM\fR

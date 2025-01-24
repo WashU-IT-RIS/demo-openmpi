@@ -1,0 +1,88 @@
+.TH "ls_rgetmnthost" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ls_rgetmnthost \- ls_rgetmnthost 
+Obtains the name of the file server that exports a specified file system.
+.PP
+This routine performs operations on files located on remote hosts.
+.PP
+\fBls_rgetmnthost\fP obtains the name of the file server that exports the file system mounted on host that contains file, where file is a relative or absolute path name. If host is NULL, the local host name is assumed. This call corresponds to the \fBls_getmnthost\fP call.
+.PP
+Either the RES must be running at the remote host to service any remote file operation or rcp() be available.
+.PP
+\fBls_initrex\fP must be called before calling any remote file operation.
+.PP
+This remote file operation makes use of a Remote File Server on the remote host. When this RFS shuts down, its status will be reported to its client. The client should ignore this status.
+.PP
+\fB #include <sys/types.h> 
+.br
+ #include <unistd.h> 
+.br
+ #include <sys/stat.h> 
+.br
+ #include <fcntl.h> 
+.br
+ #include <limits.h> 
+.br
+ #include <lsf/lsf.h>\fP
+.PP
+\fB char *ls_rgetmnthost(char *host, char *file) \fP
+.PP
+.SH "Parameters:"
+\fI*host\fP The host containing the file. 
+.br
+\fI*file\fP The file to be accessed.
+.PP
+.SH "Data Structures:" 
+.PP
+none
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+char *:Hostname 
+.br
+ The function was successful. 
+.PP
+NULL 
+.br
+ Function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lserrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+none
+.PP
+.SH "See also:"
+\fBls_ropen\fP 
+.PP
+\fBls_rread\fP 
+.PP
+\fBls_rwrite\fP 
+.PP
+\fBls_rlseek\fP 
+.PP
+\fBls_rclose\fP 
+.PP
+\fBls_rstat\fP 
+.PP
+\fBls_rfstat\fP 
+.PP
+\fBls_rfcontrol\fP 
+.PP
+\fBls_initrex\fP 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

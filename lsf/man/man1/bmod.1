@@ -1,0 +1,971 @@
+
+.ad l
+
+.TH bmod 1 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBbmod\fR
+.ce 0
+
+.sp 2
+Modifies job submission options of a job.
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBbmod\fR [bsub_options] [job_ID |
+\fB"\fRjob_ID\fB[\fRindex\fB]"\fR]
+.sp 2
+\fBbmod\fR [\fB-g\fR job_group_name | \fB-gn\fR] [job_ID]
+.sp 2
+\fBbmod\fR [\fB-hostfile\fR file_path | \fB-hostfilen\fR]
+.sp 2
+\fBbmod\fR [\fB-sla\fR service_class_name | \fB-slan\fR] [job_ID]
+.sp 2
+\fBbmod\fR [\fB-aps "system=\fRvalue\fB"\fR |
+\fB"admin=\fRvalue\fB"\fR | \fB-apsn\fR] [job_ID]
+.sp 2
+\fBbmod\fR [\fB-h\fR | \fB-V\fR]
+.SH Option list
+
+.sp 2
+[\fB-ar\fR | \fB-arn\fR]
+.sp 2
+[\fB-B\fR | \fB-Bn\fR]
+.sp 2
+[\fB-hl\fR | \fB-hln\fR]
+.sp 2
+[\fB-N\fR | \fB-Ne\fR | \fB-Nn\fR]
+.sp 2
+[\fB-r\fR | \fB-rn\fR]
+.sp 2
+[\fB-ul\fR | \fB-uln\fR]
+.sp 2
+[\fB-x\fR | \fB-xn\fR]
+.sp 2
+[\fB-a "\fR\fBesub_application\fR
+[([argument[,argument...]])]..."]
+.sp 2
+[\fB-app\fR application_profile_name | \fB-appn\fR]
+.sp 2
+[\fB-aps "system=\fRvalue\fB"\fR |
+\fB"\fR\fBadmin=\fRvalue\fB"\fR | \fB-apsn\fR]
+.sp 2
+[\fB-b\fR begin_time | \fB-bn\fR]
+.sp 2
+[\fB-C\fR core_limit | -\fBCn\fR]
+.sp 2
+[\fB-c\fR [hour\fB:\fR]minute[\fB/\fRhost_name |
+\fB/\fRhost_model] | \fB-cn\fR]
+.sp 2
+[-\fBclusters\fR \fB"all\fR [\fB~\fRcluster_name] ... |
+cluster_name[\fB+\fR[pref_level]] ...
+[\fBothers\fR[\fB+\fR[pref_level]]]\fB"\fR | \fB-clustern\fR]
+.sp 2
+[\fB-cwd "\fRcurrent_working_directory\fB"\fR | \fB-cwdn\fR]
+.sp 2
+[\fB-D\fR data_limit | \fB-Dn\fR]
+.sp 2
+[\fB-data\fR \fB"\fR[host_name\fB:\fR]abs_file_path
+[[host_name\fB:\fR]abs_file_path …]\fB"\fR [\fB-datachk\fR] … |
+\fB-data\fR \fB"tag:\fRtag_name [\fBtag:\fRtag_name ...]\fB"\fR
+ ... | \fB-datan\fR]
+.sp 2
+[\fB-E "\fRpre_exec_command [argument ...]\fB"\fR | \fB-En\fR]
+.sp 2
+[\fB-Ep "\fRpost_exec_command [argument ...]\fB"\fR | \fB-Epn\fR]
+.sp 2
+[\fB-e \fRerr_file | \fB-en\fR]
+.sp 2
+[\fB-eptl\fR [hour\fB:\fR]minute | \fB-eptln\fR]
+.sp 2
+[\fB-eo\fR err_file | \fB-en\fR]
+.sp 2
+[\fB-ext\fR[\fBsched\fR] "external_scheduler_options\fB"\fR]
+.sp 2
+[\fB-F\fR file_limit | \fB-Fn\fR]
+.sp 2
+[\fB-f "\fRlocal_file op [remote_file]\fB"\fR ... | \fB-fn\fR]
+.sp 2
+[\fB-freq\fR numberUnit | \fB-freqn\fR]
+.sp 2
+[\fB-G\fR user_group | \fB-Gn\fR]
+.sp 2
+[\fB-g\fR job_group_name | \fB-gn\fR]
+.sp 2
+\fB-gpu -\fR | \fB"\fR[\fBnum=\fRnum_gpus[\fB/\fR\fBtask\fR |
+\fBhost\fR]] [\fB:mode=shared\fR | \fBexclusive_process\fR]
+[\fB:mps=\fR\fByes\fR[\fB,shared\fR][\fB,nocvd\fR] | \fBno\fR]
+[\fB:j_exclusive=\fR\fByes\fR | \fBno\fR] [\fB:aff=\fR\fByes\fR |
+\fBno\fR] [\fB:block=\fR\fByes\fR | \fBno\fR]
+[\fB:gpack=\fR\fByes\fR | \fBno\fR] [\fB:gvendor=amd\fR |
+\fBnvidia\fR] [\fB:gmodel=\fRmodel_name[\fB-\fRmem_size]\fB\fR]
+[\fB:gtile=\fRtile_num|\fB\(aq!\(aq\fR] [\fB:gmem=\fRmem_value\fB\fR]
+[\fB:glink=yes\fR] [\fB:mig=\fRGI_size[\fB/\fRCI_size]]\fB"\fR |
+\fB-gpun\fR]
+.sp 2
+[\fB-i\fR input_file | \fB-in\fR | \fB-is\fR input_file |
+\fB-isn\fR]
+.sp 2
+[\fB-J\fR job_name | \fB-J "%\fRjob_limit\fB"\fR | \fB-Jn\fR]
+.sp 2
+[\fB-Jd\fR "job_description" | \fB-Jdn\fR]
+.sp 2
+[\fB-jobaff "\fR[\fB#\fR | \fB!\fR | \fB~\fR]attribute_name
+ ...\fB"\fR | \fB"attribute(\fR[\fB#\fR | \fB!\fR |
+\fB~\fR]attribute_name ...\fB)"\fR | \fB"\fR[\fB#\fR | \fB!\fR |
+\fB~\fR]\fBsamehost(\fRjob_id\fB)"\fR | \fB"\fR[\fB#\fR | \fB!\fR
+| \fB~\fR]\fBsamecu(\fRjob_id\fB)"\fR | \fB-jobaffn\fR]
+.sp 2
+[\fB-k "\fRcheckpoint_dir [\fBinit=\fRinitial_checkpoint_period]
+[checkpoint_period]\fB"\fR | \fB-kn\fR]
+.sp 2
+[\fB-L\fR login_shell | \fB-Ln\fR]
+.sp 2
+[\fB-Lp\fR ls_project_name | \fB-Lpn\fR]
+.sp 2
+[\fB-M\fR mem_limit[\fB!\fR] | \fB-Mn\fR]
+.sp 2
+[\fB-m\fR "host_name[\fB@\fRcluster_name][[\fB!\fR] |
+\fB+\fR[pref_level]] | host_group[[\fB!\fR] |
+\fB+\fR[pref_level]| compute_unit[[\fB!\fR] |
+\fB+\fR[pref_level]] ...\fB"\fR | \fB-mn\fR]
+.sp 2
+[\fB-mig\fR migration_threshold | \fB-mign\fR]
+.sp 2
+[\fB-n\fR min_tasks[, max_tasks] | \fB-nn\fR]
+.sp 2
+[\fB-network\fR network_res_req | \fB-networkn\fR]
+.sp 2
+[\fB-notify "\fR[\fBexit \fR] [\fBdone \fR] [\fBstart \fR]
+[\fBsuspend\fR]\fB"\fR | \fB-notifyn\fR]
+.sp 2
+[\fB-o\fR out_file | \fB-on\fR]
+.sp 2
+[\fB-oo\fR out_file | \fB-oon\fR]
+.sp 2
+[\fB-outdir\fR output_directory | \fB-outdirn\fR]
+.sp 2
+[\fB-P\fR project_name | \fB-Pn\fR]
+.sp 2
+[\fB-p\fR process_limit | \fB-pn\fR]
+.sp 2
+[\fB-ptl\fR [hour\fB:\fR]minute | \fB-ptln\fR]
+.sp 2
+[\fB-Q "\fR[exit_code ...] [\fBEXCLUDE(\fRexit_code
+ ...\fB)\fR]\fB"\fR]
+.sp 2
+[\fB-q "\fRqueue_name ...\fB"\fR | \fB-qn\fR]
+.sp 2
+[\fB-R "\fRres_req\fB"\fR [\fB-R "\fRres_req\fB"\fR ...] |
+\fB-Rn\fR]
+.sp 2
+[\fB-rcacct "\fRrc_account_name\fB"\fR | \fB-rcacctn\fR]
+.sp 2
+[\fB-rnc\fR resize_notification_cmd | \fB-rncn\fR]
+.sp 2
+[\fB-S\fR stack_limit | \fB-Sn\fR]
+.sp 2
+[\fB-s\fR signal | \fB-sn\fR]
+.sp 2
+[\fB-sla\fR service_class_name | \fB-slan\fR]
+.sp 2
+[\fB-sp\fR priority | \fB-spn\fR]
+.sp 2
+[\fB-stage "\fR [\fBstorage=\fR min_size [ \fB,\fR max_size ] ]
+[\fB:in=\fRpath_to_stage_in_script ]
+[\fB:out=\fRpath_to_stage_out_script ] \fB"\fR | \fB-stagen\fR]
+.sp 2
+[\fB-T\fR thread_limit | \fB-Tn\fR]
+.sp 2
+[\fB-t\fR term_time | \fB-tn\fR]
+.sp 2
+[\fB-ti\fR | \fB-tin\fR]
+.sp 2
+[\fB-U\fR reservation_ID |\fB-Un\fR]
+.sp 2
+[\fB-u\fR mail_user | \fB-un\fR]
+.sp 2
+[\fB-v \fRswap_limit | \fB-vn\fR]
+.sp 2
+[\fB-W\fR [hour\fB:\fR]minute[\fB/\fRhost_name |
+\fB/\fRhost_model] | \fB-Wn\fR]
+.sp 2
+[\fB-We\fR [hour\fB:\fR]minute[\fB/\fRhost_name |
+\fB/\fRhost_model] | \fB-Wep\fR [value] | \fB-We+\fR
+[hour\fB:\fR]minute | \fB-Wen\fR]
+.sp 2
+[\fB-w "\fRdependency_expression\fB"\fR | \fB-wn\fR]
+.sp 2
+[\fB-wa "\fR[signal | command | \fBCHKPNT\fR]\fB"\fR |
+\fB-wan\fR]
+.sp 2
+[\fB-wt "\fRjob_warning_time\fB"\fR | \fB-wtn\fR]
+.sp 2
+[\fB-Z "\fRnew_command\fB"\fR | \fB-Zs "\fRnew_command\fB"\fR |
+\fB-Zsn\fR]
+.sp 2
+[job_ID | \fB"\fRjob_ID\fB[\fRindex\fB]"\fR]
+.SH Description
+
+.sp 2
+Modifies the options of a previously submitted job, including
+forwarded jobs in an LSF multicluster capability environment. See
+the bsub command reference for complete descriptions of job
+submission options you can modify with bmod.
+.sp 2
+Only the owner of the job, the user group administrator (for jobs
+that are associated with a user group), or LSF administrators can
+modify the options of a job.
+.sp 2
+All options that are specified at submission time can be changed.
+The value for each option can be overridden with a new value by
+specifying the option as in bsub. To cancel an option or reset it
+to its default value, use the option string followed by "n". Do
+not specify an option value when you reset an option.
+.sp 2
+The -i, -in, and -Z options have counterparts that support
+spooling of input and job command files (-is, -isn, -Zs, and
+-Zsn). Options that are related to file names and job spooling
+directories support paths that contain up to 4094 characters for
+UNIX, or up to 255 characters for Windows.
+.sp 2
+Options that are related to command names can contain up to 4094
+characters for UNIX, or up to 255 characters for Windows. Options
+that are related to job names can contain up to 4094 characters.
+.sp 2
+You can modify all options of a pending job, even if the
+corresponding bsub command option was not specified.
+.sp 2
+Modifying options for a forwarded pending job are different from
+modifying the options of a pending job:
+.sp 2
+*  You cannot modify the following options: -m, -q, -sla, -w.
+.sp 2
+*  For the following options, your modifications take effect only
+   on the submission cluster and not on the execution cluster:
+   -aps, -g, -k.
+.sp 2
+*  For the -J option, if you are changing only the job array
+   limit, the option takes effect only on the submission cluster
+   and not on the execution cluster.
+.sp 2
+*  When you apply a cancellation option (such as the -appn option
+   to cancel a previous -app specification), the default value
+   for that attribute depends on the local cluster configuration.
+.sp 2
+Like bsub, the bmod command calls the parent esub (mesub). The
+parent esub runs any mandatory esub executable files that are
+configured by an LSF administrator, and any executable file named
+esub (without \fI.application\fR in the file name) if it exists
+in the LSF_SERVERDIR directory. Only esub executable files that
+are invoked by the bsub command can change the job environment on
+the submission host. An esub invoked by the bmod command cannot
+change the job environment. Arguments for esub executable files
+can also be modified.
+.sp 2
+The -b option modifies the job begin time. If the year field is
+specified and the specified time is in the past, the start time
+condition is considered reached and LSF dispatches the job if
+slots are available.
+.sp 2
+The -t option modifies job termination time. If the year field is
+specified and the specified time is in the past, the job
+modification request is rejected.
+.sp 2
+Use the -clusters option to modify cluster names for LSF
+multicluster capability jobs. The \fRbmod -clusters
+\fIremote_clusters\fR\fR command can modify pending jobs only on
+the submission cluster.
+.sp 2
+The -cwd option specifies the current working directory (CWD) for
+a job. The -cwd option works only if the job is in pending state.
+The path can be absolute or relative to the submission directory.
+If the submission directory does not exist in the execution host,
+it tries the logical home directory. If that fails, the tmp
+directory is used for the CWD.
+.sp 2
+The path can include the same dynamic patterns as described for
+the bsub -cwd command.
+.sp 2
+The -cwdn option resets the value for the -cwd option to the
+submission directory from the bsub command.
+.sp 2
+If the job is submitted with the -app option but without the -cwd
+option, and the \fBLSB_JOB_CWD\fR parameter is not defined, the
+CWD defined in the specified application profile is used. If CWD
+is not defined in the application profile, the
+\fBDEFAULT_JOB_CWD\fR value is used. If neither of the two
+parameters is defined, the submission directory is used for CWD.
+.sp 2
+The -hl option enables per-job host-based memory and swap limit
+enforcement on hosts that support Linux cgroups. The -hln option
+disables host-based memory and swap limit enforcement. The -hl
+and -hln options apply only to pending jobs. The
+\fBLSB_RESOURCE_ENFORCE="memory"\fR parameter must be specified
+in the lsf.conf file for host-based memory and swap limit
+enforcement with the -hl option to take effect. If no memory or
+swap limit is specified for the job, or the
+\fBLSB_RESOURCE_ENFORCE="memory"\fR parameter is not specified, a
+host-based memory limit is not set for the job.
+.sp 2
+The -Epn option cancels the setting of job-level post-execution
+commands. The job-level post-execution commands do not run.
+Application-level post-execution commands run if they exist.
+.sp 2
+If a default user group is configured (with the
+\fBDEFAULT_USER_GROUP\fR parameter in the lsb.params file), the
+bmod -Gn command moves the job to the default user group. If the
+job is already attached to the default user group, the bmod -Gn
+command has no effect on that job. A job moved to a user group
+where it cannot run (without shares in a specified fairshare
+queue, for example) is transferred to the default user group
+where the job can run.
+.sp 2
+The -gpu option specifies properties of GPU resources required by
+the job. For more information on this option see the bsub -gpu
+command.
+.sp 2
+For resizable jobs, the bmod -R "rusage[mem | swp]" command
+affects the resize allocation request only if the job is not
+dispatched.
+.sp 2
+The -M option takes effect only if the job can requeue and when
+it is run again.
+.sp 2
+The -m option modifies the first execution host list. When used
+with a compound resource requirement, the first host that is
+allocated must satisfy the first simple resource requirement
+string in the compound resource requirement.
+.sp 2
+When modifying the notification request using the -notify option,
+the changed record is also logged to the \fBJOB_MODIFY2\fR event.
+The -notify option does not work with job arrays or job array
+elements.
+.sp 2
+The -notifyn option does not work with job array elements.
+.sp 2
+The -outdir option creates the output directory while the job is
+in pending state. This option supports the dynamic patterns for
+the output directory. For example, if \fRuser1\fR runs the
+command \fRbmod -outdir "/scratch/joboutdir/%U/%J_%I" myjob\fR,
+the system creates the directory \fR/scratch/joboutdir
+/user1/jobid_0\fR for the job output directory.
+.sp 2
+The -outdirn option resets the output directory value to the
+\fBDEFAULT_JOB_OUTDIR\fR parameter, if it is defined, or sets the
+output directory to the submission directory where the original
+bsub command ran. The output directory can be modified only while
+the job is in pending state.
+.sp 2
+The -Q option does not affect running jobs. For rerunnable and
+requeue jobs, the -Q option affects the next run.
+.sp 2
+The -q option resubmits the job to a new queue, as if it was a
+new submission. By default, LSF dispatches jobs in a queue in
+order of arrival, so the modified job goes to the last position
+of the new queue, no matter what its position was in the original
+queue.
+.sp 2
+The -rn option resets the rerunnable job setting that is
+specified by the bsub -rn or bsub -r option. The application
+profile and queue level rerunnable job setting if any is used.
+The bmod -rn command does not disable or override job rerun if
+the job was submitted to a rerunnable queue or application
+profile with job rerun configured. bmod -rn command is different
+from the bsub -rn command, which does override the application
+profile and queue level rerunnable job setting.
+.sp 2
+The -ti option enables immediate automatic orphan job termination
+at the job level. The -ti and -tin options are command flags, not
+suboptions, so you do not need to respecify the original
+dependency expression from the -w option that is submitted with
+the bsub command. You can use either the \fRbmod -w [-ti |
+-tin]\fR or \fRbmod -ti | -tin\fR command. The -tin option
+cancels the -ti suboption of a submitted dependent job, in which
+case the cluster-level configuration takes precedence.
+.sp 2
+The -uln option sets the user shell limits for pending jobs to
+their default values. The -uln option is not supported on
+Windows.
+.sp 2
+-Wen cancels the estimated job run time. The runtime estimate
+does not take effect for the job.
+.SH Modifying running jobs
+
+.sp 2
+By default, you can modify resource requirements for running jobs
+(-R "\fIres_req\fR" except -R "cu[\fIcu_string\fR]") and the
+estimated running time for running or suspended jobs (-We, -We+,
+-Wep). To modify more job options for running jobs, define
+\fBLSB_MOD_ALL_JOBS=Y\fR in lsf.conf.
+.sp 2
+\fBNote: \fRUsing the bmod -R command with a running job that
+uses a compound or alternative resource requirement as the
+effective resource requirement is not permitted. Changing the
+compound or alternative resource requirement of a running job is
+also rejected.
+.sp 2
+When the \fBLSB_MOD_ALL_JOBS=Y\fR parameter is set, only some
+bsub options can be modified for running jobs. You cannot make
+any other modifications after a job is dispatched. You can use
+bmod to modify the following options for running jobs:
+.sp 2
+*  CPU limit (-c [\fIhour\fR:]\fIminute\fR[/\fIhost_name\fR |
+   /\fIhost_model\fR])
+.sp 2
+*  Memory limit (-M \fImem_limit\fR)
+.sp 2
+*  Rerunnable jobs (-r | -rn)
+.sp 2
+*  Resource requirements (-R "res_req" except -R "cu[cu_string]")
+.sp 2
+*  Run limit (-W \fIrun_limit\fR[/\fIhost_name\fR |
+   /\fIhost_model\fR])
+.sp 2
+   \fBNote: \fRYou can modify the run limit for pending jobs as
+   well.
+.sp 2
+*  Swap limit (-v \fIswap_limit\fR)
+.sp 2
+*  Standard output (stdout) file name up to 4094 characters for
+   UNIX and Linux or 255 characters for Windows (-o
+   \fIoutput_file\fR)
+.sp 2
+*  Standard error (stderr) file name up to 4094 characters for
+   UNIX and Linux or 255 characters for Windows (-e
+   \fIerror_file\fR)
+.sp 2
+*  Overwrite standard output (stdout) file name up to 4094
+   characters for UNIX and Linux or 255 characters for Windows
+   (-oo \fIoutput_file\fR)
+.sp 2
+*  Overwrite standard error (stderr) file name up to 4094
+   characters for UNIX and Linux or 255 characters for Windows
+   (-eo \fIerror_file\fR)
+.sp 2
+For remote running jobs, you can modify only the following
+attributes:
+.sp 2
+*  CPU limit ([-c \fIcpu_limit\fR[/\fIhost_spec\fR] | -cn])
+.sp 2
+*  Memory limit ([-M \fImem_limit\fR | -Mn])
+.sp 2
+*  Rerunnable attribute ([-r | -rn])
+.sp 2
+*  Run limit ([-W [\fIhour\fR:]\fIminute\fR[/\fIhost_name\fR |
+   /\fIhost_model\fR] | -Wn])
+.sp 2
+*  Swap limit ([-v \fIswap_limit\fR | -vn])
+.sp 2
+*  Standard output/error ([-o \fIout_file\fR | -on] [-oo
+   \fIout_file\fR | -oon] [-e \fIerr_file\fR | -en][-eo
+   \fIerr_file\fR | -en])
+.sp 2
+Modified resource usage limits cannot exceed limits that are
+defined in the queue.
+.sp 2
+To modify the CPU limit or the memory limit of running jobs, the
+parameters \fBLSB_JOB_CPULIMIT=Y\fR and \fBLSB_JOB_MEMLIMIT=Y\fR
+must be defined in the lsf.conf file.
+.sp 2
+By default, options for the following resource usage limits are
+specified in KB:
+.sp 2
+*  Core limit (-C)
+.sp 2
+*  Memory limit (-M)
+.sp 2
+*  Stack limit (-S)
+.sp 2
+*  Swap limit (-v)
+.sp 2
+Use \fBLSF_UNIT_FOR_LIMITS\fR in lsf.conf to specify a different
+unit for the limit (MB, GB, TB, PB, EB, or ZB).
+.SH Modifying resource requirements
+
+.sp 2
+The -R option of bmod completely replaces any previous resource
+requirement specification. It does not add the modification to
+the existing specification. For example, if you submit a job with
+.sp 2
+bsub -R "rusage[res1=1]"
+.br
+
+.sp 2
+Then modify it with
+.sp 2
+bmod -R "rusage[res2=1]"
+.br
+
+.sp 2
+The new resource usage requirement for the job is \fR[res2=1]\fR,
+not \fR[res1=1; res2=1]\fR.
+.sp 2
+bmod does not support the \fROR\fR (\fR||\fR) operator on the -R
+option.
+.sp 2
+bmod does not support multiple -R option strings for multi-phase
+\fRrusage\fR resource requirements.
+.sp 2
+Modified \fRrusage\fR consumable resource requirements for
+pending jobs must satisfy any limits set by the parameter
+\fBRESRSV_LIMIT\fR in the lsb.queues file. For running jobs, the
+maximums set by the \fBRESRSV_LIMIT\fR parameter must be
+satisfied but the modified \fRrusage\fR values can be lower than
+the minimum values.
+.sp 2
+Changes to multi-phase \fRrusage\fR strings on running jobs such
+as \fRbmod -R "rusage[mem=(mem1 mem2):duration=(dur1 dur2)]"\fR
+take effect immediately, and change the remainder of the current
+phase.
+.sp 2
+For example, a job is submitted with the following resource
+requirements:
+.sp 2
+bsub -R "rusage[mem=(500 300 200):duration=(20 30):decay=(1 0)]" myjob
+.br
+
+.sp 2
+And after 15 minutes of run time, the following modification is
+issued:
+.sp 2
+bmod -R "rusage[mem=(400 300):duration=(20 10):decay=(1 0)]" job_ID
+.br
+
+.sp 2
+The result is the following \fRrusage\fR string:
+.sp 2
+rusage[mem=(400 300):duration=(20 10):decay=(1 0)]
+.br
+
+.sp 2
+The running job will reserve \fR(400-((400-300)*15/20)))=325
+MB\fR memory with decay for the next \fR(20-15)=5\fR minutes of
+run time. The second phase then starts, reserving 300 MB of
+memory for the next 10 minutes with no decay, and end up with no
+memory that is reserved for the rest of the run time.
+.sp 2
+After 25 minutes of run time, another modification is issued:
+.sp 2
+bmod -R "rusage[mem=(200 100):duration=(20 10):decay=(1 0)]" job_ID
+.br
+
+.sp 2
+The job reserves 100 MB of memory with no decay for the next 5
+minutes of runtime, followed by no reserved memory for the
+remainder of the job.
+.sp 2
+To remove all of the string input that is specified by using the
+bsub command, use the -Rn option.
+.sp 2
+For started jobs, bmod -R modifies the effective resource
+requirements for the job, along with the job resource usage. The
+effective resource requirement string for scheduled jobs
+represents the resource requirement that is used by the scheduler
+to make a dispatch decision. bmod -R updates the \fRrusage\fR
+part in the resource requirements, and keeps the other sections
+as they were in the original resource requirements. The
+\fRrusage\fR always represents the job runtime allocation, and is
+modified along with the job resource usage. For running jobs, you
+cannot change resource requirements to any of the following
+resource requirements:
+.sp 2
+*  Compound
+.sp 2
+*  Alternative
+.sp 2
+*  rusage siblings
+.sp 2
+*  Compound to simple
+.SH Modifying the estimated run time of jobs
+
+.sp 2
+The following options modify the estimated run time of a job:
+.sp 2
+\fB-We [\fIhour\fB\fR:\fB]\fIminute\fB[\fR/\fB\fIhost_name\fB |
+\fR/\fB\fIhost_model\fB]\fR
+.br
+         Sets an estimated run time. Specifying a host or host
+         model normalizes the time with the CPU factor (time/CPU
+         factor) of the host or model.
+.sp 2
+\fB-We+ [\fIhour\fB\fR:\fB]\fIminute\fB]\fR
+.br
+         Sets an estimated run time that is the value you specify
+         added to the accumulated run time. For example, if you
+         specify \fR-We+ 30\fR and the job runs for 60 minutes,
+         the new estimated run time is now 90 minutes.
+.sp 2
+         Specifying a host or host model normalizes the time with
+         the CPU factor (time/CPU factor) of the host or model.
+.sp 2
+\fB-Wep [\fIvalue\fB]\fR
+.br
+         Sets an estimated run time that is the percentage of job
+         completion that you specify added to the accumulated run
+         time. For example, if you specify \fR-Wep+ 25\fR
+         (meaning that the job is 25% complete) and the job runs
+         for 60 minutes, the new estimated run time is now 240
+         minutes.
+.sp 2
+         The range of valid values is greater than 0 and less
+         than or equal to 100. Two digits after decimal are
+         supported.
+.sp 2
+         Specifying a host or host model normalizes the time with
+         the CPU factor of the host or model (time/CPU factor).
+.SH Modifying job groups
+
+.sp 2
+Use the -g option of bmod and specify a job group path to move a
+job or a job array from one job group to another. For example,
+the following command moves job 105 to job group
+\fR/risk_group/portfolio2/monthly\fR:
+.sp 2
+bmod -g /risk_group/portfolio2/monthly 105
+.br
+
+.sp 2
+Like bsub -g, if the job group does not exist, LSF creates it.
+.sp 2
+The bmod -g option cannot be combined with other bmod options. It
+can operate only on pending jobs. It cannot operate on running or
+finished jobs.
+.sp 2
+You can modify your own job groups and job groups that other
+users create under your job groups. LSF administrators can modify
+job groups of all users.
+.sp 2
+You cannot move job array elements from one job group to another,
+only entire job arrays. If any job array elements in a job array
+are running, you cannot move the job array to another group. A
+job array can belong only to one job group at a time.
+.sp 2
+You cannot modify the job group of a job that is attached to a
+service class. Job groups cannot be used with resource-based SLAs
+that have guarantee goals.
+.sp 2
+If you want to specify array dependency by array name, set the
+\fBJOB_DEP_LAST_SUB\fR parameter in the lsb.params file. If this
+parameter is not set, the job is rejected if one of your previous
+arrays has the same name but a different index.
+.SH Modifying jobs in service classes
+
+.sp 2
+The -sla option modifies a job by attaching it to the specified
+service class. The -slan option detaches the specified job from a
+service class. If the service class does not exist, the job is
+not modified. For example, the following command attaches job
+2307 to the service class \fRDuncan\fR:
+.sp 2
+bmod -sla Duncan 2307
+.br
+
+.sp 2
+The following command detaches job 2307 from the service class
+\fRDuncan\fR. If a default SLA is configured in lsb.params, the
+job is moved to the default service class.
+.sp 2
+bmod -slan 2307
+.sp 2
+You cannot do the following job modifications:
+.sp 2
+*  Use the -sla option with other bmod options
+.sp 2
+*  Modify the service class of job that is already attached to a
+   job group. (Time-based SLAs only.) Use the bsla command to
+   display the configuration properties of service classes that
+   are configured in the lsb.serviceclasses file, and dynamic
+   information about the state of each service class.
+.sp 2
+*  Modify a job such that it no longer satisfies the assigned
+   guarantee SLA. Jobs auto-attached to guarantee SLAs reattach
+   to another SLA as required, but jobs that are submitted with
+   an SLA specified must continue to satisfy the SLA access
+   restrictions.
+.sp 2
+If a default SLA is configured with the
+\fBENABLE_EGO_DEFAULT_SLA\fR parameter in the lsb.params file,
+the bmod -slan option moves the job to the default SLA. If the
+job is already attached to the default SLA, the bmod -slan option
+has no effect on that job.
+.SH Modifying jobs associated with application profiles
+
+.sp 2
+The -app option modifies a job by associating it to the specified
+application profile. The -appn option dissociates the specified
+job from its application profile. If the application profile does
+not exist, the job is not modified.
+.sp 2
+You can modify the application profile only for pending jobs. For
+example, the following command associates job 2308 with the
+application profile \fRfluent\fR:
+.sp 2
+bmod -app fluent 2308
+.sp 2
+The following command dissociates job 2308 from the service class
+\fRfluent\fR:
+.sp 2
+bmod -appn 2308
+.sp 2
+Use bapp to display the properties of application profiles that
+are configured in
+LSB_CONFDIR/\fIcluster_name\fR/configdir/lsb.applications.
+.SH Modifying absolute priority scheduling options
+
+.sp 2
+Administrators can use bmod -aps to adjust the APS value for
+pending jobs. bmod -apsn cancels previous bmod -aps settings. You
+cannot combine bmod -aps with other bmod options.
+.sp 2
+You can change the APS value only for pending resizable jobs.
+.sp 2
+\fB-aps "system=\fIvalue\fB" \fIjob_ID\fB\fR
+.br
+         Set a static nonzero APS value of a pending job. Setting
+         a system APS value overrides any calculated APS value
+         for the job. The system APS value cannot be applied to
+         running jobs.
+.sp 2
+\fB-aps "admin=\fIvalue\fB" \fIjob_ID\fB\fR
+.br
+         Set a nonzero \fBADMIN\fR factor value for a pending
+         job. The \fBADMIN\fR factor adjusts the calculated APS
+         value higher or lower. A negative admin value lowers the
+         calculated APS value, and a positive value raises the
+         calculated APS value relative to other pending jobs in
+         the APS queue.
+.sp 2
+         You cannot configure APS weight, limit, or grace period
+         for the ADMIN factor. The \fBADMIN\fR factor takes
+         effect as soon as it is set.
+.sp 2
+\fB-apsn\fR
+.br
+         Use the bmod -apsn option to cancel previous bmod -aps
+         settings. You cannot apply the bmod -apsn option to
+         running jobs in an APS queue. An error is issued if the
+         job has no system APS priority or \fBADMIN\fR factor
+         set.
+.SH Modifying resizable jobs
+
+.sp 2
+Use the -rnc and -ar options to modify the autoresizable
+attribute or resize notification command for resizable jobs. You
+can modify the autoresizable attribute only for pending jobs
+(\fRPSUSP\fR or \fRPEND\fR). You can modify the resize
+notification command only for unfinished jobs (not \fRDONE\fR or
+\fREXIT\fR jobs).
+.sp 2
+\fB-rnc \fIresize_notification_cmd\fB\fR
+.br
+         Specify the name of an executable file to be invoked on
+         the first execution host when the job allocation is
+         modified (both shrink and grow). The bmod -rnc option
+         overrides any notification command that is specified in
+         the application profile.
+.sp 2
+\fB-rncn \fR
+.br
+         Remove the notification command setting from the job.
+.sp 2
+\fB-ar\fR
+.br
+         Specify that the job is autoresizable.
+.sp 2
+\fB-arn\fR
+.br
+         Remove job-level autoresizable attribute from the job.
+.SH Modifying network scheduling options for PE jobs
+
+.sp 2
+The -network option modifies the network scheduling options for
+IBM Parallel Environment (PE) jobs. The -networkn option removes
+any network scheduling options for the PE job.
+.sp 2
+You cannot modify the network scheduling options for running
+jobs, even if \fRLSB_MOD_ALL_JOBS=y\fR.
+.SH Modifying memory rusage for affinity jobs
+
+.sp 2
+When you use the bmod command to modify memory \fRrusage\fR of a
+running job with an affinity resource request, host-level
+available memory and available memory in NUMA nodes might be
+inconsistent when you use bhosts -l -a. Inconsistencies happen
+because the modified resource requirement takes effect in the
+next scheduling cycle for affinity scheduling, but it takes
+effect immediately at the host level. The bmod command updates
+only resource usage that LSF accounts; it has no effect on the
+running jobs. For memory binding, when a process is bound to some
+NUMA node, LSF limits which NUMA node the process gets physical
+memory from. LSF does not ask the operating system to reserve any
+physical memory for the process.
+.SH Modifying jobs with a user-specified host file
+
+.sp 2
+Use the -hostfile option to modify a pending job with a
+user-specified host file.
+.sp 2
+bmod -hostfile "host_alloc_file" ./a.out <job_id>
+.sp 2
+A user-specified host file contains specific hosts and slots that
+a user wants to use for a job. For example, if you know what the
+best host allocation for a job is based on factors such as
+network connection status, you can choose to submit a job with a
+user specified host file. The user specified host file specifies
+the order in which to launch tasks, ranking the slots specified
+in the file. The resulting rank file is also made available to
+other applications (such as MPI).
+.sp 2
+\fBImportant: \fR
+.sp 2
+*  The -hostfile cannot be used with either the –n or –m option.
+.sp 2
+*  The -hostfile option cannot be combined with –R or compound
+   \fIres_req\fR.
+.sp 2
+*  Do not use a user specified host file if you enabled task
+   geometry because it can cause conflicts and jobs might fail.
+.sp 2
+*  If resources are not available at the time that a task is
+   ready, use advance reservation instead of a user-specified
+   host file, to ensure that reserved slots are available and to
+   guarantee that a job runs smoothly.
+.sp 2
+Any user can create a user specified host file. It must be
+accessible by the user from the submission host. It lists one
+host per line in the following format:
+.sp 2
+# This is a user specified host file
+.br
+<host_name1>   [<# slots>]
+.br
+<host_name2>   [<# slots>]
+.br
+<host_name1>   [<# slots>]
+.br
+<host_name2>   [<# slots>]
+.br
+<host_name3>   [<# slots>]
+.br
+<host_name4>   [<# slots>]
+.sp 2
+
+.sp 2
+The following rules apply to the user specified host file:
+.sp 2
+*  Specifying the number of slots for a host is optional. If no
+   slot number is indicated, the default is 1.
+.sp 2
+*  A host name can be either a host in a local cluster or a host
+   leased-in from a remote cluster
+   (\fR\fIhost_name\fR@\fIcluster_name\fR\fR).
+.sp 2
+*  A user specified host file must contain hosts from the same
+   cluster only.
+.sp 2
+*  A host name can be entered with or without the domain name.
+.sp 2
+*  Host names can be used multiple times, and the order of the
+   hosts represents the placement of tasks.
+.sp 2
+   #first three tasks
+.br
+   host01                      3
+.br
+   #fourth tasks
+.br
+   host02
+.br
+   #next three tasks
+.br
+   host03                      3
+.br
+
+.sp 2
+*  Start comments with the \fR#\fR character.
+.sp 2
+The user specified host file is deleted along with other
+job-related files when a job is cleaned.
+.sp 2
+To remove a user-specified host file that is specified for a
+pending job, use the -hostfilen option:
+.sp 2
+bmod -hostfilen <job_id>
+.SH Modifying job data requirements
+
+.sp 2
+The -data option modifies the data staging requirements for a
+pending job that is submitted with the bsub -data option. If file
+transfers for previously specified files are still in progress,
+they are not stopped. Only new transfers are initiated for the
+new data management requirement as needed. Use -datan to cancel
+the data staging requirement for the job.
+.sp 2
+Modifying the data requirements of a job replaces the entire
+previous data requirement string in the -data option with the new
+one. When you modify or add a part of the data requirement
+string, you must specify the entire data requirement string in
+bmod -data with the modifications.
+.sp 2
+The sanity check for the existence of files or folders and
+whether the user can access them, discovery of the size and
+modification time of the files or folders, and generation of the
+hash from the bmod command occurs in the transfer job. This
+equalizes modification performance between jobs with and without
+data requirements. The -datachk option can perform full checking
+for jobs with a data requirement. The -datachk option can be
+specified only with the -data command. If the data requirement is
+for a tag, this option has no effect.
+.sp 2
+You must have read access to the specified file to modify the
+data requirements for the job.
+.sp 2
+You cannot use bmod -data or bmod -datan to modify the data
+management requirements of a running or finished job, or for a
+job that is already forwarded to or from another cluster.
+.sp 2
+For example, if a job that was originally submitted with the
+following command:
+.sp 2
+bsub -data /proj/user1/dataset_A_%I -J A[1-10] myjob.sh
+.sp 2
+And you modify the job with the following command:
+.sp 2
+bmod -data /proj/user1/dataset_B_%I "A[1]"
+.sp 2
+Then all the paths \fR/proj/user1/dataset_B_1\fR,
+\fR/proj/user1/dataset_B_2\fR ... \fR/proj/user1/dataset_B_10\fR
+must exist. If the bmod command succeeds, then \fRA[1]\fR still
+has all 10 data files in its data requirement.
+.SH Options
+
+.sp 2
+\fB\fIjob_ID\fB | "\fIjob_ID\fB[\fIindex\fB]"\fR
+.br
+         Modifies jobs with the specified job ID.
+.sp 2
+         Modifies job array elements that are specified by
+         \fR"\fIjob_ID\fR[\fIindex\fR]"\fR.
+.sp 2
+\fB-h\fR
+.br
+         Prints command usage to stderr and exits.
+.sp 2
+\fB-V\fR
+.br
+         Prints LSF release version to stderr and exits.
+.SH Limitations
+
+.sp 2
+If you do not specify -e or -eo before the job is dispatched, you
+cannot modify the name of job error file for a running job.
+Modifying the job output options of remote running jobs is not
+supported.
+.SH See also
+
+.sp 2
+bsub

@@ -1,0 +1,25 @@
+.TH "extsched_freeTab_" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+extsched_freeTab_ \- extsched_freeTab_ 
+Remove everything from a hash table and free up the memory using custom provided free function.
+.PP
+\fB#include <lssched.h>\fP
+.PP
+\fB void extsched_freeTab_(INT_hTab **t, void (*freeFunc)(void *), int freeTabFlag)\fP
+.PP
+.SH "Parameters:"
+\fIt\fP [IN|OUT] pointer to a hash table object 
+.br
+\fIfreeFunc\fP [IN] pointer to a custom free function, if NULL free() is used 
+.br
+\fIfreeTabFlag\fP [IN] if TRUE the table object is freed and pointer set to NULL, otherwise the table object is in an uninitialized state
+.PP
+.SH "Returns:"
+void  is no return value. 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

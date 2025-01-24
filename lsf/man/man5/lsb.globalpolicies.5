@@ -1,0 +1,1748 @@
+
+.ad l
+
+.TH lsb.globalpolicies 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBlsb.globalpolicies \fR
+.ce 0
+
+.sp 2
+This configuration file defines global policies for multiple
+clusters.
+.sp 2
+This file is optional. It is installed by default in
+LSB_CONFDIR/cluster_name/configdir.
+.sp 2
+   GlobalFairshare section
+.br
+   Defines global fairshare policies for multiple clusters.
+.sp 2
+   Limit section
+.br
+   Defines global limits for multiple clusters.
+.sp 2
+Parent topic: Configuration files
+.ad l
+
+.TH lsb.globalpolicies 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBGlobalFairshare section \fR
+.ce 0
+
+.sp 2
+Defines global fairshare policies for multiple clusters.
+.sp 2
+
+.sp 2
+Each global fairshare policy definition begins with the line
+\fRBegin GlobalFairshare\fR and ends with the line \fREnd
+GlobalFairshare\fR. The policy name (\fBNAME\fR) and participants
+(\fBPARTICIPANTS\fR) must be specified. All other parameters are
+optional.
+.sp 2
+After making any changes to lsb.globalpolicies, run badmin
+gpdrestart to reconfigure the global policy daemon.
+.sp 2
+The following is the template for this configuration file:
+.sp 2
+# Begin GlobalFairshare
+.br
+# NAME = policy1
+.br
+# PARTICIPANTS = queue1@cluster1 queue1@cluster2 queue1@cluster3
+.br
+# SYNC_MODE = all
+.br
+# SYNC_INTERVAL = 30
+.br
+# DESCRIPTION = A global fairshare policy
+.br
+# End GlobalFairshare
+.sp 2
+Each line is described in the following subsections.
+.sp 2
+   DESCRIPTION
+.br
+
+.sp 2
+   NAME
+.br
+
+.sp 2
+   PARTICIPANTS
+.br
+
+.sp 2
+   SYNC_INTERVAL
+.br
+
+.sp 2
+   SYNC_MODE
+.br
+
+.sp 2
+Parent topic: lsb.globalpolicies
+
+.ad l
+
+.TH lsb.globalpolicies 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBDESCRIPTION \fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRDESCRIPTION=text\fR
+.SH Description
+
+.sp 2
+Description of the global fairshare policy.
+.sp 2
+The description should clearly describe the service features of
+the global fairshare.
+.sp 2
+The text can include any characters, including white space. The
+text can be extended to multiple lines by ending the preceding
+line with a backslash (\). The maximum length for the text is 512
+characters.
+.SH Default
+
+.sp 2
+Not defined.
+.sp 2
+Parent topic: GlobalFairshare section
+
+.ad l
+
+.TH lsb.globalpolicies 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBNAME \fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRNAME=string\fR
+.SH Description
+
+.sp 2
+Mandatory. Provide a unique name for the global fairshare policy.
+.sp 2
+Specify any ASCII string up to 60 characters long. You can use
+letters, digits, underscores (_), dashes (-) and periods (.) in
+the name.
+.sp 2
+all is reserved as a keyword.
+.SH Default
+
+.sp 2
+You must specify this parameter to define a global fairshare
+policy. LSF does not automatically assign a default global
+fairshare policy name.
+.sp 2
+Parent topic: GlobalFairshare section
+
+.ad l
+
+.TH lsb.globalpolicies 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBPARTICIPANTS \fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRPARTICIPANTS=queue@cluster ...\fR
+.SH Description
+
+.sp 2
+Mandatory. Define queues for the clusters that participate in the
+global fairshare policy.
+.sp 2
+Only the parent queue can be configured for user-based cross
+queue fairshare. The queue name and the cluster name must not
+include the @ character. A cluster can only have one queue. If
+\fBPARTICIPANTS\fR is “q1@cluster1 q2@cluster1”, q2@cluster1 will
+be ignored.
+.sp 2
+A participant can only participate in one global fairshare
+policy. If the participant is already participating in another
+global fairshare policy, it is ignored in the current global
+fairshare policy.
+.SH Default
+
+.sp 2
+Not defined.
+.sp 2
+Parent topic: GlobalFairshare section
+
+.ad l
+
+.TH lsb.globalpolicies 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBSYNC_INTERVAL \fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRSYNC_INTERVAL=seconds\fR
+.SH Description
+
+.sp 2
+Time interval, in seconds, for which the gpolicyd and mbatchd
+exchange fairshare load information.
+.sp 2
+The time interval ranges from 5 seconds to 3600 seconds. If the
+specified value is out of range, the default value is used.
+.SH Default
+
+.sp 2
+30 seconds.
+.sp 2
+Parent topic: GlobalFairshare section
+
+.ad l
+
+.TH lsb.globalpolicies 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBSYNC_MODE \fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRBSWITCH_SYNC_MODE=all|partial\fR
+.SH Description
+
+.sp 2
+Defines which share accounts in the fairshare tree of each
+participant will participate into the global fairshare policy.
+.sp 2
+*  
+   all: If defined, all participants synchronize fairshare load
+   for the whole fairshare tree.
+.sp 2
+*  
+   partial: If defined, depends on the configuration of the
+   \fBFS_POLICY\fR setting in lsb.users for each cluster. Not all
+   user share accounts in the fairshare tree will synchronize
+   fairshare load globally. Only the defined fairshare node needs
+   global synchronization.
+.SH Default
+
+.sp 2
+all
+.sp 2
+Parent topic: GlobalFairshare section
+
+.ad l
+
+.TH lsb.globalpolicies 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBLimit section \fR
+.ce 0
+
+.sp 2
+Defines global limits for multiple clusters.
+.sp 2
+
+.sp 2
+Each global limit definition begins with the line \fRBegin
+Limit\fR and ends with the line \fREnd Limit\fR. The Limit
+section sets limits for the maximum amount of the specified
+resources that must be available for different classes of jobs to
+start, and to which resource consumers that the limits apply.
+.sp 2
+After making any changes to lsb.globalpolicies, run badmin
+gpdrestart to reconfigure the global policy daemon.
+.sp 2
+\fBTip: \fRFor limits to be enforced, jobs must specify rusage
+resource requirements (bsub -R or RES_REQ in lsb.queues).
+.sp 2
+The blimits command displays view current usage of resource
+allocation limits configured in \fBLimit\fR sections in
+lsb.globalpolicies.
+.sp 2
+The syntax for specifying global resource allocation limits is
+the same as specifying local resource allocation limits in the
+\fBLimit\fR sections of the lsb.resources file.
+.sp 2
+LSF does not validate the names of items on which limits are
+enforced because the global policy daemon (gpolicyd) does not
+have this detailed information globally. These items include
+application profiles (\fBAPPS\fR), queues (\fBQUEUES\fR), users
+(\fBUSERS\fR), projects (\fBPROJECTS\fR), and LSF License
+Scheduler projects (\fBLIC_PROJECTS\fR). gpolicyd checks the
+names of these items in the scheduling session and ignores limits
+for any items that are not available in the local cluster. For
+example, if the \fRuserA\fR user does not exist in one cluster,
+the global limits for \fRuserA\fR do not affect this cluster.
+However, all resources that are defined in the \fBLimit\fR
+sections must be defined in the cluster on which gpolicyd is
+running because gpolicyd uses these resources to define the
+resource type.
+.sp 2
+\fBNote: \fR
+.sp 2
+*  There might be conflicts when allocating the available
+   allocation limit to different clusters. Global limit
+   scheduling might allow conflicts to occur temporarily between
+   clusters. After an overcommitted job is done, the global
+   limits can return. If the \fBRELAX_JOB_DISPATCH_ORDER\fR
+   parameter in the lsb.params file is enabled in the cluster,
+   the allocation can be reused by other jobs, and the resource
+   conflicts can remain in place for a longer period of time.
+.sp 2
+*  Global limits are evenly divided between different clusters,
+   without any fairness considerations. Larger jobs that require
+   a large share of the resource allocation might pend if that
+   amount is larger than the per-cluster limit.
+.sp 2
+   For example, if the \fRres1\fR resource has a global limit of
+   12 units among three clusters (4 per cluster), a job that
+   requires 5 units of the \fRres1\fR resource pends because this
+   is larger than the per-cluster limit.
+.sp 2
+The Limit section sets limits for the maximum amount of the
+specified resources that must be available for different classes
+of jobs to start, and which resource consumers the limits apply
+to. Limits are enforced during job resource allocation.
+.sp 2
+\fBTip: \fR
+.sp 2
+For limits to be enforced, jobs must specify rusage resource
+requirements (bsub -R or \fBRES_REQ\fR in the lsb.queues file).
+.sp 2
+The blimits -gl command displays view current usage of resource
+allocation limits configured in Limit sections in lsb.resources.
+.SH Limit section structure
+
+.sp 2
+Each set of limits is defined in a Limit section enclosed by
+\fRBegin Limit\fR and \fREnd Limit\fR.
+.sp 2
+A Limit section has two formats:
+.sp 2
+*  Vertical tabular
+.sp 2
+*  Horizontal
+.sp 2
+The file can contain sections in both formats. In either format,
+you must configure a limit for at least one consumer and one
+resource. The Limit section cannot be empty.
+.SH Vertical tabular format
+
+.sp 2
+Use the vertical format for simple configuration conditions
+involving only a few consumers and resource limits.
+.sp 2
+The first row consists of an optional NAME and the following
+keywords for:
+.sp 2
+*  Resource types:
+.sp 2
+   *  Total number of job slots (\fBSLOTS\fR) that can be used by
+      specific jobs.
+.sp 2
+   *  Memory (\fBMEM\fR), in MB or the unit set in the
+      \fBLSF_UNIT_FOR_LIMITS\fR parameter in the lsf.conf file.
+.sp 2
+   *  Swap space (\fBSWP\fR), in MB or the unit set in the
+      \fBLSF_UNIT_FOR_LIMITS\fR parameter in the lsf.conf file.
+.sp 2
+   *  Temp space (\fBTMP\fR), in MB or the unit set in the
+      \fBLSF_UNIT_FOR_LIMITS\fR parameter in the lsf.conf file.
+.sp 2
+   *  Total number of running and suspended (RUN, SSUSP, USUSP)
+      jobs (\fBJOBS\fR).
+.sp 2
+   *  Other shared resources (\fBRESOURCE\fR).
+.sp 2
+   \fBNote: \fRAll clusters must have the same unit configured
+   for \fBMEM\fR, \fBSWP\fR, and \fBTMP\fR in the
+   \fBLSF_UNIT_FOR_LIMITS\fR parameter in the lsf.conf file.
+.sp 2
+*  Consumer types:
+.sp 2
+   *  All specified applications (\fBAPPS\fR).
+.sp 2
+   *  All specified queues (\fBQUEUES\fR)
+.sp 2
+   *  All specified users or user groups (\fBUSERS\fR)
+.sp 2
+   *  All specified projects (\fBPROJECTS\fR)
+.sp 2
+   *  All specified LSF License Scheduler projects
+      (\fBLIC_PROJECTS\fR)
+.sp 2
+Each subsequent row describes the configuration information for
+resource consumers and the limits that apply to them. Each line
+must contain an entry for each keyword. Use empty parentheses ()
+or a dash (-) to to indicate an empty field. Fields cannot be
+left blank.
+.sp 2
+\fBTip: \fR
+.sp 2
+Multiple entries must be enclosed in parentheses. For RESOURCE
+limits, RESOURCE names must be enclosed in parentheses.
+.SH Horizontal format
+
+.sp 2
+Use the horizontal format to give a name for your limits and to
+configure more complicated combinations of consumers and resource
+limits.
+.sp 2
+The first line of the Limit section gives the name of the limit
+configuration.
+.sp 2
+Each subsequent line in the Limit section consists of keywords
+identifying the resource limits:
+.sp 2
+*  Total number of job slots (\fBSLOTS\fR) that can be used by
+   specific jobs.
+.sp 2
+*  Memory (\fBMEM\fR), in MB or the unit set in the
+   \fBLSF_UNIT_FOR_LIMITS\fR parameter in the lsf.conf file.
+.sp 2
+*  Swap space (\fBSWP\fR), in MB or the unit set in the
+   \fBLSF_UNIT_FOR_LIMITS\fR parameter in the lsf.conf file.
+.sp 2
+*  Temp space (\fBTMP\fR), in MB or the unit set in the
+   \fBLSF_UNIT_FOR_LIMITS\fR parameter in the lsf.conf file.
+.sp 2
+*  Total number of running and suspended (RUN, SSUSP, USUSP) jobs
+   (\fBJOBS\fR).
+.sp 2
+*  Other shared resources (\fBRESOURCE\fR).
+.sp 2
+\fBNote: \fRAll clusters must have the same unit configured for
+\fBMEM\fR, \fBSWP\fR, and \fBTMP\fR in the
+\fBLSF_UNIT_FOR_LIMITS\fR parameter in the lsf.conf file.
+.sp 2
+and the resource \fIconsumers\fR to which the limits apply:
+.sp 2
+*  All specified applications (\fBAPPS\fR).
+.sp 2
+*  All specified queues (\fBQUEUES\fR)
+.sp 2
+*  All specified users or user groups (\fBUSERS\fR)
+.sp 2
+*  All specified projects (\fBPROJECTS\fR)
+.sp 2
+*  All specified LSF License Scheduler projects
+   (\fBLIC_PROJECTS\fR)
+.SH Example: Vertical tabular format
+
+.sp 2
+In the following limit configuration:
+.sp 2
+*  Jobs from \fRuser1\fR and \fRuser3\fR are limited to 2 job
+   slots
+.sp 2
+*  Jobs from \fRuser2\fR on queue \fRnormal\fR are limited to 20
+   MB of memory or the unit set in \fBLSF_UNIT_FOR_LIMITS\fR in
+   lsf.conf.
+.sp 2
+*  The short queue can have at most 200 running and suspended
+   jobs
+.sp 2
+Begin Limit
+.br
+NAME    USERS           QUEUES      SLOTS  MEM   SWP  TMP  JOBS
+.br
+limit1  (user1 user3)   -           2      -     -    -    -
+.br
+ -       user2          normal      -      20    -    -    -
+.br
+ -       -              short       -      -     -    -    200
+.br
+End Limit
+.sp 2
+Jobs that do not match these limits; that is, all users except
+\fRuser1\fR and \fRuser3\fR, and all users except \fRuser2\fR
+submitting jobs to queue \fRnormal\fR, have no limits.
+.SH Example: Horizontal format
+
+.sp 2
+All users in user group \fRugroup1\fR except \fRuser1\fR using
+\fRqueue1\fR and \fRqueue2\fR are limited to 2 job slots:
+.sp 2
+Begin Limit 
+.br
+# ugroup1 except user1 uses queue1 and queue2 with 2 job slots 
+.br
+NAME          = limit1 
+.br
+# Resources 
+.br
+SLOTS = 2 
+.br
+#Consumers
+.br
+QUEUES       = queue1 queue2 
+.br
+USERS        = ugroup1 ~user1 
+.br
+End Limit
+.SH Compatibility with lsb.queues, lsb.users, and lsb.hosts
+
+.sp 2
+The Limit section does not support the keywords or format used in
+lsb.users, lsb.hosts, and lsb.queues. However, your existing job
+slot limit configuration in these files will continue to apply.
+.sp 2
+Job slot limits are the only type of limit you can configure in
+lsb.users, lsb.hosts, and lsb.queues. You cannot configure limits
+for user groups, host groups and projects in lsb.users,
+lsb.hosts, and lsb.queues. You should not configure any new
+resource allocation limits in lsb.users, lsb.hosts, and
+lsb.queues. Use this section to configure all new resource
+allocation limits, including job slot limits. Limits on running
+and suspended jobs can only be set in this section.
+.sp 2
+Existing limits in lsb.users, lsb.hosts, and lsb.queues with the
+same scope as a new limit in this section, but with a different
+value are ignored. The value of the new limit in this section is
+used. Similar limits with different scope enforce the most
+restrictive limit.
+.sp 2
+   APPS
+.br
+
+.sp 2
+   ELIGIBLE_PEND_JOBS
+.br
+
+.sp 2
+   INELIGIBLE
+.br
+
+.sp 2
+   JOBS
+.br
+
+.sp 2
+   JOBS_PER_SCHED_CYCLE
+.br
+
+.sp 2
+   LIC_PROJECTS
+.br
+
+.sp 2
+   MEM
+.br
+
+.sp 2
+   NAME
+.br
+
+.sp 2
+   PER_APP
+.br
+
+.sp 2
+   PER_LIC_PROJECT
+.br
+
+.sp 2
+   PER_PROJECT
+.br
+
+.sp 2
+   PER_QUEUE
+.br
+
+.sp 2
+   PER_USER
+.br
+
+.sp 2
+   PROJECTS
+.br
+
+.sp 2
+   QUEUES
+.br
+
+.sp 2
+   RESOURCE
+.br
+
+.sp 2
+   SLOTS
+.br
+
+.sp 2
+   SWP
+.br
+
+.sp 2
+   TMP
+.br
+
+.sp 2
+   USERS
+.br
+
+.sp 2
+Parent topic: lsb.globalpolicies
+
+.ad l
+
+.TH lsb.globalpolicies 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBAPPS\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRAPPS=all\fR [\fR~\fR]\fIapplication_profile_name\fR ...
+.sp 2
+\fRAPPS\fR
+.sp 2
+\fR(\fR [\fR-\fR] | \fRall\fR
+[\fR~\fR]\fIapplication_profile_name\fR ... \fR)\fR
+.SH Description
+
+.sp 2
+A space-separated list of application profile names on which
+limits are enforced. Limits are enforced on all application
+profiles listed.
+.sp 2
+The list must contain valid application profile names defined in
+lsb.applications.
+.sp 2
+To specify a per-application limit, use the PER_APP keyword. Do
+not configure APPS and PER_APP limits in the same Limit section.
+.sp 2
+In horizontal format, use only one APPS line per Limit section.
+.sp 2
+Use the keyword all to configure limits that apply to all
+applications in a cluster.
+.sp 2
+Use the not operator (~) to exclude applications from the all
+specification in the limit. This is useful if you have a large
+number of applications but only want to exclude a few
+applications from the limit definition.
+.sp 2
+In vertical tabular format, multiple application profile names
+must be enclosed in parentheses.
+.sp 2
+In vertical tabular format, use empty parentheses () or a dash
+(-) to indicate an empty field. Fields cannot be left blank.
+.SH Default
+
+.sp 2
+None. If no limit is specified for PER_APP or APPS, no limit is
+enforced on any application profile.
+.SH Example
+
+.sp 2
+APPS=appA appB
+.sp 2
+Parent topic: Limit section
+
+.ad l
+
+.TH lsb.globalpolicies 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBELIGIBLE_PEND_JOBS\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRELIGIBLE_PEND_JOBS=\fR\fIinteger\fR
+.SH Description
+
+.sp 2
+The maximum number of eligible jobs that are considered for
+dispatch in a single scheduling cycle. Specify a positive integer
+or 0. This parameter can only be used with the following consumer
+types:
+.sp 2
+*  USERS or PER_USER
+.sp 2
+*  QUEUES or PER_QUEUE
+.sp 2
+The \fBall\fR group, or any group containing \fBall\fR, is not
+supported.
+.sp 2
+The limit is ignored for any other defined consumer types.
+.SH Valid values
+
+.sp 2
+Any positive integer or 0.
+.SH Default
+
+.sp 2
+No limit
+.SH Example
+
+.sp 2
+ELIGIBLE_PEND_JOBS=10
+.sp 2
+Parent topic: Limit section
+
+.ad l
+
+.TH lsb.globalpolicies 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBINELIGIBLE\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRINELIGIBLE=Y|y|N|n\fR
+.SH Description
+
+.sp 2
+If set as y or Y in the specific Limit section and the job cannot
+be scheduled due to this limit, the LSF scheduler will put the
+job into an ineligible pending state. LSF calculates the
+ineligible pending time for this job and the job\(aqs priority does
+not increase.
+.sp 2
+\fBNote: \fRThe following Limit types are compatible with the
+\fRINELIGIBLE\fR parameter: \fRJOBS\fR, \fRUSERS\fR,
+\fRPER_USER\fR, \fRQUEUES\fR, \fRPER_QUEUE\fR, \fRPROJECTS\fR,
+\fRPER_PROJECT\fR, \fRLIC_PROJECTS\fR, and \fRPER_LIC_PROJECT\fR.
+.SH Default
+
+.sp 2
+INELIGIBLE=N
+.SH Example
+
+.sp 2
+INELIGIBLE=Y
+.sp 2
+Parent topic: Limit section
+
+.ad l
+
+.TH lsb.globalpolicies 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBJOBS\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRJOBS=\fR\fIinteger\fR
+.sp 2
+\fRJOBS\fR
+.sp 2
+\fR-\fR | \fIinteger\fR
+.SH Description
+
+.sp 2
+Maximum number of running or suspended (RUN, SSUSP, USUSP) jobs
+available to resource consumers. Specify a positive integer
+greater than or equal 0. Job limits can be defined in both
+vertical and horizontal limit formats.
+.sp 2
+With MultiCluster resource lease model, this limit applies only
+to local hosts being used by the local cluster. The job limit for
+hosts exported to a remote cluster is determined by the host
+export policy, not by this parameter. The job limit for borrowed
+hosts is determined by the host export policy of the remote
+cluster.
+.sp 2
+If SLOTS are configured in the Limit section, the most
+restrictive limit is applied.
+.sp 2
+If HOSTS are configured in the Limit section, JOBS is the number
+of running and suspended jobs on a host. If preemptive scheduling
+is used, the suspended jobs are not counted against the job
+limit.
+.sp 2
+Use this parameter to prevent a host from being overloaded with
+too many jobs, and to maximize the throughput of a machine.
+.sp 2
+If only QUEUES are configured in the Limit section, JOBS is the
+maximum number of jobs that can run in the listed queues.
+.sp 2
+If only USERS are configured in the Limit section, JOBS is the
+maximum number of jobs that the users or user groups can run.
+.sp 2
+If only HOSTS are configured in the Limit section, JOBS is the
+maximum number of jobs that can run on the listed hosts.
+.sp 2
+If only PROJECTS are configured in the Limit section, JOBS is the
+maximum number of jobs that can run under the listed projects.
+.sp 2
+Use APPS or PER_APP, QUEUES or PER_QUEUE, USERS or PER_USER,
+HOSTS or PER_HOST, LIC_PROJECTS or PER_LIC_PROJECT, and PROJECTS
+or PER_PROJECT in combination to further limit jobs available to
+resource consumers.
+.sp 2
+In horizontal format, use only one JOBS line per Limit section.
+.sp 2
+In vertical format, use empty parentheses () or a dash (-) to
+indicate the default value (no limit). Fields cannot be left
+blank.
+.SH Default
+
+.sp 2
+No limit
+.SH Example
+
+.sp 2
+JOBS=20
+.sp 2
+Parent topic: Limit section
+
+.ad l
+
+.TH lsb.globalpolicies 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBJOBS_PER_SCHED_CYCLE\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRJOBS_PER_SCHED_CYCLE=\fR\fIinteger\fR
+.SH Description
+
+.sp 2
+Use \fBELIGIBLE_PEND_JOBS\fR instead. This parameter is only
+maintained for backwards compatibility.
+.sp 2
+Maximum number of jobs that are considered for dispatch in a
+single scheduling cycle. Specify a positive integer or 0. This
+parameter can only be used with the following consumer types:
+.sp 2
+*  USERS or PER_USER
+.sp 2
+*  QUEUES or PER_QUEUE
+.sp 2
+The \fBall\fR group, or any group containing \fBall\fR, is not
+supported.
+.sp 2
+The limit is ignored for any other defined consumer types.
+.SH Valid values
+
+.sp 2
+Any positive integer or 0.
+.SH Default
+
+.sp 2
+No limit
+.SH Example
+
+.sp 2
+JOBS_PER_SCHED_CYCLE=10
+.sp 2
+Parent topic: Limit section
+
+.ad l
+
+.TH lsb.globalpolicies 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBLIC_PROJECTS\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLIC_PROJECTS=all\fR [\fR~\fR]\fIlic_project_name\fR ...
+.sp 2
+\fRLIC_PROJECTS\fR
+.sp 2
+\fR(\fR [\fR-\fR] | \fRall\fR [\fR~\fR]\fIlic_project_name\fR ...
+\fR)\fR
+.SH Description
+
+.sp 2
+A space-separated list of LSF License Scheduler project names on
+which limits are enforced. Limits are enforced on all projects
+listed. Each project name can be up to 511 characters long.
+.sp 2
+To specify a per-project limit, use the PER_LIC_PROJECT keyword.
+Do not configure LIC_PROJECTS and PER_PROJECT limits in the same
+Limit section.
+.sp 2
+In horizontal format, use only one LIC_PROJECTS line per Limit
+section.
+.sp 2
+Use the keyword all to configure limits that apply to all
+projects in a cluster.
+.sp 2
+Use the not operator (~) to exclude projects from the all
+specification in the limit. This is useful if you have a large
+number of projects but only want to exclude a few projects from
+the limit definition.
+.sp 2
+In vertical tabular format, multiple project names must be
+enclosed in parentheses.
+.sp 2
+In vertical tabular format, use empty parentheses () or a dash
+(-) to indicate an empty field. Fields cannot be left blank.
+.SH Default
+
+.sp 2
+all (limits are enforced on all projects in the cluster)
+.SH Example
+
+.sp 2
+LIC_PROJECTS=licprojA licprojB
+.sp 2
+Parent topic: Limit section
+
+.ad l
+
+.TH lsb.globalpolicies 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBMEM\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRMEM=\fR\fIinteger\fR[\fR%\fR]
+.sp 2
+\fRMEM\fR
+.sp 2
+\fR-\fR | \fIinteger\fR[\fR%\fR]
+.SH Description
+
+.sp 2
+Maximum amount of memory available to resource consumers. Specify
+a value in MB or the unit set in \fBLSF_UNIT_FOR_LIMITS\fR in
+lsf.conf as a positive integer greater than or equal 0.
+.sp 2
+The Limit section is ignored if MEM is specified as a percentage:
+.sp 2
+*  Without PER_HOST, or
+.sp 2
+*  With HOSTS
+.sp 2
+In horizontal format, use only one MEM line per Limit section.
+.sp 2
+In vertical tabular format, use empty parentheses () or a dash
+(-) to indicate the default value (no limit). Fields cannot be
+left blank.
+.sp 2
+If only QUEUES are configured in the Limit section, MEM must be
+an integer value. MEM is the maximum amount of memory available
+to the listed queues.
+.sp 2
+If only USERS are configured in the Limit section, MEM must be an
+integer value. MEM is the maximum amount of memory that the users
+or user groups can use.
+.sp 2
+If only HOSTS are configured in the Limit section, MEM must be an
+integer value. It cannot be a percentage. MEM is the maximum
+amount of memory available to the listed hosts.
+.sp 2
+If only PROJECTS are configured in the Limit section, MEM must be
+an integer value. MEM is the maximum amount of memory available
+to the listed projects.
+.sp 2
+Use APPS or PER_APP, QUEUES or PER_QUEUE, USERS or PER_USER,
+HOSTS or PER_HOST, LIC_PROJECTS or PER_LIC_PROJECT, and PROJECTS
+or PER_PROJECT in combination to further limit memory available
+to resource consumers.
+.SH Default
+
+.sp 2
+No limit
+.SH Example
+
+.sp 2
+MEM=20
+.sp 2
+Parent topic: Limit section
+
+.ad l
+
+.TH lsb.globalpolicies 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBNAME\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRNAME=\fR\fIlimit_name\fR
+.sp 2
+\fRNAME\fR
+.sp 2
+\fR-\fR | \fIlimit_name\fR
+.SH Description
+
+.sp 2
+Name of the Limit section
+.sp 2
+Specify any ASCII string 40 characters or less. You can use
+letters, digits, underscores (_) or dashes (-). You cannot use
+blank spaces.
+.sp 2
+If duplicate limit names are defined, the Limit section is
+ignored. If value of NAME is not defined in vertical format, or
+defined as (-), blimtis displays \fRNONAME\fInnn\fR\fR.
+.SH Default
+
+.sp 2
+None. In horizontal format, you must provide a name for the Limit
+section. NAME is optional in the vertical format.
+.SH Example
+
+.sp 2
+NAME=short_limits
+.sp 2
+Parent topic: Limit section
+
+.ad l
+
+.TH lsb.globalpolicies 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBPER_APP\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRPER_APP=\fR\fIapplication_profile_name\fR ..
+.SH Description
+
+.sp 2
+A space-separated list of application profile names on which
+limits are enforced. Limits are enforced on jobs submitted to
+each application profile listed.
+.sp 2
+Do not configure PER_APP and APPS limits in the same Limit
+section.
+.sp 2
+In horizontal format, use only one PER_APP line per Limit
+section.
+.sp 2
+In vertical tabular format, multiple application profile names
+must be enclosed in parentheses.
+.SH Default
+
+.sp 2
+None. If no limit is specified for PER_APP or APPS, no limit is
+enforced on any application profile.
+.SH Example
+
+.sp 2
+PER_APP=app1 app2
+.sp 2
+Parent topic: Limit section
+
+.ad l
+
+.TH lsb.globalpolicies 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBPER_LIC_PROJECT\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRPER_LIC_PROJECT=\fR\fIlic_project_name\fR ...
+.SH Description
+
+.sp 2
+A space-separated list of LSF License Scheduler project names on
+which limits are enforced. Limits are enforced on each project
+listed. Each project name can be up to 511 characters long.
+.sp 2
+Do not configure PER_LIC_PROJECT and LIC_PROJECTS limits in the
+same Limit section.
+.sp 2
+In horizontal format, use only one PER_LIC_PROJECT line per Limit
+section.
+.sp 2
+In vertical tabular format, multiple project names must be
+enclosed in parentheses.
+.SH Default
+
+.sp 2
+None. If no limit is specified for PER_LIC_PROJECT or
+LIC_PROJECTS, no limit is enforced on any LSF License Scheduler
+project.
+.SH Example
+
+.sp 2
+PER_PROJECT=licproj1 licproj2
+.sp 2
+Parent topic: Limit section
+
+.ad l
+
+.TH lsb.globalpolicies 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBPER_PROJECT\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRPER_PROJECT=\fR\fIproject_name\fR ...
+.SH Description
+
+.sp 2
+A space-separated list of project names on which limits are
+enforced. Limits are enforced on each project listed. Each
+project name can be up to 511 characters long.
+.sp 2
+Do not configure PER_PROJECT and PROJECTS limits in the same
+Limit section.
+.sp 2
+In horizontal format, use only one PER_PROJECT line per Limit
+section.
+.sp 2
+In vertical tabular format, multiple project names must be
+enclosed in parentheses.
+.SH Default
+
+.sp 2
+None. If no limit is specified for PER_PROJECT or PROJECTS, no
+limit is enforced on any project.
+.SH Example
+
+.sp 2
+PER_PROJECT=proj1 proj2
+.sp 2
+Parent topic: Limit section
+
+.ad l
+
+.TH lsb.globalpolicies 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBPER_QUEUE\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRPER_QUEUE=\fR\fIqueue_name\fR ..
+.SH Description
+
+.sp 2
+A space-separated list of queue names on which limits are
+enforced. Limits are enforced on jobs submitted to each queue
+listed.
+.sp 2
+Do not configure PER_QUEUE and QUEUES limits in the same Limit
+section.
+.sp 2
+In horizontal format, use only one PER_QUEUE line per Limit
+section.
+.sp 2
+In vertical tabular format, multiple queue names must be enclosed
+in parentheses.
+.SH Default
+
+.sp 2
+None. If no limit is specified for PER_QUEUE or QUEUES, no limit
+is enforced on any queue.
+.SH Example
+
+.sp 2
+PER_QUEUE=priority night
+.sp 2
+Parent topic: Limit section
+
+.ad l
+
+.TH lsb.globalpolicies 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBPER_USER\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRPER_USER=all\fR [\fR~\fR]\fIuser_name\fR ... | \fRall\fR
+[\fR~\fR]\fIuser_group\fR ...
+.SH Description
+
+.sp 2
+A space-separated list of user names or user groups on which
+limits are enforced. Limits are enforced on each user or
+individually to each user in the user group listed. If a user
+group contains a subgroup, the limit also applies to each member
+in the subgroup recursively.
+.sp 2
+User names must be valid login names. User group names can be LSF
+user groups or UNIX and Windows user groups. Note that for LSF
+and UNIX user groups, the groups must be specified in a UserGroup
+section in lsb.users first.
+.sp 2
+Do not configure PER_USER and USERS limits in the same Limit
+section.
+.sp 2
+In horizontal format, use only one PER_USER line per Limit
+section.
+.sp 2
+In vertical tabular format, multiple user names must be enclosed
+in parentheses.
+.SH Default
+
+.sp 2
+None. If no limit is specified for PER_USER or USERS, no limit is
+enforced on any user or user group.
+.SH Example
+
+.sp 2
+PER_USER=user1 user2 ugroup1 ~user3
+.sp 2
+Parent topic: Limit section
+
+.ad l
+
+.TH lsb.globalpolicies 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBPROJECTS\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRPROJECTS=all\fR [\fR~\fR]\fIproject_name\fR ...
+.sp 2
+\fRPROJECTS\fR
+.sp 2
+\fR(\fR [\fR-\fR] | \fRall\fR [\fR~\fR]\fIproject_name\fR ...
+\fR)\fR
+.SH Description
+
+.sp 2
+A space-separated list of project names on which limits are
+enforced. Limits are enforced on all projects listed. Each
+project name can be up to 511 characters long.
+.sp 2
+To specify a per-project limit, use the PER_PROJECT keyword. Do
+not configure PROJECTS and PER_PROJECT limits in the same Limit
+section.
+.sp 2
+In horizontal format, use only one PROJECTS line per Limit
+section.
+.sp 2
+Use the keyword all to configure limits that apply to all
+projects in a cluster.
+.sp 2
+Use the not operator (~) to exclude projects from the all
+specification in the limit. This is useful if you have a large
+number of projects but only want to exclude a few projects from
+the limit definition.
+.sp 2
+In vertical tabular format, multiple project names must be
+enclosed in parentheses.
+.sp 2
+In vertical tabular format, use empty parentheses () or a dash
+(-) to indicate an empty field. Fields cannot be left blank.
+.SH Default
+
+.sp 2
+all (limits are enforced on all projects in the cluster)
+.SH Example
+
+.sp 2
+PROJECTS=projA projB
+.sp 2
+Parent topic: Limit section
+
+.ad l
+
+.TH lsb.globalpolicies 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBQUEUES\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRQUEUES=all\fR [\fR~\fR]\fIqueue_name\fR ...
+.sp 2
+\fRQUEUES\fR
+.sp 2
+\fR(\fR [\fR-\fR] | \fRall\fR [\fR~\fR]\fIqueue_name\fR ...
+\fR)\fR
+.SH Description
+
+.sp 2
+A space-separated list of queue names on which limits are
+enforced. Limits are enforced on all queues listed.
+.sp 2
+The list must contain valid queue names defined in lsb.queues.
+.sp 2
+To specify a per-queue limit, use the PER_QUEUE keyword. Do not
+configure QUEUES and PER_QUEUE limits in the same Limit section.
+.sp 2
+In horizontal format, use only one QUEUES line per Limit section.
+.sp 2
+Use the keyword all to configure limits that apply to all queues
+in a cluster.
+.sp 2
+Use the not operator (~) to exclude queues from the all
+specification in the limit. This is useful if you have a large
+number of queues but only want to exclude a few queues from the
+limit definition.
+.sp 2
+In vertical tabular format, multiple queue names must be enclosed
+in parentheses.
+.sp 2
+In vertical tabular format, use empty parentheses () or a dash
+(-) to indicate an empty field. Fields cannot be left blank.
+.SH Default
+
+.sp 2
+all (limits are enforced on all queues in the cluster)
+.SH Example
+
+.sp 2
+QUEUES=normal night
+.sp 2
+Parent topic: Limit section
+
+.ad l
+
+.TH lsb.globalpolicies 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBRESOURCE\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRRESOURCE=\fR[\fIshared_resource\fR\fR,\fR\fIinteger\fR]
+[[\fIshared_resource\fR\fR,\fR\fIinteger\fR] ...]
+.sp 2
+\fRRESOURCE\fR
+.sp 2
+\fR(\fR [[\fIshared_resource\fR\fR,\fR\fIinteger\fR]
+[[\fIshared_resource\fR\fR,\fR\fIinteger\fR] ...] \fR)\fR
+.SH Description
+
+.sp 2
+Maximum amount of any user-defined shared resource available to
+consumers.
+.sp 2
+In horizontal format, use only one RESOURCE line per Limit
+section.
+.sp 2
+In vertical tabular format, resource names must be enclosed in
+parentheses.
+.sp 2
+In vertical tabular format, use empty parentheses () or a dash
+(-) to indicate an empty field. Fields cannot be left blank.
+.SH Default
+
+.sp 2
+None
+.SH Examples
+
+.sp 2
+RESOURCE=[stat_shared,4]
+.br
+Begin Limit
+.br
+RESOURCE                       PER_HOST
+.br
+([stat_shared,4])              (all ~hostA)
+.br
+([dyn_rsrc,1] [stat_rsrc,2])  (hostA)
+.br
+End Limit
+.sp 2
+Parent topic: Limit section
+
+.ad l
+
+.TH lsb.globalpolicies 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBSLOTS\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRSLOTS=\fR\fIinteger\fR
+.sp 2
+\fRSLOTS\fR
+.sp 2
+\fR-\fR | \fIinteger\fR
+.SH Description
+
+.sp 2
+Maximum number of job slots available to resource consumers.
+Specify a positive integer greater than or equal 0.
+.sp 2
+With MultiCluster resource lease model, this limit applies only
+to local hosts being used by the local cluster. The job slot
+limit for hosts exported to a remote cluster is determined by the
+host export policy, not by this parameter. The job slot limit for
+borrowed hosts is determined by the host export policy of the
+remote cluster.
+.sp 2
+If JOBS are configured in the Limit section, the most restrictive
+limit is applied.
+.sp 2
+If HOSTS are configured in the Limit section, SLOTS is the number
+of running and suspended jobs on a host. If preemptive scheduling
+is used, the suspended jobs are not counted as using a job slot.
+.sp 2
+To fully use the CPU resource on multiprocessor hosts, make the
+number of job slots equal to or greater than the number of
+processors.
+.sp 2
+Use this parameter to prevent a host from being overloaded with
+too many jobs, and to maximize the throughput of a machine.
+.sp 2
+Use an exclamation point (\fR!\fR) to make the number of job
+slots equal to the number of CPUs on a host.
+.sp 2
+If the number of CPUs in a host changes dynamically, mbatchd
+adjusts the maximum number of job slots per host accordingly.
+Allow the mbatchd up to 10 minutes to get the number of CPUs for
+a host. During this period the value of SLOTS is 1.
+.sp 2
+If only QUEUES are configured in the Limit section, SLOTS is the
+maximum number of job slots available to the listed queues.
+.sp 2
+If only USERS are configured in the Limit section, SLOTS is the
+maximum number of job slots that the users or user groups can
+use.
+.sp 2
+If only HOSTS are configured in the Limit section, SLOTS is the
+maximum number of job slots that are available to the listed
+hosts.
+.sp 2
+If only PROJECTS are configured in the Limit section, SLOTS is
+the maximum number of job slots that are available to the listed
+projects.
+.sp 2
+Use APPS or PER_APP, QUEUES or PER_QUEUE, USERS or PER_USER,
+HOSTS or PER_HOST, LIC_PROJECTS or PER_LIC_PROJECT, and PROJECTS
+or PER_PROJECT in combination to further limit job slots per
+processor available to resource consumers.
+.sp 2
+In horizontal format, use only one SLOTS line per Limit section.
+.sp 2
+In vertical format, use empty parentheses () or a dash (-) to
+indicate the default value (no limit). Fields cannot be left
+blank.
+.SH Default
+
+.sp 2
+No limit
+.SH Example
+
+.sp 2
+SLOTS=20
+.sp 2
+Parent topic: Limit section
+
+.ad l
+
+.TH lsb.globalpolicies 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBSWP\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRSWP=\fR\fIinteger\fR[\fR%\fR]
+.sp 2
+\fRSWP\fR
+.sp 2
+\fR-\fR | \fIinteger\fR[\fR%\fR]
+.SH Description
+
+.sp 2
+Maximum amount of swap space available to resource consumers.
+Specify a value in MB or the unit set in
+\fBLSF_UNIT_FOR_LIMITS\fR in lsf.conf as a positive integer
+greater than or equal 0.
+.sp 2
+The Limit section is ignored if SWP is specified as a percentage:
+.sp 2
+*  Without PER_HOST, or
+.sp 2
+*  With HOSTS
+.sp 2
+In horizontal format, use only one SWP line per Limit section.
+.sp 2
+In vertical format, use empty parentheses () or a dash (-) to
+indicate the default value (no limit). Fields cannot be left
+blank.
+.sp 2
+If only USERS are configured in the Limit section, SWP must be an
+integer value. SWP is the maximum amount of swap space that the
+users or user groups can use on any hosts, queues or projects.
+.sp 2
+If only HOSTS are configured in the Limit section, SWP must be an
+integer value. SWP is the maximum amount of swap space available
+to the listed hosts for any users, queues or projects.
+.sp 2
+If only PROJECTS are configured in the Limit section, SWP must be
+an integer value. SWP is the maximum amount of swap space
+available to the listed projects for any users, queues or hosts.
+.sp 2
+If only LIC_PROJECTS are configured in the Limit section, SWP
+must be an integer value. SWP is the maximum amount of swap space
+available to the listed projects for any users, queues, projects,
+or hosts.
+.sp 2
+Use APPS or PER_APP, QUEUES or PER_QUEUE, USERS or PER_USER,
+HOSTS or PER_HOST, LIC_PROJECTS or PER_LIC_PROJECT, and PROJECTS
+or PER_PROJECT in combination to further limit swap space
+available to resource consumers.
+.SH Default
+
+.sp 2
+No limit
+.SH Example
+
+.sp 2
+SWP=60
+.sp 2
+Parent topic: Limit section
+
+.ad l
+
+.TH lsb.globalpolicies 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBTMP\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRTMP=\fR\fIinteger\fR[\fR%\fR]
+.sp 2
+\fRTMP\fR
+.sp 2
+\fR-\fR | \fIinteger\fR[\fR%\fR]
+.SH Description
+
+.sp 2
+Maximum amount of tmp space available to resource consumers.
+Specify a value in MB or the unit set in
+\fBLSF_UNIT_FOR_LIMITS\fR in lsf.conf as a positive integer
+greater than or equal 0.
+.sp 2
+The Limit section is ignored if TMP is specified as a percentage:
+.sp 2
+*  Without PER_HOST, or
+.sp 2
+*  With HOSTS
+.sp 2
+In horizontal format, use only one TMP line per Limit section.
+.sp 2
+In vertical format, use empty parentheses () or a dash (-) to
+indicate the default value (no limit). Fields cannot be left
+blank.
+.sp 2
+If only QUEUES are configured in the Limit section, TMP must be
+an integer value. TMP is the maximum amount of tmp space
+available to the listed queues for any hosts, users projects.
+.sp 2
+If only USERS are configured in the Limit section, TMP must be an
+integer value. TMP is the maximum amount of tmp space that the
+users or user groups can use on any hosts, queues or projects.
+.sp 2
+If only HOSTS are configured in the Limit section, TMP must be an
+integer value. TMP is the maximum amount of tmp space available
+to the listed hosts for any users, queues or projects.
+.sp 2
+If only PROJECTS are configured in the Limit section, TMP must be
+an integer value. TMP is the maximum amount of tmp space
+available to the listed projects for any users, queues or hosts.
+.sp 2
+If only LIC_PROJECTS are configured in the Limit section, TMP
+must be an integer value. TMP is the maximum amount of tmp space
+available to the listed projects for any users, queues, projects,
+or hosts.
+.sp 2
+Use APPS or PER_APP, QUEUES or PER_QUEUE, USERS or PER_USER,
+HOSTS or PER_HOST, LIC_PROJECTS or PER_LIC_PROJECT, and PROJECTS
+or PER_PROJECT in combination to further limit tmp space
+available to resource consumers.
+.SH Default
+
+.sp 2
+No limit
+.SH Example
+
+.sp 2
+TMP=20%
+.sp 2
+Parent topic: Limit section
+
+.ad l
+
+.TH lsb.globalpolicies 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBUSERS\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRUSERS=all\fR [\fR~\fR]\fIuser_name\fR ... | \fRall\fR
+[\fR~\fR]\fIuser_group\fR ...
+.sp 2
+\fRUSERS\fR
+.sp 2
+\fR(\fR [\fR-\fR] | \fRall\fR [\fR~\fR]\fIuser_name\fR ... |
+\fRall\fR [\fR~\fR]\fIuser_group\fR ... \fR)\fR
+.SH Description
+
+.sp 2
+A space-separated list of user names or user groups on which
+limits are enforced. Limits are enforced on all users or groups
+listed. Limits apply to a group as a whole.
+.sp 2
+If a group contains a subgroup, the limit also applies to each
+member in the subgroup recursively.
+.sp 2
+User names must be valid login names. User group names can be LSF
+user groups or UNIX and Windows user groups. UNIX user groups
+must be configured in lsb.user.
+.sp 2
+To specify a per-user limit, use the PER_USER keyword. Do not
+configure USERS and PER_USER limits in the same Limit section.
+.sp 2
+In horizontal format, use only one USERS line per Limit section.
+.sp 2
+Use the keyword all to configure limits that apply to all users
+or user groups in a cluster.
+.sp 2
+Use the not operator (~) to exclude users or user groups from the
+all specification in the limit. This is useful if you have a
+large number of users but only want to exclude a few users or
+groups from the limit definition.
+.sp 2
+In vertical format, multiple user names must be enclosed in
+parentheses.
+.sp 2
+In vertical format, use empty parentheses () or a dash (-) to
+indicate an empty field. Fields cannot be left blank.
+.SH Default
+
+.sp 2
+all (limits are enforced on all users in the cluster)
+.SH Example
+
+.sp 2
+USERS=user1 user2
+.sp 2
+Parent topic: Limit section

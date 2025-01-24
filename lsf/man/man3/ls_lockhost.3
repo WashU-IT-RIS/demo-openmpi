@@ -1,0 +1,63 @@
+.TH "ls_lockhost" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ls_lockhost \- ls_lockhost 
+Locks the local host for a specified number of seconds.
+.PP
+\fBls_lockhost\fP prevents a host from being selected by the master LIM for task or job placement. If the host is locked for 0 seconds, it remains locked until it is explicitly unlocked by \fBls_unlockhost\fP. Indefinitely locking a host is useful if a job or task must run exclusively on the local host, or if machine owners want private control over their machines.
+.PP
+A program using \fBls_lockhost\fP must be setuid to root in order for the LSF administrator or any other user to lock a host.
+.PP
+To lock a host, use the setuid function (int setuid(uid_t uid)) to set the effective user id of the calling process to root or LSF administrator. On success, this API changes the status of the local host to indicate that it has been locked by the user.
+.PP
+\fB#include <lsf/lsf.h>\fP
+.PP
+\fB int ls_lockhost(time_t duration)\fP
+.PP
+.SH "Parameters:"
+\fIduration\fP The number of seconds the local host is locked. 0 seconds locks a host indefinitely.
+.PP
+.SH "Data Structures:" 
+.PP
+none 
+.br
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+int:0 
+.br
+ The function was successful.
+.PP
+int:-1 
+.br
+ The function failed.
+.PP
+.SH "Errors:" 
+.PP
+On failure, lserrno is set to indicate the error. If the host is already locked, \fBls_lockhost\fP sets lserrno to LSE_LIM_ALOCKED.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+lsadmin limlock
+.PP
+.SH "Files:" 
+.PP
+${LSF_ENVDIR:-/etc}/lsf.conf 
+.br
+$LSF_CONFDIR/lsf.shared 
+.br
+$LSF_CONFDIR/lsf.cluster.cluster_name
+.PP
+.SH "See also:"
+\fBls_limcontrol\fP 
+.PP
+\fBls_unlockhost\fP 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

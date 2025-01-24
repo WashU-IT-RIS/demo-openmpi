@@ -1,0 +1,172 @@
+.TH "lsb_hostcontrol" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_hostcontrol \- lsb_hostcontrol 
+Opens or closes a host, or restarts or shuts down its server batch daemon.
+.PP
+\fBlsb_hostcontrol\fP opens or closes a host, or restarts or shuts down its server batch daemon. Any program using this API must be setuid to root if LSF_AUTH is not defined in the lsf.conf file.
+.PP
+To restart the master batch daemon, mbatchd, in order to use updated batch LSF configuration files, use \fBlsb_reconfig\fP.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB int lsb_hostcontrol (struct \fBhostCtrlReq\fP *req)\fP
+.PP
+.SH "Parameters:"
+\fI*req\fP The host control request.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBhostCtrlReq\fP
+.PP
+.SH "Define Statements:" 
+.PP
+\fBhost_ctrl_option\fP
+.PP
+.SH "Returns:"
+int:0 
+.br
+ The function was successful. 
+.PP
+int:-1 
+.br
+ Function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lsberrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+${LSF_ENVDIR:-/etc}/lsf.conf
+.PP
+.SH "See also:"
+\fBlsb_reconfig\fP 
+.PP
+
+.ad l
+.nh
+.SH NAME
+hostCtrlReq \- Host control request.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBhost\fP"
+.br
+.ti -1c
+.RI "int \fBopCode\fP"
+.br
+.ti -1c
+.RI "char * \fBmessage\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Host control request. 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fBhostCtrlReq::host\fP"
+.PP
+The host to be controlled. 
+.PP
+If host is NULL, the local host is assumed. 
+.SS "int \fBhostCtrlReq::opCode\fP"
+.PP
+Operations to be applied in \fBhost_ctrl_option\fP. 
+.PP
+
+.SS "char* \fBhostCtrlReq::message\fP"
+.PP
+Message attached by the administrator. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+host_ctrl_option \- options operations to be applied  
+
+.PP
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBHOST_OPEN\fP   1"
+.br
+.ti -1c
+.RI "#define \fBHOST_CLOSE\fP   2"
+.br
+.ti -1c
+.RI "#define \fBHOST_REBOOT\fP   3"
+.br
+.ti -1c
+.RI "#define \fBHOST_SHUTDOWN\fP   4"
+.br
+.ti -1c
+.RI "#define \fBHOST_CLOSE_REMOTE\fP   5"
+.br
+.ti -1c
+.RI "#define \fBHOST_HPOWER_SUSPEND\fP   6"
+.br
+.ti -1c
+.RI "#define \fBHOST_HPOWER_RESUME\fP   7"
+.br
+.ti -1c
+.RI "#define \fBHOST_HPOWER_RESET\fP   8"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+options operations to be applied 
+.SH "Define Documentation"
+.PP 
+.SS "#define HOST_OPEN   1"
+.PP
+Opens the host to accept jobs. 
+.PP
+
+.SS "#define HOST_CLOSE   2"
+.PP
+Closes the host so that no jobs can be dispatched to it. 
+.PP
+
+.SS "#define HOST_REBOOT   3"
+.PP
+Restarts sbatchd on the host. 
+.PP
+sbatchd will receive a request from mbatchd and re-execute. This permits the sbatchd binary to be updated. This operation fails if no sbatchd is running on the specified host. 
+.SS "#define HOST_SHUTDOWN   4"
+.PP
+The sbatchd on the host will exit. 
+.PP
+
+.SS "#define HOST_CLOSE_REMOTE   5"
+.PP
+Used for closing leased host on the submission cluster. 
+.PP
+.SS "#define HOST_HPOWER_SUSPEND   6"
+.PP
+suspend host 
+.PP
+.SS "#define HOST_HPOWER_RESUME   7"
+.PP
+resume host 
+.PP
+.SS "#define HOST_HPOWER_RESET   8"
+.PP
+resume host 
+.PP
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

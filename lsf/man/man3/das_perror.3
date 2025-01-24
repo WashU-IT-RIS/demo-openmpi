@@ -1,0 +1,25 @@
+.TH "das_perror" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+das_perror \- das_perror 
+Print an error message to stderr.
+.PP
+\fB#include <lsf/dm.def.h>
+.br
+ include <lsf/dm.api.h>\fP
+.PP
+\fB void das_perror(int errcode, const char *msg)\fP
+.PP
+.SH "Parameters:"
+\fIerrcode\fP One of the values of 'enum dasErrCode'.
+.br
+\fI*msg\fP An optional message to be added to the error message.
+.PP
+.SH "Returns:"
+void:This function returns no value. 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

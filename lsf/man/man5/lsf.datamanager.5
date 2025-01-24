@@ -1,0 +1,714 @@
+
+.ad l
+
+.TH lsf.datamanager 5 "May 2016" "" ""n.ll 72
+
+.ce 1000
+\fBlsf.datamanager\fR
+.ce 0
+
+.sp 2
+The lsf.datamanager file controls the operation of IBM Spectrum
+LSF Data Manager features. There is one LSF data management
+configuration file for each cluster, called
+lsf.datamanager.\fIcluster_name\fR. The \fIcluster_name\fR suffix
+is the name of the cluster that is defined in the Cluster section
+of lsf.shared. The file is read by the LSF data management daemon
+dmd. Since one LSF data manager can serve multiple LSF clusters,
+the contents of this file must be identical on each cluster that
+shares LSF data manager.
+.sp 2
+
+.SH Changing lsf.datamanager configuration
+
+.sp 2
+After you change lsf.datamanager.\fIcluster_name\fR, run bdata
+admin reconfig to reconfigure LSF data manager on all candidate
+hosts.
+.SH Location
+
+.sp 2
+The lsf.datamanager file is located in the directory that is
+defined by LSF_ENVDIR.
+.SH Structure
+
+.sp 2
+The lsf.datamanager.\fIcluster_name\fR file contains two
+configuration sections:
+.sp 2
+\fBParameters section\fR
+.br
+         The Parameters section of lsf.datamanager configures LSF
+         data manager administrators, default file transfer
+         command, the location of the LSF data manager staging
+         area, file permissions on the LSF data manager cache,
+         and the grace period for LSF data manager cache cleanup
+         and other LSF data manager operations.
+.sp 2
+\fBRemoteDataManagers section\fR
+.br
+         Optional. The RemoteDataManagers section tells a local
+         LSF data manager how to communicate with remote LSF data
+         managers in MultiCluster forwarding clusters. Only the
+         cluster that is sending jobs needs to configure the
+         RemoteDataManagers section.
+.sp 2
+
+.ad l
+
+.TH lsf.datamanager 5 "May 2016" "" ""n.ll 72
+
+.ce 1000
+\fBParameters section\fR
+.ce 0
+
+.sp 2
+The Parameters section of lsf.datamanager configures LSF data
+manager administrators, default file transfer command, the
+location of the LSF data manager staging area, file permissions
+on the LSF data manager cache, and the grace period for LSF data
+manager cache cleanup and other LSF data manager operations.
+.sp 2
+
+.SH Parameters
+
+.sp 2
+*  \fBADMINS\fR
+.sp 2
+*  \fBCACHE_ACCESSIBLE_FILES\fR
+.sp 2
+*  \fBCACHE_ACCESS_CONTROL\fR
+.sp 2
+*  \fBCACHE_INPUT_GRACE_PERIOD\fR
+.sp 2
+*  \fBCACHE_OUTPUT_GRACE_PERIOD\fR
+.sp 2
+*  \fBCACHE_PERMISSIONS\fR
+.sp 2
+*  \fBFILE_TRANSFER_CMD\fR
+.sp 2
+*  \fBPERMISSION_MASK\fR
+.sp 2
+*  \fBQUERY_NTHREADS\fR
+.sp 2
+*  \fBREMOTE_CACHE_REFRESH_INTERVAL\fR
+.sp 2
+*  \fBSTAGING_AREA\fR
+.sp 2
+
+.sp 2
+
+.ce 1000
+\fBADMINS\fR
+.ce 0
+
+.sp 2
+Required. List of LSF data manager administrator users.
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fBADMINS=\fRuser_name [user_name ... ]
+.SH Description
+
+.sp 2
+The specified users can reconfigure and shut down the LSF data
+manager daemon (dmd), and use the bdata tags subcommand to list
+or clean intermediate files that are associated with a tag for
+users. LSF data manager administrators must be administrators in
+each of the connected LSF clusters.
+.sp 2
+You cannot configure the root user as an LSF data manager
+administrator, but root has the same privileges as an LSF data
+manager administrator.
+.sp 2
+The parameter takes effect after you restart or reconfigure LSF
+data manager.
+.SH Valid values
+
+.sp 2
+Any LSF administrator user account, except root.
+.SH Example
+
+.sp 2
+\fRADMINS=lsfadmin user1 user2\fR
+.SH Default
+
+.sp 2
+None. Required parameter.
+.sp 2
+
+.ce 1000
+\fBCACHE_ACCESS_CONTROL\fR
+.ce 0
+
+.sp 2
+Enables the owner of a data tag or a data file in the cache to
+change the user group ownership of a tag, an ownership and the
+permissions of a file.
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fBCACHE_ACCESS_CONTROL=Y\fR | \fBy\fR | \fBN\fR | \fBn\fR
+.SH Description
+
+.sp 2
+LSF data manager cache access control allows a user to access
+cached data files that belong to a user in another user group.
+.sp 2
+The \fBCACHE_PERMISSIONS=all\fR parameter and the
+\fBCACHE_ACCESSIBLE_FILES= Y\fR parameter must be configured to
+enable cache access control.
+.SH Default
+
+.sp 2
+N - changing the user group of a cached file or tag is not
+enabled.
+.sp 2
+
+.ce 1000
+\fBCACHE_ACCESSIBLE_FILES\fR
+.ce 0
+
+.sp 2
+Specifies whether LSF data manager initiates a transfer job or
+creates a symbolic link from the cache to the requested data
+file.
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fBCACHE_ACCESSIBLE_FILES=Y\fR | \fBy\fR | \fBN\fR | \fBn\fR
+.SH Description
+
+.sp 2
+If LSF data manager can directly access a required data file
+through the file system, \fBCACHE_ACCESSIBLE_FILES=N\fR avoids
+unnecessary local stage in of the file (the default). Creating a
+symbolic link to a locally accessible file increases job
+throughput because the job does not need to wait for a transfer
+job to finish. When \fBCACHE_ACCESSIBLE_FILES=Y\fR, a transfer
+job is always initiated for jobs submitted with data
+requirements, and automatic symbolic linking for accessible files
+is disabled. This might be desirable to ensure that the correct
+copy of the data file is made available to the job.
+.SH Default
+
+.sp 2
+N - a symbolic link from the cache is created for files that LSF
+data manager can access directly.
+.sp 2
+
+.ce 1000
+\fBCACHE_INPUT_GRACE_PERIOD\fR
+.ce 0
+
+.sp 2
+Minimum time in minutes that an input file is kept in the LSF
+data manager cache after no jobs reference it.
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fBCACHE_INPUT_GRACE_PERIOD=\fRminutes
+.SH Description
+
+.sp 2
+After the specified number of minutes, the job that is associated
+with the input file can no longer be queried through bdata and
+the files that it requested to be staged in are physically
+deleted from the cache.
+.sp 2
+The grace period for the input file begins when no data jobs
+request the file and no transfer jobs are transferring it. The
+input file grace period does not apply to transfers with ERROR
+status.
+.sp 2
+The parameter takes effect after you restart or reconfigure LSF
+data manager.
+.SH Valid values
+
+.sp 2
+1 - 2147483647 minutes
+.SH Default
+
+.sp 2
+1440 minutes (1 day)
+.sp 2
+
+.ce 1000
+\fBCACHE_OUTPUT_GRACE_PERIOD\fR
+.ce 0
+
+.sp 2
+Minimum time in minutes that an output file is kept in the LSF
+data manager cache after its transfer completes, either
+successfully or unsuccessfully.
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fBCACHE_OUTPUT_GRACE_PERIOD=\fRminutes
+.SH Description
+
+.sp 2
+After the specified number of minutes, the job that is associated
+with the output file can no longer be queried through bdata and
+the files that it requested to be staged out are physically
+deleted from the cache.
+.sp 2
+The grace period for the output file begins when all the output
+file records associated to the same job reach TRANSFERRED or
+ERROR status. However, the files and job records are not cleaned
+up until the grace periods expire for all stage-out requirements
+associated with the same job. Output files can be queried until
+the grace period expires for \fIall\fR output file records
+associated with the job.
+.sp 2
+The grace period on the output file begins whether the file
+transfer completes successfully or unsuccessfully. Files are
+cleaned up only after the grace periods of all stage-out
+requirements for the job expire. After the grace period expires,
+the stage-out records are removed, and you cannot search the
+stage-out history from LSF data manager.
+.sp 2
+The grace period does not apply to files uploaded to the cache
+with the bstage out -tag command. You must use bdata tags clean
+to clean up these files manually.
+.sp 2
+The parameter takes effect after you restart or reconfigure LSF
+data manager.
+.SH Valid values
+
+.sp 2
+1 - 2147483647 minutes
+.SH Default
+
+.sp 2
+180 minutes (3 hours)
+.sp 2
+
+.ce 1000
+\fBCACHE_PERMISSIONS\fR
+.ce 0
+
+.sp 2
+Sets file permissions and ownership of the LSF data manager
+staging area subdirectories.
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fBCACHE_PERMISSIONS=user\fR | \fBgroup\fR | \fBall\fR
+.SH Description
+
+.sp 2
+\fB\fBCACHE_PERMISSIONS=user\fB\fR
+.br
+         By default, files are stored in a user-specific
+         subdirectory in the staging area. All files are owned by
+         that user with 700 file permission mode. If two users
+         ask for the same file to be pre-staged with bsub -data,
+         LSF transfers a separate copy for each user. Different
+         users cannot share the same cached file or query the
+         staged files for other users with bdata cache.
+.sp 2
+\fB\fBCACHE_PERMISSIONS=group\fB\fR
+.br
+         Users in the same primary UNIX user group can share the
+         cached files to avoid unnecessary file transfers. Files
+         are owned by the first user in the group that requests
+         the file. The subdirectory is based on the main group of
+         the transferring user, and file permissions are set to
+         750. Users in the same primary group can query files for
+         their group with bdata cache.
+.sp 2
+         When \fBCACHE_PERMISSIONS=group\fR is specified, the -g
+         option of bdata shows the cached files that belong to
+         the specified user group.
+.sp 2
+\fB\fBCACHE_PERMISSIONS=all\fB\fR
+.br
+         Only a single cache is created for incoming files, and
+         files are shareable by all users. All files pre-staged
+         with bsub -data are stored in the staging area with
+         permission 755. Files are owned by the first user who
+         requests the file. If two users ask for the same file to
+         be pre-staged, only one copy of the file is pre-staged,
+         owned by the first requesting user. Users can query any
+         file in the cache with bdata cache.
+.sp 2
+\fBNote: \fRThe value of \fBCACHE_PERMISSIONS\fR affects the
+directory structure of the staging area cache, which LSF data
+manager depends on for recovery. To avoid losing the cache, do
+not change the value of CACHE_PERMISSIONS between LSF data
+manager restarts.
+.sp 2
+If you must change the value of \fBCACHE_PERMISSIONS\fR after the
+cache is already in use, files in the cache subdirectory
+$STAGING_AREA/stgin/$CACHE_PERMISSIONS corresponding to the old
+value are not cleaned up by LSF data manager. You must manually
+delete them as root. Be careful that no running jobs are using
+them.
+.sp 2
+The parameter takes effect after you restart or reconfigure LSF
+data manager.
+.SH Default
+
+.sp 2
+user
+.sp 2
+
+.ce 1000
+\fBFILE_TRANSFER_CMD\fR
+.ce 0
+
+.sp 2
+The command that is used by LSF data manager to transfer data
+files.
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fBFILE_TRANSFER_CMD=\fRcommand
+.SH Description
+
+.sp 2
+The specified command must take two arguments of the form
+\fR[\fIhost_name\fR:]\fIabs_file_path\fR\fR. The first argument
+is an absolute path to the location of the source file and the
+second is absolute path to the destination of the transfer.
+.sp 2
+The command must be able to accept path descriptors with or
+without host names for each of its two arguments. For example,
+the default scp command satisfies both requirements. The cp
+command is not valid because it can\(aqt accept a host name.
+.sp 2
+The command that you specify must block until the transfer is
+successfully completed or an error occurs. It must return \fR0\fR
+if successful and a non-zero value if an error occurs. Provide a
+full path to the command so that it can be accessed from the
+hosts that the data transfer queue points to.
+.sp 2
+If the command returns successfully, LSF data manager assumes
+that the transfer was completed without error
+.sp 2
+The parameter takes effect after you restart or reconfigure LSF
+data manager.
+.sp 2
+\fBNote: \fRIf you change FILE_TRANSFER_CMD, transfer jobs that
+are submitted before the change continue to use the old value.
+You must kill these jobs and any dependent data jobs, and submit
+new data jobs for the files to be transferred with the new
+command.
+.SH Default
+
+.sp 2
+/usr/bin/scp
+.sp 2
+
+.ce 1000
+\fBPERMISSION_MASK\fR
+.ce 0
+
+.sp 2
+Controls how data cache file permissions can be changed by the
+bdata chmod command.
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fBPERMISSION_MASK=\fRoctal_mode
+.SH Description
+
+.sp 2
+The \fIoctal-mode\fR is 3 octal digits (0-7), derived by adding
+up the bits with values 4, 2, and 1. The first digit selects
+permissions for the user who owns the file: read (4), write (2),
+and execute (1). The second digit selects the permissions for
+other users in the group associated with the file. The third
+digit selects the permissions for other users not in the group
+associated with the file.
+.sp 2
+For example, \fRPERMISSION_MASK=750\fR means that file owners can
+modify rwx bits for the user, the rw bits for the group, but not
+the global bits. \fRPERMISSION_MASK=777\fR means that file owners
+can modify all the permission bits. \fRPERMISSION_MASK=000\fR
+means that file owners cannot modify permissions at all.
+.sp 2
+The permissions on the directory that the file is in are changed
+to be consistent with the file permission, but the owner always
+has full access at the directory level. If the permissions on the
+file allow the group or others permission to read, write, or
+execute, the same permissions are enabled on the directory. For
+example, if \fBPERMISSION_MASK=777\fR and the file mode is
+\fR570\fR (\fRr-xrwx---\fR), the permissions on the directory are
+changed to \fR770\fR (\fRrwxrwxr---\fR).
+.sp 2
+The parameter takes effect after you restart or reconfigure LSF
+data manager.
+.SH Default
+
+.sp 2
+When \fBCACHE_ACCESS_CONTROL=Y\fR, the default permission mask
+value is 777. When the \fBCACHE_ACCESS_CONTROL\fR parameter is
+not set to \fRY\fR, the permission mask is set to 000 regardless
+of configuration.
+.sp 2
+
+.ce 1000
+\fBQUERY_NTHREADS\fR
+.ce 0
+
+.sp 2
+Number of threads in the LSF data manager client query thread
+pool.
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fBQUERY_NTHREADS=\fRinteger
+.SH Description
+
+.sp 2
+Increase the value of \fBQUERY_NTHREADS\fR to improve the
+responsiveness of the local LSF data manager to requests by
+remote data managers and bdata clients.
+.sp 2
+The parameter takes effect after you restart or reconfigure LSF
+data manager.
+.SH Valid values
+
+.sp 2
+1 - 2147483647
+.SH Default
+
+.sp 2
+4
+.sp 2
+
+.ce 1000
+\fBREMOTE_CACHE_REFRESH_INTERVAL\fR
+.ce 0
+
+.sp 2
+Number of seconds that information about remote LSF data manager
+file availability is considered to be fresh.
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fBREMOTE_CACHE_REFRESH_INTERVAL=\fRseconds
+.SH Description
+
+.sp 2
+\fBREMOTE_CACHE_REFRESH_INTERVAL\fR affects how often LSF data
+manager queries LSF data managers in other clusters. After the
+specified number of seconds has elapsed, the job assumes that the
+remote cluster information about this file is stale, and queries
+the cluster for availability again.
+.sp 2
+The parameter takes effect after you restart or reconfigure LSF
+data manager.
+.SH Valid values
+
+.sp 2
+1 - 2147483647 seconds
+.SH Default
+
+.sp 2
+15 seconds
+.sp 2
+
+.ce 1000
+\fBSTAGING_AREA\fR
+.ce 0
+
+.sp 2
+Absolute path to the top of the data management staging area as
+it is accessed from the LSF data manager hosts.
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fBSTAGING_AREA=\fR[host_name\fB:\fR]abs_file_path
+.SH Description
+
+.sp 2
+Any host that the LSF data manager runs on must statically mount
+a staging area. This path must not point to a directory that has
+the sticky bit set in any directory in its path (such as /tmp or
+any subdirectory of /tmp).
+.sp 2
+Check the entries in /etc/mtab and see if any of the mounted file
+system source location is a prefix of host_name:path. If so,
+replace this prefix with the local mount point for the source
+location specified in /etc/mtab and access the file at the
+resulting path.
+.sp 2
+The resolved directory must exist.
+.sp 2
+You must restart the LSF data manager daemon (dmd) for this
+parameter to take effect.
+.sp 2
+\fBNote: \fRIf you change the STAGING_AREA parameter, files that
+are stored in the previous cache are not recovered, and therefore
+are never deleted by the LSF data manager.
+.SH Data transfer hosts
+
+.sp 2
+Each cluster using LSF data management must have a set of hosts
+that act as data transfer nodes (also referred to as \fII/O
+nodes\fR). These hosts must have the following properties:
+.sp 2
+*  Each node must have read/write access to the mounted staging
+   area.
+.sp 2
+*  For input data requirements (data stage in), data transfer
+   nodes must be able to reach the data source location through
+   the configured transfer tool.
+.sp 2
+*  For output data requirements (data stage out), data transfer
+   nodes must be able to reach the data destination location
+   through the configured transfer tool.
+.sp 2
+*  These nodes must statically mount the staging area at the same
+   location as the LSF data manager host.
+.sp 2
+*  These nodes must be configured as LSF execution hosts in the
+   data transfer queue.
+.sp 2
+   Data transfer nodes are execution hosts for transfer job that
+   LSF data manager submits to a data transfer queue, which has
+   the \fBDATA_TRANSFER=Y\fR parameter specified. Specify the LSF
+   server hosts in the \fBHOSTS\fR parameter in lsb.queues for
+   the data transfer queue.
+.SH Example
+
+.sp 2
+For the following STAGING_AREA:
+.sp 2
+STAGING_AREA=hostA.company.com:/vol/dmd_cache
+.sp 2
+The following /etc/mtab entries are valid:
+.sp 2
+*  hostA.company.com:/vol/ /mnt/vol1 0 0 - The staging area is
+   accessed locally at /mnt/vol1/dmd_cache
+.sp 2
+*  hostA:/vol/dmd_cache /mnt/staging 0 0 - The staging area is
+   accessed locally at /mnt/staging
+.sp 2
+The following /etc/mtab entry is not valid:
+.sp 2
+hostA.company.com:/vol/vol1 /mnt/staging 0 0
+.sp 2
+In this case, the export location is not an ancestor of the
+location pointed to by the STAGING_AREA parameter.
+.SH Default
+
+.sp 2
+None. Required parameter.
+
+.ad l
+
+.TH lsf.datamanager 5 "May 2016" "" ""n.ll 72
+
+.ce 1000
+\fBRemoteDataManagers section\fR
+.ce 0
+
+.sp 2
+Optional. The RemoteDataManagers section tells a local LSF data
+manager how to communicate with remote LSF data managers in
+MultiCluster forwarding clusters. Only the cluster that is
+sending jobs needs to configure the RemoteDataManagers section.
+.sp 2
+Before a job with data requirements is forwarded to another
+cluster, the local LSF data manager contacts remote LSF data
+managers, which serve as candidate clusters for job forwarding.
+The local dmd collects the information that is needed for the
+scheduler forwarding decision. If the dmd of a candidate
+forwarding cluster is not configured in the section, LSF excludes
+that cluster from being scheduled for job forwarding.
+.sp 2
+Configure RemoteDataManagers section only in MultiCluster
+submission clusters. When the RemoteDataManagers section is
+configured, LSF maintains a connection between the master LSF
+data manager in each cluster, and uses this connection to query
+the availability of remote files.
+.sp 2
+By default, the local cluster can obtain information about all
+other clusters that are specified in lsf.shared. The
+RemoteDataManagers section limits the clusters that the local
+cluster can obtain information about.
+.sp 2
+Every cluster in lsf.shared that has LSF data management features
+enabled must appear in the list of clusters.
+.sp 2
+You can configure only one RemoteDataManagers section in
+lsf.datamanager. If more than one RemoteDataManagers section
+exists, only the first section takes effect. Sections beyond the
+first one are ignored. Duplicate cluster names are ignored, and
+the first cluster name in the list is used.
+.sp 2
+The bdata connections command reports the connection status of
+each remote LSF data manager. If there is a configuration error,
+the corresponding manager shows as disconnected (\fRdisc\fR) in
+the output of this command.
+.sp 2
+The first line consists of the following required keywords:
+.sp 2
+*  CLUSTERNAME
+.sp 2
+*  SERVERS
+.sp 2
+*  PORT
+.sp 2
+Subsequent lines specify the cluster names, server hosts, and
+ports for the remote LSF data managers.
+.SH Example RemoteDataManagers section format
+
+.sp 2
+Begin RemoteDataManagers
+.br
+CLUSTERNAME   SERVERS                      PORT
+.br
+cluster1      (host11 host12 ... host1n)   1729
+.br
+cluster2      (host21 host22 ... host2n)   4104
+.br
+clusterM      (hostM1 hostM2 ... hostMn)   13832
+.br
+End RemoteDataManagers
+.SH RemoteDataManagers parameters
+
+.sp 2
+\fBCLUSTERNAME\fR
+.br
+         Specify a list of the clusters that you want the local
+         cluster to recognize as LSF data managers.
+.sp 2
+\fBSERVERS\fR
+.br
+         The list of servers must correspond to the value of the
+         \fBLSF_DATA_HOSTS\fR parameter in lsf.conf of the
+         appropriate cluster.
+.sp 2
+\fBPORT\fR
+.br
+         The port number for the cluster must correspond to the
+         value of the \fBLSF_DATA_PORT\fR parameter in lsf.conf
+         of the appropriate cluster.
+.sp 2

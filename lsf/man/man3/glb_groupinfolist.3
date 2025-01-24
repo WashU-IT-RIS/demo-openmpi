@@ -1,0 +1,315 @@
+.TH "glb_groupinfolist" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+glb_groupinfolist \- glb_groupinfolist 
+Returns an array of License Scheduler project group information.
+.PP
+\fBglb_groupinfolist\fP returns an array of \fBglbGroupInfoList\fP structures, which contains the License Scheduler project hierarchical group information.
+.PP
+\fB #include <glb/glb.h>\fP
+.PP
+\fB struct \fBglbGroupInfoList\fP *glb_groupinfolist(int *num) \fP
+.PP
+.SH "Parameters:"
+\fI*num\fP The number of desired \fBglbGroupInfoList\fP structures returned in the array.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBglbGroupInfoList\fP 
+.br
+\fBglbGroupInfo\fP 
+.br
+\fBgroupWeight\fP
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+*glbGroupInfoList 
+.br
+ A list of License Scheduler project group information.
+.PP
+.SH "Errors:" 
+.PP
+On failure, glberrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+LSF_CONFDIR/lsf.licensescheduler
+.PP
+.SH "See also:"
+\fBglb_init_all\fP 
+.PP
+
+.ad l
+.nh
+.SH NAME
+glbGroupInfoList \- List of glb group information.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBnum\fP"
+.br
+.ti -1c
+.RI "char * \fBfeaturename\fP"
+.br
+.ti -1c
+.RI "char * \fBsdlist\fP"
+.br
+.ti -1c
+.RI "int \fBtotalavail\fP"
+.br
+.ti -1c
+.RI "struct \fBglbGroupInfo\fP * \fBgroups\fP"
+.br
+.ti -1c
+.RI "int \fBusePercent\fP"
+.br
+.ti -1c
+.RI "int \fBflags\fP"
+.br
+.ti -1c
+.RI "int \fBothers\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+List of glb group information. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBglbGroupInfoList::num\fP"
+.PP
+Number of the entry in list. 
+.PP
+.SS "char* \fBglbGroupInfoList::featurename\fP"
+.PP
+Name of feature. 
+.PP
+.SS "char* \fBglbGroupInfoList::sdlist\fP"
+.PP
+Service domains. 
+.PP
+.SS "int \fBglbGroupInfoList::totalavail\fP"
+.PP
+Total number of the available groups. 
+.PP
+.SS "struct \fBglbGroupInfo\fP* \fBglbGroupInfoList::groups\fP"
+.PP
+Information of the groups. 
+.PP
+.SS "int \fBglbGroupInfoList::usePercent\fP"
+.PP
+Percentage of used. 
+.PP
+.SS "int \fBglbGroupInfoList::flags\fP"
+.PP
+Flags for feature characteristic. 
+.PP
+.SS "int \fBglbGroupInfoList::others\fP"
+.PP
+Used by non-LS jobs. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+glbGroupInfo \- Informations for a glb group.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBname\fP"
+.br
+.ti -1c
+.RI "char * \fBpath\fP"
+.br
+.ti -1c
+.RI "struct \fBgroupWeight\fP * \fBw\fP"
+.br
+.ti -1c
+.RI "int \fBnumChildren\fP"
+.br
+.ti -1c
+.RI "int \fBflags\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Informations for a glb group. 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fBglbGroupInfo::name\fP"
+.PP
+Group name. 
+.PP
+.SS "char* \fBglbGroupInfo::path\fP"
+.PP
+Group path. 
+.PP
+.SS "struct \fBgroupWeight\fP* \fBglbGroupInfo::w\fP"
+.PP
+Group weight. 
+.PP
+.SS "int \fBglbGroupInfo::numChildren\fP"
+.PP
+Number of children. 
+.PP
+.SS "int \fBglbGroupInfo::flags\fP"
+.PP
+Flags for group characteristic. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+groupWeight \- Informations for a glb group weight.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBshares\fP"
+.br
+.ti -1c
+.RI "double \fBdshares\fP"
+.br
+.ti -1c
+.RI "int \fBown\fP"
+.br
+.ti -1c
+.RI "int \fBownPer\fP"
+.br
+.ti -1c
+.RI "int \fBlimit\fP"
+.br
+.ti -1c
+.RI "int \fBlimitPer\fP"
+.br
+.ti -1c
+.RI "int \fBuse\fP"
+.br
+.ti -1c
+.RI "double \fBause\fP"
+.br
+.ti -1c
+.RI "int \fBreserve\fP"
+.br
+.ti -1c
+.RI "int \fBneed\fP"
+.br
+.ti -1c
+.RI "int \fBdeserve\fP"
+.br
+.ti -1c
+.RI "int \fBfree\fP"
+.br
+.ti -1c
+.RI "int \fBnonshared\fP"
+.br
+.ti -1c
+.RI "int \fBnonsharedPer\fP"
+.br
+.ti -1c
+.RI "int \fBpriority\fP"
+.br
+.ti -1c
+.RI "char \fBpD\fP [MAXDESCRIPTION]"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Informations for a glb group weight. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBgroupWeight::shares\fP"
+.PP
+assigned shares 
+.PP
+.SS "double \fBgroupWeight::dshares\fP"
+.PP
+relative to others shares 
+.PP
+.SS "int \fBgroupWeight::own\fP"
+.PP
+usual ownership 
+.PP
+.SS "int \fBgroupWeight::ownPer\fP"
+.PP
+ownership percentage 
+.PP
+.SS "int \fBgroupWeight::limit\fP"
+.PP
+limit of licenses 
+.PP
+.SS "int \fBgroupWeight::limitPer\fP"
+.PP
+limit percentage 
+.PP
+.SS "int \fBgroupWeight::use\fP"
+.PP
+use determined in each session 
+.PP
+.SS "double \fBgroupWeight::ause\fP"
+.PP
+accumulated use, scaled 
+.PP
+.SS "int \fBgroupWeight::reserve\fP"
+.PP
+reserved 
+.PP
+.SS "int \fBgroupWeight::need\fP"
+.PP
+license need 
+.PP
+.SS "int \fBgroupWeight::deserve\fP"
+.PP
+total x dshares - use 
+.PP
+.SS "int \fBgroupWeight::free\fP"
+.PP
+free to use 
+.PP
+.SS "int \fBgroupWeight::nonshared\fP"
+.PP
+number of nonshared 
+.PP
+.SS "int \fBgroupWeight::nonsharedPer\fP"
+.PP
+nonshared percentage 
+.PP
+.SS "int \fBgroupWeight::priority\fP"
+.PP
+priority defined in the ProjectGroup 
+.PP
+.SS "char \fBgroupWeight::pD\fP[MAXDESCRIPTION]"
+.PP
+project description 
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

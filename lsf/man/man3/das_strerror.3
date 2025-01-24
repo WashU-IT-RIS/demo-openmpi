@@ -1,0 +1,25 @@
+.TH "das_strerror" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+das_strerror \- das_strerror 
+This function returns a pointer to a string that describes the error code that is passed in.
+.PP
+Do not have the caller free the returned pointer.
+.PP
+\fB#include <lsf/dm.def.h>
+.br
+ include <lsf/dm.api.h>\fP
+.PP
+\fB char *das_strerror(int errcode)\fP
+.PP
+.SH "Parameters:"
+\fIerrcode\fP One of the values of 'enum dasErrCode'.
+.PP
+.SH "Returns:"
+char *:Return the appropriate error description string, or an empty string if the error number is unknown. 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

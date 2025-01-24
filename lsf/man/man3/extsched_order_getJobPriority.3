@@ -1,0 +1,21 @@
+.TH "extsched_order_getJobPriority" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+extsched_order_getJobPriority \- extsched_order_getJobPriority 
+Get the priority of a job, which could be defined by bsub -sp.
+.PP
+\fB#include <lssched.h>\fP
+.PP
+\fB int extsched_order_getJobPriority(INT_JobBlock *job)\fP
+.PP
+.SH "Parameters:"
+\fIjobPtr\fP [IN] : Internal job object, this is jobblock not INT_Job pointer
+.PP
+.SH "Returns:"
+int  priority of job. 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

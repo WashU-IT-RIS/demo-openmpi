@@ -1,0 +1,224 @@
+
+.ad l
+
+.TH hosts 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBhosts\fR
+.ce 0
+
+.sp 2
+For hosts with multiple IP addresses and different official host
+names configured at the system level, this file associates the
+host names and IP addresses in LSF.
+.sp 2
+By default, LSF assumes each host in the cluster has the
+following properties:
+.sp 2
+*  Has a unique official host name
+.sp 2
+*  Can resolve its IP address from its name
+.sp 2
+*  Can resolve its official name from its IP address
+.sp 2
+Hosts with only one IP address, or hosts with multiple IP
+addresses that already resolve to a unique official host name
+should not be configured in this file: they are resolved using
+the default method for your system (for example, local
+configuration files like /etc/hosts or through DNS.)
+.sp 2
+The LSF hosts file is used in the following environments:
+.sp 2
+*  Machines in cluster have multiple network interfaces and
+   cannot be set up in the system with a unique official host
+   name
+.sp 2
+*  DNS is slow or not configured properly
+.sp 2
+*  Machines have special topology requirements; for example, in
+   HPC systems where it is desirable to map multiple actual hosts
+   to a single head end host
+.sp 2
+The LSF hosts file is not installed by default. It is usually
+located in the directory specified by the \fBLSF_CONFDIR\fR
+parameter. The format of the LSF_CONFDIR/hosts file is similar to
+the format of the /etc/hosts file on UNIX machines.
+.SH hosts file structurefile structure
+
+.sp 2
+One line for each IP address, consisting of the IP address,
+followed by the official host name, optionally followed by host
+aliases, all separated by spaces or tabs. Each line has the form:
+.sp 2
+ip_address official_name [alias [alias ...]]
+.br
+
+.sp 2
+IP addresses can have either a dotted quad notation (IPv4) or IP
+Next Generation (IPv6) format. You can use IPv6 addresses if you
+define the parameter \fBLSF_ENABLE_SUPPORT_IPV6\fR in the
+lsf.conf file. You do not have to map IPv4 addresses to an IPv6
+format.
+.sp 2
+Use consecutive lines for IP addresses belonging to the same
+host. You can assign different aliases to different addresses.
+.sp 2
+Use a pound sign (\fR#\fR) to indicate a comment (the rest of the
+line is not read by LSF). Do not use \fR#if\fR because it is
+reserved syntax for time-based configuration.
+.sp 2
+
+.SH IP address
+
+.sp 2
+Written using an IPv4 or IPv6 format. LSF supports both formats;
+you do not have to map IPv4 addresses to an IPv6 format (if you
+define the parameter \fBLSF_ENABLE_SUPPORT_IPV6\fR in the
+lsf.conf file).
+.sp 2
+\fB\fR
+.br
+
+.sp 2
+*  
+   IPv4 format: \fRnnn.nnn.nnn.nnn\fR
+.sp 2
+*  
+   IPv6 format:\fR nnnn:nnnn:nnnn:nnnn:nnnn:nnnn:nnnn:nnnn\fR
+.SH Official host name
+
+.sp 2
+The official host name. Single character names are not allowed.
+.sp 2
+Specify -GATEWAY or -GW as part of the host name if the host
+serves as a GATEWAY.
+.sp 2
+Specify -TAC as the last part of the host name if the host is a
+TAC and is a DoD host.
+.sp 2
+Specify the host name in the format defined in Internet RFC 952,
+which states:
+.sp 2
+A name (Net, Host, Gateway, or Domain name) is a text string up
+to 24 characters drawn from the alphabet (A-Z), digits (0-9),
+minus sign (-), and period (.). Periods are only allowed when
+they serve to delimit components of domain style names. (See RFC
+921, Domain Name System Implementation Schedule, for background).
+No blank or space characters are permitted as part of a name. No
+distinction is made between upper and lower case. The first
+character must be an alpha character. The last character must not
+be a minus sign or a period.
+.sp 2
+RFC 952 has been modified by RFC 1123 to relax the restriction on
+the first character being a digit.
+.sp 2
+For maximum interoperability with the Internet, you should use
+host names no longer than 24 characters for the host portion
+(exclusive of the domain component).
+.SH Aliases
+
+.sp 2
+Optional. Aliases to the host name.
+.sp 2
+The default host file syntax
+.sp 2
+ip_address official_name [alias [alias ...]]
+.br
+
+.sp 2
+is powerful and flexible, but it is difficult to configure in
+systems where a single host name has many aliases, and in
+multihomed host environments.
+.sp 2
+In these cases, the hosts file can become very large and
+unmanageable, and configuration is prone to error.
+.sp 2
+The syntax of the LSF hosts file supports host name ranges as
+aliases for an IP address. This simplifies the host name alias
+specification.
+.sp 2
+To use host name ranges as aliases, the host names must consist
+of a fixed node group name prefix and node indices, specified in
+a form like:
+.sp 2
+host_name[index_x-index_y, index_m, index_a-index_b]
+.br
+
+.sp 2
+For example:
+.sp 2
+atlasD0[0-3,4,5-6, ...] 
+.br
+
+.sp 2
+is equivalent to:
+.sp 2
+atlasD0[0-6, ...]
+.br
+
+.sp 2
+The node list does not need to be a continuous range (some nodes
+can be configured out). Node indices can be numbers or letters
+(both upper case and lower case).
+.sp 2
+For example, some systems map internal compute nodes to single
+LSF host names. A host file might contains 64 lines, each
+specifying an LSF host name and 32 node names that correspond to
+each LSF host:
+.sp 2
+ ...
+.br
+177.16.1.1 atlasD0 atlas0 atlas1 atlas2 atlas3 atlas4 ... atlas31
+.br
+177.16.1.2 atlasD1 atlas32 atlas33 atlas34 atlas35 atlas36 ... atlas63
+.br
+ ...
+.br
+
+.sp 2
+In the new format, you still map the nodes to the LSF hosts, so
+the number of lines remains the same, but the format is
+simplified because you only have to specify ranges for the nodes,
+not each node individually as an alias:
+.sp 2
+ ...
+.br
+177.16.1.1 atlasD0 atlas[0-31]
+.br
+177.16.1.2 atlasD1 atlas[32-63]
+.br
+ ...
+.br
+
+.sp 2
+You can use either an IPv4 or an IPv6 format for the IP address
+(if you define the parameter LSF_ENABLE_SUPPORT_IPV6 in
+lsf.conf).
+.SH IPv4 Example
+
+.sp 2
+192.168.1.1 hostA hostB
+.br
+192.168.2.2 hostA hostC host-C
+.br
+
+.sp 2
+In this example, \fRhostA\fR has 2 IP addresses and 3 aliases.
+The alias \fRhostB\fR specifies the first address, and the
+aliases \fRhostC\fR and \fRhost-C\fR specify the second address.
+LSF uses the official host name, \fRhostA\fR, to identify that
+both IP addresses belong to the same host.
+.SH IPv6 Example
+
+.sp 2
+\fR3ffe:b80:3:1a91::2 hostA hostB 3ffe:b80:3:1a91::3 hostA hostC
+host-C\fR
+.sp 2
+In this example, \fRhostA\fR has 2 IP addresses and 3 aliases.
+The alias \fRhostB\fR specifies the first address, and the
+aliases \fRhostC\fR and \fRhost-C\fR specify the second address.
+LSF uses the official host name, \fRhostA\fR, to identify that
+both IP addresses belong to the same host.
+.sp 2
+Parent topic: Configuration files

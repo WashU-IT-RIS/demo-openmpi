@@ -1,0 +1,181 @@
+.ds ]W %
+.ds ]L
+.hy 0
+.nh
+.na
+.TH vemkd 8 "Mar 2014   EGO 3.4.0"
+.br
+
+.SH NAME
+\fBvemkd\fR - EGO kernel daemon.
+
+.SH Synopsis
+.BR
+.PP
+ vemkd [-d conf_dir] [-2]  vemkd -C  vemkd -h  vemkd -V 
+.SH Description
+.BR
+.PP
+
+.PP
+There is only one vemkd daemon in a cluster. It runs on the master host.
+
+.PP
+The vemkd daemon does the following:
+.RS
+.HP 3
+o  
+Starts the service controller daemon egosc
+.HP 3
+o  
+Maintains security policies, allowing only authorized access
+.HP 3
+o  
+Maintains resource allocation policies, distributing resources accordingly
+.HP 3
+o  
+Serves as an information center where clients can query information about the 
+cluster
+.RE
+ vemkd is started automatically by the lim daemon, and exits when lim exits. 
+.PP
+caution:  
+
+.PP
+Never start vemkd manually except with the -V option to check the version 
+configuration.
+
+.SH Options
+.BR
+.PP
+
+.SS -d conf_dir
+.BR
+.PP
+
+.PP
+Starts the daemon, reading from the EGO configuration file ego.conf in the 
+specified directory, rather than from the directory set via the EGO_CONFDIR 
+environment variable.
+
+.PP
+Use this option when starting the daemon in debug mode.
+
+.PP
+caution:  
+
+.PP
+Never start the daemon manually unless directed to do so by IBM Technical 
+Support.
+
+.SS -2
+.BR
+.PP
+
+.PP
+Starts the daemon in debug mode. When running in debug mode, the daemon runs 
+in the foreground, displaying the log messages.
+
+.PP
+caution:  
+
+.PP
+Never start the daemon manually unless directed to do so by IBM Technical 
+Support.
+
+.SS -C
+.BR
+.PP
+
+.PP
+Checks the configuration of the daemon and then exits.
+
+.SS -h
+.BR
+.PP
+
+.PP
+Outputs command usage and exits.
+
+.SS -V
+.BR
+.PP
+
+.PP
+Outputs product version and exits.
+
+.SH EGO client
+.BR
+.PP
+
+.PP
+You can run an EGO client from any host to interact with vemkd, provided the client 
+host has the environment set correctly with the EGO_CONFDIR environment 
+variable pointing to the correct ego.conf file.
+
+.PP
+When the client has established a connection with vemkd, it can query general 
+information about the cluster. To perform any control operations, the client needs 
+to be logged on as an EGO user. You need to log on with at least consumer user 
+access to request a resource from EGO, and with cluster administrator privileges to 
+perform cluster-wide maintenance.
+
+.SH Files
+.BR
+.PP
+
+.SS ego.conf
+.BR
+.PP
+
+.PP
+vemkd reads the configuration file ego.conf to retrieve the location of its 
+configuration information. ego.conf is a generic configuration file shared by all 
+daemons and clients. It contains configuration information and other information 
+that dictates the behavior of the software.
+
+.PP
+vemkd reads ego.conf to retrieve the following information:
+
+.SS EGO_KD_PORT
+.BR
+.PP
+
+.PP
+The TCP port vemkd uses to serve all requests.
+
+.SS EGO_WORKDIR
+.BR
+.PP
+
+.PP
+The directory used for data persistence.
+
+.SS EGO_LOGDIR
+.BR
+.PP
+
+.PP
+The directory used for message logs.
+
+.SS EGO_LOG_MASK
+.BR
+.PP
+
+.PP
+The log level used to determine the amount of detail logged.
+
+.SS EGO_DEBUG_KD
+.BR
+.PP
+
+.PP
+The log class setting for vemkd.
+
+.SS users.xml
+.BR
+.PP
+
+.PP
+Defines the EGO user accounts for the cluster.
+

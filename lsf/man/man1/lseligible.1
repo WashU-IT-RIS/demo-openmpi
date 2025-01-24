@@ -1,0 +1,94 @@
+
+.ad l
+
+.TH lseligible 1 "May 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBlseligible\fR
+.ce 0
+
+.sp 2
+Displays whether a task is eligible for remote execution.
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBlseligible\fR [\fB-r\fR] [\fB-q\fR] [\fB-s\fR] task_name
+.sp 2
+\fBlseligible\fR [\fB-h\fR | \fB-V\fR]
+.SH Description
+
+.sp 2
+\fBNote: \fRThis command is deprecated and might be removed in a
+future version of LSF.
+.sp 2
+By default, only tasks in the remote task list are considered
+eligible for remote execution.
+.SH Options
+
+.sp 2
+\fB-q \fR
+.br
+         Quiet mode. Displays only the resource requirement
+         string that is defined for the task. The string
+         \fRELIGIBLE\fR or \fRNON-ELIGIBLE\fR is omitted.
+.sp 2
+\fB-r\fR
+.br
+         Remote mode. Considers eligible for remote execution any
+         task not included in the local task list.
+.sp 2
+\fB-s\fR
+.br
+         Silent mode. No output is produced. The -q and -s
+         options are useful for shell scripts that operate by
+         testing the exit status.
+.sp 2
+\fB\fItask_name\fB\fR
+.br
+         Specify a command.
+.sp 2
+\fB-h\fR
+.br
+         Prints command usage to stderr and exits.
+.sp 2
+\fB-V\fR
+.br
+         Prints LSF release version to stderr and exits.
+.SH Output
+
+.sp 2
+If the task is eligible, the string \fRELIGIBLE\fR followed by
+the resource requirements that are associated with the task are
+printed to stdout. Otherwise, the string NON-ELIGIBLE is printed
+to stdout.
+.sp 2
+If the lseligible command prints ELIGIBLE with no resource
+requirements, the task has the default requirements of CPU
+consumption and memory usage.
+.SH Diagnostics
+
+.sp 2
+The lseligible command has the following exit statuses:
+.sp 2
+\fB\fR0\fB\fR
+.br
+         Task is eligible for remote execution.
+.sp 2
+\fB\fR1\fB\fR
+.br
+         Command is to be run locally.
+.sp 2
+\fB\fR-1\fB\fR
+.br
+         Syntax errors.
+.sp 2
+\fB\fR-10\fB\fR
+.br
+         A failure is detected in the LSF system.
+.SH See also
+
+.sp 2
+ls_eligible, lsrtasks

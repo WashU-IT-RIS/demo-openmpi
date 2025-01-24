@@ -1,0 +1,157 @@
+.TH "lsb_calendarinfo" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_calendarinfo \- lsb_calendarinfo 
+Gets information about calendars defined in the batch system.
+.PP
+\fBlsb_calendarinfo\fP gets information about calendars defined in the batch system.
+.PP
+On success, this routine returns a pointer to an array of \fBcalendarInfoEnt\fP structures which stores the information about the returned calendars and numCalendars gives number of calendars returned. On failure NULL is returned and lsberrno is set to indicate the error.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB struct \fBcalendarInfoEnt\fP *lsb_calendarinfo(char **calendars, int *numCalendars, char *user)\fP
+.PP
+.SH "Parameters:"
+\fI**calendars\fP calendars is a pointer to an array of calendar names. 
+.br
+\fI*numCalendars\fP *numCalendars gives the number of calendar names. If *numCalendars is 0, then information about all calendars is returned. By default, only the invokers calendars are considered. 
+.br
+\fI*user\fP Setting the user parameter will cause the given users calendars to be considered.Use the reserved user name all to get calendars of all users.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBcalendarInfoEnt\fP
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+struct \fBcalendarInfoEnt\fP *:An array of the calendars and their info. 
+.br
+ Function was successful. 
+.PP
+NULL 
+.br
+ Function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lsberrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+none
+.PP
+.SH "See also:"
+\fBlsb_calendarop\fP 
+.PP
+
+.ad l
+.nh
+.SH NAME
+calendarInfoEnt \- calendar Information Entry.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBname\fP"
+.br
+.ti -1c
+.RI "char * \fBdesc\fP"
+.br
+.ti -1c
+.RI "char * \fBcalExpr\fP"
+.br
+.ti -1c
+.RI "char * \fBuserName\fP"
+.br
+.ti -1c
+.RI "int \fBstatus\fP"
+.br
+.ti -1c
+.RI "int \fBoptions\fP"
+.br
+.ti -1c
+.RI "int \fBlastDay\fP"
+.br
+.ti -1c
+.RI "int \fBnextDay\fP"
+.br
+.ti -1c
+.RI "time_t \fBcreatTime\fP"
+.br
+.ti -1c
+.RI "time_t \fBlastModifyTime\fP"
+.br
+.ti -1c
+.RI "int \fBflags\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+calendar Information Entry. 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fBcalendarInfoEnt::name\fP"
+.PP
+A pointer to the name of the calendar. 
+.PP
+
+.SS "char* \fBcalendarInfoEnt::desc\fP"
+.PP
+A description string associated with the calendar. 
+.PP
+
+.SS "char* \fBcalendarInfoEnt::calExpr\fP"
+.PP
+Calendar Expression. 
+.PP
+.SS "char* \fBcalendarInfoEnt::userName\fP"
+.PP
+User name. 
+.PP
+.SS "int \fBcalendarInfoEnt::status\fP"
+.PP
+Calendar status. 
+.PP
+.SS "int \fBcalendarInfoEnt::options\fP"
+.PP
+For future use. 
+.PP
+.SS "int \fBcalendarInfoEnt::lastDay\fP"
+.PP
+Last time event of the calendar. 
+.PP
+.SS "int \fBcalendarInfoEnt::nextDay\fP"
+.PP
+Next time event of the calendar. 
+.PP
+.SS "time_t \fBcalendarInfoEnt::creatTime\fP"
+.PP
+Create Time. 
+.PP
+.SS "time_t \fBcalendarInfoEnt::lastModifyTime\fP"
+.PP
+Last Modify Time. 
+.PP
+.SS "int \fBcalendarInfoEnt::flags\fP"
+.PP
+Type of calendar, etc. 
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

@@ -1,0 +1,32 @@
+.TH "extsched_firstEnt_" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+extsched_firstEnt_ \- extsched_firstEnt_ 
+Sets things up for a complete search of all entries in the hash table.
+.PP
+\fB#include <lssched.h>\fP
+.PP
+\fB INT_hEnt *extsched_firstEnt_(INT_hTab *t, INT_sTab *s)\fP
+.PP
+.SH "Parameters:"
+\fIt\fP [IN] pointer to a hash table object 
+.br
+\fIs\fP [OUT] pointer to search object
+.PP
+.SH "Returns:"
+INT_hEnt *  the address of the first entry in the hash table. 
+.PP
+NULL  the table is empty.
+.PP
+.SH "See also:"
+\fBextsched_nextEnt_\fP 
+.PP
+\fBextsched_create_sTab\fP 
+.PP
+\fBextsched_destroy_sTab\fP 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

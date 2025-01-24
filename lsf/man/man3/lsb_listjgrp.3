@@ -1,0 +1,48 @@
+.TH "lsb_listjgrp" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_listjgrp \- lsb_listjgrp 
+This API gets all the job groups in mbatchd.
+.PP
+The API returns all groups. \fBlsb_listjgrp\fP gets all the job groups in mbatchd and returns all groups.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB struct jgrp * lsb_listjgrp(int *n)\fP
+.PP
+.SH "Parameters:"
+\fIn\fP The number of groups.
+.PP
+.SH "Data Structures:" 
+.PP
+jgrp
+.PP
+.SH "Define Statements:" none
+.PP
+.SH "Returns:"
+struct jgrp * 
+.br
+ Function was successful. 
+.PP
+NULL Function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lsberrno will be set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+bjgroup
+.PP
+.SH "Files:" 
+.PP
+${LSF_ENVDIR:-/etc}/lsf.conf
+.PP
+.SH "See also:"
+none 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

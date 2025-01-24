@@ -1,0 +1,554 @@
+.TH "lsb_suspreason" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_suspreason \- lsb_suspreason 
+Explains why a job was suspended.
+.PP
+Using the SBD, \fBlsb_suspreason\fP explains why system-suspended and user-suspended jobs were suspended.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB char *lsb_suspreason(int reasons, int subreasons, struct \fBloadIndexLog\fP *ld)\fP
+.PP
+.SH "Parameters:"
+\fIreasons\fP Reasons a job suspends. 
+.br
+\fIsubreasons\fP If reasons is SUSP_LOAD_REASON, subreasons indicates the load indices that are out of bounds. The integer values for the load indices are found in lsf.h.If reasons is SUSP_RES_LIMIT, subreasons indicates the job's requirements for resource reservation are not satisfied. The integer values for the job's requirements for resource reservation are found in lsbatch.h. 
+.br
+ Subreasons a job suspends if reasons is SUSP_LOAD_REASON:
+.IP "\(bu" 2
+\fBR15S\fP 
+.br
+ 15 second CPU run queue length
+.IP "\(bu" 2
+\fBR1M\fP 
+.br
+ 1 minute CPU run queue length
+.IP "\(bu" 2
+\fBR15M\fP 
+.br
+ 15 minute CPU run queue length
+.IP "\(bu" 2
+\fBUT\fP 
+.br
+ 1 minute CPU utilization
+.IP "\(bu" 2
+\fBPG\fP 
+.br
+ Paging rate
+.IP "\(bu" 2
+\fBIO\fP 
+.br
+ Disk IO rate
+.IP "\(bu" 2
+\fBLS\fP 
+.br
+ Number of log in sessions
+.IP "\(bu" 2
+\fBIT\fP 
+.br
+ Idle time
+.IP "\(bu" 2
+\fBTMP\fP 
+.br
+ Available temporary space
+.IP "\(bu" 2
+\fBSWP\fP 
+.br
+ Available swap space
+.IP "\(bu" 2
+\fBMEM\fP 
+.br
+ Available memory
+.IP "\(bu" 2
+\fBUSR1\fP 
+.br
+ USR1 is used to describe unavailable or out of bounds user defined load information of an external dynamic load indice on execution hosts.
+.IP "\(bu" 2
+\fBUSR2\fP 
+.br
+ USR2 is used to describe unavailable or out of bounds user defined load information of an external dynamic load indice on execution hosts.
+.PP
+.br
+\fI*ld\fP When reasons is SUSP_LOAD_REASON, ld is used to determine the name of any external load indices. ld uses the most recent load index log in the lsb.events file.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBloadIndexLog\fP
+.PP
+.SH "Define Statements:" 
+.PP
+\fBsuspending_reasons\fP 
+.br
+\fBsuspending_subreasons\fP
+.PP
+.SH "Returns:"
+char *:Returns the suspending reason string. 
+.br
+ Function was successful. 
+.PP
+NULL 
+.br
+ The function failed. The reason code is bad.
+.PP
+.SH "Errors:" 
+.PP
+No error handling
+.PP
+.SH "Equivalent line commands:" 
+.PP
+bjobs -s
+.PP
+.SH "Environment Variable:" 
+.PP
+LSB_SUSP_REASONS
+.PP
+.SH "Files:" 
+.PP
+$LSB_CONFDIR/cluster_name/configdir/lsb.queues 
+.br
+$LSB_SHAREDIR/cluster_name/logdir/lsb.events
+.PP
+.SH "See also:"
+\fBlsb_pendreason\fP 
+.PP
+
+.ad l
+.nh
+.SH NAME
+loadIndexLog \- load index log.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBnIdx\fP"
+.br
+.ti -1c
+.RI "char ** \fBname\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+load index log. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBloadIndexLog::nIdx\fP"
+.PP
+The number of load indices. 
+.PP
+.SS "char** \fBloadIndexLog::name\fP"
+.PP
+The array of load index names. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+suspending_reasons \- suspending_reasons is part of pending_reasons  
+
+.PP
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBSUSP_USER_REASON\fP   0x00000000"
+.br
+.ti -1c
+.RI "#define \fBSUSP_USER_RESUME\fP   0x00000001"
+.br
+.ti -1c
+.RI "#define \fBSUSP_USER_STOP\fP   0x00000002"
+.br
+.ti -1c
+.RI "#define \fBSUSP_QUEUE_REASON\fP   0x00000004"
+.br
+.ti -1c
+.RI "#define \fBSUSP_QUEUE_WINDOW\fP   0x00000008"
+.br
+.ti -1c
+.RI "#define \fBSUSP_RESCHED_PREEMPT\fP   0x00000010"
+.br
+.ti -1c
+.RI "#define \fBSUSP_HOST_LOCK\fP   0x00000020"
+.br
+.ti -1c
+.RI "#define \fBSUSP_LOAD_REASON\fP   0x00000040"
+.br
+.ti -1c
+.RI "#define \fBSUSP_MBD_PREEMPT\fP   0x00000080"
+.br
+.ti -1c
+.RI "#define \fBSUSP_SBD_PREEMPT\fP   0x00000100"
+.br
+.ti -1c
+.RI "#define \fBSUSP_QUE_STOP_COND\fP   0x00000200"
+.br
+.ti -1c
+.RI "#define \fBSUSP_QUE_RESUME_COND\fP   0x00000400"
+.br
+.ti -1c
+.RI "#define \fBSUSP_PG_IT\fP   0x00000800"
+.br
+.ti -1c
+.RI "#define \fBSUSP_REASON_RESET\fP   0x00001000"
+.br
+.ti -1c
+.RI "#define \fBSUSP_LOAD_UNAVAIL\fP   0x00002000"
+.br
+.ti -1c
+.RI "#define \fBSUSP_ADMIN_STOP\fP   0x00004000"
+.br
+.ti -1c
+.RI "#define \fBSUSP_RES_RESERVE\fP   0x00008000"
+.br
+.ti -1c
+.RI "#define \fBSUSP_MBD_LOCK\fP   0x00010000"
+.br
+.ti -1c
+.RI "#define \fBSUSP_RES_LIMIT\fP   0x00020000"
+.br
+.ti -1c
+.RI "#define \fBSUSP_SBD_STARTUP\fP   0x00040000"
+.br
+.ti -1c
+.RI "#define \fBSUSP_HOST_LOCK_MASTER\fP   0x00080000"
+.br
+.ti -1c
+.RI "#define \fBSUSP_HOST_RSVACTIVE\fP   0x00100000"
+.br
+.ti -1c
+.RI "#define \fBSUSP_DETAILED_SUBREASON\fP   0x00200000"
+.br
+.ti -1c
+.RI "#define \fBSUSP_GLB_LICENSE_PREEMPT\fP   0x00400000"
+.br
+.ti -1c
+.RI "#define \fBSUSP_CRAYX1_POSTED\fP   0x00800000"
+.br
+.ti -1c
+.RI "#define \fBSUSP_ADVRSV_EXPIRED\fP   0x01000000"
+.br
+.ti -1c
+.RI "#define \fBSUSP_STOP_RELEASE_JOB_SLOT\fP   0x02000000"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+suspending_reasons is part of pending_reasons 
+.SH "Define Documentation"
+.PP 
+.SS "#define SUSP_USER_REASON   0x00000000"
+.PP
+Virtual code. 
+.PP
+Not a reason 
+.SS "#define SUSP_USER_RESUME   0x00000001"
+.PP
+The job is waiting to be re-scheduled after being resumed by the user. 
+.PP
+
+.SS "#define SUSP_USER_STOP   0x00000002"
+.PP
+The user suspended the job. 
+.PP
+
+.SS "#define SUSP_QUEUE_REASON   0x00000004"
+.PP
+Virtual code. 
+.PP
+Not a reason 
+.SS "#define SUSP_QUEUE_WINDOW   0x00000008"
+.PP
+The run window of the queue is closed. 
+.PP
+
+.SS "#define SUSP_RESCHED_PREEMPT   0x00000010"
+.PP
+Suspended after preemption. 
+.PP
+The system needs to re-allocate CPU utilization by job priority. 
+.SS "#define SUSP_HOST_LOCK   0x00000020"
+.PP
+The LSF administrator has locked the execution host. 
+.PP
+
+.SS "#define SUSP_LOAD_REASON   0x00000040"
+.PP
+A load index exceeds its threshold. 
+.PP
+The subreasons field indicates which indices. 
+.SS "#define SUSP_MBD_PREEMPT   0x00000080"
+.PP
+The job was preempted by mbatchd because of a higher priorty job. 
+.PP
+
+.SS "#define SUSP_SBD_PREEMPT   0x00000100"
+.PP
+Preempted by sbatchd. 
+.PP
+The job limit of the host/user has been reached. 
+.SS "#define SUSP_QUE_STOP_COND   0x00000200"
+.PP
+The suspend conditions of the queue, as specified by the STOP_COND parameter in lsb.queues, are true. 
+.PP
+
+.SS "#define SUSP_QUE_RESUME_COND   0x00000400"
+.PP
+The resume conditions of the queue, as specified by the RESUME_COND parameter in lsb.queues, are false. 
+.PP
+
+.SS "#define SUSP_PG_IT   0x00000800"
+.PP
+The job was suspended due to the paging rate and the host is not idle yet. 
+.PP
+
+.SS "#define SUSP_REASON_RESET   0x00001000"
+.PP
+Resets the previous reason. 
+.PP
+
+.SS "#define SUSP_LOAD_UNAVAIL   0x00002000"
+.PP
+Load information on the execution hosts is unavailable. 
+.PP
+
+.SS "#define SUSP_ADMIN_STOP   0x00004000"
+.PP
+The job was suspened by root or the LSF administrator. 
+.PP
+
+.SS "#define SUSP_RES_RESERVE   0x00008000"
+.PP
+The job is terminated due to resource limit. 
+.PP
+
+.SS "#define SUSP_MBD_LOCK   0x00010000"
+.PP
+The job is locked by the mbatchd. 
+.PP
+
+.SS "#define SUSP_RES_LIMIT   0x00020000"
+.PP
+The job's requirements for resource reservation are not satisfied. 
+.PP
+
+.SS "#define SUSP_SBD_STARTUP   0x00040000"
+.PP
+The job is suspended while the sbatchd is restarting. 
+.PP
+
+.SS "#define SUSP_HOST_LOCK_MASTER   0x00080000"
+.PP
+The execution host is locked by the master LIM. 
+.PP
+
+.SS "#define SUSP_HOST_RSVACTIVE   0x00100000"
+.PP
+An advance reservation using the host is active. 
+.PP
+.SS "#define SUSP_DETAILED_SUBREASON   0x00200000"
+.PP
+There is a detailed reason in the subreason field. 
+.PP
+.SS "#define SUSP_GLB_LICENSE_PREEMPT   0x00400000"
+.PP
+The job is preempted by glb. 
+.PP
+.SS "#define SUSP_CRAYX1_POSTED   0x00800000"
+.PP
+Job not placed by Cray X1 psched. 
+.PP
+.SS "#define SUSP_ADVRSV_EXPIRED   0x01000000"
+.PP
+Job suspended when its advance reservation expired. 
+.PP
+.SS "#define SUSP_STOP_RELEASE_JOB_SLOT   0x02000000"
+.PP
+bstop release job slot 
+.PP
+.ad l
+.nh
+.SH NAME
+suspending_subreasons \- suspending_subreasons has the following options:  
+
+.PP
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBSUB_REASON_RUNLIMIT\fP   0x00000001"
+.br
+.ti -1c
+.RI "#define \fBSUB_REASON_DEADLINE\fP   0x00000002"
+.br
+.ti -1c
+.RI "#define \fBSUB_REASON_PROCESSLIMIT\fP   0x00000004"
+.br
+.ti -1c
+.RI "#define \fBSUB_REASON_CPULIMIT\fP   0x00000008"
+.br
+.ti -1c
+.RI "#define \fBSUB_REASON_MEMLIMIT\fP   0x00000010"
+.br
+.ti -1c
+.RI "#define \fBSUB_REASON_THREADLIMIT\fP   0x00000020"
+.br
+.ti -1c
+.RI "#define \fBSUB_REASON_SWAPLIMIT\fP   0x00000040"
+.br
+.ti -1c
+.RI "#define \fBSUB_REASON_CRAYX1_ACCOUNTID\fP   0x00000001"
+.br
+.ti -1c
+.RI "#define \fBSUB_REASON_CRAYX1_ATTRIBUTE\fP   0x00000002"
+.br
+.ti -1c
+.RI "#define \fBSUB_REASON_CRAYX1_BLOCKED\fP   0x00000004"
+.br
+.ti -1c
+.RI "#define \fBSUB_REASON_CRAYX1_RESTART\fP   0x00000008"
+.br
+.ti -1c
+.RI "#define \fBSUB_REASON_CRAYX1_DEPTH\fP   0x00000010"
+.br
+.ti -1c
+.RI "#define \fBSUB_REASON_CRAYX1_GID\fP   0x00000020"
+.br
+.ti -1c
+.RI "#define \fBSUB_REASON_CRAYX1_GASID\fP   0x00000040"
+.br
+.ti -1c
+.RI "#define \fBSUB_REASON_CRAYX1_HARDLABEL\fP   0x00000080"
+.br
+.ti -1c
+.RI "#define \fBSUB_REASON_CRAYX1_LIMIT\fP   0x00000100"
+.br
+.ti -1c
+.RI "#define \fBSUB_REASON_CRAYX1_MEMORY\fP   0x00000200"
+.br
+.ti -1c
+.RI "#define \fBSUB_REASON_CRAYX1_SOFTLABEL\fP   0x00000400"
+.br
+.ti -1c
+.RI "#define \fBSUB_REASON_CRAYX1_SIZE\fP   0x00000800"
+.br
+.ti -1c
+.RI "#define \fBSUB_REASON_CRAYX1_TIME\fP   0x00001000"
+.br
+.ti -1c
+.RI "#define \fBSUB_REASON_CRAYX1_UID\fP   0x00002000"
+.br
+.ti -1c
+.RI "#define \fBSUB_REASON_CRAYX1_WIDTH\fP   0x00004000"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+suspending_subreasons has the following options: 
+.SH "Define Documentation"
+.PP 
+.SS "#define SUB_REASON_RUNLIMIT   0x00000001"
+.PP
+Sub reason of SUSP_RES_LIMIT: RUNLIMIT is reached. 
+.PP
+
+.SS "#define SUB_REASON_DEADLINE   0x00000002"
+.PP
+Sub reason of SUSP_RES_LIMIT: DEADLINE is reached. 
+.PP
+
+.SS "#define SUB_REASON_PROCESSLIMIT   0x00000004"
+.PP
+Sub reason of SUSP_RES_LIMIT: PROCESSLIMIT is reached. 
+.PP
+
+.SS "#define SUB_REASON_CPULIMIT   0x00000008"
+.PP
+Sub reason of SUSP_RES_LIMIT: CPULIMIT is reached. 
+.PP
+
+.SS "#define SUB_REASON_MEMLIMIT   0x00000010"
+.PP
+Sub reason of SUSP_RES_LIMIT: MEMLIMIT is reached. 
+.PP
+
+.SS "#define SUB_REASON_THREADLIMIT   0x00000020"
+.PP
+Sub reason of SUSP_RES_LIMIT: THREADLIMIT is reached. 
+.PP
+
+.SS "#define SUB_REASON_SWAPLIMIT   0x00000040"
+.PP
+Sub reason of SUSP_RES_LIMIT: SWAPLIMIT is reached. 
+.PP
+
+.SS "#define SUB_REASON_CRAYX1_ACCOUNTID   0x00000001"
+.PP
+Account ID does not match those allowed by the gate. 
+.PP
+.SS "#define SUB_REASON_CRAYX1_ATTRIBUTE   0x00000002"
+.PP
+Attribute does not match those allowed by the gate. 
+.PP
+.SS "#define SUB_REASON_CRAYX1_BLOCKED   0x00000004"
+.PP
+Blocked by one or more gates. 
+.PP
+.SS "#define SUB_REASON_CRAYX1_RESTART   0x00000008"
+.PP
+Application is in the process of being restarted and it is under the control of CPR. 
+.PP
+.SS "#define SUB_REASON_CRAYX1_DEPTH   0x00000010"
+.PP
+Depth does not match those allowed by the gate. 
+.PP
+.SS "#define SUB_REASON_CRAYX1_GID   0x00000020"
+.PP
+GID does not match those allowed by the gate. 
+.PP
+.SS "#define SUB_REASON_CRAYX1_GASID   0x00000040"
+.PP
+No GASID is available. 
+.PP
+.SS "#define SUB_REASON_CRAYX1_HARDLABEL   0x00000080"
+.PP
+Hard label does not match those allowed by the gate. 
+.PP
+.SS "#define SUB_REASON_CRAYX1_LIMIT   0x00000100"
+.PP
+Limit exceeded in regions or domains. 
+.PP
+.SS "#define SUB_REASON_CRAYX1_MEMORY   0x00000200"
+.PP
+Memory size does not match those allowed by the gate. 
+.PP
+.SS "#define SUB_REASON_CRAYX1_SOFTLABEL   0x00000400"
+.PP
+Soft label does not match those allowed by the gate. 
+.PP
+.SS "#define SUB_REASON_CRAYX1_SIZE   0x00000800"
+.PP
+Size gate (width times depth larger than gate allows). 
+.PP
+.SS "#define SUB_REASON_CRAYX1_TIME   0x00001000"
+.PP
+Time limit does not match those allowed by the gate. 
+.PP
+.SS "#define SUB_REASON_CRAYX1_UID   0x00002000"
+.PP
+UID does not match those allowed by the gate. 
+.PP
+.SS "#define SUB_REASON_CRAYX1_WIDTH   0x00004000"
+.PP
+Width does not match those allowed by the gate. 
+.PP
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

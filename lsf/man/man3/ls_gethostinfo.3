@@ -1,0 +1,565 @@
+.TH "ls_gethostinfo" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ls_gethostinfo \- ls_gethostinfo 
+Returns an array of \fBhostInfo\fP data structures.
+.PP
+This routine obtains static resource information about hosts. Static resources include configuration information as determined by LSF configuration files (see lsf.shared and lsf.cluster) as well as others determined automatically by LIM at start up.
+.PP
+\fBls_gethostinfo\fP returns an array of \fBhostInfo\fP data structures, as defined in <lsf/lsf.h>. Each entry contains information about one host, including the host type, the host model, its CPU normalization factor, the number of CPUs, its maximum memory, swap and tmp space, number of disks, the resources available on the host, the run windows during which the host is available for load sharing, the busy thresholds for the host, whether the host is a LSF server, and the default priority used by the RES for remote tasks executing on that host. The windows field will be set to '-' if the host is always open. The busyThreshold field is an array of floating point numbers specifying the load index thresholds that LIM uses to consider a host as busy. The size of the array is indicated by the numIndx field. The order of the array elements is the same as the load indicies returned by \fBls_load\fP.
+.PP
+This routine returns a pointer to dynamically allocated data structures which can be freed in subsequent calls.
+.PP
+\fB#include <lsf/lsf.h> 
+.br
+ struct \fBhostInfo\fP *ls_gethostinfo(char *resreq, int *numhosts, char **hostlist, int listsize, int options)\fP
+.PP
+.SH "Parameters:"
+\fI*resreq\fP resreq specifies resource requirements that a host must satisfy if it is to be included in the \fBhostInfo\fP array returned. See Administering IBM Spectrum LSF for information about resource requirement string syntax. If this parameter is a NULL pointer or is an empty string, then the default resource requirement will be used, which is to return all hosts. 
+.br
+\fI*numhosts\fP numhosts is the address of an int which, if it is not NULL, will contain the number of \fBhostInfo\fP records returned on success. 
+.br
+\fI**hostlist\fP hostlist gives a list of hosts or clusters whose information is returned if they satisfy the requirements in resreq. If hostlist is NULL, all hosts known to LSF that satisfy the requirements in resreq are returned. 
+.br
+\fIlistsize\fP listsize gives the size of the hostlist. 
+.br
+\fIoptions\fP options is constructed from the bitwise inclusive OR of zero or more of the flags that are defined in <lsf/lsf.h>. These flags are documented in \fBls_load\fP.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBhostInfo\fP
+.PP
+.SH "Define Statements:" 
+.PP
+\fBdefs_ls_lic\fP
+.PP
+.SH "Returns:"
+struct \fBhostInfo\fP *:A list of \fBhostInfo\fP struct. 
+.br
+ Function successful. 
+.PP
+NULL 
+.br
+ Function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lserrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+$LSF_CONFDIR/lsf.shared 
+.br
+$LSF_CONFDIR/lsf.cluster.cluster_name
+.PP
+.SH "See also:"
+\fBls_gethosttype\fP 
+.PP
+\fBls_gethostmodel\fP 
+.PP
+\fBls_gethostfactor\fP 
+.PP
+\fBls_load\fP 
+.PP
+
+.ad l
+.nh
+.SH NAME
+hostInfo \- The information of a host.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char \fBhostName\fP [MAXHOSTNAMELEN]"
+.br
+.ti -1c
+.RI "char * \fBhostType\fP"
+.br
+.ti -1c
+.RI "char * \fBhostModel\fP"
+.br
+.ti -1c
+.RI "float \fBcpuFactor\fP"
+.br
+.ti -1c
+.RI "int \fBmaxCpus\fP"
+.br
+.ti -1c
+.RI "long \fBmaxMem\fP"
+.br
+.ti -1c
+.RI "long \fBmaxSwap\fP"
+.br
+.ti -1c
+.RI "long \fBmaxTmp\fP"
+.br
+.ti -1c
+.RI "int \fBnDisks\fP"
+.br
+.ti -1c
+.RI "int \fBnRes\fP"
+.br
+.ti -1c
+.RI "char ** \fBresources\fP"
+.br
+.ti -1c
+.RI "int \fBnDRes\fP"
+.br
+.ti -1c
+.RI "char ** \fBDResources\fP"
+.br
+.ti -1c
+.RI "char * \fBwindows\fP"
+.br
+.ti -1c
+.RI "int \fBnumIndx\fP"
+.br
+.ti -1c
+.RI "float * \fBbusyThreshold\fP"
+.br
+.ti -1c
+.RI "char \fBisServer\fP"
+.br
+.ti -1c
+.RI "char \fBlicensed\fP"
+.br
+.ti -1c
+.RI "int \fBrexPriority\fP"
+.br
+.ti -1c
+.RI "int \fBlicFeaturesNeeded\fP"
+.br
+.ti -1c
+.RI "int \fBlicClass\fP"
+.br
+.ti -1c
+.RI "int \fBcores\fP"
+.br
+.ti -1c
+.RI "char \fBhostAddr\fP [INET6_ADDRSTRLEN]"
+.br
+.ti -1c
+.RI "int \fBpprocs\fP"
+.br
+.ti -1c
+.RI "int \fBcores_per_proc\fP"
+.br
+.ti -1c
+.RI "int \fBthreads_per_core\fP"
+.br
+.ti -1c
+.RI "\fBlsf_topology_t\fP \fBtop\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+The information of a host. 
+.SH "Field Documentation"
+.PP 
+.SS "char \fBhostInfo::hostName\fP[MAXHOSTNAMELEN]"
+.PP
+The host name. 
+.PP
+.SS "char* \fBhostInfo::hostType\fP"
+.PP
+The host type. 
+.PP
+.SS "char* \fBhostInfo::hostModel\fP"
+.PP
+The host model. 
+.PP
+.SS "float \fBhostInfo::cpuFactor\fP"
+.PP
+The cpu factor. 
+.PP
+.SS "int \fBhostInfo::maxCpus\fP"
+.PP
+The max num of cpus. 
+.PP
+.SS "long \fBhostInfo::maxMem\fP"
+.PP
+The max mem of the host. 
+.PP
+.SS "long \fBhostInfo::maxSwap\fP"
+.PP
+The max swap of the host. 
+.PP
+.SS "long \fBhostInfo::maxTmp\fP"
+.PP
+The max tmp of the host. 
+.PP
+.SS "int \fBhostInfo::nDisks\fP"
+.PP
+The num of disks. 
+.PP
+.SS "int \fBhostInfo::nRes\fP"
+.PP
+The num of res. 
+.PP
+.SS "char** \fBhostInfo::resources\fP"
+.PP
+The host resources. 
+.PP
+.SS "int \fBhostInfo::nDRes\fP"
+.PP
+The number of DResources. 
+.PP
+.SS "char** \fBhostInfo::DResources\fP"
+.PP
+Exclusive resources. 
+.PP
+.SS "char* \fBhostInfo::windows\fP"
+.PP
+Run Windows. 
+.PP
+.SS "int \fBhostInfo::numIndx\fP"
+.PP
+The num of index. 
+.PP
+.SS "float* \fBhostInfo::busyThreshold\fP"
+.PP
+The busy threshold. 
+.PP
+.SS "char \fBhostInfo::isServer\fP"
+.PP
+If the host is a server. 
+.PP
+.SS "char \fBhostInfo::licensed\fP"
+.PP
+If the host is licensed. 
+.PP
+.SS "int \fBhostInfo::rexPriority\fP"
+.PP
+The rex priority. 
+.PP
+.SS "int \fBhostInfo::licFeaturesNeeded\fP"
+.PP
+Needed license features, refer to \fBdefs_ls_lic\fP. 
+.PP
+.SS "int \fBhostInfo::licClass\fP"
+.PP
+License class needed. 
+.PP
+.SS "int \fBhostInfo::cores\fP"
+.PP
+Number of cores per physical CPU. 
+.PP
+.SS "char \fBhostInfo::hostAddr\fP[INET6_ADDRSTRLEN]"
+.PP
+IP address of this host. 
+.PP
+.SS "int \fBhostInfo::pprocs\fP"
+.PP
+Num physical processors. 
+.PP
+
+.SS "int \fBhostInfo::cores_per_proc\fP"
+.PP
+Num cores per processor. 
+.PP
+
+.SS "int \fBhostInfo::threads_per_core\fP"
+.PP
+Num threads per core. 
+.PP
+
+.SS "\fBlsf_topology_t\fP \fBhostInfo::top\fP"
+.PP
+Host topology informaion. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+defs_ls_lic \- options  
+
+.PP
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBLSF_BASE_LIC\fP   0"
+.br
+.ti -1c
+.RI "#define \fBLSF_BATCH_LIC_OBSOLETE\fP   1"
+.br
+.ti -1c
+.RI "#define \fBLSF_JS_SCHEDULER_LIC\fP   2"
+.br
+.ti -1c
+.RI "#define \fBLSF_JS_LIC\fP   3"
+.br
+.ti -1c
+.RI "#define \fBLSF_CLIENT_LIC\fP   4"
+.br
+.ti -1c
+.RI "#define \fBLSF_MC_LIC\fP   5"
+.br
+.ti -1c
+.RI "#define \fBLSF_ANALYZER_SERVER_LIC\fP   6"
+.br
+.ti -1c
+.RI "#define \fBLSF_EXPRESS_HPC_LIC\fP   6"
+.br
+.ti -1c
+.RI "#define \fBLSF_MAKE_LIC\fP   7"
+.br
+.ti -1c
+.RI "#define \fBLSF_PARALLEL_LIC\fP   8"
+.br
+.ti -1c
+.RI "#define \fBLSF_FLOAT_CLIENT_LIC\fP   9"
+.br
+.ti -1c
+.RI "#define \fBLSF_FTA_LIC\fP   10"
+.br
+.ti -1c
+.RI "#define \fBLSF_AFTER_HOURS_LIC\fP   11"
+.br
+.ti -1c
+.RI "#define \fBLSF_RESOURCE_PREEMPT_LIC\fP   12"
+.br
+.ti -1c
+.RI "#define \fBLSF_BACCT_LIC\fP   13"
+.br
+.ti -1c
+.RI "#define \fBLSF_STANDARD_LIC\fP   13"
+.br
+.ti -1c
+.RI "#define \fBLSF_SCHED_FAIRSHARE_LIC\fP   14"
+.br
+.ti -1c
+.RI "#define \fBLSF_SCHED_RESERVE_LIC\fP   15"
+.br
+.ti -1c
+.RI "#define \fBLSF_SCHED_PREEMPTION_LIC\fP   16"
+.br
+.ti -1c
+.RI "#define \fBLSF_SCHED_PARALLEL_LIC\fP   17"
+.br
+.ti -1c
+.RI "#define \fBLSF_SCHED_ADVRSV_LIC\fP   18"
+.br
+.ti -1c
+.RI "#define \fBLSF_API_CLIENT_LIC\fP   19"
+.br
+.ti -1c
+.RI "#define \fBLSF_EXPRESS_LIC\fP   20"
+.br
+.ti -1c
+.RI "#define \fBCLUSTERWARE_MANAGER_LIC\fP   20"
+.br
+.ti -1c
+.RI "#define \fBLSF_MANAGER_LIC\fP   21"
+.br
+.ti -1c
+.RI "#define \fBLSF_PCC_HPC_LIC\fP   22"
+.br
+.ti -1c
+.RI "#define \fBsCLUSTERWARE_LIC\fP   23"
+.br
+.ti -1c
+.RI "#define \fBLSF_ADVANCED_LIC\fP   23"
+.br
+.ti -1c
+.RI "#define \fBOTTAWA_MANAGER_LIC\fP   24"
+.br
+.ti -1c
+.RI "#define \fBSYMPHONY_MANAGER_ONLINE_LIC\fP   25"
+.br
+.ti -1c
+.RI "#define \fBSYMPHONY_MANAGER_BATCH_LIC\fP   26"
+.br
+.ti -1c
+.RI "#define \fBPLATFORM_LSFXL\fP   27"
+.br
+.ti -1c
+.RI "#define \fBLSF_DUALCORE_X86_LIC\fP   28"
+.br
+.ti -1c
+.RI "#define \fBLSF_SSCHED_LIC\fP   29"
+.br
+.ti -1c
+.RI "#define \fBLSF_WORKGROUP_LIC\fP   30"
+.br
+.ti -1c
+.RI "#define \fBLSF_NUM_LIC_TYPE\fP   31"
+.br
+.ti -1c
+.RI "#define \fBLSF_WG_NUM_LIC_TYPE\fP   2"
+.br
+.ti -1c
+.RI "#define \fBLSF_NO_NEED_LIC\fP   32"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+options 
+.SH "Define Documentation"
+.PP 
+.SS "#define LSF_BASE_LIC   0"
+.PP
+Base license. 
+.PP
+.SS "#define LSF_BATCH_LIC_OBSOLETE   1"
+.PP
+Obsolete batch license. 
+.PP
+.SS "#define LSF_JS_SCHEDULER_LIC   2"
+.PP
+JS Scheduler license. 
+.PP
+.SS "#define LSF_JS_LIC   3"
+.PP
+JS license. 
+.PP
+.SS "#define LSF_CLIENT_LIC   4"
+.PP
+Client license. 
+.PP
+.SS "#define LSF_MC_LIC   5"
+.PP
+MultiCluster license. 
+.PP
+.SS "#define LSF_ANALYZER_SERVER_LIC   6"
+.PP
+Analysis server license. 
+.PP
+.SS "#define LSF_EXPRESS_HPC_LIC   6"
+.PP
+Express HPC license. 
+.PP
+.SS "#define LSF_MAKE_LIC   7"
+.PP
+Make licence. 
+.PP
+.SS "#define LSF_PARALLEL_LIC   8"
+.PP
+Parallel license. 
+.PP
+.SS "#define LSF_FLOAT_CLIENT_LIC   9"
+.PP
+Float client license. 
+.PP
+.SS "#define LSF_FTA_LIC   10"
+.PP
+FTA license. 
+.PP
+.SS "#define LSF_AFTER_HOURS_LIC   11"
+.PP
+After hour license. 
+.PP
+.SS "#define LSF_RESOURCE_PREEMPT_LIC   12"
+.PP
+Preempt resource license. 
+.PP
+.SS "#define LSF_BACCT_LIC   13"
+.PP
+Bacct license. 
+.PP
+.SS "#define LSF_STANDARD_LIC   13"
+.PP
+LSF Standard Edition. 
+.PP
+.SS "#define LSF_SCHED_FAIRSHARE_LIC   14"
+.PP
+Fairshare schedule license. 
+.PP
+.SS "#define LSF_SCHED_RESERVE_LIC   15"
+.PP
+Reserve shedule license. 
+.PP
+.SS "#define LSF_SCHED_PREEMPTION_LIC   16"
+.PP
+Preemption schedule license. 
+.PP
+.SS "#define LSF_SCHED_PARALLEL_LIC   17"
+.PP
+Parallel schedule license. 
+.PP
+.SS "#define LSF_SCHED_ADVRSV_LIC   18"
+.PP
+Advance Reserve schedule license. 
+.PP
+.SS "#define LSF_API_CLIENT_LIC   19"
+.PP
+API client license. 
+.PP
+.SS "#define LSF_EXPRESS_LIC   20"
+.PP
+Express Edition license. 
+.PP
+.SS "#define CLUSTERWARE_MANAGER_LIC   20"
+.PP
+None used. 
+.PP
+.SS "#define LSF_MANAGER_LIC   21"
+.PP
+LSF Manager license. 
+.PP
+.SS "#define LSF_PCC_HPC_LIC   22"
+.PP
+'platform_hpc' feature 
+.PP
+.SS "#define sCLUSTERWARE_LIC   23"
+.PP
+'Obsoleted: s-Clusterware' OEM for S&C 
+.PP
+.SS "#define LSF_ADVANCED_LIC   23"
+.PP
+'LSF Advanced Edition 
+.PP
+.SS "#define OTTAWA_MANAGER_LIC   24"
+.PP
+Ottawa Manager license. 
+.PP
+.SS "#define SYMPHONY_MANAGER_ONLINE_LIC   25"
+.PP
+Symphony Manager online license. 
+.PP
+.SS "#define SYMPHONY_MANAGER_BATCH_LIC   26"
+.PP
+Symphony Manager batch license. 
+.PP
+.SS "#define PLATFORM_LSFXL   27"
+.PP
+IBM Spectrum LSF/XL license. 
+.PP
+.SS "#define LSF_DUALCORE_X86_LIC   28"
+.PP
+DualCore x86 license. 
+.PP
+.SS "#define LSF_SSCHED_LIC   29"
+.PP
+session scheduler license 
+.PP
+.SS "#define LSF_WORKGROUP_LIC   30"
+.PP
+lsf_workgroup license 
+.PP
+.SS "#define LSF_NUM_LIC_TYPE   31"
+.PP
+Doesn't contain lsf_workgroup. 
+.PP
+.SS "#define LSF_WG_NUM_LIC_TYPE   2"
+.PP
+Total license feature for workgroup edition. 
+.PP
+.SS "#define LSF_NO_NEED_LIC   32"
+.PP
+No needed license. 
+.PP
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

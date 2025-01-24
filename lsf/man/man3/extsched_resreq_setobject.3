@@ -1,0 +1,46 @@
+.TH "extsched_resreq_setobject" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+extsched_resreq_setobject \- extsched_resreq_setobject 
+Attach handler-specific data to a set of peer jobs.
+.PP
+Jobs are classified as peer jobs when they have the same handler-specific data attached (as indicated by a unique string representation). Peer jobs are scheduled together.
+.PP
+\fB#include <lssched.h>\fP
+.PP
+\fB void extsched_resreq_setobject(INT_RsrcReq *resreq, int handlerId, char *key, void *handlerData)\fP
+.PP
+.SH "Parameters:"
+\fIresreq\fP [IN] : Internal object representing resource requirements of peer jobs. 
+.br
+\fIhandlerId\fP [IN] : identifier for the handler. 
+.br
+\fIkey\fP [IN] : the unique string representing the handler-specific data. 
+.br
+\fIhandlerData\fP [IN] : handler-specific data to be attached to the peer jobs.
+.PP
+.SH "Returns:"
+void  is no return value.
+.PP
+PRECONDITIONS
+.PP
+1. The handlerId must be an ID previously registered with extsched_resreq_registerhandler.
+.PP
+2. Peer jobs are scheduled together, so handlerData attached with the same key must GUARANTEE to produce the same list of candidate hosts for all peer jobs.
+.PP
+3. The key will be copied.
+.PP
+4. The handlerData should not be freed until framework calls the freeFn of the registered handler type.
+.PP
+.SH "See also:"
+\fBextsched_resreq_registerhandler\fP 
+.PP
+\fBRsrcReqHandler_NewFn\fP 
+.PP
+\fBRsrcReqHandler_FreeFn\fP 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

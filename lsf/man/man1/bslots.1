@@ -1,0 +1,118 @@
+
+.ad l
+
+.TH bslots 1 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBbslots\fR
+.ce 0
+
+.sp 2
+Displays slots available and backfill windows available for
+backfill jobs.
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBbslots\fR [\fB-l\fR] [\fB-n\fR slots] [\fB-R
+"\fRres_req\fB"\fR] [\fB-W\fR [hour\fB:\fR]minutes]
+.sp 2
+\fBbslots\fR [\fB-h \fR| \fB-V\fR]
+.SH Description
+
+.sp 2
+The available slots that are displayed by the bslots command are
+not used for running jobs and can be used for backfill jobs. The
+bslots command displays a snapshot of the slots not in use by
+parallel jobs or advance reservations. They might not be
+available at job submission.
+.sp 2
+By default, displays all available slots, and the available run
+times (backfill windows) for those slots. When no slots are
+available for backfill, the bslots command displays the following
+message:
+.sp 2
+No backfill window exists at this time
+.br
+
+.sp 2
+The bslots command calculates the backfill window based on the
+estimated start time of potential backfill jobs. Estimated start
+time is only relatively accurate according to current running job
+information. If running jobs finish earlier or later, estimated
+start time might be moved to earlier or later time. You might see
+a small delay of a few minutes between the job finish time on
+which the estimate was based and the actual start time of the
+allocated job.
+.sp 2
+If the available backfill window has no runtime limit, its length
+is displayed as \fRUNLIMITED\fR.
+.sp 2
+LSF does not calculate predicted start times for pending reserve
+jobs if no backfill queue is configured in the system. In that
+case, the resource reservation for pending jobs works as normal,
+but no predicted start time is calculated, and the bslots command
+does not show the backfill window.
+.SH Options
+
+.sp 2
+\fB-l \fR
+.br
+         Displays backfill windows in a long multi-line format.
+         The -l option displays host names and the number of
+         slots on each host available for backfill.
+.sp 2
+\fB-n \fIslots\fB \fR
+.br
+         Specifies required slots (processors). Backfill windows
+         whose widths are equal or larger than specified value
+         are returned.
+.sp 2
+         When no slots are available for backfill, the bslots -n
+         command displays the following message:
+.sp 2
+         No backfill window meets these requirements at this time
+.br
+
+.sp 2
+\fB-R "\fIres_req\fB" \fR
+.br
+         Selects hosts for calculating the backfill windows
+         according to the specified resource requirement. By
+         default, selects hosts of any type. The -R option
+         supports only the \fRselect\fR resource requirement
+         string. Other resource requirement sections are not
+         supported.
+.sp 2
+         The selection string must conform to the strict resource
+         requirement string syntax described in Administering IBM
+         Spectrum LSF. The strict resource requirement syntax
+         applies to only the \fRselect\fR section.
+.sp 2
+         When no slots are available for backfill, the bslots -R
+         command displays the following message:
+.sp 2
+         No backfill window meets these requirements at this time
+.br
+
+.sp 2
+\fB-W [\fIhour\fB:]\fIminutes\fB\fR
+.br
+         Specifies expected runtime limit. Backfill windows whose
+         lengths are equal or larger than specified value are
+         returned.
+.sp 2
+         When no slots are available for backfill, the bslots -W
+         command displays the following message:
+.sp 2
+         No backfill window meets these requirements at this time
+.sp 2
+\fB-h\fR
+.br
+         Prints command usage to stderr and exits.
+.sp 2
+\fB-V \fR
+.br
+         Prints LSF release version to stderr and exits.

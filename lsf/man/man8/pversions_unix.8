@@ -1,0 +1,259 @@
+
+.ad l
+
+.TH pversions_unix 8 "May 2019" "" ""
+.ll 72
+
+.ce 1000
+\fBpversions\fR
+.ce 0
+
+.sp 2
+UNIX version of the command. Displays the version information for
+IBM Spectrum LSF installed on UNIX hosts.
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+pversions [-f env_file]
+.sp 2
+pversions -p [-f env_file] product_name
+.sp 2
+pversions -b [-f env_file] build_number
+.sp 2
+pversions -q [-f env_file] file_name
+.sp 2
+pversions -c package_name
+.sp 2
+pversions -h
+.SH Description
+
+.sp 2
+By default, displays the version and patch level of IBM Spectrum
+LSF.
+.sp 2
+The cluster location is normally determined by your environment
+setting, so ensure that your environment is set before you run
+this command (for example, you sourced either the cshrc.lsf or
+the profile.lsf file).
+.sp 2
+For each binary type, displays basic version information (package
+build date, build number, package installed date) and lists
+patches installed (package type, build number, date that is
+installed, fixes).
+.sp 2
+Optionally, the command can also be used to make the following
+checks:
+.sp 2
+*  Check the contents of a package before it is installed.
+.sp 2
+*  Show information about a specific LSF installation.
+.sp 2
+*  Show information about installed packages from specific build.
+.sp 2
+*  Find current versions of a specific file and see information
+   for each file.
+.SH Options
+
+.sp 2
+\fB-f \fIenv_file\fB\fR
+.br
+         Use this option only if you cannot set your environment
+         (for example, you cannot source the cshrc.lsf or
+         profile.lsf file).
+.sp 2
+         Specify the full path and file name of a file (such as
+         your LSF install.config file) that defines the parameter
+         LSF_TOP.
+.sp 2
+         If you use this option, the command gets the cluster
+         location from this file, not from the settings in your
+         environment.
+.sp 2
+\fB-b build_number\fR
+.br
+         Specify the build number of an installed patch. You can
+         specify the most recent full installation or patches
+         installed after the most recent full installation.
+.sp 2
+         Displays information and the contents of the build
+         (binary type and install date, notes, fixes, and files
+         in the package).
+.sp 2
+\fB-c package_name\fR
+.br
+         Specify the full path and file name of an uninstalled
+         package. For this option, you do not need to set your
+         environment because a cluster is not required.
+.sp 2
+         Displays package contents (notes, fixes, and files in
+         the patch).
+.sp 2
+\fB-p product_name\fR
+.br
+         Specify one LSF product to see information for that
+         product only. Specify \fRLSF\fR to see information about
+         LSF.
+.sp 2
+\fB-q file_name\fR
+.br
+         Specify the file name of one installed file.
+.sp 2
+         For each binary type, displays basic version information
+         and file location. If the binary was updated after the
+         most recent full installation, displays additional
+         information about the most recent patch that updated the
+         file (build number, fixes, notes, date installed).
+.sp 2
+\fB-h\fR
+.br
+         Outputs command usage and exits.
+.SH Output
+
+.sp 2
+Information is displayed in your command console.
+.SH Product version information (Default)
+
+.sp 2
+By default, displays product information for entire cluster.
+.sp 2
+For each product, displays product name and version followed by
+specific information about each binary type.
+.sp 2
+For each binary type, displays basic version information (package
+build date, build number, package installed date) and lists any
+patches that are installed (package type, build number or fix
+number, date installed).
+.sp 2
+\fBbinary type\fR
+.br
+         Binary type, build number of binary, and build date of
+         the binary for the most recent full installation. A full
+         installation is installation of any distribution that
+         contains a complete set of new binary files. A full
+         installation can be a new cluster, an upgrade, or
+         patching with an enhancement pack.
+.sp 2
+\fBinstalled\fR
+.br
+         Date the binary was installed for the most recent full
+         installation.
+.sp 2
+\fBpatched\fR
+.br
+         For each patch after the most recent full installation,
+         displays fix number, build number, and date patch was
+         installed. If the patch was a fix pack, multiple fixes
+         are listed.
+.SH File version information (-q)
+
+.sp 2
+The -q option displays information for specified file only.
+.sp 2
+For each product that contains the specified file, displays
+product name and version followed by specific information about
+each binary type.
+.sp 2
+For each binary type that contains the specified file, displays
+basic version information and file location. If the binary was
+updated after the most recent full installation, displays
+additional information about the most recent patch that updated
+the file (build number, fixes, notes, date installed).
+.sp 2
+\fBbinary type\fR
+.br
+         Binary type, build number of binary, and build date of
+         the binary for the most recent full installation. A full
+         installation is any distribution that contains a
+         complete set of new binary files. A full installation
+         can be a new cluster installation, a version upgrade, or
+         patching with an enhancement pack.
+.sp 2
+\fBinstalled\fR
+.br
+         Date the binary was installed for the most recent full
+         installation.
+.sp 2
+\fBfile\fR
+.br
+         Full path to the version of the file that is used for
+         this binary type.
+.sp 2
+\fBlast patched\fR
+.br
+         For the last patch to update the file after the most
+         recent full installation, displays build number and date
+         patch was installed.
+.sp 2
+\fBlast patch notes\fR
+.br
+         Optional. Some information that is provided for the last
+         patch that updated the file.
+.sp 2
+\fBlast patch fixes\fR
+.br
+         Fixes that are included in the last patch that updated
+         the file.
+.SH Build version information (-b)
+
+.sp 2
+The -b option displays information for patches with the specified
+build number only.
+.sp 2
+For each product, if the product is using binary files from the
+specified build, displays product name and version followed by
+specific information about each binary type.
+.sp 2
+For each binary type, displays the following information:
+.sp 2
+\fBbinary type\fR
+.br
+         Binary type, build number and build date of the patch.
+.sp 2
+\fBinstalled \fR
+.br
+         Date the patch was installed.
+.sp 2
+\fBnotes\fR
+.br
+         Optional. Some information that is provided for the
+         build.
+.sp 2
+\fBfixes\fR
+.br
+         Fixes that are included in the patch.
+.sp 2
+\fBfiles\fR
+.br
+         Files that are included in the patch. Not shown for a
+         full distribution such as enhancement pack. Full path to
+         the file installed by this patch.
+.SH Package version information (-c)
+
+.sp 2
+The -c option displays version information for a specified
+uninstalled package.
+.sp 2
+\fBproduct\fR
+.br
+         Displays product name and version.
+.sp 2
+\fBbinary type\fR
+.br
+         Binary type, build number and build date of the patch.
+.sp 2
+\fBnotes\fR
+.br
+         Optional. Some information that is provided for the
+         build.
+.sp 2
+\fBfixes\fR
+.br
+         Fixes that are included in the patch.
+.sp 2
+\fBfiles\fR
+.br
+         Files that are included in the patch (not shown for a
+         full distribution such as enhancement pack). Relative
+         path to the file.

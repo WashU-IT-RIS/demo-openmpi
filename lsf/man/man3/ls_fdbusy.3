@@ -1,0 +1,56 @@
+.TH "ls_fdbusy" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ls_fdbusy \- ls_fdbusy 
+Tests if a specified file descriptor is in use or reserved by LSF.
+.PP
+\fBls_fdbusy\fP tests if a specified file descriptor is in use or reserved by LSF. The possible descriptors used by LSF are those used for contacting the LIM and for remote execution. fd is the file descriptor to test. This call is typically used when an application wants to close all unneeded file descriptors.
+.PP
+Any program using this routine must call \fBls_initrex\fP first.
+.PP
+Any program using this API must be setuid to root if LSF_AUTH is not defined in the lsf.conf file.
+.PP
+\fB#include <lsf/lsf.h> 
+.br
+ int ls_fdbusy(int fd)\fP
+.PP
+.SH "Parameters:"
+\fIfd\fP fd is the file descriptor to test.
+.PP
+.SH "Data Structures:" 
+.PP
+none
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+int:True 
+.br
+ Returned if fd is in use or reserved by LSF. 
+.PP
+int:False 
+.br
+ Returned if fd is not in use or reserved by LSF.
+.PP
+.SH "Errors:" 
+.PP
+Systems that conform to the Single UNIX specification are not required to detect error conditions for this function.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+${LSF_ENVDIR:-/etc}/lsf.conf
+.PP
+.SH "See also:"
+\fBls_initrex\fP 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

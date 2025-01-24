@@ -1,0 +1,261 @@
+
+.ad l
+
+.TH bsla 1 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBbsla\fR
+.ce 0
+
+.sp 2
+Displays information about service classes. Service classes are
+used in guaranteed resource policies and service-level agreement
+(SLA) scheduling.
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBbsla\fR [service_class_name]
+.sp 2
+\fBbsla\fR [\fB-h\fR] [\fB-V\fR] [\fB-N\fR]
+.SH Description
+
+.sp 2
+The bsla command displays the properties of service classes that
+are configured in the lsb.serviceclasses file and dynamic
+information about the state of each configured service class.
+.sp 2
+If a default system service class is configured with the
+\fBENABLE_DEFAULT_EGO_SLA\fR parameter in the lsb.params file but
+no other service classes are explicitly configured in the
+lsb.serviceclasses file, the bsla displays only information for
+the default SLA.
+.SH Options
+
+.sp 2
+\fB\fIservice_class_name\fB\fR
+.br
+         The name of a service class that is configured in the
+         lsb.serviceclasses file.
+.sp 2
+\fB-h\fR
+.br
+         Prints command usage to stderr and exits.
+.sp 2
+\fB-V\fR
+.br
+         Prints LSF release version to stderr and exits.
+.sp 2
+\fB-N\fR
+.br
+         Displays information about service class job counts by
+         job slots instead of number of jobs. \fRNSLOTS\fR, and
+         jobs in \fRPEND\fR, \fRRUN\fR, \fRSSUSP\fR, or
+         \fRUSUSP\fR state are all counted in slots rather than
+         number of jobs.
+.SH Time-based SLA service class output
+
+.sp 2
+Time-based SLAs typically have throughput, velocity, or deadline
+goals. A list of service classes is displayed with the following
+fields:
+.sp 2
+\fBSERVICE CLASS NAME\fR
+.br
+         The name of the service class, followed by its
+         description, if any.
+.sp 2
+\fBPRIORITY\fR
+.br
+         The service class priority. A higher value indicates a
+         higher priority, relative to other service classes.
+         Similar to queue priority, service classes access the
+         cluster resources in priority order.
+.sp 2
+\fBUSER GROUP\fR
+.br
+         User names or user groups who can submit jobs to the
+         service class.
+.sp 2
+\fBGOAL\fR
+.br
+         The type of service class goal and its configured value.
+         The following values are displayed:
+.sp 2
+         *  \fRTHROUGHPUT\fR
+.sp 2
+         *  \fRVELOCITY\fR
+.sp 2
+         *  \fRDEADLINE\fR
+.sp 2
+\fBACTIVE WINDOW\fR
+.br
+         The configured time window when the service class goal
+         is active. If no time window is configured for a
+         throughput or velocity goal, the \fRACTIVE WINDOW\fR is
+         \fRAlways Open\fR.
+.sp 2
+\fBSTATUS\fR
+.br
+         Status of the service class goal.
+.sp 2
+         *  \fRActive:On time\fR means that the goal is active
+            and meeting its target.
+.sp 2
+         *  \fRActive:Delayed\fR means that the goal is active
+            but is missing its target.
+.sp 2
+         *  \fRInactive\fR means that the goal is not active, and
+            that its time window is closed. Jobs are scheduled as
+            if no service class is defined. LSF does not enforce
+            any service-level goal for an inactive SLA.
+.sp 2
+\fBTHROUGHPUT\fR
+.br
+         For throughput goals, the configured job throughput
+         (finished jobs per hour) for the service class.
+.sp 2
+\fBSLA THROUGHPUT\fR
+.br
+         The current throughput for the SLA finished jobs per
+         clean period.
+.sp 2
+\fBESTIMATED FINISH TIME\fR
+.br
+         For goals with a time window, estimated finish time of
+         the SLA. If the service class status is on time, the
+         finish time is before the configured deadline. If the
+         service class status is delayed, the service class is
+         missing its goal and the bsla command shows a finish
+         time later than the deadline.
+.sp 2
+\fBOPTIMUM NUMBER OF RUNNING JOBS\fR
+.br
+         For goals with a time window, the optimum number of jobs
+         that must be running in the service class for the SLA to
+         meet its goal.
+.sp 2
+\fBNJOBS\fR
+.br
+         The current number of jobs in the specified service
+         class. A parallel job is counted as one job, regardless
+         of the number of job slots it uses.
+.sp 2
+\fBPEND\fR
+.br
+         The number of pending jobs in the specified service
+         class.
+.sp 2
+\fBRUN\fR
+.br
+         The number of running jobs in the specified service
+         class.
+.sp 2
+\fBSSUSP\fR
+.br
+         The number of system-suspended jobs in the service
+         class.
+.sp 2
+\fBUSUSP\fR
+.br
+         The number of user-suspended jobs in the specified
+         service class.
+.sp 2
+\fBFINISH\fR
+.br
+         The number of jobs in the specified service class in
+         \fREXIT\fR or \fRDONE\fR state.
+.SH Resource-based SLA service class output
+
+.sp 2
+Resource-based SLAs have guarantee goals. A list of service
+classes is displayed with the following fields:
+.sp 2
+\fBSERVICE CLASS NAME\fR
+.br
+         The name of the service class, followed by its
+         description, if any.
+.sp 2
+\fBGOAL\fR
+.br
+         The type of service class goal and its configured value
+         (\fRGUARANTEE\fR).
+.sp 2
+\fBAUTO_ATTACH\fR
+.br
+         Automatic attachment configuration (\fRY\fR or \fRN\fR).
+.sp 2
+\fBACCESS_CONTROL\fR
+.br
+         Configured access restrictions for the guarantee SLA, if
+         any.
+.sp 2
+\fBPOOL NAME\fR
+.br
+         Name of the guaranteed resource pool.
+.sp 2
+\fBTYPE\fR
+.br
+         Guaranteed resource type.
+.sp 2
+\fBGUAR CONFIG\fR
+.br
+         Number of resources in the pool that is guaranteed to
+         the SLA.
+.sp 2
+\fBGUAR USED\fR
+.br
+         Number of resources within the guarantee in use by the
+         SLA. Resource use includes both running and suspended
+         jobs.
+.sp 2
+\fBTOTAL USED\fR
+.br
+         Number of resources in the pool currently in use by the
+         SLA. This total can exceed the number of guaranteed
+         resources for the SLA if other guaranteed SLAs that use
+         the same resource pool are not running at capacity.
+         Resource use includes both running and suspended jobs.
+.sp 2
+\fBUSED GUARANTEE HOSTS\fR
+.br
+         Information on the hosts that are allocated from each
+         guarantee pool for the SLA, organized by guarantee pool.
+         This section only displays if there are jobs running in
+         the SLA.
+.SH EGO-enabled SLA service class output-enabled SLA service class output
+
+.sp 2
+In addition to the general output, EGO-enabled SLA service
+classes display the following fields:
+.sp 2
+\fBCONSUMER\fR
+.br
+         The name of the EGO consumer from which hosts are
+         allocated to the SLA.
+.sp 2
+\fBEGO_RES_REQ\fR
+.br
+         The EGO resource requirement that is defined in the SLA.
+.sp 2
+\fBMAX_HOST_IDLE_TIME\fR
+.br
+         How long the SLA holds its idle hosts before LSF
+         releases them to EGO.
+.sp 2
+\fBNUM_RECALLED_HOSTS\fR
+.br
+         The number of hosts that are allocated to the SLA that
+         EGO reclaimed.
+.sp 2
+\fBRECALLED_HOSTS_TIMEOUT\fR
+.br
+         The amount of time EGO gives to LSF to clean up its
+         workload before EGO reclaims the host.
+.SH See also
+
+.sp 2
+bresources, bhist, bjobs, bkill, bmod, bsub, lsb.acct,
+lsb.serviceclasses, lsb.resources

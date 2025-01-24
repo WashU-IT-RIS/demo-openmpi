@@ -1,0 +1,160 @@
+.TH "lsb_resize_release" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_resize_release \- lsb_resize_release 
+Releases part of the allocation of a running resizable job.
+.PP
+Use \fBlsb_resize_release\fP to release part of a running job allocation. A running job can only have one pending request at any particular time. If one request is still pending, additional requests are rejected with a proper error code.
+.PP
+If a notification command is defined through job submission, application profile,or the \fBlsb_resize_release\fP API, the notification command is invoked on the first execution host of the job allocation once allocation resize requests have been satisfied.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB int lsb_resize_release(struct job_resize_release *req);\fP
+.PP
+.SH "Parameters:"
+\fI*req\fP job resize release request.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBjob_resize_release\fP
+.PP
+.SH "Define Statements:" 
+.PP
+\fBresizablejob_related\fP
+.PP
+.SH "Returns:"
+int:0 
+.br
+ On success, returns zero. 
+.PP
+int:-1 
+.br
+ On failure, returns -1.
+.PP
+.SH "Errors:" 
+.PP
+lsberrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+release [-c] [-rnc resize_notification_cmd | -rncn] released_host_specification job_ID
+.PP
+.SH "Files:" 
+.PP
+none
+.PP
+.SH "See also:"
+\fBlsb_resize_cancel\fP 
+.PP
+
+.ad l
+.nh
+.SH NAME
+job_resize_release \- job resize release.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "LS_LONG_INT \fBjobId\fP"
+.br
+.ti -1c
+.RI "int \fBoptions\fP"
+.br
+.ti -1c
+.RI "int \fBnHosts\fP"
+.br
+.ti -1c
+.RI "char ** \fBhosts\fP"
+.br
+.ti -1c
+.RI "int * \fBslots\fP"
+.br
+.ti -1c
+.RI "char * \fBnotifyCmd\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+job resize release. 
+.SH "Field Documentation"
+.PP 
+.SS "LS_LONG_INT \fBjob_resize_release::jobId\fP"
+.PP
+LSF job ID. 
+.PP
+.SS "int \fBjob_resize_release::options\fP"
+.PP
+Options is constructed from the bitwise inclusive OR of zero or more of the flags, as defined in \fBresizablejob_related\fP . 
+.PP
+
+.SS "int \fBjob_resize_release::nHosts\fP"
+.PP
+Number of hosts in the hosts list, if no hosts are to be specified this should be zero. 
+.PP
+.SS "char** \fBjob_resize_release::hosts\fP"
+.PP
+Specified hosts list, nHosts number of elements. 
+.PP
+.SS "int* \fBjob_resize_release::slots\fP"
+.PP
+Slots list, each element specifies the number of slots per corresponding host (0 implies all), nHosts number of elements. 
+.PP
+.SS "char* \fBjob_resize_release::notifyCmd\fP"
+.PP
+Name and location of notification command. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+resizablejob_related \- Resizable job related definitions.  
+
+.PP
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBLSB_RESIZE_REL_NONE\fP   0x0"
+.br
+.ti -1c
+.RI "#define \fBLSB_RESIZE_REL_ALL\fP   0x01"
+.br
+.ti -1c
+.RI "#define \fBLSB_RESIZE_REL_CANCEL\fP   0x02"
+.br
+.ti -1c
+.RI "#define \fBLSB_RESIZE_REL_NO_NOTIFY\fP   0x04"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Resizable job related definitions. 
+.SH "Define Documentation"
+.PP 
+.SS "#define LSB_RESIZE_REL_NONE   0x0"
+.PP
+Means release no slots. 
+.PP
+.SS "#define LSB_RESIZE_REL_ALL   0x01"
+.PP
+Means release all slots-In this case, nHosts, hosts and slots indicate the slots that are not released. 
+.PP
+.SS "#define LSB_RESIZE_REL_CANCEL   0x02"
+.PP
+Means cancel any pending resize request. 
+.PP
+.SS "#define LSB_RESIZE_REL_NO_NOTIFY   0x04"
+.PP
+Means execute no resize notification command. 
+.PP
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

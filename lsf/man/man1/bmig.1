@@ -1,0 +1,156 @@
+
+.ad l
+
+.TH bmig 1 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBbmig\fR
+.ce 0
+
+.sp 2
+Migrates checkpointable or rerunnable jobs.
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBbmig\fR [\fB-f\fR] [job_ID |
+\fB"\fRjob_ID\fB[\fRindex_list\fB]"\fR] ...
+.sp 2
+\fBbmig\fR [\fB-f\fR] [\fB-J\fR job_name]
+.sp 2
+[\fB-m "\fRhost_name ... \fB"\fR | \fB-m "\fRhost_group ...
+\fB"\fR] [\fB-u\fR user_name | \fB-u\fR user_group | \fB-u\fR
+\fBall\fR] [\fB0\fR]
+.sp 2
+\fBbmig\fR [\fB-h\fR | \fB-V\fR]
+.SH Description
+
+.sp 2
+Migrates one or more of your checkpointable or rerunnable jobs to
+a different host. You can migrate only running or suspended jobs.
+You cannot migrate pending jobs. Members of a chunk job in the
+\fRWAIT\fR state can be migrated. LSF removes waiting jobs from
+the job chunk and changes their original dispatch sequence.
+.sp 2
+By default, migrates the most recently submitted job, or the most
+recently submitted job that also satisfies other specified
+options (-u and -J). Specify 0 (zero) to migrate multiple jobs.
+Only LSF administrators and root can migrate jobs that are
+submitted by other users. Both the original and the new hosts
+must have the following characteristics:
+.sp 2
+*  Be binary compatible
+.sp 2
+*  Run the same version of the operating system for predictable
+   results
+.sp 2
+*  Have network connectivity and read/execute permissions to the
+   checkpoint and restart executable files (in the LSF_SERVERDIR
+   directory by default)
+.sp 2
+*  Have network connectivity and read/write permissions to the
+   checkpoint directory and the checkpoint file
+.sp 2
+*  Have access to all files open during job execution so that LSF
+   can locate them using an absolute path name
+.sp 2
+When you migrate a checkpointable job, LSF checkpoints and kills
+the job and then restarts the job on the next available host. If
+checkpoint fails, the job continues to run on the original host.
+If you use the bmig command while a job is being check pointed,
+for example, with periodic checkpointing enabled, LSF ignores the
+migration request.
+.sp 2
+When you migrate a rerunnable job, LSF kills the job and restarts
+it from the beginning on the next available host. LSF sets the
+environment variable \fBLSB_RESTART\fR to Y when a migrating job
+restarts or reruns.
+.sp 2
+\fBNote: \fRThe job owner does not receive notification when LSF
+kills a checkpointable or rerunnable job as part of job
+migration.
+.sp 2
+In LSF multicluster capability, you must use the brun command
+rather than the bmig command to move a job to another host.
+.sp 2
+When absolute job priority scheduling (APS) is configured in the
+queue, LSF always schedules migrated jobs before pending jobs.
+For migrated jobs, LSF keeps the existing job priority. If the
+\fBLSB_REQUEUE_TO_BOTTOM\fR and \fBLSB_MIG2PEND\fR parameters are
+configured in the lsf.conf file, the migrated jobs keep their APS
+information. The migrated jobs compete with other pending jobs
+based on the APS value. If you want to reset the APS value, you
+must use the brequeue command instead of the bmig command.
+.SH Options
+
+.sp 2
+\fB-f\fR
+.br
+         Forces a checkpointable job to be checkpointed and
+         migrated, even if non-checkpointable conditions exist
+         within the operating system environment.
+.sp 2
+\fB\fIjob_ID\fB | "\fIjob_ID[index_list]\fB" | 0\fR
+.br
+         Migrates jobs with the specified job IDs. LSF ignores
+         the -J and -u options.
+.sp 2
+         If you specify a job ID of \fR0\fR (zero), LSF ignores
+         all other job IDs and migrates all jobs that satisfy the
+         -J and -u options.
+.sp 2
+         If you do not specify a job ID, LSF migrates the most
+         recently submitted job that satisfies the -J and -u
+         options.
+.sp 2
+\fB-J \fIjob_name\fB\fR
+.br
+         Migrates the job with the specified name. Ignored if a
+         job ID other than \fR0\fR (zero) is specified.
+.sp 2
+         The job name can be up to 4094 characters long. Job
+         names are not unique.
+.sp 2
+         The wildcard character (\fR*\fR) can be used anywhere
+         within a job name, but it cannot appear within an array
+         index. For example, the pattern \fRjob*\fR returns
+         \fRjobA\fR and \fRjobarray[1]\fR. The \fR*AAA*[1]\fR
+         pattern returns the first element in job arrays with
+         names that contain \fRAAA\fR. However, the pattern
+         \fRjob1[*]\fR does not return anything since the
+         wildcard is within the array index.
+.sp 2
+\fB-m "\fIhost_name\fB ..." | -m "\fIhost_group\fB ..."\fR
+.br
+         Migrates jobs to the specified hosts.
+.sp 2
+         This option cannot be used on an LSF multicluster
+         capability job. The bmig command can restart or rerun
+         only the job on the original host.
+.sp 2
+\fB-u "\fIuser_name\fB" | -u "\fIuser_group\fB" | -u all\fR
+.br
+         Migrates only those jobs that are submitted by the
+         specified users. To specify a Windows user account,
+         include the domain name in uppercase letters and use a
+         single backslash in a Windows command line or a double
+         backslash in a UNIX command line.
+.sp 2
+         If you specify the reserved user name \fRall\fR, LSF
+         migrates jobs that are submitted by all users. Ignored
+         if a job ID other than \fR0\fR (zero) is specified.
+.sp 2
+\fB-h\fR
+.br
+         Prints command usage to stderr and exits.
+.sp 2
+\fB-V\fR
+.br
+         Prints LSF release version to stderr and exits.
+.SH See also
+
+.sp 2
+bsub, brestart, bchkpnt, bjobs, bqueues, bhosts, bugroup,
+mbatchd, lsb.queues, kill

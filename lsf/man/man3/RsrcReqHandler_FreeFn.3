@@ -1,0 +1,28 @@
+.TH "RsrcReqHandler_FreeFn" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+RsrcReqHandler_FreeFn \- RsrcReqHandler_FreeFn 
+Signature for functions that handles freeing of handler-specific data when no more peer jobs refer to a resource requirement.
+.PP
+\fB#include <lssched.h>\fP
+.PP
+\fB typedef void (* RsrcReqHandler_FreeFn)(void *handlerData)\fP
+.PP
+.SH "Parameters:"
+\fIhandlerData\fP [IN/OUT] : Handler-specific data that was created and attached to a resource requirement in above New function. Scheduler framework invokes this callback when the data is no longer usable.
+.PP
+.SH "Returns:"
+void  have no return value.
+.PP
+.SH "See also:"
+\fBRsrcReqHandlerType\fP 
+.PP
+\fBRsrcReqHandler_NewFn\fP 
+.PP
+\fBextsched_resreq_registerhandler\fP 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

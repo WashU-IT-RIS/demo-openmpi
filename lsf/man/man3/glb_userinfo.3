@@ -1,0 +1,199 @@
+.TH "glb_userinfo" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+glb_userinfo \- glb_userinfo 
+Returns an array of users that are using license tokens and licenses.
+.PP
+\fBglb_userinfo\fP returns an array of \fBglbUser\fP structures, which contains information on each user that is using a license token and a license from the license server. The license server identifies users by the identifier user_name@host_name
+.PP
+\fB #include <glb/glb.h>\fP
+.PP
+\fB struct \fBglbUser\fP *glb_userinfo(int *nusers, int *lmstatIntvl) \fP
+.PP
+.SH "Parameters:"
+\fI*nusers\fP The number of users that are currently in the system. This parameter is used as a return value. 
+.br
+\fI*lmstatIntvl\fP The current lmstat interval. This parameter is used as a return value.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBglbUser\fP
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+*glbUser 
+.br
+ An array of users currently using license tokens and licenses from the license server.
+.PP
+.SH "Errors:" 
+.PP
+On failure, glberrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+none
+.PP
+.SH "See also:"
+\fBglb_info\fP 
+.PP
+\fBglb_jobinfo\fP 
+.PP
+\fBglb_perror\fP 
+.PP
+\fBglb_userinfo\fP 
+.PP
+\fBglb_workloadinfo\fP 
+.PP
+
+.ad l
+.nh
+.SH NAME
+glbUser \- This data structure represent a user using a license token and a license from the license server.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBfeature\fP"
+.br
+.ti -1c
+.RI "char * \fBserviceDomain\fP"
+.br
+.ti -1c
+.RI "char * \fBname\fP"
+.br
+.ti -1c
+.RI "char * \fBhost\fP"
+.br
+.ti -1c
+.RI "char * \fBversion\fP"
+.br
+.ti -1c
+.RI "char * \fBvendor\fP"
+.br
+.ti -1c
+.RI "int \fBndisplays\fP"
+.br
+.ti -1c
+.RI "char ** \fBdisplay\fP"
+.br
+.ti -1c
+.RI "int \fBnumlics\fP"
+.br
+.ti -1c
+.RI "char * \fBcheckoutTime\fP"
+.br
+.ti -1c
+.RI "int \fBhandle\fP"
+.br
+.ti -1c
+.RI "int \fBntasks\fP"
+.br
+.ti -1c
+.RI "char * \fBclient\fP"
+.br
+.ti -1c
+.RI "int \fBnonglb\fP"
+.br
+.ti -1c
+.RI "int \fBnTotalLic\fP"
+.br
+.ti -1c
+.RI "int \fBnpids\fP"
+.br
+.ti -1c
+.RI "unsigned int * \fBpids\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+This data structure represent a user using a license token and a license from the license server. 
+
+The license server identifies users by the identifier user@host. The API that returns the data structure is glb_serinfo(). 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fBglbUser::feature\fP"
+.PP
+feature name 
+.PP
+.SS "char* \fBglbUser::serviceDomain\fP"
+.PP
+service domain 
+.PP
+.SS "char* \fBglbUser::name\fP"
+.PP
+user name 
+.PP
+.SS "char* \fBglbUser::host\fP"
+.PP
+host name 
+.PP
+.SS "char* \fBglbUser::version\fP"
+.PP
+version 
+.PP
+.SS "char* \fBglbUser::vendor\fP"
+.PP
+vendor 
+.PP
+.SS "int \fBglbUser::ndisplays\fP"
+.PP
+number of displays 
+.PP
+.SS "char** \fBglbUser::display\fP"
+.PP
+displays 
+.PP
+.SS "int \fBglbUser::numlics\fP"
+.PP
+number of licenses 
+.PP
+.SS "char* \fBglbUser::checkoutTime\fP"
+.PP
+checkout time 
+.PP
+.SS "int \fBglbUser::handle\fP"
+.PP
+handle 
+.PP
+.SS "int \fBglbUser::ntasks\fP"
+.PP
+number of tasks 
+.PP
+.SS "char* \fBglbUser::client\fP"
+.PP
+client name 
+.PP
+.SS "int \fBglbUser::nonglb\fP"
+.PP
+non-glb 
+.PP
+.SS "int \fBglbUser::nTotalLic\fP"
+.PP
+total number of licenses 
+.PP
+.SS "int \fBglbUser::npids\fP"
+.PP
+number of pids 
+.PP
+.SS "unsigned int* \fBglbUser::pids\fP"
+.PP
+pids 
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

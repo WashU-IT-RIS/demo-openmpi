@@ -1,0 +1,4887 @@
+
+.ad l
+
+.TH lsf.licensescheduler 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBlsf.licensescheduler\fR
+.ce 0
+
+.sp 2
+The lsf.licensescheduler file contains LSF License Scheduler
+configuration information. All sections except ProjectGroup are
+required. In cluster mode, the Project section is also not
+required.
+.sp 2
+
+.SH Changing lsf.licensescheduler configuration
+
+.sp 2
+After making any changes to lsf.licensescheduler, run the
+following commands:
+.sp 2
+*  If you added, changed, or deleted the FEATURE_DELTA parameter,
+   reconfigure the bld daemon.
+.sp 2
+*  If you have added, changed, or deleted any Feature or Projects
+   sections, you may need to restart the mbatchd daemon. In this
+   case a message is written to the log file prompting the
+   restart.
+.sp 2
+   To restart the mbatchd daemon on each LSF cluster, run
+   \fRbadmin mbdrestart\fR.
+.sp 2
+Parent topic: Configuration files
+.sp 2
+
+.ce 1000
+\fBParameters section\fR
+.ce 0
+
+.sp 2
+
+.SH Description
+
+.sp 2
+Required. Defines License Scheduler configuration parameters. If
+there is a parameter with the same name in the Feature section,
+setting these parameters in the Feature section overrides the
+global setting in the Parameters section.
+.SH Parameters section structure
+
+.sp 2
+The \fBParameters\fR section begins and ends with the lines
+\fRBegin Parameters\fR and \fREnd Parameters\fR. Each subsequent
+line describes one configuration parameter. The following
+parameters are required:
+.sp 2
+Begin Parameters
+.br
+ADMIN=lsadmin 
+.br
+HOSTS=hostA hostB hostC 
+.br
+LMSTAT_PATH=/etc/flexlm/bin 
+.br
+RLMSTAT_PATH=/etc/rlm/bin
+.br
+LM_STAT_INTERVAL=30 
+.br
+PORT=9581 
+.br
+End Parameters 
+.br
+
+.sp 2
+
+.ce 1000
+\fBADMIN\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRADMIN=\fR\fIuser_name\fR ...
+.SH Description
+
+.sp 2
+Defines the LSF License Scheduler administrator using a valid
+UNIX user account. You can specify multiple accounts.
+.sp 2
+Used for both project mode and cluster mode.
+.sp 2
+
+.ce 1000
+\fBAUTH\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRAUTH=Y\fR | \fRN\fR
+.SH Description
+
+.sp 2
+Enables LSF License Scheduler user authentication for projects
+for taskman jobs.
+.sp 2
+Used for both project mode and cluster mode.
+.sp 2
+
+.ce 1000
+\fBBLC_HEARTBEAT_FACTOR\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRBLC_HEARTBEAT_FACTOR=\fR\fIinteger\fR
+.SH Description
+
+.sp 2
+Enables bld to detect blcollect failure. Defines the number of
+times that bld receives no response from a license collector
+daemon (blcollect) before bld resets the values for that
+collector to zero. Each license usage reported to bld by the
+collector is treated as a heartbeat.
+.sp 2
+Used for both project mode and cluster mode.
+.SH Default
+
+.sp 2
+3
+.sp 2
+
+.ce 1000
+\fBCHECKOUT_FROM_FIRST_HOST_ONLY\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRCHECKOUT_FROM_FIRST_HOST_ONLY=Y\fR | \fRN\fR
+.SH Description
+
+.sp 2
+If enabled (\fRCHECKOUT_FROM_FIRST_HOST_ONLY=Y\fR), LSF License
+Scheduler only considers \fRuser@host\fR information for the
+first execution host of a parallel job when merging the license
+usage data. Setting in individual Feature sections overrides the
+global setting in the Parameters section.
+.sp 2
+If disabled, LSF License Scheduler attempts to check out
+\fRuser@host\fR keys in the parallel job constructed using the
+user name and all execution host names, and merges the
+corresponding checkout information on the service domain if
+found. In addition, if \fRMERGE_BY_SERVICE_DOMAIN=Y\fR is
+defined, LSF License Scheduler merges multiple \fRuser@host\fR
+data for parallel jobs across different service domains.
+.SH Default
+
+.sp 2
+Undefined (N).LSF License Scheduler attempts to check out
+\fRuser@host\fR keys in the parallel job constructed using the
+user name and all execution host names, and merges the
+corresponding checkout information on the service domain if
+found.
+.sp 2
+
+.ce 1000
+\fBCLUSTER_MODE\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRCLUSTER_MODE=Y\fR | \fRN\fR
+.SH Description
+
+.sp 2
+Enables cluster mode (instead of project mode) in License
+Scheduler. Setting in individual Feature sections overrides the
+global setting in the Parameters section.
+.sp 2
+Cluster mode emphasizes high utilization of license tokens above
+other considerations such as ownership. License ownership and
+sharing can still be configured, but within each cluster instead
+of across multiple clusters. Preemption of jobs (and licenses)
+also occurs within each cluster instead of across clusters.
+.SH Default
+
+.sp 2
+Not defined (N). LSF License Scheduler runs in project mode.
+.sp 2
+
+.ce 1000
+\fBDEMAND_LIMIT\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRDEMAND_LIMIT=\fR\fIinteger\fR
+.SH Description
+
+.sp 2
+Sets a limit to which LSF License Scheduler considers the demand
+by each project in each cluster when allocating licenses.
+.sp 2
+Used for project mode only.
+.sp 2
+When enabled, the demand limit helps prevent LSF License
+Scheduler from allocating more licenses to a project than can
+actually be used, which reduces license waste by limiting the
+demand that LSF License Scheduler considers. This is useful in
+cases when other resource limits are reached, LSF License
+Scheduler allocates more tokens than IBM Spectrum LSF can
+actually use because jobs are still pending due to lack of other
+resources.
+.sp 2
+When disabled (that is, \fRDEMAND_LIMIT=0\fR is set), LSF License
+Scheduler takes into account all the demand reported by each
+cluster when scheduling.
+.sp 2
+\fBDEMAND_LIMIT\fR does not affect the \fRDEMAND\fR that blstat
+displays. Instead, blstat displays the entire demand sent for a
+project from all clusters. For example, one cluster reports a
+demand of 15 for a project. Another cluster reports a demand of
+20 for the same project. When LSF License Scheduler allocates
+licenses, it takes into account a demand of five from each
+cluster for the project and the \fRDEMAND\fR that blstat displays
+is 35.
+.sp 2
+Periodically, each cluster sends a demand for each project. This
+is calculated in a cluster for a project by summing up the rusage
+of all jobs of the project pending due to lack of licenses.
+Whether to count a job\(aqs rusage in the demand depends on the
+job\(aqs pending reason. In general, the demand reported by a
+cluster only represents a potential demand from the project. It
+does not take into account other resources that are required to
+start a job. For example, a demand for 100 licenses is reported
+for a project. However, if LSF License Scheduler allocates 100
+licenses to the project, the project does not necessarily use all
+100 licenses due to slot available, limits, or other scheduling
+constraints.
+.sp 2
+In project mode, mbatchd in each cluster sends a demand for
+licenses from each project.\fBDEMAND_LIMIT\fR limits the amount
+of demand from each project in each cluster that is considered
+when scheduling.
+.SH Default
+
+.sp 2
+5
+.sp 2
+
+.ce 1000
+\fBDISTRIBUTION_POLICY_VIOLATION_ACTION\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRDISTRIBUTION_POLICY_VIOLATION_ACTION=(PERIOD
+\fR\fIreporting_period\fR CMD \fIreporting_command\fR)
+.sp 2
+\fB\fIreporting_period\fB\fR
+.br
+         Specify the keyword PERIOD with a positive integer
+         representing the interval (a multiple of
+         \fBLM_STAT_INTERVAL\fR periods) at which LSF License
+         Scheduler checks for distribution policy violations.
+.sp 2
+\fB\fIreporting_command\fB\fR
+.br
+         Specify the keyword CMD with the directory path and
+         command that LSF License Scheduler runs when reporting a
+         violation.
+.SH Description
+
+.sp 2
+Defines how LSF License Scheduler handles distribution policy
+violations. Distribution policy violations are caused by non-LSF
+workloads; License Scheduler explicitly follows its distribution
+policies.
+.sp 2
+LSF License Scheduler reports a distribution policy violation
+when the total number of licenses given to the LSF workload, both
+free and in use, is less than the LSF workload distribution
+specified in WORKLOAD_DISTRIBUTION. If LSF License Scheduler
+finds a distribution policy violation, it creates or overwrites
+the LSF_LOGDIR/bld.violation.\fIservice_domain_name\fR.log file
+and runs the user command specified by the CMD keyword.
+.sp 2
+Used for project mode only.
+.SH Example
+
+.sp 2
+The \fRLicenseServer1\fR service domain has a total of 80
+licenses, and its workload distribution and enforcement is
+configured as follows:
+.sp 2
+Begin Parameter
+.br
+ ...
+.br
+DISTRIBUTION_POLICY_VIOLATION_ACTION=(PERIOD 5 CMD /bin/mycmd)
+.br
+ ...
+.br
+End Parameter
+.br
+
+.sp 2
+Begin Feature
+.br
+NAME=ApplicationX 
+.br
+DISTRIBUTION=LicenseServer1(Lp1 1 Lp2 2)
+.br
+WORKLOAD_DISTRIBUTION=LicenseServer1(LSF 8 NON_LSF 2) 
+.br
+End Feature
+.br
+
+.sp 2
+According to this configuration, 80% of the available licenses,
+or 64 licenses, are available to the LSF workload. LSF License
+Scheduler checks the service domain for a violation every five
+scheduling cycles, and runs the /bin/mycmd command if it finds a
+violation.
+.sp 2
+If the current LSF workload license usage is 50 and the number of
+free licenses is 10, the total number of licenses assigned to the
+LSF workload is 60. This is a violation of the workload
+distribution policy because this is less than the specified LSF
+workload distribution of 64 licenses.
+.sp 2
+
+.ce 1000
+\fBENABLE_INTERACTIVE\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRENABLE_INTERACTIVE=Y\fR | \fRN\fR
+.SH Description
+
+.sp 2
+Globally enables one share of the licenses for interactive tasks.
+.sp 2
+\fBTip: \fRSetting \fBENABLE_INTERACTIVE\fR also allows taskman
+to detect and use batch resources.
+.sp 2
+Used for project mode only.
+.SH Default
+
+.sp 2
+Not defined. LSF License Scheduler allocates licenses equally to
+each cluster and does not distribute licenses for interactive
+tasks.
+.sp 2
+
+.ce 1000
+\fBFAST_DISPATCH\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRFAST_DISPATCH=Y\fR | \fRN\fR
+.SH Description
+
+.sp 2
+\fBNote: \fRThis parameter is now fixed at \fRFAST_DISPATCH=Y\fR
+and might be removed in a future version of LSF.
+.sp 2
+Enables fast dispatch project mode for the license feature, which
+increases license utilization for project licenses.
+.sp 2
+Used for project mode only.
+.sp 2
+When enabled, LSF License Scheduler does not have to run lmutil,
+lmstat, rlmutil, or rlmstat to verify that a license is free
+before each job dispatch. As soon as a job finishes, the cluster
+can reuse its licenses for another job of the same project, which
+keeps gaps between jobs small. However, because LSF License
+Scheduler does not run lmutil, lmstat, rlmutil, or rlmstat to
+verify that the license is free, there is an increased chance of
+a license checkout failure for jobs if the license is already in
+use by a job in another project.
+.sp 2
+The fast dispatch project mode supports the following parameters
+in the Feature section:
+.sp 2
+*  ALLOCATION
+.sp 2
+*  DEMAND_LIMIT
+.sp 2
+*  DISTRIBUTION
+.sp 2
+*  GROUP_DISTRIBUTION
+.sp 2
+*  LM_LICENSE_NAME
+.sp 2
+*  LS_FEATURE_PERCENTAGE
+.sp 2
+*  NAME
+.sp 2
+*  NON_SHARED_DISTRIBUTION
+.sp 2
+*  SERVICE_DOMAINS
+.sp 2
+*  WORKLOAD_DISTRIBUTION
+.sp 2
+The fast dispatch project mode also supports the
+\fBMBD_HEARTBEAT_INTERVAL\fR parameter in the Parameters section.
+.sp 2
+Other parameters are not supported, including those that project
+mode supports, such as the following parameters:
+.sp 2
+*  ACCINUSE_INCLUDES_OWNERSHIP
+.sp 2
+*  DYNAMIC
+.sp 2
+*  GROUP
+.sp 2
+*  LOCAL_TO
+.sp 2
+*  LS_ACTIVE_PERCENTAGE
+.SH Default
+
+.sp 2
+Y
+.sp 2
+
+.ce 1000
+\fBHEARTBEAT_INTERVAL\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRHEARTBEAT_INTERVAL=\fRseconds
+.SH Description
+
+.sp 2
+The time interval between bld heartbeats indicating the bld is
+still running.
+.SH Default
+
+.sp 2
+60 seconds
+.sp 2
+
+.ce 1000
+\fBHEARTBEAT_TIMEOUT\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRHEARTBEAT_TIMEOUT=\fRseconds
+.SH Description
+
+.sp 2
+The time a child bld waits to hear from the parent bld before
+assuming it has died.
+.SH Default
+
+.sp 2
+120 seconds
+.sp 2
+
+.ce 1000
+\fBHIST_HOURS\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRHIST_HOURS=\fRhours
+.SH Description
+
+.sp 2
+Determines the rate of decay the accumulated use value used in
+fairshare and preemption decisions. When \fRHIST_HOURS=0\fR,
+accumulated use is not decayed.
+.sp 2
+Accumulated use is displayed by the blstat command under the
+heading ACUM_USE.
+.sp 2
+Used for project mode only.
+.SH Default
+
+.sp 2
+5 hours. Accumulated use decays to 1/10 of the original value
+over 5 hours.
+.sp 2
+
+.ce 1000
+\fBHOSTS\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRHOSTS=\fR\fIhost_name\fR.\fIdomain_name\fR ...
+.SH Description
+
+.sp 2
+Defines LSF License Scheduler hosts, including candidate hosts.
+.sp 2
+Specify a fully qualified host name such as hostX.mycompany.com.
+You can omit the domain name if all your LSF License Scheduler
+clients run in the same DNS domain.
+.sp 2
+Used for both project mode and cluster mode.
+.sp 2
+
+.ce 1000
+\fBINUSE_FROM_RUSAGE\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRINUSE_FROM_RUSAGE=Y\fR | \fRN\fR
+.SH Description
+
+.sp 2
+When not defined or set to \fRN\fR, the \fBINUSE\fR value uses
+rusage from bsub job submissions merged with license checkout
+data reported by blcollect (as reported by blstat).
+.sp 2
+When \fRINUSE_FROM_RUSAGE=Y\fR, the \fBINUSE\fR value uses the
+rusage from bsub job submissions instead of waiting for the
+blcollect update. This can result in faster reallocation of
+tokens when using dynamic allocation (when \fBALLOC_BUFFER\fR is
+set).
+.sp 2
+Used for cluster mode only.
+.SH Default
+
+.sp 2
+N
+.sp 2
+
+.ce 1000
+\fBLIB_CONNTIMEOUT\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLIB_CONNTIMEOUT=\fR\fIseconds\fR
+.SH Description
+
+.sp 2
+Specifies a timeout value in seconds for communication between
+License Scheduler and LSF APIs. \fRLIB_CONNTIMEOUT=0\fR indicates
+no timeout.
+.sp 2
+Used for both project mode and cluster mode.
+.SH Default
+
+.sp 2
+5 seconds
+.sp 2
+
+.ce 1000
+\fBLIB_RECVTIMEOUT\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLIB_RECVTIMEOUT=\fR\fIseconds\fR
+.SH Description
+
+.sp 2
+Specifies a timeout value in seconds for communication between
+License Scheduler and LSF. \fRLIB_RECVTIMEOUT=0\fR indicates no
+timeout.
+.sp 2
+Used for both project mode and cluster mode.
+.SH Default
+
+.sp 2
+5 seconds
+.sp 2
+
+.ce 1000
+\fBLM_REMOVE_INTERVAL\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLM_REMOVE_INTERVAL=\fR\fIseconds\fR
+.SH Description
+
+.sp 2
+Specifies the minimum time a job must have a license checked out
+before lmremove (for FlexNet) or rlmremove (for Reprise License
+Manager) can remove the license (using preemption). lmremove or
+rlmremove causes the license manager daemon and vendor daemons to
+close the TCP connection with the application.
+.sp 2
+LSF License Scheduler only considers preempting a job after this
+interval has elapsed.
+.sp 2
+When using lmremove or rlmremove as part of the preemption action
+(\fBLM_REMOVE_SUSP_JOBS\fR), define \fRLM_REMOVE_INTERVAL=0\fR to
+ensure that LSF License Scheduler can preempt a job immediately
+after checkout. After suspending the job, LSF License Scheduler
+then uses lmremove or rlmremove to release licenses from the job.
+.sp 2
+Used for both project mode and cluster mode.
+.SH Default
+
+.sp 2
+180 seconds
+.sp 2
+
+.ce 1000
+\fBLM_REMOVE_SUSP_JOBS\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLM_REMOVE_SUSP_JOBS=\fR\fIseconds\fR
+.SH Description
+
+.sp 2
+Enables LSF License Scheduler to use lmremove (for FlexNet) or
+rlmremove (for Reprise License Manager) to remove license
+features from each recently-suspended job. After enabling this
+parameter, the preemption action is to suspend the job\(aqs
+processes and use lmremove or rlmremove to remove licences from
+the application.
+.sp 2
+LSF License Scheduler continues to try removing the license
+feature for the specified number of seconds after the job is
+first suspended. When setting this parameter for an application,
+specify a value greater than the period following a license
+checkout that lmremove or rlmremove will fail for the
+application. This ensures that when a job suspends, its licenses
+are released. This period depends on the application.
+.sp 2
+When using lmremove or rlmremove as part of the preemption
+action, define \fRLM_REMOVE_INTERVAL=0\fR to ensure that LSF
+License Scheduler can preempt a job immediately after checkout.
+After suspending the job, LSF License Scheduler then uses
+lmremove or rlmremove to release licenses from the job.
+.sp 2
+This parameter applies to all features in project mode.
+.sp 2
+Used for project mode only.
+.SH Default
+
+.sp 2
+Undefined. The default preemption action is to send a TSTP signal
+to the job.
+.sp 2
+
+.ce 1000
+\fBLM_REMOVE_SUSP_JOBS_INTERVAL\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLM_REMOVE_SUSP_JOBS_INTERVAL=\fR\fIseconds\fR
+.SH Description
+
+.sp 2
+Specifies the minimum length of time between subsequent child
+processes that LSF License Scheduler forks to run lmremove (for
+FlexNet) or rlmremove (for Reprise License Manager) every time it
+receives an update from a license collector daemon (blcollect).
+.sp 2
+Use this parameter when using lmremove or rlmremove as part of
+the preemption action (\fBLM_REMOVE_SUSP_JOBS\fR).
+.sp 2
+Used for project mode only.
+.SH Default
+
+.sp 2
+0. Uses the value of \fBLM_STAT_INTERVAL\fR instead.
+.sp 2
+
+.ce 1000
+\fBLM_RESERVATION\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLM_RESERVATION=Y\fR | \fRN\fR
+.SH Description
+
+.sp 2
+Enables LSF License Scheduler to support the FlexNet Manager
+license reservation keyword (\fBRESERVE\fR).
+.sp 2
+When \fRLM_RESERVATION=Y\fR is defined, LSF License Scheduler
+treats the \fBRESERVE\fR value in the FlexNet Manager license
+option file as \fBOTHERS\fR tokens instead of \fBFREE\fR tokens.
+The \fBRESERVE\fR value is now included in the \fBOTHERS\fR value
+in the blstat command output and is no longer included in the
+\fBFREE\fR value.
+.sp 2
+This parameter is ignored if it is defined in a time based
+configuration, or if the \fBWORKLOAD_DISTRIBUTION\fR parameter is
+defined in at least one feature.
+.sp 2
+\fBNote: \fRThe license tokens that are reserved with FlexNet
+Manager must be used outside of the LSF License Scheduler
+cluster.
+.SH Default
+
+.sp 2
+N. The \fBRESERVE\fR value does not count as a used token.
+.sp 2
+
+.ce 1000
+\fBLM_STAT_INTERVAL\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLM_STAT_INTERVAL=\fR\fIseconds\fR
+.SH Description
+
+.sp 2
+Defines a time interval between calls that LSF License Scheduler
+makes to collect license usage information from the license
+manager.
+.SH Default
+
+.sp 2
+60 seconds
+.sp 2
+
+.ce 1000
+\fBLM_STAT_TIMEOUT\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLM_STAT_TIMEOUT=\fR\fIseconds\fR
+.SH Description
+
+.sp 2
+Sets the timeout value passed to the lmutil lmstat, lmstat,
+rlmutil rlmstat, or rlmstat command. The Parameters section
+setting is overwritten by the ServiceDomain setting, which is
+overwritten by the command line setting (blcollect -t timeout).
+.sp 2
+Used for both project mode and cluster mode.
+.SH Default
+
+.sp 2
+180 seconds
+.sp 2
+
+.ce 1000
+\fBLM_TYPE\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLM_TYPE=FLEXLM\fR | \fRRLM\fR
+.SH Description
+
+.sp 2
+Defines the license manager system that is used by the license
+servers. This determines how LSF License Scheduler communicates
+with the license servers.
+.sp 2
+Define \fRLM_TYPE=FLEXLM\fR if the license servers are using
+FlexNet Manager as the license manager system.
+.sp 2
+Define \fRLM_TYPE=RLM\fR if the license servers are using Reprise
+License Manager as the license manager system.
+.SH Default
+
+.sp 2
+\fRFLEXLM\fR
+.sp 2
+
+.ce 1000
+\fBLMREMOVE_SUSP_JOBS (Obsolete)\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLMREMOVE_SUSP_JOBS=\fR\fIseconds\fR
+.SH Description
+
+.sp 2
+Use \fBLM_REMOVE_SUSP_JOBS\fR instead. This parameter is only
+maintained for backwards compatibility.
+.sp 2
+
+.ce 1000
+\fBLMREMOVE_SUSP_JOBS_INTERVAL (Obsolete)\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLMREMOVE_SUSP_JOBS_INTERVAL=\fR\fIseconds\fR
+.SH Description
+
+.sp 2
+Replace \fBLMREMOVE_SUSP_JOBS_INTERVAL\fR with
+\fBLM_REMOVE_SUSP_JOBS_INTERVAL\fR instead.
+\fBLMREMOVE_SUSP_JOBS_INTERVAL\fR is only maintained for
+backwards compatibility.
+.sp 2
+
+.ce 1000
+\fBLMSTAT_PATH\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLMSTAT_PATH=\fR\fIpath\fR
+.SH Description
+
+.sp 2
+Defines the full path to the location of the FlexNet command
+lmutil (or lmstat).
+.sp 2
+Used for project mode and cluster mode.
+.sp 2
+
+.ce 1000
+\fBLOG_EVENT\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLOG_EVENT=Y\fR | \fRN\fR
+.SH Description
+
+.sp 2
+Enables logging of License Scheduler events in the bld.stream
+file.
+.SH Default
+
+.sp 2
+Not defined. Information is not logged.
+.sp 2
+
+.ce 1000
+\fBLOG_INTERVAL\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLOG_INTERVAL=\fR\fIseconds\fR
+.SH Description
+
+.sp 2
+The interval between token allocation data logs in the data
+directory
+.SH Default
+
+.sp 2
+60 seconds
+.sp 2
+
+.ce 1000
+\fBLS_DEBUG_BLC \fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLS_DEBUG_BLC=\fR\fIlog_class\fR
+.SH Description
+
+.sp 2
+Sets the debugging log class for the LSF License Scheduler
+blcollect daemon.
+.sp 2
+Used for both project mode and cluster mode.
+.sp 2
+Specifies the log class filtering to be applied to blcollect.
+Only messages belonging to the specified log class are recorded.
+.sp 2
+\fBLS_DEBUG_BLC\fR sets the log class and is used in combination
+with \fBLS_LOG_MASK\fR, which sets the log level. For example:
+.sp 2
+LS_LOG_MASK=LOG_DEBUG LS_DEBUG_BLC="LC_TRACE" 
+.br
+
+.sp 2
+To specify multiple log classes, use a space-separated list
+enclosed in quotation marks. For example:
+.sp 2
+LS_DEBUG_BLC="LC_TRACE"
+.br
+
+.sp 2
+You need to restart the blcollect daemons after setting
+\fBLS_DEBUG_BLC\fR for your changes to take effect.
+.SH Valid values
+
+.sp 2
+Valid log classes are:
+.sp 2
+*  LC_AUTH and LC2_AUTH: Log authentication messages
+.sp 2
+*  LC_COMM and LC2_COMM: Log communication messages
+.sp 2
+*  LC_FLEX - Log everything related to FLEX_STAT or FLEX_EXEC
+   Flexera APIs
+.sp 2
+*  LC_PERFM and LC2_PERFM: Log performance messages
+.sp 2
+*  LC_PREEMPT - Log license preemption policy messages
+.sp 2
+*  LC_RESREQ and LC2_RESREQ: Log resource requirement messages
+.sp 2
+*  LC_SYS and LC2_SYS: Log system call messages
+.sp 2
+*  LC_TRACE and LC2_TRACE: Log significant program walk steps
+.sp 2
+*  LC_XDR and LC2_XDR: Log everything transferred by XDR
+.SH Default
+
+.sp 2
+Not defined.
+.sp 2
+
+.ce 1000
+\fBLS_DEBUG_BLD\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLS_DEBUG_BLD=\fR\fIlog_class\fR
+.SH Description
+
+.sp 2
+Sets the debugging log class for the LSF License Scheduler bld
+daemon.
+.sp 2
+Used for both project mode and cluster mode.
+.sp 2
+Specifies the log class filtering to be applied to bld. Messages
+belonging to the specified log class are recorded. Not all debug
+message are controlled by log class.
+.sp 2
+\fBLS_DEBUG_BLD\fR sets the log class and is used in combination
+with MASK, which sets the log level. For example:
+.sp 2
+LS_LOG_MASK=LOG_DEBUG LS_DEBUG_BLD="LC_TRACE" 
+.br
+
+.sp 2
+To specify multiple log classes, use a space-separated list
+enclosed in quotation marks. For example:
+.sp 2
+LS_DEBUG_BLD="LC_TRACE"
+.br
+
+.sp 2
+You need to restart the bld daemon after setting
+\fBLS_DEBUG_BLD\fR for your changes to take effect.
+.sp 2
+If you use the command bladmin blddebug to temporarily change
+this parameter without changing lsf.licensescheduler, you do not
+need to restart the daemons.
+.SH Valid values
+
+.sp 2
+Valid log classes are:
+.sp 2
+*  LC_AUTH and LC2_AUTH: Log authentication messages
+.sp 2
+*  LC_COMM and LC2_COMM: Log communication messages
+.sp 2
+*  LC_FLEX - Log everything related to FLEX_STAT or FLEX_EXEC
+   Flexera APIs
+.sp 2
+*  LC_MEMORY - Log memory use messages
+.sp 2
+*  LC_PREEMPT - Log license preemption policy messages
+.sp 2
+*  LC_RESREQ and LC2_RESREQ: Log resource requirement messages
+.sp 2
+*  LC_TRACE and LC2_TRACE: Log significant program walk steps
+.sp 2
+*  LC_XDR and LC2_XDR: Log everything transferred by XDR
+.SH Valid values
+
+.sp 2
+Valid log classes are the same as for \fBLS_DEBUG_CMD.\fR
+.SH Default
+
+.sp 2
+Not defined.
+.sp 2
+
+.ce 1000
+\fBLS_ENABLE_MAX_PREEMPT\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLS_ENABLE_MAX_PREEMPT=Y\fR | \fRN\fR
+.SH Description
+
+.sp 2
+Enables maximum preemption time checking for LSF and taskman
+jobs.
+.sp 2
+When \fBLS_ENABLE_MAX_PREEMPT\fR is disabled, preemption times
+for taskman jobs are not checked regardless of the value of
+parameters \fBLS_MAX_TASKMAN_PREEMPT\fR in lsf.licensescheduler
+and \fBMAX_JOB_PREEMPT\fR in lsb.queues, lsb.applications, or
+lsb.params.
+.sp 2
+Used for project mode only.
+.SH Default
+
+.sp 2
+N
+.sp 2
+
+.ce 1000
+\fBLS_LOG_MASK\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLS_LOG_MASK=\fR\fImessage_log_level\fR
+.SH Description
+
+.sp 2
+Specifies the logging level of error messages for LSF License
+Scheduler daemons. If \fBLS_LOG_MASK\fR is not defined in
+lsf.licensescheduler, the value of \fBLSF_LOG_MASK\fR in lsf.conf
+is used. If neither \fBLS_LOG_MASK\fR nor \fBLSF_LOG_MASK\fR is
+defined, the default is \fBLOG_WARNING\fR.
+.sp 2
+Used for both project mode and cluster mode.
+.sp 2
+For example:
+.sp 2
+LS_LOG_MASK=LOG_DEBUG
+.br
+
+.sp 2
+The log levels in order from highest to lowest are:
+.sp 2
+*  LOG_ERR
+.sp 2
+*  LOG_WARNING
+.sp 2
+*  LOG_INFO
+.sp 2
+*  LOG_DEBUG
+.sp 2
+*  LOG_DEBUG1
+.sp 2
+*  LOG_DEBUG2
+.sp 2
+*  LOG_DEBUG3
+.sp 2
+The most important LSF License Scheduler log messages are at the
+LOG_WARNING level. Messages at the LOG_DEBUG level are only
+useful for debugging.
+.sp 2
+Although message log level implements similar functionality to
+UNIX syslog, there is no dependency on UNIX syslog. It works even
+if messages are being logged to files instead of syslog.
+.sp 2
+LSF License Scheduler logs error messages in different levels so
+that you can choose to log all messages, or only log messages
+that are deemed critical. The level specified by
+\fBLS_LOG_MASK\fR determines which messages are recorded and
+which are discarded. All messages logged at the specified level
+or higher are recorded, while lower level messages are discarded.
+.sp 2
+For debugging purposes, the level LOG_DEBUG contains the fewest
+number of debugging messages and is used for basic debugging. The
+level LOG_DEBUG3 records all debugging messages, and can cause
+log files to grow very large; it is not often used. Most
+debugging is done at the level LOG_DEBUG2.
+.SH Default
+
+.sp 2
+LOG_WARNING
+.sp 2
+
+.ce 1000
+\fBLS_MAX_STREAM_FILE_NUMBER\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLS_MAX_STREAM_FILE_NUMBER=\fR\fIinteger\fR
+.SH Description
+
+.sp 2
+Sets the number of saved bld.stream.\fItime_stamp\fR log files.
+When \fRLS_MAX_STREAM_FILE_NUMBER=2\fR, for example, the two most
+recent files are kept along with the current bld.stream file.
+.sp 2
+Used for both project mode and cluster mode.
+.SH Default
+
+.sp 2
+0 (old bld.stream file is not saved)
+.sp 2
+
+.ce 1000
+\fBLS_MAX_STREAM_SIZE\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLS_MAX_STREAM_SIZE=\fR\fIinteger\fR
+.SH Description
+
+.sp 2
+Defines the maximum size of the bld.stream file in MB. Once this
+size is reached an \fBEVENT_END_OF_STREAM\fR is logged, a new
+bld.stream file is created, and the old bld.stream file is
+renamed bld.stream.\fItime_stamp\fR.
+.sp 2
+Used for both project mode and cluster mode.
+.SH Default
+
+.sp 2
+1024
+.sp 2
+
+.ce 1000
+\fBLS_MAX_TASKMAN_PREEMPT\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLS_MAX_TASKMAN_PREEMPT=\fR\fIinteger\fR
+.SH Description
+
+.sp 2
+Defines the maximum number of times taskman jobs can be
+preempted.
+.sp 2
+Maximum preemption time checking for all jobs is enabled by
+\fBLS_ENABLE_MAX_PREEMPT\fR.
+.sp 2
+Used for project mode only.
+.SH Default
+
+.sp 2
+unlimited
+.sp 2
+
+.ce 1000
+\fBLS_MAX_TASKMAN_SESSIONS\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLS_MAX_TASKMAN_SESSIONS=\fR\fIinteger\fR
+.SH Description
+
+.sp 2
+Defines the maximum number of taskman jobs that run
+simultaneously. This prevents system-wide performance issues that
+occur if there are a large number of taskman jobs running in
+License Scheduler.
+.sp 2
+The number of taskman sessions must be a positive integer.
+.sp 2
+The actual maximum number of taskman jobs is affected by the
+operating system file descriptor limit. Make sure the operating
+system file descriptor limit and the maximum concurrent
+connections are large enough to support all taskman tasks,
+License Scheduler (bl*) commands, and connections between LSF
+License Scheduler and LSF.
+.sp 2
+Used for both project mode and cluster mode.
+.sp 2
+
+.ce 1000
+\fBLS_PREEMPT_PEER\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLS_PREEMPT_PEER=Y\fR | \fRN\fR
+.SH Description
+
+.sp 2
+Enables bottom-up license token preemption in hierarchical
+project group configuration. LSF License Scheduler attempts to
+preempt tokens from the closest projects in the hierarchy first.
+This balances token ownership from the bottom up.
+.sp 2
+Used for project mode only.
+.SH Default
+
+.sp 2
+Not defined. Token preemption in hierarchical project groups is
+top down.
+.sp 2
+
+.ce 1000
+\fBLS_ROOT_USER\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLS_ROOT_USER=Y\fR | \fRy\fR | \fRN\fR | \fRn\fR
+.SH Description
+
+.sp 2
+UNIX only. Enables the root user to run LSF License Scheduler
+commands as a valid user from the LSF command line.
+.sp 2
+If you need to temporarily run LSF License Scheduler commands
+with root privileges, specify \fRLS_ROOT_USER=Y\fR in the
+\fBParameters\fR section of the lsf.licensescheduler file. When
+you are done, you must disable this parameter to ensure that your
+cluster remains secure.
+.sp 2
+This parameter allows the root user to run the bladmin, blkill,
+globauth, and taskman commands as a valid user.
+.sp 2
+\fBImportant: \fROnly enable \fRLS_ROOT_USER=Y\fR as a temporary
+configuration setting. When you are done, you must disable this
+parameter to ensure that your cluster remains secure.
+.SH Default
+
+.sp 2
+N. Root has no permission to execute LSF License Scheduler
+commands.
+.sp 2
+
+.ce 1000
+\fBLS_STREAM_FILE\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLS_STREAM_FILE=\fR\fIpath\fR
+.sp 2
+Used for both project mode and cluster mode.
+.SH Description
+
+.sp 2
+Defines the full path and filename of the bld event log file,
+bld.stream by default.
+.SH Default
+
+.sp 2
+LSF_TOP/work/db/bld.stream
+.sp 2
+
+.ce 1000
+\fBMBD_HEARTBEAT_INTERVAL\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRMBD_HEARTBEAT_INTERVAL=\fR\fIseconds\fR
+.SH Description
+
+.sp 2
+Sets the length of time the cluster license allocation remains
+unchanged after a cluster has disconnected from bld. After
+\fBMBD_HEARTBEAT_INTERVAL\fR has passed, the allocation is set to
+zero and licenses are redistributed to other clusters.
+.sp 2
+Used for cluster mode and project mode only.
+.SH Default
+
+.sp 2
+900 seconds
+.sp 2
+
+.ce 1000
+\fBMBD_REFRESH_INTERVAL\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRMBD_REFRESH_INTERVAL=\fR\fIseconds\fR
+.SH Description
+
+.sp 2
+This parameter allows the administrator to independently control
+the minimum interval between load updates from bld and from LIM.
+\fBMBD_REFRESH_INTERVAL\fR controls the frequency of scheduling
+interactive (taskman) jobs and is read by the mbatchd daemon on
+startup. When \fBMBD_REFRESH_INTERVAL\fR is set or changed, you
+must restart the bld and mbatchd daemons in each cluster.
+.sp 2
+Used for both project mode and cluster mode.
+.SH Default
+
+.sp 2
+15 seconds
+.sp 2
+
+.ce 1000
+\fBMERGE_BY_SERVICE_DOMAIN\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRMERGE_BY_SERVICE_DOMAIN=Y\fR | \fRN\fR
+.SH Description
+
+.sp 2
+If enabled, correlates job license checkout with the lmutil
+lmstat, lmstat, rlmutil rlmstat, or rlmstat output across all
+service domains first before reserving licenses.
+.sp 2
+In project mode (but not fast dispatch project mode), this
+parameter supports the case where the checkout license number for
+the application is less than or equal to the job rusage. If the
+checked out licenses are greater than the job rusage, the
+\fBENABLE_DYNAMIC_RUSAGE\fR parameter is still required.
+.SH Default
+
+.sp 2
+N (Does not correlate job license checkout with the lmutil,
+lmstat, rlmutil, or rlmstat output across all service domains
+before reserving licenses)
+.sp 2
+
+.ce 1000
+\fBPEAK_INUSE_PERIOD\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRPEAK_INUSE_PERIOD=\fR\fIseconds\fR
+.SH Description
+
+.sp 2
+Defines the interval over which a peak \fBINUSE\fR value is
+determined for dynamic license allocation in cluster mode for all
+license features over all service domains.
+.sp 2
+When defining the interval for LSF Advanced Edition submission
+clusters, the interval is determined for the entire LSF Advanced
+Edition mega-cluster (the submission cluster and its execution
+clusters).
+.sp 2
+Used for cluster mode only.
+.sp 2
+When defined in both the Parameters section and the Feature
+section, the Feature section definition is used for that license
+feature.
+.SH Default
+
+.sp 2
+300 seconds
+.sp 2
+
+.ce 1000
+\fBPORT\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRPORT=\fR\fIinteger\fR
+.SH Description
+
+.sp 2
+Defines the TCP listening port used by LSF License Scheduler
+hosts, including candidate License Scheduler hosts. Specify any
+non-privileged port number.
+.sp 2
+Used for both project mode and cluster mode.
+.sp 2
+
+.ce 1000
+\fBPREEMPT_ACTION\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRPREEMPT_ACTION=\fR\fIaction\fR
+.SH Description
+
+.sp 2
+Specifies the action used for taskman job preemption.
+.sp 2
+By default, if \fBPREEMPT_ACTION\fR is not configured, bld sends
+a TSTP signal to preempt taskman jobs.
+.sp 2
+You can specify a script using this parameter. For example,
+\fRPREEMPT_ACTION = /home/user1/preempt.s\fR runs preempt.s when
+preempting a taskman job.
+.sp 2
+Used for project mode only.
+.SH Default
+
+.sp 2
+Not defined. A TSTP signal is used to preempt taskman jobs.
+.sp 2
+
+.ce 1000
+\fBPROJECT_GROUP_PATH\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRPROJECT_GROUP_PATH=Y\fR | \fRN\fR
+.SH Description
+
+.sp 2
+Enables hierarchical project group paths for project mode, which
+enables the following:
+.sp 2
+*  Features can use hierarchical project groups with project and
+   project group names that are not unique, as long as the
+   projects or project groups do not have the same parent. That
+   is, you can define projects and project groups in more than
+   one hierarchical project group.
+.sp 2
+*  When specifying -Lp \fIlicense_project\fR, you can use paths
+   to describe the project hierarchy without specifying the root
+   group.
+.sp 2
+   For example, if you have \fRroot\fR as your root group, which
+   has a child project group named \fRgroupA\fR with a project
+   named \fRproj1\fR, you can use \fR-Lp /groupA/proj1\fR to
+   specify this project.
+.sp 2
+*  Hierarchical project groups have a default project named
+   \fRothers\fR with a default share value of 0. Any projects
+   that do not match the defined projects in a project group are
+   assigned into the \fRothers\fR project.
+.sp 2
+   If there is already a project named \fRothers\fR, the
+   preexisting \fRothers\fR project specification overrides the
+   default project.
+.sp 2
+If \fBLSF_LIC_SCHED_STRICT_PROJECT_NAME\fR (in lsf.conf) and
+\fBPROJECT_GROUP_PATH\fR are both defined,
+\fBPROJECT_GROUP_PATH\fR takes precedence and overrides the
+\fBLSF_LIC_SCHED_STRICT_PROJECT_NAME\fR behavior.
+.sp 2
+\fBNote: \fRTo use \fBPROJECT_GROUP_PATH\fR, you need LSF,
+Version 9.1.1, or later.
+.sp 2
+Used for project mode only.
+.SH Default
+
+.sp 2
+Not defined (N).
+.sp 2
+
+.ce 1000
+\fBREMOTE_LMSTAT_PROTOCOL\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRREMOTE_LMSTAT_PROTOCOL=ssh \fR[\fIssh_command_options\fR] |
+\fRrsh \fR[\fIrsh_command_options\fR] | \fRlsrun
+\fR[\fIlsrun_command_options\fR]
+.SH Description
+
+.sp 2
+Specifies the method that LSF License Scheduler uses to connect
+to the remote agent host if there are remote license servers that
+need a remote agent host to collect license information.
+.sp 2
+If there are remote license servers that need a remote agent host
+to collect license information, LSF License Scheduler uses the
+specified command (and optional command options) to connect to
+the agent host. LSF License Scheduler automatically appends the
+name of the remote agent host to the command, so there is no need
+to specify the host with the command.
+.sp 2
+\fBNote: \fRLSF License Scheduler does not validate the specified
+command, so you must ensure that you correctly specify the
+command. The blcollect log file notes that the command failed,
+but not any details on the connection error. To determine
+specific connection errors, manually specify the command to
+connect to the remote server before specifying it in
+\fBREMOTE_LMSTAT_PROTOCOL\fR.
+.sp 2
+If using lsrun as the connection method, the remote agent host
+must be a server host in the LSF cluster and RES must be started
+on this host. If using ssh or rsh as the connection method, the
+agent host does not have to be a server host in the LSF cluster.
+.sp 2
+\fBREMOTE_LMSTAT_PROTOCOL\fR works with
+\fBREMOTE_LMSTAT_SERVERS\fR, which defines the remote license
+servers and remote agent hosts. If you do not define
+\fBREMOTE_LMSTAT_SERVERS\fR, \fBREMOTE_LMSTAT_PROTOCOL\fR is not
+used.
+.sp 2
+Used for both project mode and cluster mode.
+.SH Default
+
+.sp 2
+ssh
+.sp 2
+
+.ce 1000
+\fBRLMSTAT_PATH\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRRLMSTAT_PATH=\fR\fIpath\fR
+.SH Description
+
+.sp 2
+Defines the full path to the location of the Reprise License
+Manager commands.
+.sp 2
+Used for both project mode and cluster mode.
+.SH Default
+
+.sp 2
+If not defined, this is set to \fBLMSTAT_PATH\fR.
+.sp 2
+
+.ce 1000
+\fBSTANDBY_CONNTIMEOUT\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRSTANDBY_CONNTIMEOUT=\fR\fIseconds\fR
+.SH Description
+
+.sp 2
+Sets the connection timeout the standby bld waits when trying to
+contact each host before assuming the host is unavailable.
+.sp 2
+Used for both project mode and cluster mode.
+.SH Default
+
+.sp 2
+5 seconds
+.sp 2
+
+.ce 1000
+\fBClusters section\fR
+.ce 0
+
+.sp 2
+
+.SH Description
+
+.sp 2
+Required. Lists the clusters that can use License Scheduler.
+.sp 2
+When configuring clusters for a WAN, the Clusters section of the
+parent cluster must define its child clusters.
+.sp 2
+The Clusters section is the same for both project mode and
+cluster mode.
+.SH Clusters section structure
+
+.sp 2
+The Clusters section begins and ends with the lines \fRBegin
+\fRClusters and \fREnd \fRClusters. The second line is the column
+heading, \fRCLUSTERS\fR. Subsequent lines list participating
+clusters, one name per line:
+.sp 2
+Begin Clusters 
+.br
+CLUSTERS 
+.br
+cluster1 
+.br
+cluster2
+.br
+End Clusters
+.br
+
+.sp 2
+
+.ce 1000
+\fBCLUSTERS\fR
+.ce 0
+
+.sp 2
+Defines the name of each participating LSF cluster. Specify using
+one name per line.
+.sp 2
+
+.ce 1000
+\fBServiceDomain section\fR
+.ce 0
+
+.sp 2
+
+.SH Description
+
+.sp 2
+Required. Defines License Scheduler service domains as groups of
+physical license server hosts that serve a specific network.
+.sp 2
+The ServiceDomain section is the same for both project mode and
+cluster mode.
+.SH ServiceDomain section structure
+
+.sp 2
+Define a section for each License Scheduler service domain.
+.sp 2
+This example shows the structure of the section:
+.sp 2
+Begin ServiceDomain 
+.br
+NAME=DesignCenterB 
+.br
+LIC_SERVERS=((1888@hostD)(1888@hostE)) 
+.br
+LIC_COLLECTOR=CenterB 
+.br
+End ServiceDomain
+.br
+
+.SH Parameters
+
+.sp 2
+*  LIC_SERVERS
+.sp 2
+*  LIC_COLLECTOR
+.sp 2
+*  LM_STAT_INTERVAL
+.sp 2
+*  LM_STAT_TIMEOUT
+.sp 2
+*  LM_TYPE
+.sp 2
+*  NAME
+.sp 2
+*  REMOTE_LMSTAT_SERVERS
+.sp 2
+
+.ce 1000
+\fBLIC_SERVERS\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+When using FlexNet as the license manager (\fRLM_TYPE=FLEXLM\fR):
+\fRLIC_SERVERS=(\fR[(\fIhost_name\fR |
+\fIport_number\fR\fR@\fR\fIhost_name\fR
+|\fR(\fR\fIport_number\fR\fR@\fR\fIhost_name\fR
+\fIport_number\fR\fR@\fR\fIhost_name
+port_number\fR\fR@\fR\fIhost_name\fR\fR))\fR] ...\fR)\fR
+.sp 2
+When using Reprise License Manager as the license manager
+(\fRLM_TYPE=RLM\fR): \fRLIC_SERVERS=(\fR[(
+\fIport_number\fR\fR@\fR\fIhost_name\fR
+|\fR(\fR\fIport_number\fR\fR@\fR\fIhost_name\fR
+\fIport_number\fR\fR@\fR\fIhost_name
+port_number\fR\fR@\fR\fIhost_name\fR\fR))\fR] ...\fR)\fR
+.SH Description
+
+.sp 2
+Defines the license server hosts that make up the LSF License
+Scheduler service domain. Specify one or more license server
+hosts, and for each license server host, specify the number of
+the port that the license manager uses, then the at symbol (@),
+then the name of the host. Put one set of parentheses around the
+list, and one more set of parentheses around each host, unless
+you have redundant servers (three hosts sharing one license
+file). If you have redundant servers, the parentheses enclose all
+three hosts.
+.sp 2
+If LSF License Scheduler is using FlexNet as the license manager
+(that is, \fRLM_TYPE=FLEXLM\fR), and FlexNet uses the default
+port on a host, you can specify the host name without the port
+number.
+.sp 2
+If LSF License Scheduler is using Reprise License Manager as the
+license manager (that is, \fRLM_TYPE=RLM\fR), you must specify a
+port number for every license server host.
+.sp 2
+Used for both project mode and cluster mode.
+.SH Examples
+
+.sp 2
+*  One FlexNet license server host:
+.sp 2
+   LIC_SERVERS=((1700@hostA))
+.br
+
+.sp 2
+*  Multiple license server hosts with unique license.dat files:
+.sp 2
+   LIC_SERVERS=((1700@hostA)(1700@hostB)(1700@hostC))
+.br
+
+.sp 2
+*  Redundant license server hosts sharing the same license.dat
+   file:
+.sp 2
+   LIC_SERVERS=((1700@hostD 1700@hostE 1700@hostF))
+.br
+
+.sp 2
+
+.ce 1000
+\fBLIC_COLLECTOR\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLIC_COLLECTOR=\fR\fIlicense_collector_name\fR
+.SH Description
+
+.sp 2
+Defines a name for the license collector daemon (blcollect) to
+use in each service domain. blcollect collects license usage
+information from FlexNet and passes it to the License Scheduler
+daemon (bld). It improves performance by allowing you to
+distribute license information queries on multiple hosts.
+.sp 2
+You can only specify one collector per service domain, but you
+can specify one collector to serve multiple service domains. Each
+time you run blcollect, you must specify the name of the
+collector for the service domain. You can use any name you want.
+.sp 2
+Used for both project mode and cluster mode.
+.SH Default
+
+.sp 2
+Undefined. The License Scheduler daemon uses one license
+collector daemon for the entire cluster.
+.sp 2
+
+.ce 1000
+\fBLM_STAT_INTERVAL\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLM_STAT_INTERVAL=\fR\fIseconds\fR
+.SH Description
+
+.sp 2
+Defines a time interval between calls that License Scheduler
+makes to collect license usage information from the license
+manager.
+.sp 2
+The value specified for a service domain overrides the global
+value defined in the Parameters section. Each service domain
+definition can specify a different value for this parameter.
+.sp 2
+Used for both project mode and cluster mode.
+.SH Default
+
+.sp 2
+License Scheduler applies the global value defined in the
+Parameters section.
+.sp 2
+
+.ce 1000
+\fBLM_STAT_TIMEOUT\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLM_STAT_TIMEOUT=\fR\fIseconds\fR
+.SH Description
+
+.sp 2
+Sets the timeout value passed to the lmutil lmstat, lmstat,
+rlmutil rlmstat, or rlmstat command. The Parameters section
+setting is overwritten by the ServiceDomain setting, which is
+overwritten by the command line setting (blcollect -t timeout).
+.sp 2
+When using Reprise License Manager as the license manager
+(\fRLM_TYPE=RLM\fR), this parameter is ignored.
+.sp 2
+Used for both project mode and cluster mode.
+.SH Default
+
+.sp 2
+180 seconds
+.sp 2
+
+.ce 1000
+\fBLM_TYPE\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLM_TYPE=FLEXLM\fR | \fRRLM\fR
+.SH Description
+
+.sp 2
+Defines the license manager system that is used by the license
+servers. This determines how LSF License Scheduler communicates
+with the license servers that are defined by the
+\fBLIC_SERVERS\fR parameter.
+.sp 2
+Define \fRLM_TYPE=FLEXLM\fR if the license servers are using
+FlexNet Manager as the license manager system.
+.sp 2
+Define \fRLM_TYPE=RLM\fR if the license servers are using Reprise
+License Manager as the license manager system. When
+\fRLM_TYPE=RLM\fR is defined, \fBLIC_SERVERS\fR must define
+\fR\fIport_number\fR@\fIhost_name\fR\fR (that is,
+\fBLIC_SERVERS\fR must define a port number). Defining just the
+host name (or \fR@\fIhost_name\fR\fR) without the port number is
+not allowed.
+.SH Default
+
+.sp 2
+\fRFLEXLM\fR
+.sp 2
+
+.ce 1000
+\fBNAME\fR
+.ce 0
+
+.sp 2
+Defines the name of the service domain.
+.sp 2
+Used for both project mode and cluster mode.
+.sp 2
+
+.ce 1000
+\fBREMOTE_LMSTAT_SERVERS\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRREMOTE_LMSTAT_SERVERS=\fR\fIhost_name\fR[\fR(\fR\fIhost_name\fR
+ ...\fR)\fR] [\fIhost_name\fR[\fR(\fR\fIhost_name\fR ...\fR)\fR]
+ ...]
+.SH Description
+
+.sp 2
+Defines the remote license servers and, optionally, the remote
+agent hosts that serve these remote license servers.
+.sp 2
+A remote license server is a license server that does not run on
+the same domain as the license collector. A remote agent host
+serves remote license servers within the same domain, allowing
+the license collector to get license information on the remote
+license servers with a single remote connection.
+.sp 2
+Defining remote agent hosts are useful when there are both local
+and remote license servers because it is slower for the license
+collector to connect to multiple remote license servers to get
+license information than it is to connect to local license
+servers. The license collector connects to the remote agent host
+(using the command specified by the \fBREMOTE_LMSTAT_PROTOCOL\fR
+parameter) and calls lmutil, lmstat, rlmutil, or rlmstat to
+collect license information from the license servers that the
+agent hosts serve. This allows the license collector to connect
+to one remote agent host to get license information from all the
+remote license servers on the same domain as the remote agent
+host. These license servers should be in the same subnet as the
+agent host to improve access.
+.sp 2
+Remote license servers must also be license servers defined in
+\fBLIC_SERVERS\fR. Any remote license servers defined in
+\fBREMOTE_LMSTAT_SERVERS\fR that are not also defined in
+\fBLIC_SERVERS\fR are ignored. Remote agent hosts that serve
+other license servers do not need to be defined in
+\fBLIC_SERVERS\fR. Remote agent hosts that are not defined in
+\fBLIC_SERVERS\fR function only as remote agents and not as
+license servers.
+.sp 2
+If you specify a remote agent host without additional servers
+(that is, the remote agent host does not serve any license
+servers), the remote agent host is considered to be a remote
+license server with itself as the remote agent host. That is, the
+license collector connects to the remote agent host and only gets
+license information on the remote agent host. Because these hosts
+are remote license servers, these remote agent hosts must also be
+defined as license servers in \fBLIC_SERVERS\fR, or they will be
+ignored.
+.sp 2
+Used for both project mode and cluster mode.
+.SH Examples
+
+.sp 2
+*  One local license server (\fRhostA\fR) and one remote license
+   server (\fRhostB\fR):
+.sp 2
+   LIC_SERVERS=((1700@hostA)(1700@hostB))
+.br
+   REMOTE_LMSTAT_SERVERS=hostB
+.br
+
+.sp 2
+   *  The license collector runs lmutil, lmstat, rlmutil, or
+      rlmstat directly on \fIhostA\fR to get license information
+      on \fRhostA\fR.
+.sp 2
+   *  Because \fRhostB\fR is defined without additional license
+      servers, \fRhostB\fR is a remote agent host that only
+      serves itself. The license collector connects to
+      \fRhostB\fR (using the command specified by the
+      \fBREMOTE_LMSTAT_PROTOCOL\fR parameter) and runs lmutil,
+      lmstat, rlmutil, or rlmstat to get license information on
+      \fR1700@hostB\fR.
+.sp 2
+*  One local license server (\fRhostA\fR), one remote agent host
+   (\fRhostB\fR) that serves one remote license server
+   (\fRhostC\fR), and one remote agent host (\fRhostD\fR) that
+   serves two remote license servers (\fRhostE\fR and
+   \fRhostF\fR):
+.sp 2
+   LIC_SERVERS=((1700@hostA)(1700@hostB)(1700@hostC)(1700@hostD)(1700@hostE)(1700@hostF))
+.br
+   REMOTE_LMSTAT_SERVERS=hostB(hostC) hostD(hostE hostF)
+.br
+
+.sp 2
+   *  The license collector runs lmutil, lmstat, rlmutil, or
+      rlmstat directly to get license information from
+      \fR1700@hostA\fR, \fR1700@hostB\fR, and \fR1700@hostD\fR.
+.sp 2
+   *  The license collector connects to \fRhostB\fR (using the
+      command specified by the \fBREMOTE_LMSTAT_PROTOCOL\fR
+      parameter) and runs lmutil, lmstat, rlmutil, or rlmstat to
+      get license information on \fR1700@hostC\fR.
+.sp 2
+      \fRhostB\fR and \fRhostC\fR should be in the same subnet to
+      improve access.
+.sp 2
+   *  The license collector connects to \fRhostD\fR (using the
+      command specified by the \fBREMOTE_LMSTAT_PROTOCOL\fR
+      parameter) and runs lmutil, lmstat, rlmutil, or rlmstat to
+      get license information on \fR1700@hostE\fR and
+      \fR1700@hostF\fR.
+.sp 2
+      \fRhostD\fR, \fRhostE\fR, and \fRhostF\fR should be in the
+      same subnet to improve access.
+.sp 2
+*  One local license server (\fRhostA\fR), one remote license
+   server (\fRhostB\fR), and one remote agent host (\fRhostC\fR)
+   that serves two remote license servers (\fRhostD\fR and
+   \fRhostE\fR):
+.sp 2
+   LIC_SERVERS=((1700@hostA)(1700@hostB)(1700@hostC)(1700@hostD)(1700@hostE))
+.br
+   REMOTE_LMSTAT_SERVERS=hostB hostC(hostD hostE)
+.br
+
+.sp 2
+   *  The license collector runs lmutil, lmstat, rlmutil, or
+      rlmstat directly to get license information on
+      \fR1700@hostA\fR and \fR1700@hostC\fR.
+.sp 2
+   *  The license collector connects to \fRhostB\fR (using the
+      command specified by the \fBREMOTE_LMSTAT_PROTOCOL\fR
+      parameter) and runs lmutil, lmstat, rlmutil, or rlmstat to
+      get license information on \fR1700@hostB\fR.
+.sp 2
+   *  The license collector connects to \fRhostC\fR (using the
+      command specified by the \fBREMOTE_LMSTAT_PROTOCOL\fR
+      parameter) and runs lmutil, lmstat, rlmutil, or rlmstat to
+      get license information on \fR1700@hostD\fR and
+      \fR1700@hostE\fR.
+.sp 2
+      \fRhostC\fR, \fRhostD\fR, and \fRhostE\fR should be in the
+      same subnet to improve access.
+.sp 2
+
+.ce 1000
+\fBFeature section\fR
+.ce 0
+
+.sp 2
+
+.SH Description
+
+.sp 2
+Required. Defines license distribution policies.
+.SH Feature section structure
+
+.sp 2
+Define a section for each feature managed by License Scheduler.
+If there is a parameter with the same name in the Parameters
+section, setting these parameters in the Feature section
+overrides the global setting in the Parameters section.
+.sp 2
+Begin Feature 
+.br
+NAME=vcs 
+.br
+LM_LICENSE_NAME=vcs 
+.br
+ ...
+.br
+Distribution policy
+.br
+Parameters
+.br
+ ...
+.br
+End Feature
+.br
+
+.SH Parameters
+
+.sp 2
+*  ACCINUSE_INCLUDES_OWNERSHIP
+.sp 2
+*  ALLOC_BUFFER
+.sp 2
+*  ALLOCATION
+.sp 2
+*  CHECKOUT_FROM_FIRST_HOST_ONLY
+.sp 2
+*  CLUSTER_DISTRIBUTION
+.sp 2
+*  CLUSTER_MODE
+.sp 2
+*  DEMAND_LIMIT
+.sp 2
+*  DISABLE_PREEMPTION
+.sp 2
+*  DISTRIBUTION
+.sp 2
+*  DYNAMIC
+.sp 2
+*  ENABLE_DYNAMIC_RUSAGE
+.sp 2
+*  ENABLE_MINJOB_PREEMPTION
+.sp 2
+*  FAST_DISPATCH
+.sp 2
+*  FEATURE_DELTA
+.sp 2
+*  FLEX_NAME
+.sp 2
+*  GROUP
+.sp 2
+*  GROUP_DISTRIBUTION
+.sp 2
+*  INUSE_FROM_RUSAGE
+.sp 2
+*  LM_LICENSE_NAME
+.sp 2
+*  LM_REMOVE_INTERVAL
+.sp 2
+*  LM_REMOVE_SUSP_JOBS
+.sp 2
+*  LM_RESERVATION
+.sp 2
+*  LMREMOVE_SUSP_JOBS
+.sp 2
+*  LOCAL_TO
+.sp 2
+*  LS_ACTIVE_PERCENTAGE
+.sp 2
+*  LS_FEATURE_PERCENTAGE
+.sp 2
+*  NAME
+.sp 2
+*  NON_SHARED_DISTRIBUTION
+.sp 2
+*  PEAK_INUSE_PERIOD
+.sp 2
+*  PREEMPT_ORDER
+.sp 2
+*  PREEMPT_RESERVE
+.sp 2
+*  RETENTION_FACTOR
+.sp 2
+*  SERVICE_DOMAINS
+.sp 2
+*  WORKLOAD_DISTRIBUTION
+.sp 2
+
+.ce 1000
+\fBACCINUSE_INCLUDES_OWNERSHIP\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRACCINUSE_INCLUDES_OWNERSHIP=\fR\fRY\fR | \fRN\fR
+.SH Description
+
+.sp 2
+\fBNote: \fRThis parameter is now deprecated and might be removed
+in a future version of LSF.
+.sp 2
+When not defined, accumulated use is incremented each scheduling
+cycle by (tokens in use) + (tokens reserved) if this exceeds the
+number of tokens owned.
+.sp 2
+When defined, accumulated use is incremented each scheduling
+cycle by (tokens in use) + (tokens reserved) regardless of the
+number of tokens owned.
+.sp 2
+This is useful for projects that have a very high ownership set
+when considered against the total number of tokens available for
+LSF workload. Projects can be starved for tokens when the
+ownership is set too high and this parameter is not set.
+.sp 2
+Accumulated use is displayed by the blstat command under the
+heading ACUM_USE.
+.sp 2
+Used only for project mode. Cluster mode and fast dispatch
+project mode do not track accumulated use.
+.SH Default
+
+.sp 2
+N, not enabled.
+.sp 2
+
+.ce 1000
+\fBALLOC_BUFFER\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRALLOC_BUFFER\fR = \fIbuffer\fR | \fIcluster_name\fR
+\fIbuffer\fR ... \fRdefault\fR \fIbuffer\fR
+.SH Description
+
+.sp 2
+Enables dynamic distribution of licenses across clusters in
+cluster mode.
+.sp 2
+Cluster names must be the names of clusters defined in the
+Clusters section of lsf.licensescheduler.
+.sp 2
+Used for cluster mode only.
+.sp 2
+\fRALLOC_BUFFER=\fIbuffer\fR\fR sets one buffer size for all
+clusters, while \fRALLOC_BUFFER=\fIcluster_name\fR \fIbuffer\fR
+ ... \fRsets a different buffer size for each cluster.
+.sp 2
+The buffer size is used during dynamic redistribution of
+licenses. Increases in allocation are determined by the PEAK
+value, and increased by DEMAND for license tokens to a maximum
+increase of BUFFER, the buffer size configured by
+\fBALLOC_BUFFER\fR. The license allocation can increase in steps
+as large as the buffer size, but no larger.
+.sp 2
+Allocation buffers help determine the maximum rate at which
+tokens can be transferred to a cluster as demand increases in the
+cluster. The maximum rate of transfer to a cluster is given by
+the allocation buffer divided by \fBMBD_REFRESH_INTERVAL\fR. Be
+careful not to set the allocation buffer too large so that
+licenses are not wasted because they are being allocated to a
+cluster that cannot use them.
+.sp 2
+Decreases in license allocation can be larger than the buffer
+size, but the allocation must remain at \fBPEAK\fR+\fBBUFFER\fR
+licenses. The license allocation includes up to the buffer size
+of extra licenses, in case demand increases.
+.sp 2
+Increasing the buffer size allows the license allocation to grow
+faster, but also increases the number of licenses that may go
+unused at any given time. The buffer value must be tuned for each
+license feature and cluster to balance these two objectives.
+.sp 2
+When defining the buffer size for LSF Advanced Edition submission
+clusters, the license allocation for the entire LSF Advanced
+Edition mega-cluster (the submission cluster and its execution
+clusters) can increase in steps as large as the buffer size, but
+no larger.
+.sp 2
+Detailed license distribution information is shown in the blstat
+output.
+.sp 2
+Use the keyword \fRdefault\fR to apply a buffer size to all
+remaining clusters. For example:
+.sp 2
+Begin Feature
+.br
+NAME = f1
+.br
+CLUSTER_DISTRIBUTION = WanServers(banff 1 berlin 1 boston 1)
+.br
+ALLOC_BUFFER = banff 10 default 5
+.br
+End Feature
+.br
+
+.sp 2
+In this example, dynamic distribution is enabled. The cluster
+banff has a buffer size of 10, and all remaining clusters have a
+buffer size of 5.
+.sp 2
+To allow a cluster to be able to use licenses only when another
+cluster does not need them, you can set the cluster distribution
+for the cluster to 0, and specify an allocation buffer for the
+number of tokens that the cluster can request.
+.sp 2
+For example:
+.sp 2
+Begin Feature
+.br
+CLUSTER_DISTRIBUTION=Wan(CL1 0 CL2 1)
+.br
+ALLOC_BUFFER=5
+.br
+End Feature
+.br
+
+.sp 2
+When no jobs are running, the token allocation for CL1 is 5. CL1
+can get more than 5 tokens if CL2 does not require them.
+.SH Default
+
+.sp 2
+Not defined. Static distribution of licenses is used in cluster
+mode.
+.sp 2
+
+.ce 1000
+\fBALLOCATION\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRALLOCATION=\fR\fIproject_name \fR\fR(\fR\fIcluster_name\fR
+[\fInumber_shares\fR] ... \fR)\fR ...
+.sp 2
+\fB\fIcluster_name\fB\fR
+.br
+         Specify LSF cluster names or interactive tasks that
+         licenses are to be allocated to.
+.sp 2
+\fB\fIproject_name\fB\fR
+.br
+         Specify a License Scheduler project (described in the
+         Projects section or as default) that is allowed to use
+         the licenses.
+.sp 2
+\fB\fInumber_shares\fB\fR
+.br
+         Specify a positive integer representing the number of
+         shares assigned to the cluster.
+.sp 2
+The number of shares assigned to a cluster is only meaningful
+when you compare it to the number assigned to other clusters. The
+total number of shares is the sum of the shares assigned to each
+cluster.
+.SH Description
+
+.sp 2
+Defines the allocation of license features across clusters and
+interactive tasks.
+.sp 2
+Used for project mode only.
+.sp 2
+ALLOCATION ignores the global setting of the ENABLE_INTERACTIVE
+parameter because ALLOCATION is configured for the license
+feature.
+.sp 2
+You can configure the allocation of license shares to:
+.sp 2
+*  Change the share number between clusters for a feature
+.sp 2
+*  Limit the scope of license usage and change the share number
+   between LSF jobs and interactive tasks for a feature
+.sp 2
+When defining the allocation of license features for LSF Advanced
+Edition submission clusters, the allocation is for the entire LSF
+Advanced Edition mega-cluster (the submission cluster and its
+execution clusters).
+.sp 2
+\fBTip: \fRTo manage interactive tasks in License Scheduler
+projects, use the LSF Task Manager, \fRtaskman\fR. The Task
+Manager utility is supported by License Scheduler.
+.SH Default
+
+.sp 2
+If ENABLE_INTERACTIVE is not set, each cluster receives equal
+share, and interactive tasks receive no shares.
+.sp 2
+
+.ce 1000
+\fBExamples\fR
+.ce 0
+
+.sp 2
+Each example contains two clusters and 12 licenses of a specific
+feature.
+.SH Example 1
+
+.sp 2
+ALLOCATION is not configured. The ENABLE_INTERACTIVE parameter is
+not set.
+.sp 2
+Begin Parameters
+.br
+ ...
+.br
+ENABLE_INTERACTIVE=n 
+.br
+ ...
+.br
+End Parameters
+.br
+
+.sp 2
+Begin Feature 
+.br
+NAME=ApplicationX 
+.br
+DISTRIBUTION=LicenseServer1 (Lp1 1) 
+.br
+End Feature
+.br
+
+.sp 2
+Six licenses are allocated to each cluster. No licenses are
+allocated to interactive tasks.
+.SH Example 2
+
+.sp 2
+ALLOCATION is not configured. The ENABLE_INTERACTIVE parameter is
+set.
+.sp 2
+Begin Parameters
+.br
+ ...
+.br
+ENABLE_INTERACTIVE=y
+.br
+ ...
+.br
+End Parameters
+.br
+
+.sp 2
+Begin Feature 
+.br
+NAME=ApplicationX 
+.br
+DISTRIBUTION=LicenseServer1 (Lp1 1) 
+.br
+End Feature
+.br
+
+.sp 2
+Four licenses are allocated to each cluster. Four licenses are
+allocated to interactive tasks.
+.SH Example 3
+
+.sp 2
+In the following example, the ENABLE_INTERACTIVE parameter does
+not affect the ALLOCATION configuration of the feature.
+.sp 2
+ALLOCATION is configured. The ENABLE_INTERACTIVE parameter is
+set.
+.sp 2
+Begin Parameters
+.br
+ ...
+.br
+ENABLE_INTERACTIVE=y 
+.br
+ ...
+.br
+End Parameters
+.br
+
+.sp 2
+Begin Feature 
+.br
+NAME=ApplicationY 
+.br
+DISTRIBUTION=LicenseServer1 (Lp2 1)
+.br
+ALLOCATION=Lp2(cluster1 1 cluster2 0 interactive 1) 
+.br
+End Feature
+.br
+
+.sp 2
+The ENABLE_INTERACTIVE setting is ignored. Licenses are shared
+equally between \fRcluster1\fR and interactive tasks. Six
+licenses of \fRApplicationY\fR are allocated to \fRcluster1\fR.
+Six licenses are allocated to interactive tasks.
+.SH Example 4
+
+.sp 2
+In the following example, the ENABLE_INTERACTIVE parameter does
+not affect the ALLOCATION configuration of the feature.
+.sp 2
+ALLOCATION is configured. The ENABLE_INTERACTIVE parameter is not
+set.
+.sp 2
+Begin Parameters
+.br
+ ...
+.br
+ENABLE_INTERACTIVE=n 
+.br
+ ...
+.br
+End Parameters
+.br
+
+.sp 2
+Begin Feature 
+.br
+NAME=ApplicationZ 
+.br
+DISTRIBUTION=LicenseServer1 (Lp1 1) 
+.br
+ALLOCATION=Lp1(cluster1 0 cluster2 1 interactive 2) 
+.br
+End Feature
+.br
+
+.sp 2
+The ENABLE_INTERACTIVE setting is ignored. Four licenses of
+\fRApplicationZ\fR are allocated to \fRcluster2\fR. Eight
+licenses are allocated to interactive tasks.
+.sp 2
+
+.ce 1000
+\fBCHECKOUT_FROM_FIRST_HOST_ONLY\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRCHECKOUT_FROM_FIRST_HOST_ONLY=Y\fR | \fRN\fR
+.SH Description
+
+.sp 2
+If enabled, LSF License Scheduler only considers \fRuser@host\fR
+information for the first execution host of a parallel job when
+merging the license usage data. Setting in individual Feature
+sections overrides the global setting in the Parameters section.
+.sp 2
+If a feature has multiple Feature sections (using
+\fBLOCAL_TO\fR), each section must have the same setting for
+\fBCHECKOUT_FROM_FIRST_HOST_ONLY\fR.
+.sp 2
+If disabled, LSF License Scheduler attempts to check out
+\fRuser@host\fR keys in the parallel job constructed using the
+user name and all execution host names, and merges the
+corresponding checkout information on the service domain if
+found. If \fRMERGE_BY_SERVICE_DOMAIN=Y\fR is defined, LSF License
+Scheduler also merges multiple \fRuser@host\fR data for parallel
+jobs across different service domains.
+.SH Default
+
+.sp 2
+Undefined (N). LSF License Scheduler attempts to check out
+\fRuser@host\fR keys in the parallel job constructed using the
+user name and all execution host names, and merges the
+corresponding checkout information on the service domain if
+found.
+.sp 2
+
+.ce 1000
+\fBCLUSTER_DISTRIBUTION\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRCLUSTER_DISTRIBUTION=\fR\fIservice_domain\fR(\fIcluster\fR
+\fIshares\fR/\fImin\fR/\fImax\fR ... )...
+.sp 2
+\fB\fIservice_domain\fB\fR
+.br
+         Specify a License Scheduler WAN service domain
+         (described in the ServiceDomain section) that
+         distributes licenses to multiple clusters, and the share
+         for each cluster.
+.sp 2
+         Specify a License Scheduler LAN service domain for a
+         single cluster.
+.sp 2
+\fB\fIcluster\fB\fR
+.br
+         Specify each LSF cluster that accesses licenses from
+         this service domain.
+.sp 2
+\fB\fIshares\fB\fR
+.br
+         For each cluster specified for a WAN service domain,
+         specify a positive integer representing the number of
+         shares assigned to the cluster. (Not required for a LAN
+         service domain.)
+.sp 2
+         The number of shares assigned to a cluster is only
+         meaningful when you compare it to the number assigned to
+         other clusters, or to the total number assigned by the
+         service domain. The total number of shares is the sum of
+         the shares assigned to each cluster.
+.sp 2
+\fB\fImin\fB\fR
+.br
+         The minimum allocation is allocated exclusively to the
+         cluster, and is similar to the non-shared allocation in
+         project mode.
+.sp 2
+         Cluster shares take precedence over minimum allocations
+         configured. If the minimum allocation exceeds the
+         cluster\(aqs share of the total tokens, a cluster\(aqs
+         allocation as given by bld may be less than the
+         configured minimum allocation.
+.sp 2
+\fB\fImax\fB\fR
+.br
+         Optionally, specify a positive integer representing the
+         maximum number of license tokens allocated to the
+         cluster when dynamic allocation is enabled for a WAN
+         service domain (when \fBALLOC_BUFFER\fR is definedfor
+         the feature).
+.SH Description
+
+.sp 2
+\fBCLUSTER_DISTRIBUTION\fR must be defined when using cluster
+mode.
+.sp 2
+Defines the cross-cluster distribution policies for the license.
+The name of each service domain is followed by its distribution
+policy, in parentheses. The distribution policy determines how
+the licenses available in each service domain are distributed
+among the clients.
+.sp 2
+The distribution policy is a space-separated list with each
+cluster name followed by its share assignment. The share
+assignment determines what fraction of available licenses is
+assigned to each cluster, in the event of competition between
+clusters.
+.SH Examples
+
+.sp 2
+CLUSTER_DISTRIBUTION=wanserver(Cl1 1 Cl2 1 Cl3 1 Cl4 1)
+.br
+
+.sp 2
+CLUSTER_DISTRIBUTION = SD(C1 1 C2 1) SD1(C3 1 C4 1) SD2(C1 1) SD3(C2 1)
+.br
+
+.sp 2
+In these examples, wanserver, SD, and SD1 are WAN service
+domains, while SD2 and SD3 are LAN service domains serving a
+single cluster.
+.sp 2
+
+.ce 1000
+\fBCLUSTER_MODE\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRCLUSTER_MODE=Y\fR | \fRN\fR
+.SH Description
+
+.sp 2
+Enables cluster mode (instead of project mode) for the license
+feature.
+.sp 2
+Cluster mode emphasizes high utilization of license tokens above
+other considerations such as ownership. License ownership and
+sharing can still be configured, but within each cluster instead
+of across multiple clusters. Preemption of jobs (and licenses)
+also occurs within each cluster instead of across clusters.
+.sp 2
+Cluster mode was introduced in License Scheduler 8.0. Before
+cluster mode was introduced, project mode was the only choice
+available.
+.SH Default
+
+.sp 2
+Undefined (N). License Scheduler runs in project mode.
+.sp 2
+
+.ce 1000
+\fBDEMAND_LIMIT\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRDEMAND_LIMIT=\fR\fIinteger\fR
+.SH Description
+
+.sp 2
+Sets a limit to which LSF License Scheduler considers the demand
+by each project in each cluster when allocating licenses.
+.sp 2
+Used for project mode only.
+.sp 2
+When enabled, the demand limit helps prevent LSF License
+Scheduler from allocating more licenses to a project than can
+actually be used, which reduces license waste by limiting the
+demand that LSF License Scheduler considers. This is useful in
+cases when other resource limits are reached, LSF License
+Scheduler allocates more tokens than IBM Spectrum LSF can
+actually use because jobs are still pending due to lack of other
+resources.
+.sp 2
+When disabled (that is, \fRDEMAND_LIMIT=0\fR is set), LSF License
+Scheduler takes into account all the demand reported by each
+cluster when scheduling.
+.sp 2
+\fBDEMAND_LIMIT\fR does not affect the \fRDEMAND\fR that blstat
+displays. Instead, blstat displays the entire demand sent for a
+project from all clusters. For example, one cluster reports a
+demand of 15 for a project. Another cluster reports a demand of
+20 for the same project. When LSF License Scheduler allocates
+licenses, it takes into account a demand of five from each
+cluster for the project and the \fRDEMAND\fR that blstat displays
+is 35.
+.sp 2
+Periodically, each cluster sends a demand for each project. This
+is calculated in a cluster for a project by summing up the rusage
+of all jobs of the project pending due to lack of licenses.
+Whether to count a job\(aqs rusage in the demand depends on the
+job\(aqs pending reason. In general, the demand reported by a
+cluster only represents a potential demand from the project. It
+does not take into account other resources that are required to
+start a job. For example, a demand for 100 licenses is reported
+for a project. However, if LSF License Scheduler allocates 100
+licenses to the project, the project does not necessarily use all
+100 licenses due to slot availability, limits, or other
+scheduling constraints.
+.sp 2
+The mbatchd daemon in each cluster sends a demand for licenses
+from each project. You can limit the amount of demand from each
+project in each cluster that is considered when scheduling by
+setting the demand limit. This helps prevent LSF License
+Scheduler from allocating more licenses to a project than can
+actually be used.
+.SH Default
+
+.sp 2
+5
+.sp 2
+
+.ce 1000
+\fBDISABLE_PREEMPTION\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRDISABLE_PREEMPTION=Y\fR | \fRy\fR | \fRN\fR | \fRn\fR
+.SH Description
+
+.sp 2
+When set Y or y, \fBDISABLE_PREEMPTION\fR prevents license
+preemption and resets the project ownership to 0. This ensures
+that license preemption never occurs regardless of whether
+projects are configured with ownership or \fRNON_SHARED\fR.
+.sp 2
+Used for project mode only. Cluster mode does not support this
+parameter.
+.SH Default
+
+.sp 2
+N
+.sp 2
+
+.ce 1000
+\fBDISTRIBUTION\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRDISTRIBUTION=\fR[\fIservice_domain_name\fR([\fIproject_name
+number_shares\fR[/\fInumber_licenses_owned\fR]] ... [default] )]
+ ...
+.sp 2
+\fB\fIservice_domain_name\fB\fR
+.br
+         Specify a License Scheduler service domain (described in
+         the ServiceDomain section) that distributes the
+         licenses.
+.sp 2
+\fB\fIproject_name\fB\fR
+.br
+         Specify a License Scheduler project (described in the
+         Projects section) that is allowed to use the licenses.
+.sp 2
+\fB\fInumber_shares\fB\fR
+.br
+         Specify a positive integer representing the number of
+         shares assigned to the project.
+.sp 2
+         The number of shares assigned to a project is only
+         meaningful when you compare it to the number assigned to
+         other projects, or to the total number assigned by the
+         service domain. The total number of shares is the sum of
+         the shares assigned to each project.
+.sp 2
+\fB\fInumber_licenses_owned\fB\fR
+.br
+         Specify a slash (\fR/\fR) and a positive integer
+         representing the number of licenses that the project
+         owns. When configured, preemption is enabled and owned
+         licenses are reclaimed using preemption when there is
+         unmet demand.
+.sp 2
+\fBdefault\fR
+.br
+         A reserved keyword that represents the default project
+         if the job submission does not specify a project (bsub
+         -Lp), or the specified project is not configured in the
+         Projects section of lsf.licensescheduler. Jobs that
+         belong to projects do not get a share of the tokens when
+         the project is not explicitly defined in DISTRIBUTION.
+.SH Description
+
+.sp 2
+Used for project mode only.
+.sp 2
+One of \fBDISTRIBUTION\fR or \fBGROUP_DISTRIBUTION\fR must be
+defined when using project mode. \fBGROUP_DISTRIBUTION\fR and
+\fBDISTRIBUTION\fR are mutually exclusive. If defined in the same
+feature, the License Scheduler daemon returns an error and
+ignores this feature.
+.sp 2
+Defines the distribution policies for the license. The name of
+each service domain is followed by its distribution policy, in
+parentheses. The distribution policy determines how the licenses
+available in each service domain are distributed among the
+clients.
+.sp 2
+You can only specify one service domain.
+.sp 2
+The distribution policy is a space-separated list with each
+project name followed by its share assignment. The share
+assignment determines what fraction of available licenses is
+assigned to each project, in the event of competition between
+projects. Optionally, the share assignment is followed by a slash
+and the number of licenses owned by that project. License
+ownership enables a preemption policy. In the event of
+competition between projects, projects that own licenses preempt
+jobs. Licenses are returned to the owner immediately.
+.SH Examples
+
+.sp 2
+DISTRIBUTION=wanserver (Lp1 1 Lp2 1 Lp3 1 Lp4 1)
+.br
+
+.sp 2
+In this example, the service domain named \fRwanserver\fR shares
+licenses equally among four projects. If all projects are
+competing for a total of eight licenses, each project is entitled
+to two licenses at all times. If all projects are competing for
+only two licenses in total, each project is entitled to a license
+half the time.
+.sp 2
+DISTRIBUTION=lanserver1 (Lp1 1 Lp2 2/6)
+.br
+
+.sp 2
+In this example, the service domain named \fRlanserver1\fR allows
+\fRLp1\fR to use one third of the available licenses and
+\fRLp2\fR can use two thirds of the licenses. However, \fRLp2\fR
+is always entitled to six licenses, and can preempt another
+project to get the licenses immediately if they are needed. If
+the projects are competing for a total of 12 licenses, \fRLp2\fR
+is entitled to eight licenses (six on demand, and two more as
+soon as they are free). If the projects are competing for only
+six licenses in total, \fRLp2\fR is entitled to all of them, and
+\fRLp1\fR can only use licenses when \fRLp2\fR does not need
+them.
+.sp 2
+
+.ce 1000
+\fBDYNAMIC \fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRDYNAMIC=Y\fR | \fRN\fR
+.SH Description
+
+.sp 2
+If you specify DYNAMIC=Y, you must specify a duration in an
+rusage resource requirement for the feature. This enables License
+Scheduler to treat the license as a dynamic resource and prevents
+License Scheduler from scheduling tokens for the feature when
+they are not available, or reserving license tokens when they
+should actually be free.
+.sp 2
+Used for project mode only. Cluster mode does not support rusage
+duration.
+.sp 2
+
+.ce 1000
+\fBENABLE_DYNAMIC_RUSAGE\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRENABLE_DYNAMIC_RUSAGE=Y\fR | \fRN\fR
+.SH Description
+
+.sp 2
+When set, ENABLE_DYNAMIC_RUSAGE enables all license checkouts for
+features where the job checks out licenses in excess of rusage to
+be considered managed checkouts, instead of unmanaged (or
+OTHERS).
+.sp 2
+Used for project mode only. Cluster mode and fast dispatch
+project mode do not support this parameter.
+.sp 2
+
+.ce 1000
+\fBENABLE_MINJOB_PREEMPTION\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRENABLE_MINJOB_PREEMPTION=Y\fR | \fRN\fR
+.SH Description
+
+.sp 2
+Minimizes the overall number of preempted jobs by enabling job
+list optimization. For example, for a job that requires 10
+licenses, License Scheduler preempts one job that uses 10 or more
+licenses rather than 10 jobs that each use one license.
+.sp 2
+Used for project mode only
+.SH Default
+
+.sp 2
+Undefined: License Scheduler does not optimize the job list when
+selecting jobs to preempt.
+.sp 2
+
+.ce 1000
+\fBFAST_DISPATCH\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRFAST_DISPATCH=Y\fR | \fRN\fR
+.SH Description
+
+.sp 2
+\fBNote: \fRThis parameter is now fixed at \fRFAST_DISPATCH=Y\fR
+and might be removed in a future version of LSF.
+.sp 2
+Enables fast dispatch project mode for the license feature, which
+increases license utilization for project licenses.
+.sp 2
+Used for project mode only.
+.sp 2
+When enabled, LSF License Scheduler does not have to run lmutil,
+lmstat, rlmutil, or rlmstat to verify that a license is free
+before each job dispatch. As soon as a job finishes, the cluster
+can reuse its licenses for another job of the same project, which
+keeps gaps between jobs small. However, because LSF License
+Scheduler does not run lmutil, lmstat, rlmutil, or rlmstat to
+verify that the license is free, there is an increased chance of
+a license checkout failure for jobs if the license is already in
+use by a job in another project.
+.sp 2
+The fast dispatch project mode supports the following parameters
+in the Feature section:
+.sp 2
+*  ALLOCATION
+.sp 2
+*  DEMAND_LIMIT
+.sp 2
+*  DISTRIBUTION
+.sp 2
+*  GROUP_DISTRIBUTION
+.sp 2
+*  LM_LICENSE_NAME
+.sp 2
+*  LS_FEATURE_PERCENTAGE
+.sp 2
+*  NAME
+.sp 2
+*  NON_SHARED_DISTRIBUTION
+.sp 2
+*  SERVICE_DOMAINS
+.sp 2
+*  WORKLOAD_DISTRIBUTION
+.sp 2
+The fast dispatch project mode also supports the
+MBD_HEARTBEAT_INTERVAL parameter in the Parameters section.
+.sp 2
+Other parameters are not supported, including those that project
+mode supports, such as the following parameters:
+.sp 2
+*  ACCINUSE_INCLUDES_OWNERSHIP
+.sp 2
+*  DYNAMIC
+.sp 2
+*  GROUP
+.sp 2
+*  LOCAL_TO
+.sp 2
+*  LS_ACTIVE_PERCENTAGE
+.SH Default
+
+.sp 2
+Y
+.sp 2
+
+.ce 1000
+\fBFEATURE_DELTA\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRFEATURE_DELTA=\fIservice_domain_name\fR(abs\fR | \fRmult
+\fInumber\fR)\fR ...
+.sp 2
+\fRFEATURE_DELTA=\fIservice_domain_name\fR(abs
+dyn([init([integer])] [max([integer])] [step([integer])]
+[dynstep([\fIhist_time\fR \fIfactor\fR])] [target([number])]
+[interval([integer])]\fR
+.SH Description
+
+.sp 2
+Allows an administrator to specify a number of dispatched jobs
+greater than actual tokens managed by the license server. Use
+this feature when utilization is low due to an external
+application\(aqs slow checkout of licenses. The result is higher
+average utilization at the cost of running some jobs less
+efficiently (those jobs that get dispatched but have to wait for
+the token).
+.sp 2
+Used for both project mode and cluster mode.
+.sp 2
+Each service domain can only be listed once in the
+\fBFEATURE_DELTA\fR parameter, otherwise all \fBFEATURE_DELTA\fR
+settings are ignored.
+.sp 2
+*  abs: Specifies an absolute number of dispatched jobs greater
+   than tokens managed by the license server. Specify a positive
+   integer.
+.sp 2
+*  mult: Specifies a multiplication factor of dispatched jobs
+   greater than tokens managed by the license server. Specify a
+   decimal number between 1 and 2. If you specify a number
+   greater than 2, most of your jobs wait for a token and run
+   less efficiently.
+.sp 2
+*  dyn: Use with the abs or mult keywords (instead of a number)
+   to enable LSF License Scheduler to dynamically adjust the
+   number of dispatched jobs greater than tokens managed by the
+   license server.
+.sp 2
+   Enable dynamic adjustment for features that have a fluctuating
+   license utilization and therefore require a more flexible
+   value. The following optional parameters control this dynamic
+   adjustment:
+.sp 2
+   *  init: Specifies the initial number of dispatched jobs
+      greater than tokens managed by the license server when the
+      bld daemon starts up or there are no jobs running in the
+      servers that are specified in the \fBFEATURE_DELTA\fR
+      parameter. Specify an integer for abs or a decimal number
+      for mult. The default value is 0 for abs and 1.0 for mult.
+.sp 2
+   *  max: Specifies the adjustment number to calculate the
+      maximum number of dispatched jobs greater than tokens
+      managed by the license server. To obtain the adjusted
+      maximum number, the value of max is added to the init value
+      for abs and multiplied by the init value for mult. Specify
+      an integer for abs or a decimal number for mult.
+.sp 2
+      The default value for abs is the same as the init value,
+      and the default value for mult is 2.0. This means that the
+      default adjusted maximum number is double the init value
+      for both abs and mult.
+.sp 2
+   *  step: Specifies the amount to adjust (if needed) in each
+      interval. Specify an integer for abs or a decimal number
+      for mult. The default value is either 1 or 5% of the init
+      value, whichever is greater.
+.sp 2
+   *  dynstep(\fIhist_time\fR \fIfactor\fR): Use instead of step
+      to specify a dynamic amount to adjust in each interval,
+      where \fIhist_time\fR is the time window for LSF License
+      Scheduler to calculate the average token utilization, in
+      minutes and \fIfactor\fR is the factor to adjust the
+      dynamic amount to be more or less aggressive towards the
+      target value.
+.sp 2
+   *  target: Specifies the target license utilization rate.
+      Specify a decimal number. The default value is 0.9.
+.sp 2
+   *  interval: Specifies the license usage checking interval per
+      collector update. That is, 1 indicates that LSF License
+      Scheduler checks and adjusts every collector update, and 2
+      indicates that LSF License Scheduler checks and adjusts
+      every 2 collector updates. The default value is 3 (LSF
+      License Scheduler checks and adjusts every 3 collector
+      updates).
+.SH Example
+
+.sp 2
+In lsf.licensescheduler, define the following Service domains and
+Feature section:
+.sp 2
+Begin ServiceDomain
+.br
+NAME = LanServer
+.br
+LIC_SERVERS = ((38000@bl10e-15) (38000@bl10e-16))
+.br
+End ServiceDomain
+.br
+
+.sp 2
+Begin ServiceDomain
+.br
+NAME = LanServer1
+.br
+LIC_SERVERS = ((38000@bl10e-17))
+.br
+End ServiceDomain
+.br
+
+.sp 2
+Begin Feature
+.br
+NAME = f1
+.br
+DISTRIBUTION = LanServer(p1 1  p2 1  p3 1) LanServer1(p1 1  p2 1)
+.br
+FEATURE_DELTA = LanServer(mult 1.5) LanServer1(abs 4)  
+.br
+End Feature
+.br
+
+.SH Result
+
+.sp 2
+If LanServer had 6 licenses and LanServer1 had 5 licenses, the
+number of tokens are now:
+.sp 2
+LanServer: (6*1.5)= 9
+.sp 2
+LanServer1: (5 + 4)=9
+.sp 2
+The output of blstat displays counts the total number, as added
+or multiplied by the value specified in \fBFEATURE_DELTA\fR.
+.sp 2
+
+.ce 1000
+\fBFLEX_NAME (Obsolete)\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRFLEX_NAME=\fIfeature_name1\fR\fR [\fR\fIfeature_name2\fR\fR
+ ...]
+.SH Description
+
+.sp 2
+Replace \fBFLEX_NAME\fR with \fBLM_LICENSE_NAME\fR.
+\fBFLEX_NAME\fR is only maintained for backwards compatibility.
+.sp 2
+
+.ce 1000
+\fBGROUP\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRGROUP=\fR[\fIgroup_name\fR\fR(\fR\fIproject_name\fR...
+\fR)\fR] ...
+.sp 2
+\fB\fIgroup_name\fB\fR
+.br
+         Specify a name for a group of projects. This is
+         different from a ProjectGroup section; groups of
+         projects are not hierarchical.
+.sp 2
+\fB\fIproject_name\fB\fR
+.br
+         Specify a License Scheduler project (described in the
+         Projects section) that is allowed to use the licenses.
+         The project must appear in the DISTRIBUTION and only
+         belong to one group.
+.SH Description
+
+.sp 2
+\fBNote: \fRThis parameter is now deprecated and might be removed
+in a future version of LSF.
+.sp 2
+Defines groups of projects and specifies the name of each group.
+The groups defined here are used for group preemption. The number
+of licenses owned by the group is the total number of licenses
+owned by member projects.
+.sp 2
+Used only for project mode. Cluster mode and fast dispatch
+project mode do not track accumulated use.
+.sp 2
+This parameter is ignored if GROUP_DISTRIBUTION is also defined.
+.SH Example
+
+.sp 2
+For example, without the GROUP configuration shown, proj1 owns 4
+license tokens and can reclaim them using preemption. After
+adding the GROUP configuration, proj1 and proj2 together own 8
+license tokens. If proj2 is idle, proj1 is able to reclaim all 8
+license tokens using preemption.
+.sp 2
+Begin Feature
+.br
+NAME = AppY
+.br
+DISTRIBUTION = LanServer1(proj1 1/4 proj2 1/4 proj3 2)
+.br
+GROUP = GroupA(proj1 proj2)
+.br
+End Feature
+.br
+
+.sp 2
+
+.ce 1000
+\fBGROUP_DISTRIBUTION\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRGROUP_DISTRIBUTION=\fR\fItop_level_hierarchy_name\fR
+.sp 2
+\fB\fItop_level_hierarchy_name\fB\fR
+.br
+         Specify the name of the top level hierarchical group.
+.SH Description
+
+.sp 2
+Defines the name of the hierarchical group containing the
+distribution policy attached to this feature, where the
+hierarchical distribution policy is defined in a ProjectGroup
+section.
+.sp 2
+One of \fBDISTRIBUTION\fR or \fBGROUP_DISTRIBUTION\fR must be
+defined when using project mode. \fBGROUP_DISTRIBUTION\fR and
+\fBDISTRIBUTION\fR are mutually exclusive. If defined in the same
+feature, the License Scheduler daemon returns an error and
+ignores this feature.
+.sp 2
+If \fBGROUP\fR is also defined, it is ignored in favor of
+\fBGROUP_DISTRIBUTION\fR.
+.SH Example
+
+.sp 2
+The following example shows the \fBGROUP_DISTRIBUTION\fR
+parameter hierarchical scheduling for the top-level hierarchical
+group named \fRgroups\fR. The \fBSERVICE_DOMAINS\fR parameter
+defines a list of service domains that provide tokens for the
+group.
+.sp 2
+Begin Feature 
+.br
+NAME = myjob2 
+.br
+GROUP_DISTRIBUTION = groups 
+.br
+SERVICE_DOMAINS = LanServer wanServer 
+.br
+End Feature
+.br
+
+.sp 2
+
+.ce 1000
+\fBINUSE_FROM_RUSAGE\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRINUSE_FROM_RUSAGE=Y\fR | \fRN\fR
+.SH Description
+
+.sp 2
+When not defined or set to \fRN\fR, the \fBINUSE\fR value uses
+rusage from bsub job submissions merged with license checkout
+data reported by blcollect (as reported by blstat).
+.sp 2
+When \fRINUSE_FROM_RUSAGE=Y\fR, the \fBINUSE\fR value uses the
+rusage from bsub job submissions instead of waiting for the
+blcollect update. This can result in faster reallocation of
+tokens when using dynamic allocation (when \fBALLOC_BUFFER\fR is
+set).
+.sp 2
+When used for individual license features, the Feature section
+setting overrides the global Parameters section setting.
+.sp 2
+Used for cluster mode only.
+.SH Default
+
+.sp 2
+N
+.sp 2
+
+.ce 1000
+\fBLM_LICENSE_NAME\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLM_LICENSE_NAME=\fIfeature_name1\fR\fR
+[\fR\fIfeature_name2\fR\fR ...]
+.SH Description
+
+.sp 2
+Defines the feature name—the name used by the license manager to
+identify the type of license. You only need to specify this
+parameter if the License Scheduler token name is not identical to
+the license manager feature name.
+.sp 2
+\fBLM_LICENSE_NAME\fR allows the \fBNAME\fR parameter to be an
+alias of the license manager feature name. For feature names that
+start with a number or contain a dash (-), you must set both
+\fBNAME\fR and \fBLM_LICENSE_NAME\fR, where \fBLM_LICENSE_NAME\fR
+is the actual license manager feature name, and \fBNAME\fR is an
+arbitrary license token name you choose.
+.sp 2
+Specify a space-delimited list of feature names in
+\fBLM_LICENSE_NAME\fR to combine multiple license manager
+features into one feature name specified under the \fBNAME\fR
+parameter. This allows you to use the same feature name for
+multiple license manager features (that are interchangeable for
+applications). LSF recognizes the alias of the combined feature
+(specified in \fBNAME\fR) as a feature name instead of the
+individual license manager feature names specified in
+\fBLM_LICENSE_NAME\fR. When submitting a job to LSF, users
+specify the combined feature name in the bsub \fRrusage\fR
+string, which allows the job to use any token from any of the
+features specified in \fBLM_LICENSE_NAME\fR.
+.SH Example
+
+.sp 2
+To specify \fRAppZ201\fR as an alias for the license manager
+feature named \fR201-AppZ\fR:
+.sp 2
+Begin Feature 
+.br
+LM_LICENSE_NAME=201-AppZ
+.br
+NAME=AppZ201 
+.br
+DISTRIBUTION=LanServer1(Lp1 1 Lp2 1) 
+.br
+End Feature
+.br
+
+.sp 2
+To combine two license manager features (\fR201-AppZ\fR and
+\fR202-AppZ\fR) into a feature named \fRAppZ201\fR:
+.sp 2
+Begin Feature 
+.br
+LM_LICENSE_NAME=201-AppZ 202-AppZ
+.br
+NAME=AppZ201
+.br
+DISTRIBUTION=LanServer1(Lp1 1 Lp2 1) 
+.br
+End Feature
+.br
+
+.sp 2
+\fRAppZ201\fR is a combined feature that uses both \fR201-AppZ\fR
+and \fR202-AppZ\fR tokens. Submitting a job with \fRAppZ201\fR in
+the rusage string (for example, \fRbsub -Lp Lp1 -R
+"rusage[AppZ201=2]" myjob\fR) means that the job checks out
+tokens for either \fR201-AppZ\fR or \fR202-AppZ\fR.
+.sp 2
+
+.ce 1000
+\fBLM_REMOVE_INTERVAL\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLM_REMOVE_INTERVAL=\fR\fIseconds\fR
+.SH Description
+
+.sp 2
+Specifies the minimum time a job must have a license checked out
+before lmremove or rlmremove can remove the license. lmremove or
+rlmremove causes the license manager daemon and vendor daemons to
+close the TCP connection with the application. They can then
+retry the license checkout.
+.sp 2
+When using lmremove or rlmremove as part of the preemption action
+(\fBLM_REMOVE_SUSP_JOBS\fR), define \fRLM_REMOVE_INTERVAL=0\fR to
+ensure that LSF License Scheduler can preempt a job immediately
+after checkout. After suspending the job, LSF License Scheduler
+then uses lmremove or rlmremove to release licenses from the job.
+.sp 2
+Used for both project mode and cluster mode.
+.sp 2
+The value specified for a feature overrides the global value
+defined in the Parameters section. Each feature definition can
+specify a different value for this parameter.
+.SH Default
+
+.sp 2
+Undefined: LSF License Scheduler applies the global value.
+.sp 2
+
+.ce 1000
+\fBLM_REMOVE_SUSP_JOBS\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLM_REMOVE_SUSP_JOBS=\fR\fIseconds\fR
+.SH Description
+
+.sp 2
+Enables LSF License Scheduler to use lmremove or rlmremove to
+remove license features from each recently-suspended job. After
+enabling this parameter, the preemption action is to suspend the
+job\(aqs processes and use lmremove or rlmremove to remove licences
+from the application. lmremove or rlmremove causes the license
+manager daemon and vendor daemons to close the TCP connection
+with the application.
+.sp 2
+LSF License Scheduler continues to try removing the license
+feature for the specified number of seconds after the job is
+first suspended. When setting this parameter for an application,
+specify a value greater than the period following a license
+checkout that lmremove or rlmremove will fail for the
+application. This ensures that when a job suspends, its licenses
+are released. This period depends on the application.
+.sp 2
+When using lmremove or rlmremove as part of the preemption
+action, define \fRLM_REMOVE_INTERVAL=0\fR to ensure that LSF
+License Scheduler can preempt a job immediately after checkout.
+After suspending the job, LSF License Scheduler then uses
+lmremove or rlmremove to release licenses from the job.
+.sp 2
+Used for fast dispatch project mode only.
+.sp 2
+The value specified for a feature overrides the global value
+defined in the Parameters section. Each feature definition can
+specify a different value for this parameter.
+.SH Default
+
+.sp 2
+Undefined. The default preemption action is to send a TSTP signal
+to the job.
+.sp 2
+
+.ce 1000
+\fBLM_RESERVATION\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLM_RESERVATION=Y\fR | \fRN\fR
+.SH Description
+
+.sp 2
+Enables LSF License Scheduler to support the FlexNet Manager
+license reservation keyword (\fBRESERVE\fR).
+.sp 2
+When \fRLM_RESERVATION=Y\fR is defined, LSF License Scheduler
+treats the \fBRESERVE\fR value in the FlexNet Manager license
+option file as \fBOTHERS\fR tokens instead of \fBFREE\fR tokens.
+The \fBRESERVE\fR value is now included in the \fBOTHERS\fR value
+in the blstat command output and is no longer included in the
+\fBFREE\fR value.
+.sp 2
+This parameter is ignored if it is defined in a time based
+configuration, or if the \fBWORKLOAD_DISTRIBUTION\fR parameter is
+defined in this feature.
+.sp 2
+The value specified for a feature overrides the global value
+defined in the Parameters section. Each feature definition can
+specify a different value for this parameter.
+.sp 2
+\fBNote: \fRThe license tokens that are reserved with FlexNet
+Manager must be used outside of LSF License Scheduler.
+.SH Default
+
+.sp 2
+Undefined: LSF License Scheduler applies the global value.
+.sp 2
+
+.ce 1000
+\fBLMREMOVE_SUSP_JOBS (Obsolete)\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLMREMOVE_SUSP_JOBS=\fR\fIseconds\fR
+.SH Description
+
+.sp 2
+Replace \fBLMREMOVE_SUSP_JOBS\fR with \fBLM_REMOVE_SUSP_JOBS\fR.
+\fBLMREMOVE_SUSP_JOBS\fR is only maintained for backwards
+compatibility.
+.sp 2
+
+.ce 1000
+\fBLOCAL_TO\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLOCAL_TO=\fR\fIcluster_name\fR |
+\fIlocation_name\fR\fR(\fR\fIcluster_name\fR [\fIcluster_name\fR
+ ...]\fR)\fR
+.SH Description
+
+.sp 2
+\fBNote: \fRThis parameter is now deprecated and might be removed
+in a future version of LSF.
+.sp 2
+Used only for project mode. Cluster mode and fast dispatch
+project mode do not track accumulated use.
+.sp 2
+Configures token locality for the license feature. You must
+configure different feature sections for same feature based on
+their locality. By default, if \fBLOCAL_TO\fR is not defined, the
+feature is available to all clients and is not restricted by
+geographical location. When \fBLOCAL_TO\fR is configured, for a
+feature, License Scheduler treats license features served to
+different locations as different token names, and distributes the
+tokens to projects according the distribution and allocation
+policies for the feature.
+.sp 2
+\fBLOCAL_TO\fR cannot be defined for LSF Advanced Edition
+submission clusters.
+.sp 2
+\fBLOCAL_TO\fR allows you to limit features from different
+service domains to specific clusters, so License Scheduler only
+grants tokens of a feature to jobs from clusters that are
+entitled to them.
+.sp 2
+For example, if your license servers restrict the serving of
+license tokens to specific geographical locations, use
+\fBLOCAL_TO\fR to specify the locality of a license token if any
+feature cannot be shared across all the locations. This avoids
+having to define different distribution and allocation policies
+for different service domains, and allows hierarchical group
+configurations.
+.sp 2
+License Scheduler manages features with different localities as
+different resources. Use blinfo and blstat to see the different
+resource information for the features depending on their cluster
+locality.
+.sp 2
+License features with different localities must be defined in
+different feature sections. The same Service Domain can appear
+only once in the configuration for a given license feature.
+.sp 2
+A configuration like \fRLOCAL_TO=Site1(clusterA clusterB)\fR
+configures the feature for more than one cluster when using
+project mode.
+.sp 2
+A configuration like \fRLOCAL_TO=clusterA\fR configures locality
+for only one cluster. This is the same as
+\fRLOCAL_TO=clusterA(clusterA)\fR.
+.sp 2
+Cluster names must be the names of clusters defined in the
+Clusters section of lsf.licensescheduler.
+.SH Examples
+
+.sp 2
+Begin Feature
+.br
+NAME = hspice
+.br
+DISTRIBUTION = SD1 (Lp1 1 Lp2 1)
+.br
+LOCAL_TO = siteUS(clusterA clusterB)
+.br
+End Feature
+.sp 2
+Begin Feature
+.br
+NAME = hspice
+.br
+DISTRIBUTION = SD2 (Lp1 1 Lp2 1)
+.br
+LOCAL_TO = clusterA
+.br
+End Feature
+.br
+
+.sp 2
+Begin Feature
+.br
+NAME = hspice
+.br
+DISTRIBUTION = SD3 (Lp1 1 Lp2 1) SD4 (Lp1 1 Lp2 1)
+.br
+End Feature
+.br
+
+.sp 2
+Or use the hierarchical group configuration
+(\fBGROUP_DISTRIBUTION\fR):
+.sp 2
+Begin Feature
+.br
+NAME = hspice
+.br
+GROUP_DISTRIBUTION = group1
+.br
+SERVICE_DOMAINS = SD1
+.br
+LOCAL_TO = clusterA
+.br
+End Feature
+.br
+
+.sp 2
+Begin Feature
+.br
+NAME = hspice
+.br
+GROUP_DISTRIBUTION = group1
+.br
+SERVICE_DOMAINS = SD2
+.br
+LOCAL_TO = clusterB
+.br
+End Feature
+.br
+
+.sp 2
+Begin Feature
+.br
+NAME = hspice
+.br
+GROUP_DISTRIBUTION = group1
+.br
+SERVICE_DOMAINS = SD3 SD4
+.br
+End Feature
+.br
+
+.SH Default
+
+.sp 2
+Not defined. The feature is available to all clusters and taskman
+jobs, and is not restricted by cluster.
+.sp 2
+
+.ce 1000
+\fBLS_ACTIVE_PERCENTAGE\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLS_ACTIVE_PERCENTAGE=Y\fR | \fRN\fR
+.SH Description
+
+.sp 2
+\fBNote: \fRThis parameter is now deprecated and might be removed
+in a future version of LSF.
+.sp 2
+Configures license ownership in percentages instead of absolute
+numbers and adjusts ownership for inactive projects. Sets
+\fRLS_FEATURE_PERCENTAGE=Y\fR automatically.
+.sp 2
+Setting \fRLS_ACTIVE_PERCENTAGE=Y\fR dynamically adjusts
+ownership based on project activity, setting ownership to zero
+for inactive projects and restoring the configured ownership
+setting when projects become active. If the total ownership for
+the license feature is greater than 100%, each ownership value is
+scaled appropriately for a total ownership of 100%.
+.sp 2
+Used only for project mode. Cluster mode and fast dispatch
+project mode do not track accumulated use.
+.SH Default
+
+.sp 2
+\fRN\fR (Ownership values are not changed based on project
+activity.)
+.sp 2
+
+.ce 1000
+\fBLS_FEATURE_PERCENTAGE\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLS_FEATURE_PERCENTAGE=Y\fR | \fRN\fR
+.SH Description
+
+.sp 2
+Configures license ownership in percentages instead of absolute
+numbers. When not combined with hierarchical projects, affects
+the owned values in DISTRIBUTION and the NON_SHARED_DISTRIBUTION
+values only.
+.sp 2
+When using hierarchical projects, percentage is applied to
+OWNERSHIP, LIMITS, and NON_SHARED values.
+.sp 2
+Used for project mode and fast dispatch project mode only.
+.sp 2
+For example:
+.sp 2
+Begin Feature
+.br
+LS_FEATURE_PERCENTAGE = Y
+.br
+DISTRIBUTION = LanServer (p1 1 p2 1 p3 1/20)
+.br
+ ...
+.br
+End Feature
+.br
+
+.sp 2
+The service domain LanServer shares licenses equally among three
+License Scheduler projects. P3 is always entitled to 20% of the
+total licenses, and can preempt another project to get the
+licenses immediately if they are needed.
+.SH Example 1
+
+.sp 2
+Begin Feature
+.br
+LS_FEATURE_PERCENTAGE = Y
+.br
+DISTRIBUTION = LanServer (p1 1 p2 1 p3 1/20)
+.br
+ ...
+.br
+End Feature
+.br
+
+.sp 2
+The service domain LanServer shares licenses equally among three
+License Scheduler projects. P3 is always entitled to 20% of the
+total licenses, and can preempt another project to get the
+licenses immediately if they are needed.
+.SH Example 2
+
+.sp 2
+With \fRLS_FEATURE_PERCENTAGE=Y\fR in feature section and using
+hierarchical project groups:
+.sp 2
+Begin ProjectGroup
+.br
+GROUP      SHARES    OWNERSHIP    LIMITS  NON_SHARED
+.br
+(R (A p4))  (1  1)     ()         ()         ()
+.br
+(A (B p3))  (1  1)     (- 10)     (- 20)     ()
+.br
+(B (p1 p2)) (1  1)     (30 -)     ()       (- 5)
+.br
+End ProjectGroup
+.br
+
+.sp 2
+Project p1 owns 30% of the total licenseand project p3 owns 10%
+of total licenses. P3\(aqs LIMITS is 20% of total licenses, and p2\(aqs
+NON_SHARED is 5%.
+.SH Default
+
+.sp 2
+\fRN\fR (Ownership is not configured with percentages, but with
+absolute numbers.)
+.sp 2
+
+.ce 1000
+\fBNAME\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRNAME=\fR\fIfeature_name\fR
+.sp 2
+Required. Defines the token name—the name used by License
+Scheduler and LSF to identify the license feature.
+.sp 2
+Normally, license token names should be the same as the FlexNet
+Licensing feature names, as they represent the same license.
+However, LSF does not support names that start with a number, or
+names containing a dash or hyphen character (-), which may be
+used in the FlexNet Licensing feature name.
+.sp 2
+
+.ce 1000
+\fBNON_SHARED_DISTRIBUTION\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRNON_SHARED_DISTRIBUTION=\fR\fIservice_domain_name\fR
+([\fIproject_name\fR \fInumber_non_shared_licenses\fR] ... ) ...
+.sp 2
+\fB\fIservice_domain_name\fB\fR
+.br
+         Specify a License Scheduler service domain (described in
+         the ServiceDomain section) that distributes the
+         licenses.
+.sp 2
+\fB\fIproject_name\fB\fR
+.br
+         Specify a License Scheduler project (described in the
+         section) that is allowed to use the licenses.
+.sp 2
+\fB\fInumber_non_shared_licenses\fB\fR
+.br
+         Specify a positive integer representing the number of
+         non-shared licenses that the project owns.
+.SH Description
+
+.sp 2
+Defines non-shared licenses. Non-shared licenses are privately
+owned, and are not shared with other license projects. They are
+available only to one project.
+.sp 2
+Used for project mode and fast dispatch project mode only.
+.sp 2
+Use blinfo -a to display \fBNON_SHARED_DISTRIBUTION\fR
+information.
+.sp 2
+For projects defined with \fBNON_SHARED_DISTRIBUTION\fR, you must
+assign the project \fBOWNERSHIP\fR an equal or greater number of
+tokens than the number of non-shared licenses. If the number of
+owned licenses is less than the number of non-shared licenses,
+\fBOWNERSHIP\fR is set to the number of non-shared licenses.
+.SH Examples
+
+.sp 2
+*  If the number of tokens normally given to a project (to
+   satisfy the \fBDISTRIBUTION\fR share ratio) is larger than its
+   \fBNON_SHARED_DISTRIBUTION\fR value, the \fBDISTRIBUTION\fR
+   share ratio takes effect first.
+.sp 2
+   Begin Feature
+.br
+   NAME=f1 # total 15 on LanServer
+.br
+   LM_LICENSE_NAME=VCS-RUNTIME
+.br
+   DISTRIBUTION=LanServer(Lp1 4/10 Lp2 1)
+.br
+   NON_SHARED_DISTRIBUTION=LanServer(Lp1 10)
+.br
+   End Feature
+.br
+
+.sp 2
+   In this example, 10 non-shared licenses are defined for the
+   Lp1 project on LanServer. The \fBDISTRIBUTION\fR share ratio
+   for Lp1:Lp2 is 4:1. If there are 15 licenses, Lp1 will
+   normally get 12 licenses, which is larger than its
+   \fBNON_SHARED_DISTRIBUTION\fR value of 10. Therefore, the
+   \fBDISTRIBUTION\fR share ratio takes effect, so Lp1 gets 12
+   licenses and Lp2 gets 3 licenses for the 4:1 share ratio.
+.sp 2
+
+.sp 2
+*  If the number of tokens normally given to a project (to
+   satisfy the \fBDISTRIBUTION\fR share ratio) is smaller than
+   its \fBNON_SHARED_DISTRIBUTION\fR value, the project will
+   first get the number of tokens equal to
+   \fBNON_SHARED_DISTRIBUTION\fR, then the \fBDISTRIBUTION\fR
+   share ratio for the other projects takes effect for the
+   remaining licenses.
+.sp 2
+   *  For one project with non-shared licenses and one project
+      with no non-shared licenses: , the project with no
+      non-shared licenses is given all the remaining licenses
+      since it would normally be given more according to the
+      \fBDISTRIBUTION\fR share ratio:
+.sp 2
+      Begin Feature
+.br
+      NAME=f1 # total 15 on LanServer
+.br
+      LM_LICENSE_NAME=VCS-RUNTIME
+.br
+      DISTRIBUTION=LanServer(Lp1 1/10 Lp2 4)
+.br
+      NON_SHARED_DISTRIBUTION=LanServer(Lp1 10)
+.br
+      End Feature
+.br
+
+.sp 2
+      In this example, 10 non-shared licenses are defined for the
+      Lp1 project on LanServer. The \fBDISTRIBUTION\fR share
+      ratio for Lp1:Lp2 is 1:4. If there are 15 licenses, Lp1
+      will normally get three licenses, which is smaller than its
+      \fBNON_SHARED_DISTRIBUTION\fR value of 10. Therefore, Lp1
+      gets the first 10 licenses, and Lp2 gets the remaining five
+      licenses (since it would normally get more according to the
+      share ratio).
+.sp 2
+   *  For one project with non-shared licenses and two or more
+      projects with no non-shared licenses, the two projects with
+      no non-shared licenses are assigned the remaining licenses
+      according to the \fBDISTRIBUTION\fR share ratio with each
+      other, ignoring the share ratio for the project with
+      non-shared licenses.
+.sp 2
+      Begin Feature
+.br
+      NAME=f1 # total 15 on LanServer
+.br
+      LM_LICENSE_NAME=VCS-RUNTIME
+.br
+      DISTRIBUTION=LanServer(Lp1 1/10 Lp2 4 Lp3 2)
+.br
+      NON_SHARED_DISTRIBUTION=LanServer(Lp1 10)
+.br
+      End Feature
+.br
+
+.sp 2
+      In this example, 10 non-shared licenses are defined for the
+      Lp1 project on LanServer. The \fBDISTRIBUTION\fR share
+      ratio for Lp1:Lp2:Lp3 is 1:4:2. If there are 15 licenses,
+      Lp1 will normally get two licenses, which is smaller than
+      its \fBNON_SHARED_DISTRIBUTION\fR value of 10. Therefore,
+      Lp1 gets the first 10 licenses. The remaining licenses are
+      given to Lp2 and Lp3 to a ratio of 4:2, so Lp2 gets three
+      licenses and Lp3 gets two licenses.
+.sp 2
+   *  For two projects with non-shared licenses and one with no
+      non-shared licenses, the one project with no non-shared
+      licenses is given the remaining licenses after the two
+      projects are given their non-shared licenses:
+.sp 2
+      Begin Feature
+.br
+      NAME=f1 # total 15 on LanServer
+.br
+      LM_LICENSE_NAME=VCS-RUNTIME
+.br
+      DISTRIBUTION=LanServer(Lp1 1/10 Lp2 4 Lp3 2/5)
+.br
+      NON_SHARED_DISTRIBUTION=LanServer(Lp1 10 Lp3 5)
+.br
+      End Feature
+.br
+
+.sp 2
+      In this example, 10 non-shared licenses are defined for the
+      Lp1 project and five non-shared license are defined for the
+      Lp3 project on LanServer. The \fBDISTRIBUTION\fR share
+      ratio for Lp1:Lp2:Lp3 is 1:4:2. If there are 15 licenses,
+      Lp1 will normally get two licenses and Lp3 will normally
+      get four licenses, which are both smaller than their
+      corresponding \fBNON_SHARED_DISTRIBUTION\fR values.
+      Therefore, Lp1 gets 10 licenses and Lp3 gets five licenses.
+      Lp2 gets no licenses even though it normally has the
+      largest share because Lp1 and Lp3 have non-shared licenses.
+.sp 2
+
+.sp 2
+
+.ce 1000
+\fBPEAK_INUSE_PERIOD\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRPEAK_INUSE_PERIOD=\fR\fIseconds\fR | \fIcluster\fR
+\fIseconds\fR ...
+.SH Description
+
+.sp 2
+Defines the interval over which a peak \fBINUSE\fR value is
+determined for dynamic license allocation in cluster mode for
+this license features and service domain.
+.sp 2
+Use keyword default to set for all clusters not specified, and
+the keyword interactive (in place of cluster name) to set for
+taskman jobs. For example:
+.sp 2
+PEAK_INUSE_PERIOD = cluster1 1000 cluster2 700 default 300
+.br
+
+.sp 2
+When defining the interval for LSF Advanced Edition submission
+clusters, the interval is determined for the entire LSF Advanced
+Edition mega-cluster (the submission cluster and its execution
+clusters).
+.sp 2
+Used for cluster mode only.
+.sp 2
+When defined in both the Parameters section and the Feature
+section, the Feature section definition is used for that license
+feature.
+.SH Default
+
+.sp 2
+300 seconds
+.sp 2
+
+.ce 1000
+\fBPREEMPT_ORDER\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRPREEMPT_ORDER=BY_OWNERSHIP\fR
+.SH Description
+
+.sp 2
+Sets the preemption order based on configured \fBOWNERSHIP\fR.
+.sp 2
+Used for project mode only.
+.SH Default
+
+.sp 2
+Not defined.
+.sp 2
+
+.ce 1000
+\fBPREEMPT_RESERVE\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRPREEMPT_RESERVE=Y\fR | \fRN\fR
+.SH Description
+
+.sp 2
+If \fRPREEMPT_RESERVE=Y\fR, enables License Scheduler to preempt
+either licenses that are reserved or already in use by other
+projects. The number of jobs must be greater than the number of
+licenses owned.
+.sp 2
+If \fRPREEMPT_RESERVE=N\fR, License Scheduler does not preempt
+reserved licenses.
+.sp 2
+Used for project mode only.
+.SH Default
+
+.sp 2
+Y. Reserved licenses are preemptable.
+.sp 2
+
+.ce 1000
+\fBRETENTION_FACTOR\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRRETENTION_FACTOR=\fR\fIinteger\fR\fR%\fR
+.SH Description
+
+.sp 2
+Ensures that when tokens are reclaimed from an overfed cluster,
+the overfed cluster still gets to dispatch additional jobs, but
+at a reduced rate. Specify the retention factor as a percentage
+of tokens to be retained by the overfed cluster.
+.sp 2
+For example:
+.sp 2
+Begin Feature
+.br
+NAME = f1
+.br
+CLUSTER_MODE = Y
+.br
+CLUSTER_DISTRIBUTION = LanServer(LAN1 1 LAN2 1)
+.br
+ALLOC_BUFFER = 20
+.br
+RETENTION_FACTOR = 25%
+.br
+End Feature
+.br
+
+.sp 2
+With RETENTION_FACTOR set, as jobs finish in the overfed cluster
+and free up tokens, at least 25% of the tokens can be reused by
+the cluster to dispatch additional jobs. Tokens not held by the
+cluster are redistributed to other clusters. In general, a higher
+value means that the process of reclaiming tokens from an overfed
+cluster takes longer, and an overfed cluster gets to dispatch
+more jobs while tokens are being reclaimed from it.
+.sp 2
+When the entire LSF Advanced Edition mega-cluster (the submission
+cluster and its execution clusters) is overfed, the number of
+retained tokens is from the entire LSF Advanced Edition
+mega-cluster.
+.sp 2
+Used for cluster mode only.
+.SH Default
+
+.sp 2
+Not defined
+.sp 2
+
+.ce 1000
+\fBSERVICE_DOMAINS\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRSERVICE_DOMAINS=\fR\fIservice_domain_name\fR ...
+.sp 2
+\fB\fIservice_domain_name\fB\fR
+.br
+         Specify the name of the service domain.
+.SH Description
+
+.sp 2
+Required if GROUP_DISTRIBUTION is defined. Specifies the service
+domains that provide tokens for this feature.
+.sp 2
+Only a single service domain can be specified when using cluster
+mode or fast dispatch project mode.
+.sp 2
+
+.ce 1000
+\fBWORKLOAD_DISTRIBUTION\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRWORKLOAD_DISTRIBUTION=\fR[\fIservice_domain_name\fR\fR(LSF\fR
+\fIlsf_distribution \fR\fRNON_LSF\fR
+\fInon_lsf_distribution\fR\fR)\fR] ...
+.sp 2
+\fB\fIservice_domain_name\fB\fR
+.br
+         Specify a License Scheduler service domain (described in
+         the ServiceDomain section) that distributes the
+         licenses.
+.sp 2
+\fB\fIlsf_distribution\fB\fR
+.br
+         Specify the share of licenses dedicated to LSF
+         workloads. The share of licenses dedicated to LSF
+         workloads is a ratio of
+         \fIlsf_distribution\fR:\fInon_lsf_distribution\fR.
+.sp 2
+\fB\fInon_lsf_distribution\fB\fR
+.br
+         Specify the share of licenses dedicated to non-LSF
+         workloads. The share of licenses dedicated to non-LSF
+         workloads is a ratio of
+         \fInon_lsf_distribution\fR:\fIlsf_distribution\fR.
+.SH Description
+
+.sp 2
+Defines the distribution given to each LSF and non-LSF workload
+within the specified service domain.
+.sp 2
+When running in cluster mode, \fBWORKLOAD_DISTRIBUTION\fR can
+only be specified for WAN service domains; if defined for a LAN
+feature, it is ignored.
+.sp 2
+Use blinfo -a to display \fBWORKLOAD_DISTRIBUTION\fR
+configuration.
+.SH Example
+
+.sp 2
+Begin Feature
+.br
+NAME=ApplicationX
+.br
+DISTRIBUTION=LicenseServer1(Lp1 1 Lp2 2)
+.br
+WORKLOAD_DISTRIBUTION=LicenseServer1(LSF 8 NON_LSF 2) 
+.br
+End Feature
+.br
+
+.sp 2
+On the \fRLicenseServer1\fR domain, the available licenses are
+dedicated in a ratio of 8:2 for LSF and non-LSF workloads. This
+means that 80% of the available licenses are dedicated to the LSF
+workload, and 20% of the available licenses are dedicated to the
+non-LSF workload.
+.sp 2
+If \fRLicenseServer1\fR has a total of 80 licenses, this
+configuration indicates that 64 licenses are dedicated to the LSF
+workload, and 16 licenses are dedicated to the non-LSF workload.
+.sp 2
+
+.ce 1000
+\fBFeatureGroup section\fR
+.ce 0
+
+.sp 2
+
+.SH Description
+
+.sp 2
+Collects license features into groups. Put FeatureGroup sections
+after Feature sections in lsf.licensescheduler.
+.sp 2
+The FeatureGroup section is supported in both project mode and
+cluster mode.
+.SH FeatureGroup section structure
+
+.sp 2
+The FeatureGroup section begins and ends with the lines \fRBegin
+FeatureGroup\fR and \fREnd FeatureGroup\fR. Feature group
+definition consists of a unique name and a list of features
+contained in the feature group.
+.SH Example
+
+.sp 2
+Begin FeatureGroup
+.br
+NAME = Synposys
+.br
+FEATURE_LIST = ASTRO VCS_Runtime_Net Hsim Hspice
+.br
+End FeatureGroup
+.br
+Begin FeatureGroup
+.br
+NAME = Cadence
+.br
+FEATURE_LIST = Encounter NCSim  NCVerilog
+.br
+End FeatureGroup
+.br
+
+.SH Parameters
+
+.sp 2
+*  NAME
+.sp 2
+*  FEATURE_LIST
+.sp 2
+
+.ce 1000
+\fBNAME\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRNAME=\fR\fIfeature_group_name\fR
+.sp 2
+Required. Defines the name of the feature group. The name must be
+unique.
+.sp 2
+
+.ce 1000
+\fBFEATURE_LIST\fR
+.ce 0
+
+.sp 2
+Required. Lists the license features contained in the feature
+group.The feature names in FEATURE_LIST must already be defined
+in Feature sections. Feature names cannot be repeated in the
+FEATURE_LIST of one feature group. The FEATURE_LIST cannot be
+empty. Different feature groups can have the same features in
+their FEATURE_LIST.
+.sp 2
+
+.ce 1000
+\fBProjectGroup section\fR
+.ce 0
+
+.sp 2
+
+.SH Description
+
+.sp 2
+Defines the hierarchical relationships of projects.
+.sp 2
+Used for project mode only. When running in cluster mode, any
+ProjectGroup sections are ignored.
+.sp 2
+The hierarchical groups can have multiple levels of grouping. You
+can configure a tree-like scheduling policy, with the leaves
+being the license projects that jobs can belong to. Each project
+group in the tree has a set of values, including shares, limits,
+ownership and non-shared, or exclusive, licenses.
+.sp 2
+Use blstat -G to view the hierarchical dynamic license
+information.
+.sp 2
+Use blinfo -G to view the hierarchical configuration.
+.SH ProjectGroup section structure
+
+.sp 2
+Define a section for each hierarchical group managed by License
+Scheduler.
+.sp 2
+The keywords GROUP, SHARES, OWNERSHIP, LIMIT, and NON_SHARED are
+required. The keywords PRIORITY and DESCRIPTION are optional.
+Empty brackets are allowed only for OWNERSHIP, LIMIT, and
+PRIORITY. SHARES must be specified.
+.sp 2
+Begin          ProjectGroup
+.br
+GROUP          SHARES        OWNERSHIP LIMITS  NON_SHARED PRIORITY
+.br
+(root(A B C))  (1 1 1)       ()        ()         ()      (3 2 -)
+.br
+(A (P1 D))     (1 1)         ()        ()         ()      (3 5)
+.br
+(B (P4 P5))    (1 1)         ()        ()         ()      ()
+.br
+(C (P6 P7 P8)) (1 1 1)       ()        ()         ()      (8 3 0)
+.br
+(D (P2 P3))    (1 1)         ()        ()         ()      (2 1)
+.br
+End ProjectGroup
+.sp 2
+If desired, ProjectGroup sections can be completely independent,
+without any overlapping projects.
+.sp 2
+Begin ProjectGroup
+.br
+GROUP               SHARES  OWNERSHIP LIMITS  NON_SHARED
+.br
+(digital_sim (sim sim_reg)) (40 60)  (100 0)  ()  ()
+.br
+End ProjectGroup
+.br
+
+.br
+Begin ProjectGroup
+.br
+GROUP               SHARES  OWNERSHIP LIMITS  NON_SHARED
+.br
+(analog_sim (app1 multitoken app1_reg)) (50 10 40)  (65 25 0) (- 50 -) ()
+.br
+End digital
+.br
+
+.SH Parameters
+
+.sp 2
+*  DESCRIPTION
+.sp 2
+*  GROUP
+.sp 2
+*  LIMITS
+.sp 2
+*  NON_SHARED
+.sp 2
+*  OWNERSHIP
+.sp 2
+*  PRIORITY
+.sp 2
+*  SHARES
+.sp 2
+
+.ce 1000
+\fBDESCRIPTION\fR
+.ce 0
+
+.sp 2
+Description of the project group.
+.sp 2
+The text can include any characters, including white space. The
+text can be extended to multiple lines by ending the preceding
+line with a backslash (\fR\\fR). The maximum length for the text
+is 64 characters. When the DESCRIPTION column is not empty it
+should contain one entry for each project group member.
+.sp 2
+For example:
+.sp 2
+GROUP       SHARES OWNERSHIP   LIMITS NON_SHARED  DESCRIPTION
+.br
+(R (A B))   (1 1)  ()          ()     (10 10)     () 
+.br
+(A (p1 p2)) (1 1)  (40 60)     ()     ()          ("p1 desc." "")
+.br
+(B (p3 p4)) (1 1)  ()          ()     ()          ("p3 desc." "p4 desc.")
+.br
+
+.sp 2
+Use blinfo -G to view hierarchical project group descriptions.
+.sp 2
+
+.ce 1000
+\fBGROUP\fR
+.ce 0
+
+.sp 2
+Defines the project names in the hierarchical grouping and its
+relationships. Each entry specifies the name of the hierarchical
+group and its members.
+.sp 2
+For better readability, specify the projects in the order from
+the root to the leaves.
+.sp 2
+Specify the entry as follows:
+.sp 2
+(\fIgroup\fR (\fImember\fR ...))
+.sp 2
+
+.ce 1000
+\fBLIMITS\fR
+.ce 0
+
+.sp 2
+Defines the maximum number of licenses that can be used at any
+one time by the hierarchical group member projects. Specify the
+maximum number of licenses for each member, separated by spaces,
+in the same order as listed in the GROUP column.
+.sp 2
+A dash (\fR-\fR) is equivalent to INFINIT_INT, which means there
+is no maximum limit and the project group can use as many
+licenses as possible.
+.sp 2
+You can leave the parentheses empty \fR()\fR if desired.
+.sp 2
+
+.ce 1000
+\fBNON_SHARED\fR
+.ce 0
+
+.sp 2
+Defines the number of licenses that the hierarchical group member
+projects use exclusively. Specify the number of licenses for each
+group or project, separated by spaces, in the same order as
+listed in the GROUP column.
+.sp 2
+A dash (\fR-\fR) is equivalent to a zero, which means there are
+no licenses that the hierarchical group member projects use
+exclusively.
+.sp 2
+For hierarchical project groups in fast dispatch project mode,
+LSF License Scheduler ignores the NON_SHARED value configured for
+project groups, and only uses the NON_SHARED value for the child
+projects. The project group\(aqs NON_SHARED value is the sum of the
+NON_SHARED values of its child projects.
+.sp 2
+Normally, the total number of non-shared licenses should be less
+than the total number of license tokens available. License tokens
+may not be available to project groups if the total non-shared
+licenses for all groups is greater than the number of shared
+tokens available.
+.sp 2
+For example, feature \fRp4_4\fR is configured as follows, with a
+total of 4 tokens:
+.sp 2
+Begin Feature
+.br
+NAME =p4_4 # total token value is 4
+.br
+GROUP_DISTRIBUTION=final
+.br
+SERVICE_DOMAINS=LanServer
+.br
+End Feature
+.br
+
+.sp 2
+The correct configuration is:
+.sp 2
+GROUP           SHARES    OWNERSHIP   LIMITS      NON_SHARED 
+.br
+(final (G2 G1)) (1 1)     ()          ()          (2 0) 
+.br
+(G1 (AP2 AP1))  (1 1)     ()          ()          (1 1)
+.br
+
+.SH Valid values
+
+.sp 2
+Any positive integer up to the LIMITS value defined for the
+specified hierarchical group.
+.sp 2
+If defined as greater than LIMITS, NON_SHARED is set to LIMITS.
+.sp 2
+
+.ce 1000
+\fBOWNERSHIP\fR
+.ce 0
+
+.sp 2
+Defines the level of ownership of the hierarchical group member
+projects. Specify the ownership for each member, separated by
+spaces, in the same order as listed in the GROUP column.
+.sp 2
+You can only define OWNERSHIP for hierarchical group member
+projects, not hierarchical groups. Do not define OWNERSHIP for
+the top level (root) project group. Ownership of a given internal
+node is the sum of the ownership of all child nodes it directly
+governs.
+.sp 2
+A dash (\fR-\fR) is equivalent to a zero, which means there are
+no owners of the projects. You can leave the parentheses empty
+\fR()\fR if desired.
+.SH Valid values
+
+.sp 2
+A positive integer between the NON_SHARED and LIMITS values
+defined for the specified hierarchical group.
+.sp 2
+*  If defined as less than NON_SHARED, OWNERSHIP is set to
+   NON_SHARED.
+.sp 2
+*  If defined as greater than LIMITS, OWNERSHIP is set to LIMITS.
+.sp 2
+
+.ce 1000
+\fBPRIORITY\fR
+.ce 0
+
+.sp 2
+Defines the priority assigned to the hierarchical group member
+projects. Specify the priority for each member, separated by
+spaces, in the same order as listed in the GROUP column.
+.sp 2
+“0” is the lowest priority, and a higher number specifies a
+higher priority. This column overrides the default behavior.
+Instead of preempting based on the accumulated inuse usage of
+each project, the projects are preempted according to the
+specified priority from lowest to highest.
+.sp 2
+By default, priorities are evaluated top down in the project
+group hierarchy. The priority of a given node is first decided by
+the priority of the parent groups. When two nodes have the same
+priority, priority is determined by the accumulated inuse usage
+of each project at the time the priorities are evaluated. Specify
+LS_PREEMPT_PEER=Y in the Parameters section to enable bottom-up
+license token preemption in hierarchical project group
+configuration.
+.sp 2
+A dash (\fR-\fR) is equivalent to a zero, which means there is no
+priority for the project. You can leave the parentheses empty
+\fR()\fR if desired.
+.sp 2
+Use blinfo -G to view hierarchical project group priority
+information.
+.SH Priority of default project
+
+.sp 2
+If not explicitly configured, the default project has the
+priority of 0. You can override this value by explicitly
+configuring the default project in Projects section with the
+chosen priority value.
+.sp 2
+
+.ce 1000
+\fBSHARES\fR
+.ce 0
+
+.sp 2
+Required. Defines the shares assigned to the hierarchical group
+member projects. Specify the share for each member, separated by
+spaces, in the same order as listed in the GROUP column.
+.sp 2
+
+.ce 1000
+\fBProjects section\fR
+.ce 0
+
+.sp 2
+
+.SH Description
+
+.sp 2
+Required for project mode only. Ignored in cluster mode. Lists
+the License Scheduler projects.
+.SH Projects section structure
+
+.sp 2
+The Projects section begins and ends with the lines \fRBegin
+\fRProjects and \fREnd \fRProjects. The second line consists of
+the required column heading \fRPROJECTS\fR and the optional
+column heading \fRPRIORITY\fR. Subsequent lines list
+participating projects, one name per line.
+.SH Examples
+
+.sp 2
+The following example lists the projects without defining the
+priority:
+.sp 2
+Begin Projects 
+.br
+PROJECTS 
+.br
+Lp1 
+.br
+Lp2 
+.br
+Lp3 
+.br
+Lp4 
+.br
+ ... 
+.br
+End Projects
+.br
+
+.sp 2
+The following example lists the projects and defines the priority
+of each project:
+.sp 2
+Begin Projects 
+.br
+PROJECTS         PRIORITY 
+.br
+Lp1              3 
+.br
+Lp2              4 
+.br
+Lp3              2 
+.br
+Lp4              1 
+.br
+default          0
+.br
+ ... 
+.br
+End Projects
+.br
+
+.SH Parameters
+
+.sp 2
+*  DESCRIPTION
+.sp 2
+*  PRIORITY
+.sp 2
+*  PROJECTS
+.sp 2
+
+.ce 1000
+\fBDESCRIPTION\fR
+.ce 0
+
+.sp 2
+Description of the project.
+.sp 2
+The text can include any characters, including white space. The
+text can be extended to multiple lines by ending the preceding
+line with a backslash (\). The maximum length for the text is 64
+characters.
+.sp 2
+Use blinfo -Lp to view the project description.
+.sp 2
+
+.ce 1000
+\fBPRIORITY\fR
+.ce 0
+
+.sp 2
+Defines the priority for each project where “0” is the lowest
+priority, and the higher number specifies a higher priority. This
+column overrides the default behavior. Instead of preempting in
+order the projects are listed under PROJECTS based on the
+accumulated inuse usage of each project, the projects are
+preempted according to the specified priority from lowest to
+highest.
+.sp 2
+Used for project mode only.
+.sp 2
+When 2 projects have the same priority number configured, the
+first project listed has higher priority, like LSF queues.
+.sp 2
+Use blinfo -Lp to view project priority information.
+.SH Priority of default project
+
+.sp 2
+If not explicitly configured, the default project has the
+priority of 0. You can override this value by explicitly
+configuring the default project in Projects section with the
+chosen priority value.
+.sp 2
+
+.ce 1000
+\fBPROJECTS\fR
+.ce 0
+
+.sp 2
+Defines the name of each participating project. Specify using one
+name per line.
+.sp 2
+
+.ce 1000
+\fBAutomatic time-based configuration\fR
+.ce 0
+
+.sp 2
+Variable configuration is used to automatically change License
+Scheduler license token distribution policy configuration based
+on time windows. You define automatic configuration changes in
+lsf.licensescheduler by using if-else constructs and time
+expressions in the Feature section. After you change the file,
+check the configuration with the bladmin ckconfig command, and
+restart License Scheduler in the cluster with the bladmin
+reconfig command.
+.sp 2
+Used for both project mode and cluster mode.
+.sp 2
+The expressions are evaluated by License Scheduler every 10
+minutes based on the bld start time. When an expression evaluates
+true, License Scheduler dynamically changes the configuration
+based on the associated configuration statements, restarting bld
+automatically.
+.sp 2
+When LSF determines a feature has been added, removed, or
+changed, mbatchd no longer restarts automatically. Instead a
+message indicates that a change has been detected, prompting the
+user to restart manually with badmin mbdrestart.
+.sp 2
+This affects automatic time-based configuration in the Feature
+section of lsf.licensescheduler. When mbatchd detects a change in
+the Feature configuration, you must restart mbatchd for the
+change to take effect.
+.SH Example
+
+.sp 2
+Begin Feature
+.br
+NAME = f1 
+.br
+#if time(5:16:30-1:8:30 20:00-8:30)
+.br
+DISTRIBUTION=Lan(P1 2/5  P2 1)
+.br
+#elif time(3:8:30-3:18:30)
+.br
+DISTRIBUTION=Lan(P3 1)
+.br
+#else
+.br
+DISTRIBUTION=Lan(P1 1 P2 2/5)
+.br
+#endif
+.br
+End Feature
+.br

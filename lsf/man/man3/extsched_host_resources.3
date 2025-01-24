@@ -1,0 +1,23 @@
+.TH "extsched_host_resources" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+extsched_host_resources \- extsched_host_resources 
+This API takes in input a void pointer to a scheduler internal representation of a host and returns the resources on the host.
+.PP
+The host is for example the void * pointer of the candHost data structure. The API returns a pointer to a statically allocated memory which is freed at the next fuction invocation. The caller must copy the data if they have to be kept across function invocations.
+.PP
+\fB#include <lssched.h>\fP
+.PP
+\fB struct hostResources *extsched_host_resources(INT_Host *host)\fP
+.PP
+.SH "Parameters:"
+\fIhost\fP [IN] : point to an internal host structure
+.PP
+.SH "Returns:"
+struct hostResources *  to hostResource structure. 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

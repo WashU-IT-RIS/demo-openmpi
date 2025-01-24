@@ -1,0 +1,3833 @@
+
+.ad l
+
+.TH lsb.events 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBlsb.events\fR
+.ce 0
+
+.sp 2
+The LSF batch event log file lsb.events is used to display LSF
+batch event history and for mbatchd failure recovery.
+.sp 2
+Whenever a host, job, or queue changes status, a record is
+appended to the event log file. The file is located in
+LSB_SHAREDIR/\fIcluster_name\fR/logdir, where \fBLSB_SHAREDIR\fR
+must be defined in the lsf.conf file, and \fIcluster_name\fR is
+the name of the LSF cluster, as returned by the tlsid command.
+.sp 2
+The bhist command searches the most current lsb.events file for
+its output.
+.sp 2
+Parent topic: Configuration files
+.sp 2
+
+.ce 1000
+\fBlsb.events structure\fR
+.ce 0
+
+.sp 2
+The event log file is an ASCII file with one record per line. For
+the lsb.events file, the first line has the format \fR#
+\fIhistory_seek_position\fR>\fR, which indicates the file
+position of the first history event after log switch. For the
+lsb.events.# file, the first line has the format \fR#
+\fItimestamp_most_recent_event\fR\fR, which gives the timestamp
+of the most recent event in the file.
+.sp 2
+
+.ce 1000
+\fBLimiting the size of lsb.events\fR
+.ce 0
+
+.sp 2
+Use the \fBMAX_JOB_NUM\fR parameter in the lsb.params file to set
+the maximum number of finished jobs whose events are to be stored
+in the lsb.events log file.
+.sp 2
+Once the limit is reached, mbatchd starts a new event log file.
+The old event log file is saved as lsb.events.\fIn\fR, with
+subsequent sequence number suffixes incremented by 1 each time a
+new log file is started. Event logging continues in the new
+lsb.events file.
+.sp 2
+
+.ce 1000
+\fBRecords and fields\fR
+.ce 0
+
+.sp 2
+The fields of a record are separated by blanks. The first string
+of an event record indicates its type. The following types of
+events are recorded:
+.sp 2
+*  JOB_NEW
+.sp 2
+*  JOB_FORWARD
+.sp 2
+*  JOB_ACCEPT
+.sp 2
+*  JOB_ACCEPTACK
+.sp 2
+*  JOB_CHKPNT
+.sp 2
+*  JOB_START
+.sp 2
+*  JOB_START_ACCEPT
+.sp 2
+*  JOB_STATUS
+.sp 2
+*  JOB_SWITCH
+.sp 2
+*  JOB_SWITCH2
+.sp 2
+*  JOB_MOVE
+.sp 2
+*  QUEUE_CTRL
+.sp 2
+*  HOST_CTRL
+.sp 2
+*  MBD_START
+.sp 2
+*  MBD_DIE
+.sp 2
+*  UNFULFILL
+.sp 2
+*  LOAD_INDEX
+.sp 2
+*  JOB_SIGACT
+.sp 2
+*  MIG
+.sp 2
+*  JOB_MODIFY2
+.sp 2
+*  JOB_SIGNAL
+.sp 2
+*  JOB_EXECUTE
+.sp 2
+*  JOB_REQUEUE
+.sp 2
+*  JOB_CLEAN
+.sp 2
+*  JOB_EXCEPTION
+.sp 2
+*  JOB_EXT_MSG
+.sp 2
+*  JOB_ATTA_DATA
+.sp 2
+*  JOB_CHUNK
+.sp 2
+*  SBD_UNREPORTED_STATUS
+.sp 2
+*  PRE_EXEC_START
+.sp 2
+*  JOB_FORCE
+.sp 2
+*  GRP_ADD
+.sp 2
+*  GRP_MOD
+.sp 2
+*  LOG_SWITCH
+.sp 2
+*  JOB_RESIZE_NOTIFY_START
+.sp 2
+*  JOB_RESIZE_NOTIFY_ACCEPT
+.sp 2
+*  JOB_RESIZE_NOTIFY_DONE
+.sp 2
+*  JOB_RESIZE_RELEASE
+.sp 2
+*  JOB_RESIZE_CANCEL
+.sp 2
+*  HOST_POWER_STATUS
+.sp 2
+*  JOB_PROV_HOST
+.sp 2
+*  HOST_CLOSURE_LOCK_ID_CTRL
+.sp 2
+*  ATTR_CREATE
+.sp 2
+*  ATTR_DELETE
+.sp 2
+*  ATTR_INFO
+.sp 2
+
+.ce 1000
+\fBJOB_NEW\fR
+.ce 0
+
+.sp 2
+A new job has been submitted. The fields in order of occurrence
+are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event
+.sp 2
+\fBjobId (%d)\fR
+.br
+         Job ID
+.sp 2
+\fBuserId (%d)\fR
+.br
+         UNIX user ID of the submitter
+.sp 2
+\fBoptions (%d)\fR
+.br
+         Bit flags for job processing
+.sp 2
+\fBnumProcessors (%d)\fR
+.br
+         Number of processors requested for execution
+.sp 2
+\fBsubmitTime (%d)\fR
+.br
+         Job submission time
+.sp 2
+\fBbeginTime (%d)\fR
+.br
+         Start time – the job should be started on or after this
+         time
+.sp 2
+\fBtermTime (%d)\fR
+.br
+         Termination deadline – the job should be terminated by
+         this time (%d)
+.sp 2
+\fBsigValue (%d)\fR
+.br
+         Signal value
+.sp 2
+\fBchkpntPeriod (%d)\fR
+.br
+         Checkpointing period
+.sp 2
+\fBrestartPid (%d)\fR
+.br
+         Restart process ID
+.sp 2
+\fBuserName (%s)\fR
+.br
+         User name
+.sp 2
+\fBrLimits\fR
+.br
+         Soft CPU time limit (%d), see getrlimit(2)
+.sp 2
+\fBrLimits\fR
+.br
+         Soft file size limit (%d), see getrlimit(2)
+.sp 2
+\fBrLimits\fR
+.br
+         Soft data segment size limit (%d), see getrlimit(2)
+.sp 2
+\fBrLimits\fR
+.br
+         Soft stack segment size limit (%d), see getrlimit(2)
+.sp 2
+\fBrLimits\fR
+.br
+         Soft core file size limit (%d), see getrlimit(2)
+.sp 2
+\fBrLimits\fR
+.br
+         Soft memory size limit (%d), see getrlimit(2)
+.sp 2
+\fBrLimits\fR
+.br
+         Reserved (%d)
+.sp 2
+\fBrLimits\fR
+.br
+         Reserved (%d)
+.sp 2
+\fBrLimits\fR
+.br
+         Reserved (%d)
+.sp 2
+\fBrLimits\fR
+.br
+         Soft run time limit (%d), see getrlimit(2)
+.sp 2
+\fBrLimits\fR
+.br
+         Reserved (%d)
+.sp 2
+\fBhostSpec (%s)\fR
+.br
+         Model or host name for normalizing CPU time and run time
+.sp 2
+\fBhostFactor (%f)\fR
+.br
+         CPU factor of the above host
+.sp 2
+\fBumask (%d)\fR
+.br
+         File creation mask for this job
+.sp 2
+\fBqueue (%s)\fR
+.br
+         Name of job queue to which the job was submitted
+.sp 2
+\fBresReq (%s)\fR
+.br
+         Resource requirements
+.sp 2
+\fBfromHost (%s)\fR
+.br
+         Submission host name
+.sp 2
+\fBcwd (%s)\fR
+.br
+         Current working directory (up to 4094 characters for
+         UNIX or 255 characters for Windows)
+.sp 2
+\fBchkpntDir (%s)\fR
+.br
+         Checkpoint directory
+.sp 2
+\fBinFile (%s)\fR
+.br
+         Input file name (up to 4094 characters for UNIX or 255
+         characters for Windows)
+.sp 2
+\fBoutFile (%s)\fR
+.br
+         Output file name (up to 4094 characters for UNIX or 255
+         characters for Windows)
+.sp 2
+\fBerrFile (%s)\fR
+.br
+         Error output file name (up to 4094 characters for UNIX
+         or 255 characters for Windows)
+.sp 2
+\fBsubHomeDir (%s)\fR
+.br
+         Submitter’s home directory
+.sp 2
+\fBjobFile (%s)\fR
+.br
+         Job file name
+.sp 2
+\fBnumAskedHosts (%d)\fR
+.br
+         Number of candidate host names
+.sp 2
+\fBaskedHosts (%s)\fR
+.br
+         List of names of candidate hosts for job dispatching
+.sp 2
+\fBdependCond (%s)\fR
+.br
+         Job dependency condition
+.sp 2
+\fBpreExecCmd (%s)\fR
+.br
+         Job pre-execution command
+.sp 2
+\fBjobName (%s)\fR
+.br
+         Job name (up to 4094 characters)
+.sp 2
+\fBcommand (%s)\fR
+.br
+         Job command (up to 4094 characters for UNIX or 255
+         characters for Windows)
+.sp 2
+\fBnxf (%d)\fR
+.br
+         Number of files to transfer (%d)
+.sp 2
+\fBxf (%s)\fR
+.br
+         List of file transfer specifications
+.sp 2
+\fBmailUser (%s)\fR
+.br
+         Mail user name
+.sp 2
+\fBprojectName (%s)\fR
+.br
+         Project name
+.sp 2
+\fBniosPort (%d)\fR
+.br
+         Callback port if batch interactive job
+.sp 2
+\fBmaxNumProcessors (%d)\fR
+.br
+         Maximum number of processors
+.sp 2
+\fBschedHostType (%s)\fR
+.br
+         Execution host type
+.sp 2
+\fBloginShell (%s)\fR
+.br
+         Login shell
+.sp 2
+\fBtimeEvent (%d)\fR
+.br
+         Time Event, for job dependency condition; specifies when
+         time event ended
+.sp 2
+\fBuserGroup (%s)\fR
+.br
+         User group
+.sp 2
+\fBexceptList (%s)\fR
+.br
+         Exception handlers for the job
+.sp 2
+\fBoptions2 (%d)\fR
+.br
+         Bit flags for job processing
+.sp 2
+\fBidx (%d)\fR
+.br
+         Job array index
+.sp 2
+\fBinFileSpool (%s)\fR
+.br
+         Spool input file (up to 4094 characters for UNIX or 255
+         characters for Windows)
+.sp 2
+\fBcommandSpool (%s)\fR
+.br
+         Spool command file (up to 4094 characters for UNIX or
+         255 characters for Windows)
+.sp 2
+\fBjobSpoolDir (%s)\fR
+.br
+         Job spool directory (up to 4094 characters for UNIX or
+         255 characters for Windows)
+.sp 2
+\fBuserPriority (%d)\fR
+.br
+         User priority
+.sp 2
+\fBrsvId %s\fR
+.br
+         Advance reservation ID; for example, "\fRuser2#0\fR"
+.sp 2
+\fBjobGroup (%s)\fR
+.br
+         The job group under which the job runs
+.sp 2
+\fBsla (%s)\fR
+.br
+         SLA service class name under which the job runs
+.sp 2
+\fBrLimits\fR
+.br
+         Thread number limit
+.sp 2
+\fBextsched (%s)\fR
+.br
+         External scheduling options
+.sp 2
+\fBwarningAction (%s)\fR
+.br
+         Job warning action
+.sp 2
+\fBwarningTimePeriod (%d)\fR
+.br
+         Job warning time period in seconds
+.sp 2
+\fBSLArunLimit (%d)\fR
+.br
+         Absolute run time limit of the job for SLA service
+         classes
+.sp 2
+\fBlicenseProject (%s)\fR
+.br
+         IBM Spectrum LSF License Scheduler project name
+.sp 2
+\fBoptions3 (%d)\fR
+.br
+         Bit flags for job processing
+.sp 2
+\fBapp (%s)\fR
+.br
+         Application profile name
+.sp 2
+\fBpostExecCmd (%s)\fR
+.br
+         Post-execution command to run on the execution host
+         after the job finishes
+.sp 2
+\fBruntimeEstimation (%d)\fR
+.br
+         Estimated run time for the job
+.sp 2
+\fBrequeueEValues (%s)\fR
+.br
+         Job exit values for automatic job requeue
+.sp 2
+\fBresizeNotifyCmd (%s)\fR
+.br
+         Resize notification command to run on the first
+         execution host to inform job of a resize event.
+.sp 2
+\fBjobDescription (%s)\fR
+.br
+         Job description (up to 4094 characters).
+.sp 2
+\fBsubmitEXT\fR
+.br
+         Submission extension field, reserved for internal use.
+.sp 2
+         \fBNum (%d)\fR
+.br
+                  Number of elements (key-value pairs) in the
+                  structure.
+.sp 2
+         \fBkey (%s)\fR
+.br
+                  Reserved for internal use.
+.sp 2
+         \fBvalue (%s)\fR
+.br
+                  Reserved for internal use.
+.sp 2
+         \fBsrcJobId (%d)\fR
+.br
+                  The submission cluster job ID
+.sp 2
+         \fBsrcCluster (%s)\fR
+.br
+                  The name of the submission cluster
+.sp 2
+         \fBdstJobId (%d)\fR
+.br
+                  The execution cluster job ID
+.sp 2
+         \fBdstCluster (%s)\fR
+.br
+                  The name of the execution cluster
+.sp 2
+         \fBjobaffReq (%s)\fR
+.br
+                  The host-level attribute affinity request or
+                  job affinity request.
+.sp 2
+\fBnetwork (%s)\fR
+.br
+         Network requirements for IBM Parallel Environment (PE)
+         jobs.
+.sp 2
+\fBcpu_frequency(%d)\fR
+.br
+         CPU frequency at which the job runs.
+.sp 2
+\fBoptions4 (%d)\fR
+.br
+         Bit flags for job processing
+.sp 2
+\fBnStinFile (%d)\fR
+.br
+         (LSF Data Manager) The number of requested input files
+.sp 2
+\fBstinFiles\fR
+.br
+         (LSF Data Manager) List of input data requirement files
+         requested. The list has the following elements:
+.sp 2
+         \fBoptions (%d)\fR
+.br
+                  Bit field that identifies whether the data
+                  requriement is an input file or a tag.
+.sp 2
+         \fBhost (%s)\fR
+.br
+                  Source host of the input file. This field is
+                  empty if the data requirement is a tag.
+.sp 2
+         \fBname(%s)\fR
+.br
+                  Full path to the input data requirement file on
+                  the host. This field is empty if the data
+                  requirement is a tag.
+.sp 2
+         \fBhash (%s)\fR
+.br
+                  Hash key computed for the data requirement file
+                  at job submission time. This field is empty if
+                  the data requirement is a tag.
+.sp 2
+         \fBsize (%lld)\fR
+.br
+                  Size of the data requirement file at job
+                  submission time in bytes.
+.sp 2
+         \fBmodifyTime (%d)\fR
+.br
+                  Last modified time of the data requirement file
+                  at job submission time.
+.sp 2
+         \fBpendTimeLimit (%d)\fR
+.br
+                  Job-level pending time limit of the job, in
+                  seconds.
+.sp 2
+         \fBeligiblePendTimeLimit (%d)\fR
+.br
+                  Job-level eligible pending time limit of the
+                  job, in seconds.
+.sp 2
+
+.ce 1000
+\fBJOB_FORWARD\fR
+.ce 0
+
+.sp 2
+A job has been forwarded to a remote cluster (IBM Spectrum LSF
+multicluster capability only).
+.sp 2
+If LSF_HPC_EXTENSIONS="SHORT_EVENTFILE" is specified in lsf.conf,
+older daemons and commands (pre-LSF Version 6.0) cannot recognize
+the lsb.events file format.
+.sp 2
+The fields in order of occurrence are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event
+.sp 2
+\fBjobId (%d)\fR
+.br
+         Job ID
+.sp 2
+\fBnumReserHosts (%d)\fR
+.br
+         Number of reserved hosts in the remote cluster
+.sp 2
+         If LSF_HPC_EXTENSIONS="SHORT_EVENTFILE" is specified in
+         lsf.conf, the value of this field is the number of
+         .hosts listed in the reserHosts field.
+.sp 2
+\fBcluster (%s)\fR
+.br
+         Remote cluster name
+.sp 2
+\fBreserHosts (%s)\fR
+.br
+         List of names of the reserved hosts in the remote
+         cluster
+.sp 2
+         If LSF_HPC_EXTENSIONS="SHORT_EVENTFILE" is specified in
+         lsf.conf, the value of this field is logged in a
+         shortened format.
+.sp 2
+\fBidx (%d)\fR
+.br
+         Job array index
+.sp 2
+\fBsrcJobId (%d)\fR
+.br
+         The submission cluster job ID
+.sp 2
+\fBsrcCluster (%s)\fR
+.br
+         The name of the submission cluster
+.sp 2
+\fBdstJobId (%d)\fR
+.br
+         The execution cluster job ID
+.sp 2
+\fBdstCluster (%s)\fR
+.br
+         The name of the execution cluster
+.sp 2
+\fBeffectiveResReq (%s)\fR
+.br
+         The runtime resource requirements used for the job.
+.sp 2
+\fBineligiblePendTime(%d)\fR
+.br
+         Time in seconds that the job has been in the ineligible
+         pending state.
+.sp 2
+
+.ce 1000
+\fBJOB_ACCEPT\fR
+.ce 0
+
+.sp 2
+A job from a remote cluster has been accepted by this cluster.
+The fields in order of occurrence are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event
+.sp 2
+\fBjobId (%d)\fR
+.br
+         Job ID at the accepting cluster
+.sp 2
+\fBremoteJid (%d)\fR
+.br
+         Job ID at the submission cluster
+.sp 2
+\fBcluster (%s)\fR
+.br
+         Job submission cluster name
+.sp 2
+\fBidx (%d)\fR
+.br
+         Job array index
+.sp 2
+\fBsrcJobId (%d)\fR
+.br
+         The submission cluster job ID
+.sp 2
+\fBsrcCluster (%s)\fR
+.br
+         The name of the submission cluster
+.sp 2
+\fBdstJobId (%d)\fR
+.br
+         The execution cluster job ID
+.sp 2
+\fBdstCluster (%s)\fR
+.br
+         The name of the execution cluster
+.sp 2
+
+.ce 1000
+\fBJOB_ACCEPTACK\fR
+.ce 0
+
+.sp 2
+Contains remote and local job ID mapping information. The default
+number for the ID is -1 (which means that this is not applicable
+to the job), and the default value for the cluster name is ""
+(empty string). The fields in order of occurrence are:
+.sp 2
+\fB Version number (%s)\fR
+.br
+         The version number
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event
+.sp 2
+\fBjobId (%d)\fR
+.br
+         The ID number of the job at the execution cluster
+.sp 2
+\fBidx (%d)\fR
+.br
+         The job array index
+.sp 2
+\fBjobRmtAttr (%d)\fR
+.br
+         Remote job attributes from:
+.sp 2
+         *  
+            Remote batch job on the submission side
+.sp 2
+         *  
+            Lease job on the submission side
+.sp 2
+         *  
+            Remote batch job on the execution side
+.sp 2
+         *  
+            Lease job on the execution side
+.sp 2
+         *  
+            Lease job re-syncronization during restart
+.sp 2
+         *  
+            Remote batch job re-running on the execution cluster
+.sp 2
+\fBsrcCluster (%s)\fR
+.br
+         The name of the submission cluster
+.sp 2
+\fBsrcJobId (%d)\fR
+.br
+         The submission cluster job ID
+.sp 2
+\fBdstCluster (%s)\fR
+.br
+         The name of the execution cluster
+.sp 2
+\fBdstJobId (%d)\fR
+.br
+         The execution cluster job ID
+.sp 2
+
+.ce 1000
+\fBJOB_CHKPNT\fR
+.ce 0
+
+.sp 2
+Contains job checkpoint information. The fields in order of
+occurrence are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event
+.sp 2
+\fBjobId (%d)\fR
+.br
+         The ID number of the job at the execution cluster
+.sp 2
+\fBperiod (%d)\fR
+.br
+         The new checkpointing period
+.sp 2
+\fBjobPid (%d)\fR
+.br
+         The process ID of the checkpointing process, which is a
+         child sbatchd
+.sp 2
+\fBok (%d)\fR
+.br
+         *  0 means the checkpoint started
+.sp 2
+         *  1 means the checkpoint succeeded
+.sp 2
+\fBflags (%d)\fR
+.br
+         Checkpoint flags, see <lsf/lsbatch.h>:
+.sp 2
+         *  \fRLSB_CHKPNT_KILL\fR: Kill the process if checkpoint
+            is successful
+.sp 2
+         *  \fRLSB_CHKPNT_FORCE\fR: Force checkpoint even if
+            non-checkpointable conditions exist
+.sp 2
+         *  \fRLSB_CHKPNT_MIG\fR: Checkpoint for the purpose of
+            migration
+.sp 2
+\fBidx (%d)\fR
+.br
+         Job array index (must be 0 in JOB_NEW)
+.sp 2
+\fBsrcJobId (%d)\fR
+.br
+         The submission cluster job ID
+.sp 2
+\fBsrcCluster (%s)\fR
+.br
+         The name of the submission cluster
+.sp 2
+\fBdstJobId (%d)\fR
+.br
+         The execution cluster job ID
+.sp 2
+\fBdstCluster (%s)\fR
+.br
+         The name of the execution cluster
+.sp 2
+
+.ce 1000
+\fBJOB_START\fR
+.ce 0
+
+.sp 2
+A job has been dispatched.
+.sp 2
+If LSF_HPC_EXTENSIONS="SHORT_EVENTFILE" is specified in lsf.conf,
+older daemons and commands (pre-LSF Version 6.0) cannot recognize
+the lsb.events file format.
+.sp 2
+The fields in order of occurrence are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event
+.sp 2
+\fBjobId (%d)\fR
+.br
+         Job ID
+.sp 2
+\fBjStatus (%d)\fR
+.br
+         Job status, (4, indicating the RUN status of the job)
+.sp 2
+\fBjobPid (%d)\fR
+.br
+         Job process ID
+.sp 2
+\fBjobPGid (%d)\fR
+.br
+         Job process group ID
+.sp 2
+\fBhostFactor (%f)\fR
+.br
+         CPU factor of the first execution host
+.sp 2
+\fBnumExHosts (%d)\fR
+.br
+         Number of processors used for execution
+.sp 2
+         If LSF_HPC_EXTENSIONS="SHORT_EVENTFILE" is specified in
+         lsf.conf, the value of this field is the number of
+         .hosts listed in the execHosts field.
+.sp 2
+\fBexecHosts (%s)\fR
+.br
+         List of execution host names
+.sp 2
+         If LSF_HPC_EXTENSIONS="SHORT_EVENTFILE" is specified in
+         lsf.conf, the value of this field is logged in a
+         shortened format.
+.sp 2
+\fBqueuePreCmd (%s)\fR
+.br
+         Pre-execution command
+.sp 2
+\fBqueuePostCmd (%s)\fR
+.br
+         Post-execution command
+.sp 2
+\fBjFlags (%d)\fR
+.br
+         Job processing flags
+.sp 2
+\fBuserGroup (%s)\fR
+.br
+         User group name
+.sp 2
+\fBidx (%d)\fR
+.br
+         Job array index
+.sp 2
+\fBadditionalInfo (%s)\fR
+.br
+         Placement information of HPC jobs
+.sp 2
+\fBpreemptBackfill (%d)\fR
+.br
+         How long a backfilled job can run. Used for preemption
+         backfill jobs.
+.sp 2
+\fBjFlags2 (%d)\fR
+.br
+         Job flags
+.sp 2
+\fBsrcJobId (%d)\fR
+.br
+         The submission cluster job ID
+.sp 2
+\fBsrcCluster (%s)\fR
+.br
+         The name of the submission cluster
+.sp 2
+\fBdstJobId (%d)\fR
+.br
+         The execution cluster job ID
+.sp 2
+\fBdstCluster (%s)\fR
+.br
+         The name of the execution cluster
+.sp 2
+\fBeffectiveResReq (%s)\fR
+.br
+         The runtime resource requirements used for the job.
+.sp 2
+\fBnum_network (%d)\fR
+.br
+         The number of the allocated network for IBM Parallel
+         Environment (PE) jobs.
+.sp 2
+\fBnetworkID (%s)\fR
+.br
+         Network ID of the allocated network for IBM Parallel
+         Environment (PE) jobs.
+.sp 2
+\fBnum_window (%d)\fR
+.br
+         Number of allocated windows for IBM Parallel Environment
+         (PE) jobs.
+.sp 2
+\fBcpu_frequency(%d)\fR
+.br
+         CPU frequency at which the job runs.
+.sp 2
+\fBnumAllocSlots(%d)\fR
+.br
+         Number of allocated slots.
+.sp 2
+\fBallocSlots(%s)\fR
+.br
+         List of execution host names where the slots are
+         allocated.
+.sp 2
+\fBineligiblePendTime(%d)\fR
+.br
+         Time in seconds that the job has been in the ineligible
+         pending state.
+.sp 2
+\fBSCHEDULING_OVERHEAD(%f)\fR
+.br
+         The scheduler overhead for a job, in milliseconds. This
+         is the total time that is taken by the scheduler to
+         dispatch the job and the time that is taken by the
+         scheduler to reallocate resources to a new job.
+.sp 2
+
+.ce 1000
+\fBJOB_START_ACCEPT\fR
+.ce 0
+
+.sp 2
+A job has started on the execution host(s). The fields in order
+of occurrence are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event
+.sp 2
+\fBjobId (%d)\fR
+.br
+         Job ID
+.sp 2
+\fBjobPid (%d)\fR
+.br
+         Job process ID
+.sp 2
+\fBjobPGid (%d)\fR
+.br
+         Job process group ID
+.sp 2
+\fBidx (%d)\fR
+.br
+         Job array index
+.sp 2
+\fBsrcJobId (%d)\fR
+.br
+         The submission cluster job ID
+.sp 2
+\fBsrcCluster (%s)\fR
+.br
+         The name of the submission cluster
+.sp 2
+\fBdstJobId (%d)\fR
+.br
+         The execution cluster job ID
+.sp 2
+\fBdstCluster (%s)\fR
+.br
+         The name of the execution cluster
+.sp 2
+
+.ce 1000
+\fBJOB_STATUS\fR
+.ce 0
+
+.sp 2
+The status of a job changed after dispatch. The fields in order
+of occurrence are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event
+.sp 2
+\fBjobId (%d)\fR
+.br
+         Job ID
+.sp 2
+\fBjStatus (%d)\fR
+.br
+         New status, see <lsf/lsbatch.h>
+.sp 2
+         For JOB_STAT_EXIT (32) and JOB_STAT_DONE (64),
+         host-based resource usage information is appended to the
+         JOB_STATUS record in the fields numHostRusage and
+         hostRusage.
+.sp 2
+\fBreason (%d)\fR
+.br
+         Pending or suspended reason code, see <lsf/lsbatch.h>
+.sp 2
+\fBsubreasons (%d)\fR
+.br
+         Pending or suspended subreason code, see <lsf/lsbatch.h>
+.sp 2
+\fBcpuTime (%f)\fR
+.br
+         CPU time consumed so far
+.sp 2
+\fBendTime (%d)\fR
+.br
+         Job completion time
+.sp 2
+\fBru (%d)\fR
+.br
+         Resource usage flag
+.sp 2
+\fBlsfRusage (%s)\fR
+.br
+         Resource usage statistics, see <lsf/lsf.h>
+.sp 2
+\fBexitStatus (%d)\fR
+.br
+         Exit status of the job, see <lsf/lsbatch.h>
+.sp 2
+\fBidx (%d)\fR
+.br
+         Job array index
+.sp 2
+\fBexitInfo (%d)\fR
+.br
+         Job termination reason, see <lsf/lsbatch.h>
+.sp 2
+\fBduration4PreemptBackfill\fR
+.br
+         How long a backfilled job can run. Used for preemption
+         backfill jobs
+.sp 2
+\fBnumHostRusage(%d)\fR
+.br
+         For a jStatus of JOB_STAT_EXIT (32) or JOB_STAT_DONE
+         (64), this field contains the number of host-based
+         resource usage entries (hostRusage) that follow. 0
+         unless LSF_HPC_EXTENSIONS="HOST_RUSAGE" is set in
+         lsf.conf.
+.sp 2
+\fBhostRusage\fR
+.br
+         For a jStatus of JOB_STAT_EXIT (32) or JOB_STAT_DONE
+         (64), these fields contain host-based resource usage
+         information for the job for parallel jobs when
+         LSF_HPC_EXTENSIONS="HOST_RUSAGE" is set in lsf.conf.
+.sp 2
+         \fBhostname (%s)\fR
+.br
+                  Name of the host.
+.sp 2
+         \fBmem(%d)\fR
+.br
+                  Total resident memory usage of all processes in
+                  the job running on this host.
+.sp 2
+         \fBswap(%d)\fR
+.br
+                  Total virtual memory usage of all processes in
+                  the job running on this host.
+.sp 2
+         \fButime(%d)\fR
+.br
+                  User time used on this host.
+.sp 2
+         \fBstime(%d)\fR
+.br
+                  System time used on this host.
+.sp 2
+         \fBhHostExtendInfo(%d)\fR
+.br
+                  Number of following key-value pairs containing
+                  extended host information (PGIDs and PIDs). Set
+                  to 0 in lsb.events, lsb.acct, and lsb.stream
+                  files.
+.sp 2
+\fBmaxMem\fR
+.br
+         Peak memory usage (in Mbytes)
+.sp 2
+\fBavgMem\fR
+.br
+         Average memory usage (in Mbytes)
+.sp 2
+\fBsrcJobId (%d)\fR
+.br
+         The submission cluster job ID
+.sp 2
+\fBsrcCluster (%s)\fR
+.br
+         The name of the submission cluster
+.sp 2
+\fBdstJobId (%d)\fR
+.br
+         The execution cluster job ID
+.sp 2
+\fBdstCluster (%s)\fR
+.br
+         The name of the execution cluster
+.sp 2
+\fBineligiblePendTime(%d)\fR
+.br
+         Time in seconds that the job has been in the ineligible
+         pending state. This is only recorded when the job is
+         finished (DONE or EXIT) and not for any other changes in
+         job status.
+.sp 2
+\fBindexRangeCnt (%d)\fR
+.br
+         The number of element ranges indicating successful
+         signals
+.sp 2
+\fBindexRangeStart1 (%d)\fR
+.br
+         The start of the first index range.
+.sp 2
+\fBindexRangeEnd1 (%d)\fR
+.br
+         The end of the first index range.
+.sp 2
+\fBindexRangeStep1 (%d)\fR
+.br
+         The step of the first index range.
+.sp 2
+\fBindexRangeStartN (%d)\fR
+.br
+         The start of the last index range.
+.sp 2
+\fBindexRangeEndN (%d)\fR
+.br
+         The end of the last index range.
+.sp 2
+\fBindexRangeStepN (%d)\fR
+.br
+         The step of the last index range.
+.sp 2
+
+.ce 1000
+\fBJOB_SWITCH\fR
+.ce 0
+
+.sp 2
+A job switched from one queue to another (bswitch). The fields in
+order of occurrence are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event
+.sp 2
+\fBuserId (%d)\fR
+.br
+         UNIX user ID of the user invoking the command
+.sp 2
+\fBjobId (%d)\fR
+.br
+         Job ID
+.sp 2
+\fBqueue (%s)\fR
+.br
+         Target queue name
+.sp 2
+\fBidx (%d)\fR
+.br
+         Job array index. If it is -1, the \fRindexRangeCnt\fR
+         takes effect.
+.sp 2
+\fBuserName (%s)\fR
+.br
+         Name of the job submitter
+.sp 2
+\fBsrcJobId (%d)\fR
+.br
+         The submission cluster job ID
+.sp 2
+\fBsrcCluster (%s)\fR
+.br
+         The name of the submission cluster
+.sp 2
+\fBdstJobId (%d)\fR
+.br
+         The target execution cluster job ID
+.sp 2
+\fBdstCluster (%s)\fR
+.br
+         The name of the execution cluster
+.sp 2
+\fBrmtJobCtrlStage (%d)\fR
+.br
+         The stage of remote job switch.
+.sp 2
+\fBnumRmtCtrlResult (%d)\fR
+.br
+         The number of remote job switch record.
+.sp 2
+\fBrmtCtrlResult\fR
+.br
+         The record of each remote job switch session.
+.sp 2
+\fBindexRangeCnt (%d)\fR
+.br
+         The number of element ranges indicating successful
+         signals
+.sp 2
+\fBindexRangeStart1 (%d)\fR
+.br
+         The start of the first index range.
+.sp 2
+\fBindexRangeEnd1 (%d)\fR
+.br
+         The end of the first index range.
+.sp 2
+\fBindexRangeStep1 (%d)\fR
+.br
+         The step of the first index range.
+.sp 2
+\fBindexRangeStartN (%d)\fR
+.br
+         The start of the last index range.
+.sp 2
+\fBindexRangeEndN (%d)\fR
+.br
+         The end of the last index range.
+.sp 2
+\fBindexRangeStepN (%d)\fR
+.br
+         The step of the last index range.
+.sp 2
+
+.ce 1000
+\fBJOB_SWITCH2\fR
+.ce 0
+
+.sp 2
+A job array switched from one queue to another (bswitch). The
+fields are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event
+.sp 2
+\fBuserId (%d)\fR
+.br
+         UNIX user ID of the user invoking the command
+.sp 2
+\fBjobId (%d)\fR
+.br
+         Job ID
+.sp 2
+\fBqueue (%s)\fR
+.br
+         Target queue name
+.sp 2
+\fBuserName (%s)\fR
+.br
+         Name of the job submitter
+.sp 2
+\fBindexRangeCnt (%s)\fR
+.br
+         The number of element ranges indicating successful
+         signals
+.sp 2
+\fBindexRangeStart1 (%d)\fR
+.br
+         The start of the first index range
+.sp 2
+\fBindexRangeEnd1 (%d)\fR
+.br
+         The end of the first index range
+.sp 2
+\fBindexRangeStep1 (%d)\fR
+.br
+         The step of the first index range
+.sp 2
+\fBindexRangeStart2 (%d)\fR
+.br
+         The start of the second index range
+.sp 2
+\fBindexRangeEnd2 (%d)\fR
+.br
+         The end of the second index range
+.sp 2
+\fBindexRangeStep2 (%d)\fR
+.br
+         The step of the second index range
+.sp 2
+\fBindexRangeStartN (%d)\fR
+.br
+         The start of the last index range
+.sp 2
+\fBindexRangeEndN (%d)\fR
+.br
+         The end of the last index range
+.sp 2
+\fBindexRangeStepN (%d)\fR
+.br
+         The step of the last index range
+.sp 2
+\fBsrcJobId (%d)\fR
+.br
+         The submission cluster job ID
+.sp 2
+\fBsrcCluster (%s)\fR
+.br
+         The name of the submission cluster
+.sp 2
+\fBdstJobId (%d)\fR
+.br
+         The execution cluster job ID
+.sp 2
+\fBrmtCluster (%d)\fR
+.br
+         The destination cluster to which the remote jobs belong
+.sp 2
+\fBrmtJobCtrlId (%d)\fR
+.br
+         Unique identifier for the remote job control session in
+         the MultiCluster.
+.sp 2
+\fBnumSuccJobId (%d)\fR
+.br
+         The number of jobs that were successful during this
+         remote control operation.
+.sp 2
+\fBsuccJobIdArray (%d)\fR
+.br
+         Contains IDs for all the jobs that were successful
+         during this remote control operation.
+.sp 2
+\fBnumFailJobId (%d)\fR
+.br
+         The number of jobs which failed during this remote
+         control session.
+.sp 2
+\fBfailJobIdArray (%d)\fR
+.br
+         Contains IDs for all the jobs that failed during this
+         remote control operation.
+.sp 2
+\fBfailReason (%d)\fR
+.br
+         Contains the failure code and reason for each failed job
+         in the failJobIdArray.
+.sp 2
+To prevent \fBJOB_SWITCH2\fR from getting too long, the number of
+index ranges is limited to 500 per \fBJOB_SWITCH2\fR event log.
+Therefore, if switching a large job array, several
+\fBJOB_SWITCH2\fR events may be generated.
+.sp 2
+
+.ce 1000
+\fBJOB_MOVE\fR
+.ce 0
+
+.sp 2
+A job moved toward the top or bottom of its queue (bbot or btop).
+The fields in order of occurrence are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event
+.sp 2
+\fBuserId (%d)\fR
+.br
+         UNIX user ID of the user invoking the command
+.sp 2
+\fBjobId (%d)\fR
+.br
+         Job ID
+.sp 2
+\fBposition (%d)\fR
+.br
+         Position number
+.sp 2
+\fBbase (%d)\fR
+.br
+         Operation code, (TO_TOP or TO_BOTTOM), see
+         <lsf/lsbatch.h>
+.sp 2
+\fBidx (%d)\fR
+.br
+         Job array index
+.sp 2
+\fBuserName (%s)\fR
+.br
+         Name of the job submitter
+.sp 2
+\fBrmtJobCtrlStage (%d)\fR
+.br
+         The stage of remote job move handling process.
+.sp 2
+\fBnumRmtCtrlResult (%d)\fR
+.br
+         The stage of remote job move handling process.
+.sp 2
+\fBrmtJobCtrlRecord\fR
+.br
+         Remote job move result.
+.sp 2
+\fBjobArrayIndex\fR
+.br
+         Job array index.
+.sp 2
+\fBnumRmtCtrlResult2 (%d)\fR
+.br
+         The number of records for remote job move handling.
+.sp 2
+\fBrmtJobCtrlRecord2\fR
+.br
+         Remote job move result.
+.sp 2
+
+.ce 1000
+\fBQUEUE_CTRL\fR
+.ce 0
+
+.sp 2
+A job queue has been altered. The fields in order of occurrence
+are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event
+.sp 2
+\fBopCode (%d)\fR
+.br
+         Operation code), see <lsf/lsbatch.h>
+.sp 2
+\fBqueue (%s)\fR
+.br
+         Queue name
+.sp 2
+\fBuserId (%d)\fR
+.br
+         UNIX user ID of the user invoking the command
+.sp 2
+\fBuserName (%s)\fR
+.br
+         Name of the user
+.sp 2
+\fBctrlComments (%s)\fR
+.br
+         Administrator comment text from the -C option of badmin
+         queue control commands qclose, qopen, qact, and qinact
+.sp 2
+
+.ce 1000
+\fBHOST_CTRL\fR
+.ce 0
+
+.sp 2
+A batch server host changed status. The fields in order of
+occurrence are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event
+.sp 2
+\fBopCode (%d)\fR
+.br
+         Operation code, see <lsf/lsbatch.h>
+.sp 2
+\fBhost (%s)\fR
+.br
+         Host name
+.sp 2
+\fBuserId (%d)\fR
+.br
+         UNIX user ID of the user invoking the command
+.sp 2
+\fBuserName (%s)\fR
+.br
+         Name of the user
+.sp 2
+\fBctrlComments (%s)\fR
+.br
+         Administrator comment text from the -C option of badmin
+         host control commands hclose and hopen
+.sp 2
+
+.ce 1000
+\fBMBD_START\fR
+.ce 0
+
+.sp 2
+The mbatchd has started. The fields in order of occurrence are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event
+.sp 2
+\fBmaster (%s)\fR
+.br
+         Management host name
+.sp 2
+\fBcluster (%s)\fR
+.br
+         cluster name
+.sp 2
+\fBnumHosts (%d)\fR
+.br
+         Number of hosts in the cluster
+.sp 2
+\fBnumQueues (%d)\fR
+.br
+         Number of queues in the cluster
+.sp 2
+
+.ce 1000
+\fBMBD_DIE\fR
+.ce 0
+
+.sp 2
+The mbatchd died. The fields in order of occurrence are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event
+.sp 2
+\fBmaster (%s)\fR
+.br
+         Management host name
+.sp 2
+\fBnumRemoveJobs (%d)\fR
+.br
+         Number of finished jobs that have been removed from the
+         system and logged in the current event file
+.sp 2
+\fBexitCode (%d)\fR
+.br
+         Exit code from mbatchd
+.sp 2
+\fBctrlComments (%s)\fR
+.br
+         Administrator comment text from the -C option of badmin
+         mbdrestart
+.sp 2
+
+.ce 1000
+\fBUNFULFILL\fR
+.ce 0
+
+.sp 2
+Actions that were not taken because the mbatchd was unable to
+contact the sbatchd on the job execution host. The fields in
+order of occurrence are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event
+.sp 2
+\fBjobId (%d)\fR
+.br
+         Job ID
+.sp 2
+\fBnotSwitched (%d)\fR
+.br
+         Not switched: the mbatchd has switched the job to a new
+         queue, but the sbatchd has not been informed of the
+         switch
+.sp 2
+\fBsig (%d)\fR
+.br
+         Signal: this signal has not been sent to the job
+.sp 2
+\fBsig1 (%d)\fR
+.br
+         Checkpoint signal: the job has not been sent this signal
+         to checkpoint itself
+.sp 2
+\fBsig1Flags (%d)\fR
+.br
+         Checkpoint flags, see <lsf/lsbatch.h>
+.sp 2
+\fBchkPeriod (%d) \fR
+.br
+         New checkpoint period for job
+.sp 2
+\fBnotModified (%s)\fR
+.br
+         If set to true, then parameters for the job cannot be
+         modified.
+.sp 2
+\fBidx (%d)\fR
+.br
+         Job array index
+.sp 2
+
+.ce 1000
+\fBLOAD_INDEX\fR
+.ce 0
+
+.sp 2
+mbatchd restarted with these load index names (see
+lsf.cluster(5)). The fields in order of occurrence are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event
+.sp 2
+\fBnIdx (%d)\fR
+.br
+         Number of index names
+.sp 2
+\fBname (%s)\fR
+.br
+         List of index names
+.sp 2
+
+.ce 1000
+\fBJOB_SIGACT\fR
+.ce 0
+
+.sp 2
+An action on a job has been taken. The fields in order of
+occurrence are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event
+.sp 2
+\fBjobId (%d)\fR
+.br
+         Job ID
+.sp 2
+\fBperiod (%d)\fR
+.br
+         Action period
+.sp 2
+\fBpid (%d)\fR
+.br
+         Process ID of the child sbatchd that initiated the
+         action
+.sp 2
+\fBjstatus (%d)\fR
+.br
+         Job status
+.sp 2
+\fBreasons (%d)\fR
+.br
+         Job pending reasons
+.sp 2
+\fBflags (%d)\fR
+.br
+         Action flags, see <lsf/lsbatch.h>
+.sp 2
+\fBactStatus (%d)\fR
+.br
+         Action status:
+.sp 2
+         1: Action started
+.sp 2
+         2: One action preempted other actions
+.sp 2
+         3: Action succeeded
+.sp 2
+         4: Action Failed
+.sp 2
+\fBsignalSymbol (%s)\fR
+.br
+         Action name, accompanied by actFlags
+.sp 2
+\fBidx (%d)\fR
+.br
+         Job array index
+.sp 2
+
+.ce 1000
+\fBMIG\fR
+.ce 0
+
+.sp 2
+A job has been migrated (bmig). The fields in order of occurrence
+are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event
+.sp 2
+\fBjobId (%d)\fR
+.br
+         Job ID
+.sp 2
+\fBnumAskedHosts (%d)\fR
+.br
+         Number of candidate hosts for migration
+.sp 2
+\fBaskedHosts (%s)\fR
+.br
+         List of names of candidate hosts
+.sp 2
+\fBuserId (%d)\fR
+.br
+         UNIX user ID of the user invoking the command
+.sp 2
+\fBidx (%d)\fR
+.br
+         Job array index
+.sp 2
+\fBuserName (%s)\fR
+.br
+         Name of the job submitter
+.sp 2
+\fBsrcJobId (%d)\fR
+.br
+         The submission cluster job ID
+.sp 2
+\fBsrcCluster (%s)\fR
+.br
+         The name of the submission cluster
+.sp 2
+\fBdstJobId (%d)\fR
+.br
+         The execution cluster job ID
+.sp 2
+\fBdstCluster (%s)\fR
+.br
+         The name of the execution cluster
+.sp 2
+
+.ce 1000
+\fBJOB_MODIFY2\fR
+.ce 0
+
+.sp 2
+This is created when the mbatchd modifies a previously submitted
+job with bmod.
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event
+.sp 2
+\fBjobIdStr (%s)\fR
+.br
+         Job ID
+.sp 2
+\fBoptions (%d)\fR
+.br
+         Bit flags for job modification options processing
+.sp 2
+\fBoptions2 (%d)\fR
+.br
+         Bit flags for job modification options processing
+.sp 2
+\fBdelOptions (%d)\fR
+.br
+         Delete options for the options field
+.sp 2
+\fBuserId (%d)\fR
+.br
+         UNIX user ID of the submitter
+.sp 2
+\fBuserName (%s)\fR
+.br
+         User name
+.sp 2
+\fBsubmitTime (%d)\fR
+.br
+         Job submission time
+.sp 2
+\fBumask (%d)\fR
+.br
+         File creation mask for this job
+.sp 2
+\fBnumProcessors (%d)\fR
+.br
+         Number of processors requested for execution. The value
+         2147483646 means the number of processors is undefined.
+.sp 2
+\fBbeginTime (%d)\fR
+.br
+         Start time – the job should be started on or after this
+         time
+.sp 2
+\fBtermTime (%d)\fR
+.br
+         Termination deadline – the job should be terminated by
+         this time
+.sp 2
+\fBsigValue (%d)\fR
+.br
+         Signal value
+.sp 2
+\fBrestartPid (%d)\fR
+.br
+         Restart process ID for the original job
+.sp 2
+\fBjobName (%s)\fR
+.br
+         Job name (up to 4094 characters)
+.sp 2
+\fBqueue (%s)\fR
+.br
+         Name of job queue to which the job was submitted
+.sp 2
+\fBnumAskedHosts (%d)\fR
+.br
+         Number of candidate host names
+.sp 2
+\fBaskedHosts (%s)\fR
+.br
+         List of names of candidate hosts for job dispatching;
+         blank if the last field value is 0. If there is more
+         than one host name, then each additional host name will
+         be returned in its own field
+.sp 2
+\fBresReq (%s)\fR
+.br
+         Resource requirements
+.sp 2
+\fBrLimits\fR
+.br
+         Soft CPU time limit (%d), see getrlimit(2)
+.sp 2
+\fBrLimits\fR
+.br
+         Soft file size limit (%d), see getrlimit(2)
+.sp 2
+\fBrLimits\fR
+.br
+         Soft data segment size limit (%d), see getrlimit2)
+.sp 2
+\fBrLimits\fR
+.br
+         Soft stack segment size limit (%d), see getrlimit(2)
+.sp 2
+\fBrLimits\fR
+.br
+         Soft core file size limit (%d), see getrlimit(2)
+.sp 2
+\fBrLimits\fR
+.br
+         Soft memory size limit (%d), see getrlimit(2)
+.sp 2
+\fBrLimits\fR
+.br
+         Reserved (%d)
+.sp 2
+\fBrLimits\fR
+.br
+         Reserved (%d)
+.sp 2
+\fBrLimits\fR
+.br
+         Reserved (%d)
+.sp 2
+\fBrLimits\fR
+.br
+         Soft run time limit (%d), see getrlimit(2)
+.sp 2
+\fBrLimits\fR
+.br
+         Reserved (%d)
+.sp 2
+\fBhostSpec (%s)\fR
+.br
+         Model or host name for normalizing CPU time and run time
+.sp 2
+\fBdependCond (%s)\fR
+.br
+         Job dependency condition
+.sp 2
+\fBtimeEvent (%d)\fR
+.br
+         Time Event, for job dependency condition; specifies when
+         time event ended
+.sp 2
+\fBsubHomeDir (%s)\fR
+.br
+         Submitter’s home directory
+.sp 2
+\fBinFile (%s)\fR
+.br
+         Input file name (up to 4094 characters for UNIX or 255
+         characters for Windows)
+.sp 2
+\fBoutFile (%s)\fR
+.br
+         Output file name (up to 4094 characters for UNIX or 255
+         characters for Windows)
+.sp 2
+\fBerrFile (%s)\fR
+.br
+         Error output file name (up to 4094 characters for UNIX
+         or 255 characters for Windows)
+.sp 2
+\fBcommand (%s)\fR
+.br
+         Job command (up to 4094 characters for UNIX or 255
+         characters for Windows)
+.sp 2
+\fBchkpntPeriod (%d)\fR
+.br
+         Checkpointing period
+.sp 2
+\fBchkpntDir (%s)\fR
+.br
+         Checkpoint directory
+.sp 2
+\fBnxf (%d)\fR
+.br
+         Number of files to transfer
+.sp 2
+\fBxf (%s)\fR
+.br
+         List of file transfer specifications
+.sp 2
+\fBjobFile (%s)\fR
+.br
+         Job file name
+.sp 2
+\fBfromHost (%s)\fR
+.br
+         Submission host name
+.sp 2
+\fBcwd (%s)\fR
+.br
+         Current working directory (up to 4094 characters for
+         UNIX or 255 characters for Windows)
+.sp 2
+\fBpreExecCmd (%s)\fR
+.br
+         Job pre-execution command
+.sp 2
+\fBmailUser (%s)\fR
+.br
+         Mail user name
+.sp 2
+\fBprojectName (%s)\fR
+.br
+         Project name
+.sp 2
+\fBniosPort (%d)\fR
+.br
+         Callback port if batch interactive job
+.sp 2
+\fBmaxNumProcessors (%d)\fR
+.br
+         Maximum number of processors. The value 2147483646 means
+         the maximum number of processors is undefined.
+.sp 2
+\fBloginShell (%s)\fR
+.br
+         Login shell
+.sp 2
+\fBschedHostType (%s)\fR
+.br
+         Execution host type
+.sp 2
+\fBuserGroup (%s)\fR
+.br
+         User group
+.sp 2
+\fBexceptList (%s)\fR
+.br
+         Exception handlers for the job
+.sp 2
+\fBdelOptions2 (%d)\fR
+.br
+         Delete options for the options2 field
+.sp 2
+\fBinFileSpool (%s)\fR
+.br
+         Spool input file (up to 4094 characters for UNIX or 255
+         characters for Windows)
+.sp 2
+\fBcommandSpool (%s)\fR
+.br
+         Spool command file (up to 4094 characters for UNIX or
+         255 characters for Windows)
+.sp 2
+\fBuserPriority (%d)\fR
+.br
+         User priority
+.sp 2
+\fBrsvId %s\fR
+.br
+         Advance reservation ID; for example, "\fRuser2#0\fR"
+.sp 2
+\fBextsched (%s) \fR
+.br
+         External scheduling options
+.sp 2
+\fBwarningTimePeriod (%d)\fR
+.br
+         Job warning time period in seconds
+.sp 2
+\fBwarningAction (%s)\fR
+.br
+         Job warning action
+.sp 2
+\fBjobGroup (%s)\fR
+.br
+         The job group to which the job is attached
+.sp 2
+\fBsla (%s)\fR
+.br
+         SLA service class name that the job is to be attached to
+.sp 2
+\fBlicenseProject (%s)\fR
+.br
+         IBM Spectrum LSF License Scheduler project name
+.sp 2
+\fBoptions3 (%d)\fR
+.br
+         Bit flags for job processing
+.sp 2
+\fBdelOption3 (%d)\fR
+.br
+         Delete options for the options3 field
+.sp 2
+\fBapp (%s)\fR
+.br
+         Application profile name
+.sp 2
+\fBapsString (%s)\fR
+.br
+         Absolute priority scheduling (APS) value set by
+         administrator
+.sp 2
+\fBpostExecCmd (%s)\fR
+.br
+         Post-execution command to run on the execution host
+         after the job finishes
+.sp 2
+\fBruntimeEstimation (%d)\fR
+.br
+         Estimated run time for the job
+.sp 2
+\fBrequeueEValues (%s)\fR
+.br
+         Job exit values for automatic job requeue
+.sp 2
+\fBresizeNotifyCmd (%s)\fR
+.br
+         Resize notification command to run on the first
+         execution host to inform job of a resize event.
+.sp 2
+\fBjobdescription (%s)\fR
+.br
+         Job description (up to 4094 characters).
+.sp 2
+\fBsubmitEXT\fR
+.br
+         Submission extension field, reserved for internal use.
+.sp 2
+         \fBNum (%d)\fR
+.br
+                  Number of elements (key-value pairs) in the
+                  structure.
+.sp 2
+         \fBkey (%s)\fR
+.br
+                  Reserved for internal use.
+.sp 2
+         \fBvalue (%s)\fR
+.br
+                  Reserved for internal use.
+.sp 2
+         \fBsrcJobId (%d)\fR
+.br
+                  The submission cluster job ID
+.sp 2
+         \fBsrcCluster (%s)\fR
+.br
+                  The name of the submission cluster
+.sp 2
+         \fBdstJobId (%d)\fR
+.br
+                  The execution cluster job ID
+.sp 2
+         \fBdstCluster (%s)\fR
+.br
+                  The name of the execution cluster
+.sp 2
+         \fBjobaffReq (%s)\fR
+.br
+                  The host-level attribute affinity request or
+                  job affinity request.
+.sp 2
+\fBsrcJobId (%d)\fR
+.br
+         The submission cluster job ID
+.sp 2
+\fBsrcCluster (%s)\fR
+.br
+         The name of the submission cluster
+.sp 2
+\fBdstJobId (%d)\fR
+.br
+         The execution cluster job ID
+.sp 2
+\fBdstCluster (%s)\fR
+.br
+         The name of the execution cluster
+.sp 2
+\fBnetwork (%s)\fR
+.br
+         Network requirements for IBM Parallel Environment (PE)
+         jobs.
+.sp 2
+\fBcpu_frequency(%d)\fR
+.br
+         CPU frequency at which the job runs.
+.sp 2
+\fBoptions4 (%d)\fR
+.br
+         Bit flags for job processing
+.sp 2
+\fBnStinFile (%d)\fR
+.br
+
+.br
+         (LSF Data Manager) The number of requested input files
+.sp 2
+\fBstinFiles\fR
+.br
+         (LSF Data Manager) List of input data requirement files
+         requested. The list has the following elements:
+.sp 2
+         \fBoptions (%d)\fR
+.br
+                  Bit field that identifies whether the data
+                  requriement is an input file or a tag.
+.sp 2
+         \fBhost (%s)\fR
+.br
+                  Source host of the input file. This field is
+                  empty if the data requirement is a tag.
+.sp 2
+         \fBname(%s)\fR
+.br
+                  Full path to the input data requirement file on
+                  the host. This field is empty if the data
+                  requirement is a tag.
+.sp 2
+         \fBhash (%s)\fR
+.br
+                  Hash key computed for the data requirement file
+                  at job submission time. This field is empty if
+                  the data requirement is a tag.
+.sp 2
+         \fBsize (%lld)\fR
+.br
+                  Size of the data requirement file at job
+                  submission time in bytes.
+.sp 2
+         \fBmodifyTime (%d)\fR
+.br
+                  Last modified time of the data requirement file
+                  at job submission time.
+.sp 2
+         \fBpendTimeLimit (%d)\fR
+.br
+                  Job-level pending time limit of the job, in
+                  seconds.
+.sp 2
+         \fBeligiblePendTimeLimit (%d)\fR
+.br
+                  Job-level eligible pending time limit of the
+                  job, in seconds.
+.sp 2
+\fBdataGrp (%s)\fR
+.br
+         Data group name.
+.sp 2
+\fBnumRmtCtrlResult2 (%s)\fR
+.br
+         Number of remote job modification sessions that are
+         generated by this modify request. JobIDs are recorded in
+         an array index range format.
+.sp 2
+\fBrmtCtrlResult2 (%s)\fR
+.br
+         Remote job modification records
+.sp 2
+\fBindexRangeCnt (%d)\fR
+.br
+         The number of element ranges indicating successful
+         signals
+.sp 2
+\fBindexRangeStart1 (%d)\fR
+.br
+         The start of the first index range.
+.sp 2
+\fBindexRangeEnd1 (%d)\fR
+.br
+         The end of the first index range.
+.sp 2
+\fBindexRangeStep1 (%d)\fR
+.br
+         The step of the first index range.
+.sp 2
+\fBindexRangeStartN (%d)\fR
+.br
+         The start of the last index range.
+.sp 2
+\fBindexRangeEndN (%d)\fR
+.br
+         The end of the last index range.
+.sp 2
+\fBindexRangeStepN (%d)\fR
+.br
+         The step of the last index range.
+.sp 2
+\fBjobaffReq (%s)\fR
+.br
+         The host-level attribute affinity request or job
+         affinity request.
+.sp 2
+
+.ce 1000
+\fBJOB_SIGNAL\fR
+.ce 0
+
+.sp 2
+This is created when a job is signaled with bkill or deleted with
+bdel. The fields are in the order they appended:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event
+.sp 2
+\fBjobId (%d)\fR
+.br
+         Job ID
+.sp 2
+\fBuserId (%d)\fR
+.br
+         UNIX user ID of the user invoking the command
+.sp 2
+\fBrunCount (%d)\fR
+.br
+         Number of runs
+.sp 2
+\fBsignalSymbol (%s)\fR
+.br
+         Signal name
+.sp 2
+\fBidx (%d)\fR
+.br
+         Job array index
+.sp 2
+\fBuserName (%s)\fR
+.br
+         Name of the job submitter
+.sp 2
+\fBsrcJobId (%d)\fR
+.br
+         The submission cluster job ID
+.sp 2
+\fBsrcCluster (%s)\fR
+.br
+         The name of the submission cluster
+.sp 2
+\fBdstJobId (%d)\fR
+.br
+         The execution cluster job ID
+.sp 2
+\fBdstCluster (%s)\fR
+.br
+         The name of the execution cluster
+.sp 2
+\fBindexRangeCnt (%d)\fR
+.br
+         The number of element ranges indicating successful
+         signals
+.sp 2
+\fBindexRangeStart1 (%d)\fR
+.br
+         The start of the first index range.
+.sp 2
+\fBindexRangeEnd1 (%d)\fR
+.br
+         The end of the first index range.
+.sp 2
+\fBindexRangeStep1 (%d)\fR
+.br
+         The step of the first index range.
+.sp 2
+\fBindexRangeStartN (%d)\fR
+.br
+         The start of the last index range.
+.sp 2
+\fBindexRangeEndN (%d)\fR
+.br
+         The end of the last index range.
+.sp 2
+\fBindexRangeStepN (%d)\fR
+.br
+         The step of the last index range.
+.sp 2
+\fBjStatus (&d)\fR
+.br
+         The job status.
+.sp 2
+
+.ce 1000
+\fBJOB_EXECUTE\fR
+.ce 0
+
+.sp 2
+This is created when a job is actually running on an execution
+host. The fields in order of occurrence are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event
+.sp 2
+\fBjobId (%d)\fR
+.br
+         Job ID
+.sp 2
+\fBexecUid (%d)\fR
+.br
+         Mapped UNIX user ID on execution host
+.sp 2
+\fBjobPGid (%d)\fR
+.br
+         Job process group ID
+.sp 2
+\fBexecCwd (%s)\fR
+.br
+         Current working directory job used on execution host (up
+         to 4094 characters for UNIX or 255 characters for
+         Windows)
+.sp 2
+\fBexecHome (%s)\fR
+.br
+         Home directory job used on execution host
+.sp 2
+\fBexecUsername (%s)\fR
+.br
+         Mapped user name on execution host
+.sp 2
+\fBjobPid (%d)\fR
+.br
+         Job process ID
+.sp 2
+\fBidx (%d)\fR
+.br
+         Job array index
+.sp 2
+\fBadditionalInfo (%s)\fR
+.br
+         Placement information of HPC jobs
+.sp 2
+\fBSLAscaledRunLimit (%d)\fR
+.br
+         Run time limit for the job scaled by the execution host
+.sp 2
+\fBexecRusage\fR
+.br
+         An internal field used by LSF.
+.sp 2
+\fBPosition\fR
+.br
+         An internal field used by LSF.
+.sp 2
+\fBduration4PreemptBackfill\fR
+.br
+         How long a backfilled job can run; used for preemption
+         backfill jobs
+.sp 2
+\fBsrcJobId (%d)\fR
+.br
+         The submission cluster job ID
+.sp 2
+\fBsrcCluster (%s)\fR
+.br
+         The name of the submission cluster
+.sp 2
+\fBdstJobId (%d)\fR
+.br
+         The execution cluster job ID
+.sp 2
+\fBdstCluster (%s)\fR
+.br
+         The name of the execution cluster
+.sp 2
+
+.ce 1000
+\fBJOB_REQUEUE\fR
+.ce 0
+
+.sp 2
+This is created when a job ended and requeued by mbatchd. The
+fields in order of occurrence are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event
+.sp 2
+\fBjobId (%d)\fR
+.br
+         Job ID
+.sp 2
+\fBidx (%d)\fR
+.br
+         Job array index
+.sp 2
+
+.ce 1000
+\fBJOB_CLEAN\fR
+.ce 0
+
+.sp 2
+This is created when a job is removed from the mbatchd memory.
+The fields in order of occurrence are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event
+.sp 2
+\fBjobId (%d)\fR
+.br
+         Job ID
+.sp 2
+\fBidx (%d)\fR
+.br
+         Job array index
+.sp 2
+\fBindexRangeCnt (%d)\fR
+.br
+         The number of element ranges indicating successful
+         signals
+.sp 2
+\fBindexRangeStart1 (%d)\fR
+.br
+         The start of the first index range.
+.sp 2
+\fBindexRangeEnd1 (%d)\fR
+.br
+         The end of the first index range.
+.sp 2
+\fBindexRangeStep1 (%d)\fR
+.br
+         The step of the first index range.
+.sp 2
+\fBindexRangeStartN (%d)\fR
+.br
+         The start of the last index range.
+.sp 2
+\fBindexRangeEndN (%d)\fR
+.br
+         The end of the last index range.
+.sp 2
+\fBindexRangeStepN (%d)\fR
+.br
+         The step of the last index range.
+.sp 2
+
+.ce 1000
+\fBJOB_EXCEPTION\fR
+.ce 0
+
+.sp 2
+This is created when an exception condition is detected for a
+job. The fields in order of occurrence are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event
+.sp 2
+\fBjobId (%d)\fR
+.br
+         Job ID
+.sp 2
+\fBexceptMask (%d)\fR
+.br
+         Exception Id
+.sp 2
+         0x01: missched
+.sp 2
+         0x02: overrun
+.sp 2
+         0x04: underrun
+.sp 2
+         0x08: abend
+.sp 2
+         0x10: cantrun
+.sp 2
+         0x20: hostfail
+.sp 2
+         0x40: startfail
+.sp 2
+         0x100:runtime_est_exceeded
+.sp 2
+\fBactMask (%d)\fR
+.br
+         Action Id
+.sp 2
+         0x01: kill
+.sp 2
+         0x02: alarm
+.sp 2
+         0x04: rerun
+.sp 2
+         0x08: setexcept
+.sp 2
+\fBtimeEvent (%d)\fR
+.br
+         Time Event, for \fRmissched\fR exception specifies when
+         time event ended.
+.sp 2
+\fBexceptInfo (%d)\fR
+.br
+         Except Info, pending reason for \fRmissched\fR or
+         \fRcantrun\fR exception, the exit code of the job for
+         the \fRabend\fR exception, otherwise 0.
+.sp 2
+\fBidx (%d)\fR
+.br
+         Job array index
+.sp 2
+
+.ce 1000
+\fBJOB_EXT_MSG\fR
+.ce 0
+
+.sp 2
+An external message has been sent to a job. The fields in order
+of occurrence are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event
+.sp 2
+\fBjobId (%d)\fR
+.br
+         Job ID
+.sp 2
+\fBidx (%d)\fR
+.br
+         Job array index
+.sp 2
+\fBmsgIdx (%d)\fR
+.br
+         Index in the list
+.sp 2
+\fBuserId (%d)\fR
+.br
+         Unique user ID of the user invoking the command
+.sp 2
+\fBdataSize (%ld)\fR
+.br
+         Size of the data if it has any, otherwise 0
+.sp 2
+\fBpostTime (%ld)\fR
+.br
+         Message sending time
+.sp 2
+\fBdataStatus (%d)\fR
+.br
+         Status of the attached data
+.sp 2
+\fBdesc (%s)\fR
+.br
+         Text description of the message
+.sp 2
+\fBuserName (%s)\fR
+.br
+         Name of the author of the message
+.sp 2
+\fBFlags (%d)\fR
+.br
+         Used for internal flow control
+.sp 2
+
+.ce 1000
+\fBJOB_ATTA_DATA\fR
+.ce 0
+
+.sp 2
+An update on the data status of a message for a job has been
+sent. The fields in order of occurrence are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event
+.sp 2
+\fBjobId (%d)\fR
+.br
+         Job ID
+.sp 2
+\fBidx (%d)\fR
+.br
+         Job array index
+.sp 2
+\fBmsgIdx (%d)\fR
+.br
+         Index in the list
+.sp 2
+\fBdataSize (%ld)\fR
+.br
+         Size of the data if is has any, otherwise 0
+.sp 2
+\fBdataStatus (%d)\fR
+.br
+         Status of the attached data
+.sp 2
+\fBfileName (%s)\fR
+.br
+         File name of the attached data
+.sp 2
+
+.ce 1000
+\fBJOB_CHUNK\fR
+.ce 0
+
+.sp 2
+This is created when a job is inserted into a chunk.
+.sp 2
+If LSF_HPC_EXTENSIONS="SHORT_EVENTFILE" is specified in lsf.conf,
+older daemons and commands (pre-LSF Version 6.0) cannot recognize
+the lsb.events file format.
+.sp 2
+The fields in order of occurrence are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event
+.sp 2
+\fBmembSize (%ld)\fR
+.br
+         Size of array membJobId
+.sp 2
+\fBmembJobId (%ld)\fR
+.br
+         Job IDs of jobs in the chunk
+.sp 2
+\fBnumExHosts (%ld)\fR
+.br
+         Number of execution hosts
+.sp 2
+         If LSF_HPC_EXTENSIONS="SHORT_EVENTFILE" is specified in
+         lsf.conf, the value of this field is the number of
+         .hosts listed in the execHosts field.
+.sp 2
+\fBexecHosts (%s)\fR
+.br
+         Execution host name array
+.sp 2
+         If LSF_HPC_EXTENSIONS="SHORT_EVENTFILE" is specified in
+         lsf.conf, the value of this field is logged in a
+         shortened format.
+.sp 2
+
+.ce 1000
+\fBSBD_UNREPORTED_STATUS\fR
+.ce 0
+
+.sp 2
+This is created when an unreported status change occurs. The
+fields in order of occurrence are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event
+.sp 2
+\fBjobId (%d)\fR
+.br
+         Job ID
+.sp 2
+\fBactPid (%d)\fR
+.br
+         Acting processing ID
+.sp 2
+\fBjobPid (%d)\fR
+.br
+         Job process ID
+.sp 2
+\fBjobPGid (%d)\fR
+.br
+         Job process group ID
+.sp 2
+\fBnewStatus (%d)\fR
+.br
+         New status of the job
+.sp 2
+\fBreason (%d)\fR
+.br
+         Pending or suspending reason code, see <lsf/lsbatch.h>
+.sp 2
+\fBsuspreason (%d)\fR
+.br
+         Pending or suspending subreason code, see
+         <lsf/lsbatch.h>
+.sp 2
+\fBlsfRusage\fR
+.br
+         The following fields contain resource usage information
+         for the job (see getrusage(2)). If the value of some
+         field is unavailable (due to job exit or the difference
+         among the operating systems), -1 will be logged. Times
+         are measured in seconds, and sizes are measured in KB.
+.sp 2
+         \fBru_utime (%f)\fR
+.br
+                  User time used
+.sp 2
+         \fBru_stime (%f)\fR
+.br
+                  System time used
+.sp 2
+         \fBru_maxrss (%f)\fR
+.br
+                  Maximum shared text size
+.sp 2
+         \fBru_ixrss (%f)\fR
+.br
+                  Integral of the shared text size over time (in
+                  KB seconds)
+.sp 2
+         \fBru_ismrss (%f)\fR
+.br
+                  Integral of the shared memory size over time
+                  (valid only on Ultrix)
+.sp 2
+         \fBru_idrss (%f)\fR
+.br
+                  Integral of the unshared data size over time
+.sp 2
+         \fBru_isrss (%f)\fR
+.br
+                  Integral of the unshared stack size over time
+.sp 2
+         \fBru_minflt (%f)\fR
+.br
+                  Number of page reclaims
+.sp 2
+         \fBru_majflt (%f)\fR
+.br
+                  Number of page faults
+.sp 2
+         \fBru_nswap (%f)\fR
+.br
+                  Number of times the process was swapped out
+.sp 2
+         \fBru_inblock (%f)\fR
+.br
+                  Number of block input operations
+.sp 2
+         \fBru_oublock (%f)\fR
+.br
+                  Number of block output operations
+.sp 2
+         \fBru_ioch (%f)\fR
+.br
+                  Number of characters read and written (valid
+                  only on HP-UX)
+.sp 2
+         \fBru_msgsnd (%f)\fR
+.br
+                  Number of System V IPC messages sent
+.sp 2
+         \fBru_msgrcv (%f)\fR
+.br
+                  Number of messages received
+.sp 2
+         \fBru_nsignals (%f)\fR
+.br
+                  Number of signals received
+.sp 2
+         \fBru_nvcsw (%f)\fR
+.br
+                  Number of voluntary context switches
+.sp 2
+         \fBru_nivcsw (%f)\fR
+.br
+                  Number of involuntary context switches
+.sp 2
+         \fBru_exutime (%f)\fR
+.br
+                  Exact user time used (valid only on ConvexOS)
+.sp 2
+\fBexitStatus (%d)\fR
+.br
+         Exit status of the job, see <lsf/lsbatch.h>
+.sp 2
+\fBexecCwd (%s)\fR
+.br
+         Current working directory job used on execution host (up
+         to 4094 characters for UNIX or 255 characters for
+         Windows)
+.sp 2
+\fBexecHome (%s)\fR
+.br
+         Home directory job used on execution host
+.sp 2
+\fBexecUsername (%s)\fR
+.br
+         Mapped user name on execution host
+.sp 2
+\fBmsgId (%d)\fR
+.br
+         ID of the message
+.sp 2
+\fBactStatus (%d)\fR
+.br
+         Action status
+.sp 2
+         1: Action started
+.sp 2
+         2: One action preempted other actions
+.sp 2
+         3: Action succeeded
+.sp 2
+         4: Action Failed
+.sp 2
+\fBsigValue (%d)\fR
+.br
+         Signal value
+.sp 2
+\fBseq (%d)\fR
+.br
+         Sequence status of the job
+.sp 2
+\fBidx (%d)\fR
+.br
+         Job array index
+.sp 2
+\fBjRusage\fR
+.br
+         The following fields contain resource usage information
+         for the job. If the value of some field is unavailable
+         (due to job exit or the difference among the operating
+         systems), -1 will be logged. Times are measured in
+         seconds, and sizes are measured in KB.
+.sp 2
+         \fBmem (%d)\fR
+.br
+                  Total resident memory usage in KB of all
+                  currently running processes in a given process
+                  group
+.sp 2
+         \fBswap (%d)\fR
+.br
+                  Totaly virtual memory usage in KB of all
+                  currently running processes in given process
+                  groups
+.sp 2
+         \fButime (%d)\fR
+.br
+                  Cumulative total user time in seconds
+.sp 2
+         \fBstime (%d)\fR
+.br
+                  Cumulative total system time in seconds
+.sp 2
+         \fBnpids (%d)\fR
+.br
+                  Number of currently active process in given
+                  process groups. This entry has four sub-fields:
+.sp 2
+         \fBpid (%d)\fR
+.br
+                  Process ID of the child sbatchd that initiated
+                  the action
+.sp 2
+         \fBppid (%d)\fR
+.br
+                  Parent process ID
+.sp 2
+         \fBpgid (%d)\fR
+.br
+                  Process group ID
+.sp 2
+         \fBjobId (%d)\fR
+.br
+                  Process Job ID
+.sp 2
+         \fBnpgids (%d)\fR
+.br
+                  Number of currently active process groups
+.sp 2
+\fBexitInfo (%d)\fR
+.br
+         Job termination reason, see <lsf/lsbatch.h>
+.sp 2
+
+.ce 1000
+\fBPRE_EXEC_START\fR
+.ce 0
+
+.sp 2
+A pre-execution command has been started.
+.sp 2
+The fields in order of occurrence are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event
+.sp 2
+\fBjobId (%d)\fR
+.br
+         Job ID
+.sp 2
+\fBjStatus (%d)\fR
+.br
+         Job status, (4, indicating the RUN status of the job)
+.sp 2
+\fBjobPid (%d)\fR
+.br
+         Job process ID
+.sp 2
+\fBjobPGid (%d)\fR
+.br
+         Job process group ID
+.sp 2
+\fBhostFactor (%f)\fR
+.br
+         CPU factor of the first execution host
+.sp 2
+\fBnumExHosts (%d)\fR
+.br
+         Number of processors used for execution
+.sp 2
+\fBexecHosts (%s)\fR
+.br
+         List of execution host names
+.sp 2
+\fBqueuePreCmd (%s)\fR
+.br
+         Pre-execution command
+.sp 2
+\fBqueuePostCmd (%s)\fR
+.br
+         Post-execution command
+.sp 2
+\fBjFlags (%d)\fR
+.br
+         Job processing flags
+.sp 2
+\fBuserGroup (%s)\fR
+.br
+         User group name
+.sp 2
+\fBidx (%d)\fR
+.br
+         Job array index
+.sp 2
+\fBadditionalInfo (%s)\fR
+.br
+         Placement information of HPC jobs
+.sp 2
+\fBeffectiveResReq (%s)\fR
+.br
+         The runtime resource requirements used for the job.
+.sp 2
+
+.ce 1000
+\fBJOB_FORCE\fR
+.ce 0
+
+.sp 2
+A job has been forced to run with brun.
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event
+.sp 2
+\fBjobId (%d)\fR
+.br
+         Job ID
+.sp 2
+\fBuserId (%d)\fR
+.br
+         UNIX user ID of the user invoking the command
+.sp 2
+\fBidx (%d)\fR
+.br
+         Job array index
+.sp 2
+\fBoptions (%d)\fR
+.br
+         Bit flags for job processing
+.sp 2
+\fBnumExecHosts (%ld)\fR
+.br
+         Number of execution hosts
+.sp 2
+         If LSF_HPC_EXTENSIONS="SHORT_EVENTFILE" is specified in
+         lsf.conf, the value of this field is the number of
+         .hosts listed in the execHosts field.
+.sp 2
+\fBexecHosts (%s)\fR
+.br
+         Execution host name array
+.sp 2
+         If LSF_HPC_EXTENSIONS="SHORT_EVENTFILE" is specified in
+         lsf.conf, the value of this field is logged in a
+         shortened format.
+.sp 2
+\fBuserName (%s)\fR
+.br
+         Name of the user
+.sp 2
+\fBqueue (%s)\fR
+.br
+         Name of queue if a remote brun job ran; otherwise, this
+         field is empty. For MultiCluster this is the name of the
+         receive queue at the execution cluster.
+.sp 2
+
+.ce 1000
+\fBGRP_ADD\fR
+.ce 0
+
+.sp 2
+This is created when a job group is added. The fields in order of
+occurrence are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event
+.sp 2
+\fBuserId (%d)\fR
+.br
+         UNIX user ID of the job group owner
+.sp 2
+\fBsubmitTime (%d)\fR
+.br
+         Job submission time
+.sp 2
+\fBuserName (%s)\fR
+.br
+         User name of the job group owner
+.sp 2
+\fBdepCond (%s)\fR
+.br
+         Job dependency condition
+.sp 2
+\fBtimeEvent (%d)\fR
+.br
+         Time Event, for job dependency condition; specifies when
+         time event ended
+.sp 2
+\fBgroupSpec (%s)\fR
+.br
+         Job group name
+.sp 2
+\fBdelOptions (%d)\fR
+.br
+         Delete options for the options field
+.sp 2
+\fBdelOptions2 (%d)\fR
+.br
+         Delete options for the options2 field
+.sp 2
+\fBsla (%s)\fR
+.br
+         SLA service class name that the job group is to be
+         attached to
+.sp 2
+\fBmaxJLimit (%d)\fR
+.br
+         Job group limit set by bgadd -L
+.sp 2
+\fBgroupType (%d)\fR
+.br
+         Job group creation method:
+.sp 2
+         *  
+            0x01 - job group was created explicitly
+.sp 2
+         *  
+            0x02 - job group was created implicitly
+.sp 2
+
+.ce 1000
+\fBGRP_MOD\fR
+.ce 0
+
+.sp 2
+This is created when a job group is modified. The fields in order
+of occurrence are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event
+.sp 2
+\fBuserId (%d)\fR
+.br
+         UNIX user ID of the job group owner
+.sp 2
+\fBsubmitTime (%d)\fR
+.br
+         Job submission time
+.sp 2
+\fBuserName (%s)\fR
+.br
+         User name of the job group owner
+.sp 2
+\fBdepCond (%s)\fR
+.br
+         Job dependency condition
+.sp 2
+\fBtimeEvent (%d)\fR
+.br
+         Time Event, for job dependency condition; specifies when
+         time event ended
+.sp 2
+\fBgroupSpec (%s)\fR
+.br
+         Job group name
+.sp 2
+\fBdelOptions (%d)\fR
+.br
+         Delete options for the options field
+.sp 2
+\fBdelOptions2 (%d)\fR
+.br
+         Delete options for the options2 field
+.sp 2
+\fBsla (%s)\fR
+.br
+         SLA service class name that the job group is to be
+         attached to
+.sp 2
+\fBmaxJLimit (%d)\fR
+.br
+         Job group limit set by bgmod -L
+.sp 2
+
+.ce 1000
+\fBLOG_SWITCH\fR
+.ce 0
+
+.sp 2
+This is created when switching the event file lsb.events. The
+fields in order of occurrence are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event
+.sp 2
+\fBjobId (%d)\fR
+.br
+         Job ID
+.sp 2
+
+.ce 1000
+\fBJOB_RESIZE_NOTIFY_START\fR
+.ce 0
+
+.sp 2
+LSF logs this event when a resize (shrink or grow) request has
+been sent to the first execution host. The fields in order of
+occurrence are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number.
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event.
+.sp 2
+\fBjobId (%d)\fR
+.br
+         The job ID.
+.sp 2
+\fBidx (%d)\fR
+.br
+         Job array index.
+.sp 2
+\fBnotifyId (%d)\fR
+.br
+         Identifier or handle for notification.
+.sp 2
+\fBnumResizeHosts (%d)\fR
+.br
+         Number of processors used for execution. If
+         LSF_HPC_EXTENSIONS="SHORT_EVENTFILE" is specified in
+         lsf.conf, the value of this field is the number of hosts
+         listed in short format.
+.sp 2
+\fBresizeHosts (%s)\fR
+.br
+         List of execution host names. If
+         LSF_HPC_EXTENSIONS="SHORT_EVENTFILE" is specified in
+         lsf.conf, the value of this field is logged in a
+         shortened format.
+.sp 2
+\fBnumResizeSlots (%d)\fR
+.br
+         Number of allocated slots for executing resize.
+.sp 2
+\fBresizeSlots (%s)\fR
+.br
+         List of execution host names where slots are allocated
+         for resizing.
+.sp 2
+
+.ce 1000
+\fBJOB_RESIZE_NOTIFY_ACCEPT\fR
+.ce 0
+
+.sp 2
+LSF logs this event when a resize request has been accepted from
+the first execution host of a job. The fields in order of
+occurrence are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number.
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event.
+.sp 2
+\fBjobId (%d)\fR
+.br
+         The job ID.
+.sp 2
+\fBidx (%d)\fR
+.br
+         Job array index.
+.sp 2
+\fBnotifyId (%d)\fR
+.br
+         Identifier or handle for notification.
+.sp 2
+\fBresizeNotifyCmdPid (%d)\fR
+.br
+         Resize notification executable process ID. If no resize
+         notification executable is defined, this field will be
+         set to 0.
+.sp 2
+\fBresizeNotifyCmdPGid (%d)\fR
+.br
+         Resize notification executable process group ID. If no
+         resize notification executable is defined, this field
+         will be set to 0.
+.sp 2
+\fBstatus (%d)\fR
+.br
+         Status field used to indicate possible errors. 0
+         Success, 1 failure.
+.sp 2
+
+.ce 1000
+\fBJOB_RESIZE_NOTIFY_DONE\fR
+.ce 0
+
+.sp 2
+LSF logs this event when the resize notification command
+completes. The fields in order of occurrence are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number.
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event.
+.sp 2
+\fBjobId (%d)\fR
+.br
+         The job ID.
+.sp 2
+\fBidx (%d)\fR
+.br
+         Job array index.
+.sp 2
+\fBnotifyId (%d)\fR
+.br
+         Identifier or handle for notification.
+.sp 2
+\fBstatus (%d)\fR
+.br
+         Resize notification exit value. (0, success, 1, failure,
+         2 failure but cancel request.)
+.sp 2
+
+.ce 1000
+\fBJOB_RESIZE_RELEASE\fR
+.ce 0
+
+.sp 2
+LSF logs this event when receiving resource release request from
+client. The fields in order of occurrence are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number.
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event.
+.sp 2
+\fBjobId (%d)\fR
+.br
+         The job ID.
+.sp 2
+\fBidx (%d)\fR
+.br
+         Job array index.
+.sp 2
+\fBreqid (%d)\fR
+.br
+         Request Identifier or handle.
+.sp 2
+\fBoptions (%d)\fR
+.br
+         Release options.
+.sp 2
+\fBuserId (%d)\fR
+.br
+         UNIX user ID of the user invoking the command.
+.sp 2
+\fBuserName (%s)\fR
+.br
+         User name of the submitter.
+.sp 2
+\fBresizeNotifyCmd (%s)\fR
+.br
+         Resize notification command to run on the first
+         execution host to inform job of a resize event.
+.sp 2
+\fBnumResizeHosts (%d)\fR
+.br
+         Number of processors used for execution during resize.
+         If \fBLSF_HPC_EXTENSIONS="SHORT_EVENTFILE"\fR is
+         specified in lsf.conf, the value of this field is the
+         number of hosts listed in short format.
+.sp 2
+\fBresizeHosts (%s)\fR
+.br
+         List of execution host names during resize. If
+         \fBLSF_HPC_EXTENSIONS="SHORT_EVENTFILE"\fR is specified
+         in lsf.conf, the value of this field is logged in a
+         shortened format.
+.sp 2
+\fBnumResizeSlots (%d)\fR
+.br
+         Number of allocated slots for executing resize.
+.sp 2
+\fBresizeSlots (%s)\fR
+.br
+         List of execution host names where slots are allocated
+         for resizing.
+.sp 2
+
+.ce 1000
+\fBJOB_RESIZE_CANCEL\fR
+.ce 0
+
+.sp 2
+LSF logs this event when receiving cancel request from client.
+The fields in order of occurrence are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number.
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event.
+.sp 2
+\fBjobId (%d)\fR
+.br
+         The job ID.
+.sp 2
+\fBidx (%d)\fR
+.br
+         Job array index.
+.sp 2
+\fBuserId (%d)\fR
+.br
+         UNIX user ID of the user invoking the command.
+.sp 2
+\fBuserName (%s)\fR
+.br
+         User name of the submitter.
+.sp 2
+
+.ce 1000
+\fBHOST_POWER_STATUS\fR
+.ce 0
+
+.sp 2
+LSF logs this event when a host power status is changed, whether
+by power policy, job, or by the command badmin hpower. The
+\fBHOST_POWER_STATUS\fR event is logged to reflect the power
+status changes. The fields in order of occurrence are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number.
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event.
+.sp 2
+\fBRequest Id (%d)\fR
+.br
+         The power operation request ID to identify a power
+         operation.
+.sp 2
+\fBOp Code (%d)\fR
+.br
+         Power operation type.
+.sp 2
+\fBTrigger (%d)\fR
+.br
+         The power operation trigger: power policy, job, or
+         badmin hpower.
+.sp 2
+\fBStatus (%d)\fR
+.br
+         The power operation status.
+.sp 2
+\fBTrigger Name (%s)\fR
+.br
+         If the operation is triggered by power policy, this is
+         the power policy name. If the operation is triggered by
+         an administrator, this is the administrator user name.
+.sp 2
+\fBNumber (%d)\fR
+.br
+         Number of hosts on which the power operation occurred.
+.sp 2
+\fBHosts (%s)\fR
+.br
+         The hosts on which the power operation occurred.
+.sp 2
+
+.ce 1000
+\fBJOB_PROV_HOST\fR
+.ce 0
+
+.sp 2
+When a job has been dispatched to a power saved host (or hosts),
+it will trigger a power state change for the host and the job
+will be in the PROV state. This event logs those PROV cases. The
+fields in order of occurrence are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number.
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event.
+.sp 2
+\fBjobId (%d)\fR
+.br
+         The job ID.
+.sp 2
+\fBidx (%d)\fR
+.br
+         Job array index.
+.sp 2
+\fBstatus (%d)\fR
+.br
+         Indicates if the provision has started, is done, or is
+         failed.
+.sp 2
+\fBnum (%d)\fR
+.br
+         Number of hosts that need to be provisioned.
+.sp 2
+\fBhostNameList(%d)\fR
+.br
+         Names of hosts that need to be provisioned.
+.sp 2
+\fBhostStatusList(%d)\fR
+.br
+         Host status for provisioning result.
+.sp 2
+
+.ce 1000
+\fBHOST_CLOSURE_LOCK_ID_CTRL\fR
+.ce 0
+
+.sp 2
+Batch server host closure lock IDs. The fields in order of
+occurrence are:
+.sp 2
+\fBVersion number (%s)\fR
+.br
+         The version number.
+.sp 2
+\fBEvent time (%d)\fR
+.br
+         The time of the event.
+.sp 2
+\fBhost (%s)\fR
+.br
+         Host name.
+.sp 2
+\fBopCode (%d)\fR
+.br
+         Operation code, see <lsf/lsbatch.h>
+.sp 2
+\fBnumLockIds (%d)\fR
+.br
+         The number of host closure lock IDs.
+.sp 2
+\fBlockIds (%s)\fR
+.br
+         Host closure lock IDs.
+.sp 2
+\fBuserId (%d)\fR
+.br
+         UNIX user ID of the user invoking the command.
+.sp 2
+\fBuserName (%s)\fR
+.br
+         Name of the user.
+.sp 2
+\fBmessage (%s)\fR
+.br
+         Administrator comment text from the -C option of badmin
+         host control commands hclose and hopen.
+.sp 2
+
+.ce 1000
+\fBATTR_CREATE\fR
+.ce 0
+
+.sp 2
+Create host attributes for attribute affinity scheduling. The
+fields in order of occurrence are:
+.sp 2
+\fBVersion (%s)\fR
+.br
+         The version number.
+.sp 2
+\fBtime (%d)\fR
+.br
+         The time of the event.
+.sp 2
+\fBuser (%s)\fR
+.br
+         Name of the user that created the attributes.
+.sp 2
+\fBattrNum (%d)\fR
+.br
+         The number of attributes that are created.
+.sp 2
+\fBattributeList (%s)\fR
+.br
+         The list of attributes that are created.
+.sp 2
+\fBhostNum (%d)\fR
+.br
+         The number of hosts in which to create the attributes.
+.sp 2
+\fBhostList (%s)\fR
+.br
+         The list of hosts in which to create the attributes.
+.sp 2
+\fBdesc (%s)\fR
+.br
+         A description of the attributes.
+.sp 2
+
+.ce 1000
+\fBATTR_DELETE\fR
+.ce 0
+
+.sp 2
+Delete host attributes that are used for attribute affinity
+scheduling. The fields in order of occurrence are:
+.sp 2
+\fBVersion (%s)\fR
+.br
+         The version number.
+.sp 2
+\fBtime (%d)\fR
+.br
+         The time of the event.
+.sp 2
+\fBuser (%s)\fR
+.br
+         Name of the user that deleted the attributes.
+.sp 2
+\fBattrNum (%d)\fR
+.br
+         The number of attributes that are deleted.
+.sp 2
+\fBattributeList (%s)\fR
+.br
+         The list of attributes that are deleted.
+.sp 2
+\fBhostNum (%d)\fR
+.br
+         The number of hosts from which to delete the attributes.
+.sp 2
+\fBhostList (%s)\fR
+.br
+         The list of hosts from which to delete the attributes.
+.sp 2
+\fBdesc (%s)\fR
+.br
+         A description of the attributes.
+.sp 2
+
+.ce 1000
+\fBATTR_INFO\fR
+.ce 0
+
+.sp 2
+A snapshot of information on the current cluster\(aqs host
+attributes at the time of the event switch. Each record
+represents one host attribute. The fields in order of occurrence
+are:
+.sp 2
+\fBVersion (%s)\fR
+.br
+         The version number.
+.sp 2
+\fBtime (%d)\fR
+.br
+         The time of the event.
+.sp 2
+\fBattrName (%s)\fR
+.br
+         The name of the attribute.
+.sp 2
+\fBCreateTime (%d)\fR
+.br
+         The time that the attribute was created.
+.sp 2
+\fBCreatorNum (%d)\fR
+.br
+         The number of users that created this attribute.
+.sp 2
+\fBCreator (%s)\fR
+.br
+         The list of users that created this attribute.
+.sp 2
+\fBdesc (%s)\fR
+.br
+         A description of the attribute.
+.sp 2
+\fBhostNum (%d)\fR
+.br
+         The number of hosts on which the attributes were
+         created.
+.sp 2
+\fBhostList (%s)\fR
+.br
+         The list of hosts on which the attributes were created.

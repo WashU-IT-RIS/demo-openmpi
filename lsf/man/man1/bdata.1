@@ -1,0 +1,1221 @@
+
+.ad l
+
+.TH bdata 1 "May 2016" "" ""n.ll 72
+
+.ce 1000
+\fBbdata\fR
+.ce 0
+
+.sp 2
+Provides a set of subcommands to query and manage IBM Spectrum
+LSF Data Manager. If no subcommands are supplied, bdata displays
+the command usage.
+.sp 2
+
+.ad l
+
+.TH bdata 1 "May 2016" "" ""n.ll 72
+
+.ce 1000
+\fBSynopsis\fR
+.ce 0
+
+.sp 2
+LSF data management subcommands and option syntax synopsis
+.sp 2
+\fBbdata \fRsubcommand options
+.sp 2
+\fBbdata\fR [\fB-h\fR[\fBelp\fR] | \fB-V\fR]
+.sp 2
+
+.ad l
+
+.TH bdata 1 "May 2016" "" ""n.ll 72
+
+.ce 1000
+\fBSubcommands\fR
+.ce 0
+
+.sp 2
+LSF data management subcommands and options
+.sp 2
+File-based cache query:
+.sp 2
+\fBbdata cache\fR [\fB-w\fR | \fB-l\fR] [\fB-u all\fR | \fB-u\fR
+user_name] [\fB-g all\fR | \fB-g\fR user_group_name] [\fB-dmd\fR
+cluster_name] [host_name\fB:\fR]abs_file_path
+.sp 2
+Job-based cache query:
+.sp 2
+\fBbdata cache\fR [\fB-dmd\fR cluster_name] [\fB-w\fR | \fB-l\fR]
+job_ID[\fB@\fRcluster_name]
+.sp 2
+Job-based cache query:
+.sp 2
+\fBbdata cache\fR [\fB-dmd\fR cluster_name] [\fB-w\fR | \fB-l\fR]
+job_ID[\fB@\fRcluster_name]
+.sp 2
+Change group after stage out:
+.sp 2
+\fBbdata chgrp\fR [\fB-dmd\fR cluster_name] \fB-g\fR
+user_group_name [host_name\fB:\fR]abs_file_path
+.sp 2
+Change group after stage in:
+.sp 2
+\fBbdata chgrp\fR [\fB-dmd\fR cluster_name] \fB-g\fR
+user_group_name \fB-tag\fR tag_name
+.sp 2
+Change the file permission mode of a file:
+.sp 2
+\fBbdata chmod\fR [\fB-dmd\fR cluster_name] \fB-mode\fR
+octal_mode \fB-mode\fR [host_name\fB:\fR]abs_file_path
+.sp 2
+Tag query:
+.sp 2
+\fBbdata tags list\fR [\fB-w\fR] [\fB-u all\fR | \fB-u\fR
+user_name] [\fB-dmd\fR cluster_name]
+.sp 2
+Tag cleanup:
+.sp 2
+\fBbdata tags clean\fR [\fB-u\fR user_name] [\fB-dmd\fR
+cluster_name] tag_name
+.sp 2
+Effective configuration query:
+.sp 2
+\fBbdata showconf \fR
+.sp 2
+Connections query:
+.sp 2
+\fBbdata connections\fR [\fB-w\fR]
+.sp 2
+Administration - reconfigure and shut down LSF data manager:
+.sp 2
+\fBbdata admin reconfig \fR
+.sp 2
+\fBbdata admin shutdown\fR [host_name]
+.SH Common options
+
+.sp 2
+\fB-w\fR
+.br
+         Wide format. Displays the information in a wide format.
+         Use this option only with the cache, connections, and
+         tags list subcommands.
+.sp 2
+\fB-l\fR
+.br
+         Long format. Displays additional information about LSF
+         data management files. Use this option only with the
+         cache subcommand.
+.sp 2
+\fB-dmd \fIcluster_name\fB\fR
+.br
+         Query the LSF data manager corresponding to the
+         specified remote cluster. Use this option only with the
+         cache, and tags subcommands.
+.sp 2
+\fB-u all | -u \fIuser_name\fB\fR
+.br
+         Query files in the cache for the specified user. Use -u
+         all or -u \fIuser_name\fR with file-based bdata cache
+         and bdata tags list. You can use only -u \fIuser_name\fR
+         with bdata tags clean.
+.sp 2
+
+.ad l
+
+.TH bdata 1 "May 2016" "" ""n.ll 72
+
+.ce 1000
+\fBcache\fR
+.ce 0
+
+.sp 2
+Queries the LSF data management cache.
+.sp 2
+
+.SH Options
+
+.sp 2
+File-based query:
+.sp 2
+\fBbdata cache\fR [\fB-w\fR | \fB-l\fR] [\fB-u all\fR | \fB-u\fR
+user_name] [\fB-g all\fR | \fB-g\fR user_group_name] [\fB-dmd\fR
+cluster_name] [host_name\fB:\fR]abs_file_path
+.sp 2
+Job-based query:
+.sp 2
+\fBbdata cache\fR [\fB-dmd\fR cluster_name] [\fB-w\fR | \fB-l\fR]
+job_ID[\fB@\fRcluster_name]
+.SH Description
+
+.sp 2
+\fBFile-based query\fR
+.br
+         Use the bdata cache \fIabs_file_path\fR command to
+         determine whether the files that are required for your
+         job are already staged in to the cache.
+.sp 2
+         LSF data manager administrators can see information
+         about staged-in files in the cache for all users (with
+         the -u all option) or for a specific users (with the -u
+         \fIuser_name\fR option). The \fBCACHE_PERMISSIONS\fR
+         parameter in the lsf.datamanager file determines which
+         cache is accessible to non-administrator users.
+.sp 2
+         \fB\fBCACHE_PERMISSIONS=user\fB\fR
+.br
+                  Each user has a cache in the staging area.
+                  Ordinary users can request information only
+                  about their own cached files. \fBuser\fR is the
+                  default.
+.sp 2
+         \fB\fBCACHE_PERMISSIONS=all\fB\fR
+.br
+                  The staging area is a single cache. All users
+                  can see all files in the cache.
+.sp 2
+         \fB\fBCACHE_PERMISSIONS=group\fB\fR
+.br
+                  Each UNIX group has cache in the staging area.
+                  By default, only users that belong to the same
+                  primary group can see the files for their
+                  group.
+.sp 2
+                  If \fBCACHE_PERMISSIONS=group\fR is specified,
+                  the -g option shows the cached files that
+                  belong to the specified user group.
+.sp 2
+         If you specify a host name
+         (\fR\fIhost_name\fR:\fIabs_file_path\fR\fR), the bdata
+         cache command shows the files that are staged in from
+         the specified host. The file path must match the bjobs
+         -data command output exactly.
+.sp 2
+         If a host name is not specified, the bdata cache command
+         shows files that are staged in from the current local
+         host.
+.sp 2
+\fBJob-based query\fR
+.br
+         Use the bdata cache \fIjob_ID\fR command to show files
+         that are referenced by the specified job ID. If a
+         cluster name (with the \fR@\fIcluster_name\fR\fRoption)
+         is not specified with the job ID, the current cluster
+         name is assumed.
+.sp 2
+\fBCache cleanup for input and output file records\fR
+.br
+         You can use file-based query to see input file records
+         until LSF data manager cleans up the job record and
+         input files. After the job is finished and the grace
+         period that is specified by the
+         \fBCACHE_INPUT_GRACE_PERIOD\fR parmeter in the
+         lsf.datamanager file expires, LSF data manager cleans up
+         the job record and input files cannot be queried.
+.sp 2
+         You can use job-based query to see input file records
+         only until those jobs finish (DONE or EXIT status).
+.sp 2
+         You can query output file records until the following
+         events occur:
+.sp 2
+         *  All of the output file records associated with the
+            job have TRANSFERRED or ERROR status.
+.sp 2
+         *  And the grace period that is specified by the
+            \fBCACHE_OUTPUT_GRACE_PERIOD\fR parameter expires for
+            all files.
+.sp 2
+         If both output and input job records exist, you can
+         query the cache until all of these conditions are met.
+.SH Output: Default format
+
+.sp 2
+By default, the following information is shown for each file:
+.sp 2
+\fB\fRHASH\fB\fR
+.br
+         The hash key of the particular copy of the file.
+.sp 2
+\fB\fRSTATUS\fB\fR
+.br
+         The status of the file:
+.sp 2
+         *  \fRNEW\fR: LSF data manager received a requirement
+            for the file, but a transfer job is not submitted for
+            it yet.
+.sp 2
+         *  \fRSTAGING\fR: For input files, the file is requested
+            but is not yet in the cache. For output files, the
+            file is in the cache and is either waiting to be
+            transferred out or is being transferred out.
+.sp 2
+         *  \fRTRANSFERRED\fR: For input files, the file is in
+            the cache. For output files, the transfer job for the
+            file is complete.
+.sp 2
+         *  \fRERROR\fR: OUTPUT file transfer failed.
+.sp 2
+         *  \fRUNKNOWN\fR: During recovery, it\(aqs possible that
+            previously transferred files might show up as unknown
+            for a short period while data manager recovers its
+            state.
+.sp 2
+         *  \fRLINKED\fR: If LSF data manager can directly access
+            the required file in the cache, no transfer job is
+            needed and the file is not copied into the cache. LSF
+            data manager creates a symbolic link from the cache
+            to the required file. The \fRLINKED\fR status shows
+            that the file was symbolically linked.
+.sp 2
+\fBREF_JOB\fR
+.br
+         For file-based query only. List of job IDs of jobs that
+         request the file. \fRREF_JOB\fR is not displayed for
+         job-based query.
+.sp 2
+\fBXFER_JOB\fR
+.br
+         The job ID of the transfer job. If LSF data manager can
+         directly access the required file in the cache, no
+         transfer job is needed and the file is not copied into
+         the cache. A dash (\fR-\fR) indicates that no transfer
+         job is associated with the file.
+.sp 2
+\fBGRACE\fR
+.br
+         After files are no longer needed by any job, unused
+         input and output files in the data manager cache are
+         cleaned up after a configurable grace period
+         (\fBCACHE_INPUT_GRACE_PERIOD\fR and
+         \fBCACHE_OUTPUT_GRACE_PERIOD\fR parameters in
+         lsf.datamanager). \fRGRACE\fR shows the remaining hours
+         and minutes of the grace period.
+.sp 2
+         *  Input file records enter grace period after file
+            transfer is complete (STATUS is TRANSFERRED), and the
+            list of jobs for \fRREF_JOB\fR becomes empty. After
+            the grace period expires, the files are cleaned up
+            and can no longer be queried by file name. The
+            default input grace period is 1440 minutes (one day).
+.sp 2
+         *  Output file records enter grace period immediately
+            after their status becomes TRANSFERRED. However, the
+            files and job records are not cleaned up until the
+            grace periods expire for all stage-out requirements
+            that are associated with the same job. Output files
+            can be queried by file name until the grace period
+            expires for all output file records associated with
+            the job. The default output grace period is 180
+            minutes (3 hours). Files that are uploaded to the
+            cache with the bstage out -tag command must be
+            cleaned manually with the bdata tags clean command.
+.SH Output: long format
+
+.sp 2
+In a long format display, the following additional information is
+displayed:
+.sp 2
+\fBPERMISSION\fR
+.br
+         Access permissions for the file, which is defined by the
+         \fBCACHE_PERMISSIONS\fR parameter in lsf.datamanager.
+.sp 2
+         When \fBCACHE_PERMISSIONS=all\fR, the \fRPERMISSION\fR
+         field shows \fRall\fR.
+.sp 2
+         When the \fBCACHE_ACCESS_CONTROL=Y\fR parameter is
+         configured in lsf.datamanager, the \fRPERMISSION\fR
+         field shows the user group and the file permissions.
+.sp 2
+\fBSIZE\fR
+.br
+         Units for file size are displayed as follows:
+.sp 2
+         *  \fR\fInnn\fR B\fR if file size is less than 1 KB
+.sp 2
+         *  \fR\fInnn\fR[.\fIn\fR] KB\fR if file size is less
+            than 1 MB
+.sp 2
+         *  \fR\fInnn\fR[.\fIn\fR] MB\fR if file size is less
+            than 1 GB
+.sp 2
+         *  \fR\fInnn\fR[.\fIn\fR] GB\fR if file size is 1 GB or
+            larger
+.sp 2
+         *  \fR\fInnn\fR[.\fIn\fR] EB\fR is displayed if file
+            size is 1 EB or larger
+.sp 2
+\fBMODIFIED\fR
+.br
+         The last modified time of the file, as it was at job
+         submission time or at the time of the stage out request.
+.sp 2
+\fBCACHE_LOCATION\fR
+.br
+         The full location of the file in the cache, as mounted
+         on the data manager hosts.
+.sp 2
+For example:
+.sp 2
+bdata cache -l hostA:/home/user1/job.sh
+.br
+--------------------------------------------------------------------------------
+.br
+INPUT:
+.br
+hostA:/home/user1/job.sh
+.br
+
+.br
+PERMISSION          user:user1
+.br
+HASH                7fb71a04569b51c851122553e2c728c5
+.br
+SIZE                5 MB
+.br
+STATUS              TRANSFERRED
+.br
+REF_JOB             1435@cluster1
+.br
+XFER_JOB            1906@cluster2 FINISHED Mon Aug 18 09:05:25 2014
+.br
+GRACE               -
+.br
+MODIFIED            Thu Aug 14 17:01:57 2014
+.br
+
+.br
+CACHE_LOCATION:
+.br
+/scratch/user1/staging/stgin/user/user1/hostA/home/user1/job.sh/e2cc059b47c094544791664a51489c8c
+.SH Examples: query by file
+
+.sp 2
+The file is in the cache with one shared copy that is cached for
+different jobs:
+.sp 2
+bdata cache hostA:/home/user1/transfer_tool.sh
+.br
+--------------------------------------------------------------------------------
+.br
+INPUT:
+.br
+hostA:/home/user1/transfer_tool.sh
+.br
+HASH     STATUS   REF_JOB        XFER_JOB       GRACE
+.br
+ab7dc9*  STAGING  2947@cluster1  2949@cluster1  - 
+.br
+                  2952@cluster1
+.br
+                  2954@cluster1
+.sp 2
+The following job requests a file owned by the user group
+\fRdesign1\fR:
+.sp 2
+bsub -data /home/user1/data/file1.txt -datagrp design1 sleep 9999
+.br
+Job <11297> is submitted to default queue <normal>.
+.sp 2
+Use the -g option to query files belonging to the specified
+group:
+.sp 2
+bdata cache -g designl /home/user1/data/file1.txt
+.br
+--------------------------------------------------------------------------------
+.br
+INPUT:
+.br
+hosta:/home/user1/data/file1.txt
+.br
+
+.br
+HASH    STATUS       REF_JOB                XFER_JOB               GRACE      
+.br
+fbea85* LINKED       11297@cluster1         -                      -          
+.sp 2
+\fBNote: \fRThe status of the file /home/user1/data/file1.txt is
+\fRLINKED\fR, and \fRXFER_JOB\fR is shown as a dash (\fR-\fR).
+This means that LSF data manager can directly access the required
+file in the cache, so no transfer job is needed and the file is
+not copied into the cache. LSF data manager created a symbolic
+link from the cache to the required file. The \fRLINKED\fR status
+shows that the file was symbolically linked. A dash (\fR-\fR)
+indicates that no transfer job is associated with the file.
+.SH Examples: query by job
+
+.sp 2
+The job requests two input files. During job execution, file
+\fRdata2\fR is copied to two other locations. Files being staged
+out are listed as OUTPUT and show their destinations:
+.sp 2
+bdata cache 84044
+.br
+Job <84044@cluster1> has the following file records in LSF data manager:
+.br
+--------------------------------------------------------------------------------
+.br
+INPUT:
+.br
+hostA:/home/user1/data2
+.br
+
+.br
+HASH    STATUS       XFER_JOB               GRACE
+.br
+68990b* TRANSFERRED  84045@cluster1         -
+.br
+
+.br
+--------------------------------------------------------------------------------
+.br
+INPUT:
+.br
+hostA:/home/user1/data3
+.br
+
+.br
+HASH    STATUS       XFER_JOB               GRACE
+.br
+e2fff4* TRANSFERRED  84056@cluster1         -
+.br
+
+.br
+--------------------------------------------------------------------------------
+.br
+OUTPUT:
+.br
+hostB:/home/user1/data2
+.br
+TO:
+.br
+hostA:/scratch/user1/workspace
+.br
+
+.br
+HASH    STATUS       XFER_JOB               GRACE
+.br
+68990b* TRANSFERRED  84091@cluster1         -
+.SH Examples: query a single file, long output
+
+.sp 2
+bdata cache -l hostA:/home/user1/testDATA/rt/rt1/ada2 -u user1
+.br
+--------------------------------------------------------------------------------
+.br
+INPUT:
+.br
+hostA:/home/user1/testDATA/rt/rt1/ada2
+.br
+
+.br
+PERMISSION          user:user1
+.br
+HASH                7fb71a05130b51c673953948e2c397c5
+.br
+SIZE                50 MB
+.br
+STATUS              TRANSFERRED
+.br
+REF_JOB             1435@cluster1
+.br
+XFER_JOB            1906@cluster1 FINISHED Mon Aug 18 09:05:25 2014
+.br
+GRACE               -
+.br
+MODIFIED            Wed Apr 30 14:41:22 2014
+.br
+
+.br
+CACHE_LOCATION:
+.br
+/data/cache/stgin/user/user1/hostA/home/user1/testDATA/rt/rt1/ada2/7fb71a05130b51c673953948e2c397c5
+.sp 2
+The following example uses the -g option to query a file
+belonging to the user group \fRdesign1\fR:
+.sp 2
+bdata cache -l -g design1 /home/user1/data/file1.txt 
+.br
+--------------------------------------------------------------------------------
+.br
+INPUT:
+.br
+hosta:/home/user1/data/file1.txt
+.br
+
+.br
+PERMISSION          group:design1
+.br
+HASH                fbea858bdf6ddefc6c7f44dc6a08f1a6
+.br
+SIZE                4 B
+.br
+STATUS              LINKED
+.br
+REF_JOB             11297@cluster1
+.br
+XFER_JOB            -
+.br
+GRACE               -
+.br
+MODIFIED            Thu Oct  9 07:54:19 2014
+.br
+
+.br
+CACHE_LOCATION:
+.br
+/scratch/data/user1/staging1/stgin/group/design1/hosta/home/user1/data/file1.txt/fbea858bdf6ddefc6c7f44dc6a08f1a6
+.SH Examples: query multiple files for the same job, long output
+
+.sp 2
+bdata cache -l 1909
+.br
+Job <1909@cluster1> has the following file records in LSF data manager:
+.br
+--------------------------------------------------------------------------------
+.br
+INPUT:
+.br
+hostA:/home/user1/testDATA/status.1
+.br
+
+.br
+PERMISSION          user:user1
+.br
+HASH                0f9267a79de4bb2f9143b61ab741afda
+.br
+SIZE                290 B
+.br
+STATUS              TRANSFERRED
+.br
+XFER_JOB            1908@cluster1 FINISHED Mon Aug 18 10:01:51 2014
+.br
+GRACE               -
+.br
+MODIFIED            Thu Jul  3 10:50:53 2014
+.br
+
+.br
+CACHE_LOCATION:
+.br
+/data/cache/stgin/user/user1/hostB/home/user1/testDATA/status.1/0f9267a79de4bb2f9143b61ab741afda
+.br
+
+.br
+--------------------------------------------------------------------------------
+.br
+INPUT:
+.br
+hostA:/home/user1/testDATA/status.2
+.br
+
+.br
+PERMISSION          user:user1
+.br
+HASH                2b992669d4ce96902cd639dda190a586
+.br
+SIZE                0 B
+.br
+STATUS              TRANSFERRED
+.br
+XFER_JOB            1910@cluster1 FINISHED Mon Aug 18 10:02:27 2014
+.br
+GRACE               -
+.br
+MODIFIED            Thu Jul  3 10:49:36 2014
+.br
+
+.br
+CACHE_LOCATION:
+.br
+/data/cache/stgin/user/user1/hostB/home/user1/testDATA/status.2/2b992669d4ce96902cd639dda190a586
+.br
+
+.br
+--------------------------------------------------------------------------------
+.br
+OUTPUT:
+.br
+hostA:/home/user1/testDATA/status.1
+.br
+TO:
+.br
+hostA:/scratch/user1/data/out
+.br
+HASH                0f9267a79de4bb2f9143b61ab741afda
+.br
+SIZE                290 B
+.br
+STATUS              STAGING
+.br
+XFER_JOB            1911@cluster1
+.br
+GRACE               -
+.br
+MODIFIED            Thu Jul  3 10:50:53 2014
+.br
+
+.br
+CACHE_LOCATION:
+.br
+/data/cluster1cache/stgout/cluster1/hostA/1909/home/user1/testDATA/status.1/0f9267a79de4bb2f9143b61ab741afda
+.br
+
+.br
+--------------------------------------------------------------------------------
+.br
+OUTPUT:
+.br
+hostA:/home/user1/testDATA/status.2
+.br
+TO:
+.br
+hostA:/scratch/user1/data/out
+.br
+
+.br
+HASH                2b992669d4ce96902cd639dda190a586
+.br
+SIZE                0 B
+.br
+STATUS              STAGING
+.br
+XFER_JOB            1912@cluster1
+.br
+GRACE               -
+.br
+MODIFIED            Thu Jul  3 10:49:36 2014
+.br
+
+.br
+CACHE_LOCATION:
+.br
+/data/cache/stgin/user/user1/hostB/home/user1/testDATA/status.2/2b992669d4ce96902cd639dda190a586
+.SH Examples: query the same file for multiple jobs, long output
+
+.sp 2
+bdata cache -l /home/user1/testDATA/status.1
+.br
+--------------------------------------------------------------------------------
+.br
+INPUT:
+.br
+hostA:/home/user1/testDATA/status.1
+.br
+
+.br
+PERMISSION          user:user1
+.br
+HASH                0f9267a79de4bb2f9143b61ab741afda
+.br
+SIZE                290 B
+.br
+STATUS              TRANSFERRED
+.br
+REF_JOB             1909@cluster1
+.br
+                    1913@cluster1
+.br
+XFER_JOB            1908@cluster1 FINISHED Mon Aug 18 10:01:51 2014
+.br
+GRACE               -
+.br
+MODIFIED            Thu Jul  3 10:50:53 2014
+.br
+
+.br
+CACHE_LOCATION:
+.br
+/data/cluster1cache/stgin/user/user1/hostA/home/user1/testDATA/status.1/0f9267a79de4bb2f9143b61ab741afda
+.SH Examples: query by cluster with the -dmd option-dmd optionoption
+
+.sp 2
+The following example queries all instances of the file
+/newshare/scal/user1/data_files/seqdata.0 on host \fRhostA\fR for
+cluster \fRcluster1\fR.
+.sp 2
+bdata cache -dmd cluster1 hostA:/newshare/scal/user1/data_files/seqdata.0
+.br
+--------------------------------------------------------------------------------
+.br
+INPUT:
+.br
+hostA:/newshare/scal/user1/data_files/seqdata.0
+.br
+
+.br
+HASH    STATUS       REF_JOB                XFER_JOB               GRACE
+.br
+6e91e3* TRANSFERRED  15@cluster1            5@cluster1             -
+.br
+                     16@cluster1
+.sp 2
+The following example queries data requirements for job \fR15\fR
+on cluster \fRcluster1\fR.
+.sp 2
+bdata cache -dmd cluster1 15
+.br
+Job <15@cluster1> has the following file records in LSF data manager:
+.br
+--------------------------------------------------------------------------------
+.br
+OUTPUT:
+.br
+hostA:/newshare/scal/user1/data_files/15/seqdata.1
+.br
+TO:
+.br
+hostB:/newshare/scal/user1/data_files/seqdata.15
+.br
+
+.br
+HASH    STATUS       XFER_JOB               GRACE
+.br
+e21557* STAGING      5@cluster1            -
+.SH Examples: file query when user group cache access is enabled
+
+.sp 2
+When the \fBCACHE_ACCESS_CONTROL=Y\fR parameter is configured in
+lsf.datamanager, the \fRbdata cache -l\fR command shows the user
+group and the file permissions. For example:
+.sp 2
+bdata cache -l 1152
+.br
+Job <1152@dm1> has the following file records in LSF data manager:
+.br
+--------------------------------------------------------------------------------
+.br
+INPUT:
+.br
+hostA:/newshare/scal/user1/data_files/15/seqdata.1
+.br
+PERMISSION          group:pcl   rwxr-x---   [manual]
+.br
+HASH                b7202f200c0240a66493f81f0e2e8875
+.br
+SIZE                1 KB
+.br
+STATUS              TRANSFERRED
+.br
+XFER_JOB            1153@dm1 FINISHED Tue Nov 17 10:42:25 2015
+.br
+GRACE               -
+.br
+MODIFIED            Tue Apr 19 15:59:28 2015 
+.br
+
+.br
+CACHE_LOCATION:
+.br
+/data/cluster1cache/stgin/user/user1/hostA/home/user1/testDATA/seqdata.1/b7202f200c0240a66493f81f0e2e8875
+.sp 2
+
+.ad l
+
+.TH bdata 1 "May 2016" "" ""n.ll 72
+
+.ce 1000
+\fBtags\fR
+.ce 0
+
+.sp 2
+LSF data management tag query and cleanup options
+.sp 2
+
+.SH Options
+
+.sp 2
+Tag query:
+.sp 2
+\fBbdata tags list\fR [\fB-w\fR] [\fB-u all\fR | \fB-u\fR
+user_name] [\fB-dmd\fR cluster_name]
+.sp 2
+Tag cleanup:
+.sp 2
+\fBbdata tags clean\fR [\fB-u\fR user_name] [\fB-dmd\fR
+cluster_name] tag_name
+.SH Description
+
+.sp 2
+The list command displays the names of the known tags.
+.sp 2
+When the \fBCACHE_ACCESS_CONTROL=Y\fR parameter is configured in
+lsf.datamanager, the list command displays the user group that
+the file belongs to. All users (not just the administsrator) can
+specify the -u option to see tags that are owned by other users.
+.sp 2
+bdata tags list
+.br
+NAME      USER    GROUP     LAST_UPLOAD          LAST_DOWNLOAD
+.br
+code      user1   pcl       06/12/2015 15:50:10  -
+.br
+tag1      user1   <error>   03/12/2015 13:51:59  -
+.br
+tag2      user2   test      03/12/2015 13:52:06  -
+.br
+tag3      user2   test      03/12/2015 13:52:09  -
+.sp 2
+If a bdata chgrp command did not successfully change the user
+group of the file, the \fRGROUP\fR column shows \fR<error>\fR.
+.sp 2
+A dash (\fR-\fR) in the \fRGROUP\fR column of a tag query
+indicates that \fBCACHE_ACCESS_CONTROL=Y\fR is not configured.
+.sp 2
+The clean command deletes the tag and all its containing files.
+Data manager administrators can clean any tags. Ordinary users
+can clean only their own tags. Each LSF data manager manages its
+own cache area. You can query and manage tags through -dmd
+\fIcluster_name\fR option, which redirects the request to the dmd
+that serves the specified cluster.
+.SH Examples
+
+.sp 2
+Query known local tags:
+.sp 2
+bdata tags list -u all
+.br
+NAME       USER   LAST_UPLOAD           LAST_DOWNLOAD
+.br
+tag_name1  user1  06/27/2015 16:37:52   06/28/2015 16:37:52
+.br
+tag_name2  user2  06/23/2015 16:37:52   06/28/2015 16:37:52
+.br
+tag_name3  user3  06/25/2015 16:37:52   06/30/2015 16:37:52
+.br
+ ...
+.sp 2
+A dash (\fR-\fR) in the \fRLAST_UPLOAD\fR column of a tag query
+indicates tags that were created, but not finished their first
+upload:
+.sp 2
+bdata tags list -u all
+.br
+NAME       USER   LAST_UPLOAD       LAST_DOWNLOAD
+.br
+tag_name1  user1  -                 -
+.br
+tag_name2  user2  -                 -
+.br
+tag_name3  user3  -                 -
+.br
+ ...
+.sp 2
+In this state, the scheduler does not schedule the job to use the
+tags until the first upload to the staging area is finished and
+the \fRLAST_UPLOAD\fR time is set. If the upload fails, the tag
+stays this way. Use bdata tags clean to clean up the tags for
+failed uploads.
+.sp 2
+
+.ad l
+
+.TH bdata 1 "May 2016" "" ""n.ll 72
+
+.ce 1000
+\fBshowconf\fR
+.ce 0
+
+.sp 2
+LSF data management effective configuration query option
+.sp 2
+\fBbdata showconf \fR
+.sp 2
+List the effective values of LSF data manager configuration
+parameters from lsf.datamanager and lsf.conf.
+.SH Example
+
+.sp 2
+Query the current LSF data manager configuration:
+.sp 2
+ bdata showconf
+.br
+LSF data management configuration at Wed Aug 20 16:03:40 2014
+.br
+        ADMINS = lsfadmin admin1
+.br
+        CACHE_INPUT_GRACE_PERIOD = 1440 (minutes)
+.br
+        CACHE_OUTPUT_GRACE_PERIOD = 100 (minutes)
+.br
+        CACHE_PERMISSIONS = group
+.br
+        FILE_TRANSFER_CMD = /usr/bin/scp
+.br
+        LSB_TIME_DMD = 0
+.br
+        LSF_DATA_HOSTS = hostA hostB
+.br
+        LSF_DATA_PORT = 39486
+.br
+        LSF_LOGDIR = /opt/lsf/LSF913/cluster1/log
+.br
+        LSF_LOG_MASK = LOG_WARNING
+.br
+        CACHE_ACCESS_CONTROL = Y
+.br
+        QUERY_NTHREADS = 4
+.br
+        STAGING_AREA = nfs1:/mnt/zfsvol/hostC/user1/LSF913/cluster1
+.sp 2
+
+.ad l
+
+.TH bdata 1 "May 2016" "" ""n.ll 72
+
+.ce 1000
+\fBconnections\fR
+.ce 0
+
+.sp 2
+LSF data management connections query option. Lists currently
+connected mbatchd, with master LSF data manager host names, their
+status, and the outgoing and incoming connections for remote LSF
+data managers.
+.sp 2
+\fBbdata connections\fR [\fB-w\fR]
+.SH Output
+
+.sp 2
+The bdata connections output has the following sections.
+.sp 2
+The \fRLOCAL\fR section displays two tables:
+.sp 2
+*  The first table displays the configuration of
+   \fBLSF_DATA_HOSTS\fR and \fBLSF_DATA_PORT\fR for the local LSF
+   data manager. The currently active LSF data manager master
+   host name is marked with an asterisk (\fR[*]\fR).
+.sp 2
+*  The second table displays the connection status of registered
+   mbatchd daemons.
+.sp 2
+   \fB\fRCLUSTER\fB\fR
+.br
+            Displays the cluster name.
+.sp 2
+   \fB\fRMASTER\fB\fR
+.br
+            Displays the name of the LSF cluster master host
+            connected to this data manager.
+.sp 2
+   \fB\fRSTATUS\fB\fR
+.br
+            Displays the connection status for the cluster -
+            \fRok\fR or \fRdisc\fR.
+.sp 2
+The \fROUTGOING REMOTE\fR section displays the connection status
+of remote LSF data managers for stage out jobs that are
+configured in the RemoteDataManagers section of lsf.datamanager:
+.sp 2
+\fB\fRCLUSTER\fB\fR
+.br
+         Corresponds to the \fBCLUSTER\fR column in
+         lsf.datamanager, and displays the name of the remote LSF
+         cluster.
+.sp 2
+\fB\fRLSF_DATA_HOSTS\fB\fR
+.br
+         Displays the data hosts configured in the
+         RemoteDataManagers section of lsf.datamanager. The
+         currently active LSF data manager master host name is
+         marked with an asterisk (\fR[*]\fR).
+.sp 2
+\fB\fRLSF_DATA_PORT\fB\fR
+.br
+         Displays the LSF data manager connection port specified
+         by \fBLSF_DATA_PORT\fR in lsf.conf.
+.sp 2
+\fB\fRSTATUS\fB\fR
+.br
+         Displays the connection status - \fRok\fR or \fRdisc\fR.
+.sp 2
+
+.sp 2
+The \fRINCOMING REMOTE\fR section displays the status of remote
+LSF data managers that connect to the local LSF data manager to
+query for file availability.
+.sp 2
+\fB\fRCLUSTER\fB\fR
+.br
+         Corresponds to the \fBCLUSTER\fR column in
+         lsf.datamanager, and displays the name of the remote LSF
+         cluster.
+.sp 2
+\fB\fRDMD_MASTER\fB\fR
+.br
+         Displays the connected LSF data manager master host name
+         for the cluster.
+.sp 2
+\fB\fRLSF_DATA_PORT\fB\fR
+.br
+         Displays the LSF data manager connection port specified
+         by \fBLSF_DATA_PORT\fR in lsf.conf.
+.sp 2
+\fB\fRSTATUS\fB\fR
+.br
+         Displays the connection status - \fRok\fR or \fRdisc\fR.
+.sp 2
+
+.sp 2
+If the RemoteDataManagers section is configured in
+lsf.datamanager in the local cluster, the \fROUTGOING REMOTE\fR
+section is displayed. If the RemoteDataManagers section is
+configured in lsf.datamanager in the remote cluster, the local
+cluster displays the \fRINCOMING REMOTE\fR section. Only the
+cluster that will be sending jobs needs to configure the
+RemoteDataManagers section.
+.SH Example
+
+.sp 2
+Query LSF data manager connections:
+.sp 2
+bdata connections
+.br
+LOCAL: (LSF_DATA_PORT=2960)
+.br
+LSF_DATA_HOSTS 
+.br
+[*]hostB
+.br
+
+.br
+CLUSTER             MASTER              STATUS
+.br
+cluster1            hostB               ok
+.br
+
+.br
+OUTGOING REMOTE:
+.br
+CLUSTER             LSF_DATA_HOSTS      LSF_DATA_PORT  STATUS
+.br
+hamburg             [*]dmd1.hamburg     4104           ok 
+.br
+toulouse            dmd2.toulouse       12058          disc 
+.br
+
+.br
+INCOMING REMOTE:
+.br
+CLUSTER             DMD_MASTER          LSF_DATA_PORT  STATUS
+.br
+waterloo            dmd3.waterloo       33994          ok
+.br
+venice              dmd5.venice         13514          ok
+.sp 2
+
+.ad l
+
+.TH bdata 1 "May 2016" "" ""n.ll 72
+
+.ce 1000
+\fBadmin\fR
+.ce 0
+
+.sp 2
+Perform reconfiguration and shutdown administration tasks for the
+LSF data manager daemon (dmd).
+.sp 2
+
+.SH Options
+
+.sp 2
+Reconfiguration:
+.sp 2
+\fBbdata admin reconfig \fR
+.sp 2
+Shutdown:
+.sp 2
+\fBbdata admin shutdown\fR [host_name]
+.SH Description
+
+.sp 2
+Only the LSF data manager administrator or root can run these
+commands.
+.sp 2
+Use reconfig after you change lsf.datamanager configuration. The
+configuration files are checked before dmd is reconfigured. If
+the configuration is not correct, reconfiguration is not
+initiated.
+.sp 2
+The shutdown command kills the LSF data manager daemon processes
+on the specified host. The request is rejected if the LIM on the
+node is running.
+.sp 2
+To shut down the LSF data manager, you must first shut down LIM
+with lsadmin limshutdown.
+.sp 2
+If a host name is not specified, LSF data manager attempts to
+shut down all candidate LSF data manager hosts.
+.sp 2
+The output of bdata admin is similar in format to lsadmin
+limshutdown and lsadmin reconfig and badmin hshutdown and badmin
+reconfig.
+.SH Examples
+
+.sp 2
+Reconfiguration:
+.sp 2
+bdata admin reconfig 
+.br
+Checking configuration files ...
+.br
+No errors found.
+.br
+
+.br
+LSF data manager daemon (dmd) on <hostA> is reconfiguring ... Initiated.
+.sp 2
+Shutdown:
+.sp 2
+bdata admin shutdown
+.br
+LSF data manager daemon (dmd) on <hostA> is shutting down... Done.
+.br
+LSF data manager daemon (dmd) on <hostB> is shutting down... Host unreachable.
+.br
+LSF data manager daemon (dmd) on <hostc> is shutting down... Cannot shut down LSF data 
+.br
+manager daemon (dmd) when the local lim is running.
+.sp 2
+
+.ad l
+
+.TH bdata 1 "May 2016" "" ""n.ll 72
+
+.ce 1000
+\fBHelp and version options\fR
+.ce 0
+
+.sp 2
+IBM Spectrum LSF Data Manager help and version display options
+.sp 2
+
+.sp 2
+\fBbdata\fR [\fB-h\fR[\fBelp\fR] | \fB-V\fR]
+.sp 2
+\fB-h[help]\fR
+.br
+         Displays the command usage of the bdata command to
+         stderr and exits.
+.sp 2
+\fB-V\fR
+.br
+         Prints the IBM Spectrum LSF Data Manager release version
+         to stderr and exits.
+.sp 2
+
+.ad l
+
+.TH bdata 1 "May 2016" "" ""n.ll 72
+
+.ce 1000
+\fBSee also\fR
+.ce 0
+
+.sp 2
+bhist, bjobs, bmod, bstage, bsub, lsf.conf, lsf.datamanager
+.sp 2

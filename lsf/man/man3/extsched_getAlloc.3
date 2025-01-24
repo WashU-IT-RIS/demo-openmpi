@@ -1,0 +1,30 @@
+.TH "extsched_getAlloc" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+extsched_getAlloc \- extsched_getAlloc 
+Function to extract information from the internal representation of a resource allocation.
+.PP
+The caller should free infoPtr with extsched_freeAlloc().
+.PP
+\fB#include <lssched.h>\fP
+.PP
+\fB int extsched_getAlloc(INT_Alloc *alloc, extsched_Alloc **infoPtr)\fP
+.PP
+.SH "Parameters:"
+\fIalloc\fP [IN] : internal allocation data structure 
+.br
+\fIinfoPtr\fP [OUT] : describes the allocation
+.PP
+.SH "Returns:"
+int:0 . 
+.PP
+int:-1 .
+.PP
+.SH "See also:"
+\fBextsched_freeAlloc\fP 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

@@ -1,0 +1,104 @@
+.TH "ls_loadadj" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ls_loadadj \- ls_loadadj 
+Sends a load adjustment request to LIM after the execution host or hosts have been selected outside the LIM by the calling application.
+.PP
+\fBls_loadadj\fP sends a load adjustment request to LIM after the execution host or hosts have been selected outside the LIM by the calling application. Use this call only if a placement decision is made by the application without calling \fBls_placereq\fP (for example, a decision based on the load information from an earlier \fBls_load\fP call). This request keeps LIM informed of task transfers so that the potential load increase on the destination host() provided in placeinfo are immediately taken into consideration in future LIM placement decisions. listsize gives the total number of entries in placeinfo.
+.PP
+\fBls_loadadj\fP returns 0 on success, otherwise -1 is returned and lserrno is set to indicate the error.
+.PP
+\fBls_loadadj\fP can adjust all load indices with the exception of ls, it, r15m and external load indices.
+.PP
+\fB#include <lsf/lsf.h>\fP
+.PP
+\fB int ls_loadadj(char *resreq, struct \fBplaceInfo\fP *hostlist, int listsize)\fP
+.PP
+.SH "Parameters:"
+\fI*resreq\fP resreq is a resource requirement expression (which can be NULL) that describes the resource requirements for which the load must be adjusted. These typically are the resource requirements for the previously placed task. LIM adjusts the host load indices according to the resource requirement. If NULL is specified, then LIM assumes that the task or tasks are both CPU and memory intensive (this is the default).
+.br
+\fI*hostlist\fP placeinfo is a pointer to an array of \fBplaceInfo\fP structures. A \fBplaceInfo\fP structure contains a hostname, and an int, numtask, that represents a particular number of tasks. The host load indices (specified by resreq) of all the hosts that are specified in the array are increased by the number of tasks specified. Each task is assumed to have the same resource requirements. The requirements are those specified in resreq.
+.br
+\fIlistsize\fP listsize gives the number of host or cluster names in hostlist.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBplaceInfo\fP 
+.br
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+int:0 
+.br
+ Function was successful.
+.PP
+int:-1 
+.br
+ Function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lserrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+none
+.PP
+.SH "See also:"
+\fBls_placereq\fP 
+.PP
+\fBls_placeofhosts\fP 
+.PP
+\fBls_eligible\fP 
+.PP
+\fBls_info\fP 
+.PP
+\fBls_load\fP 
+.PP
+
+.ad l
+.nh
+.SH NAME
+placeInfo \- Struct containing placement information.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char \fBhostName\fP [MAXHOSTNAMELEN]"
+.br
+.ti -1c
+.RI "int \fBnumtask\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Struct containing placement information. 
+.SH "Field Documentation"
+.PP 
+.SS "char \fBplaceInfo::hostName\fP[MAXHOSTNAMELEN]"
+.PP
+The host name. 
+.PP
+
+.SS "int \fBplaceInfo::numtask\fP"
+.PP
+The number of task. 
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

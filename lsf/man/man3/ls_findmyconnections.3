@@ -1,0 +1,68 @@
+.TH "ls_findmyconnections" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ls_findmyconnections \- ls_findmyconnections 
+Finds established connections to hosts.
+.PP
+\fBls_findmyconnections\fP retrieves the list of hosts with which the application has established a connection. A connection is established upon the first successful return from an \fBls_connect\fP, \fBls_rtask\fP, \fBls_rtaske\fP, \fBls_rexecv\fP, or \fBls_rexecve\fP call. The returned host name list is terminated by a NULL value. The function maintains a static array, each element of which points to a host name. This array is overwritten the next time \fBls_findmyconnections\fP is called. If a connection is not found, the first element of the array is a NULL pointer.
+.PP
+Any program using these routines must call \fBls_initrex\fP first.
+.PP
+Any program using these routines must be setuid to root if LSF_AUTH is not defined in the lsf.conf file.
+.PP
+\fB#include <lsf/lsf.h> 
+.br
+ char **ls_findmyconnections(void)\fP
+.PP
+.SH "Parameters:"
+\fInone\fP 
+.PP
+.SH "Data Structures:" 
+.PP
+none
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+char **:A list of hostnames which members in the connection table. 
+.br
+ Function was successful. 
+.PP
+Null 
+.br
+ Function failed.
+.PP
+.SH "Errors:" 
+.PP
+Systems that conform to the Single UNIX specification are not required to detect error conditions for this function.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+none
+.PP
+.SH "See also:"
+\fBls_connect\fP 
+.PP
+\fBls_isconnected\fP 
+.PP
+\fBls_rtask\fP 
+.PP
+\fBls_rtaske\fP 
+.PP
+\fBls_rexecv\fP 
+.PP
+\fBls_rexecve\fP 
+.PP
+\fBls_initrex\fP 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

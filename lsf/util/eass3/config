@@ -1,0 +1,22 @@
+# -------------------------------------------------------------------------- 
+# hostNodeMap can be used to easily map the host name to the node name 
+# for running rpower commands. 
+# 
+# For example: 
+#    The host name "lsf_1" corresponds to node name "xcat_lsf_1". 
+#    The host name "lsf_2" corresponds to node name "xcat_lsf_2". 
+#     Configure the hostNodeMap as follows: 
+# 
+#   hostNodeMap=( 
+#   "lsf_1" "xcat_lsf_1" 
+#   "lsf_2" "xcat_lsf_2" 
+#   ) 
+# 
+#   The power command "./rpower_suspend.sh lsf_1 lsf_2" converts 
+#   to "./rpower_suspend.sh xcat_lsf_1 xcat_lsf2" 
+# --------------------------------------------------------------------------
+
+#hostNodeMap=(
+#"host_1" "node_1"
+#"host_2" "node_2"
+#)

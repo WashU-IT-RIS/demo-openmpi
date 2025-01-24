@@ -1,0 +1,520 @@
+.TH "lsb_addreservation" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_addreservation \- lsb_addreservation 
+Makes an advance reservation.
+.PP
+Use \fBlsb_addreservation\fP to send a reservation request to mbatchd. If mbatchd grants the reservation, it issues the reservation ID. If mbatchd rejects the request, it issues NULL as the reservation ID.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB int lsb_addreservation (struct \fBaddRsvRequest\fP *request, char *rsvId)\fP
+.PP
+.SH "Parameters:"
+\fI*request\fP The reservation request 
+.br
+\fI*rsvId\fP Reservation ID returned from mbatchd. If the reservation fails, this is NULL. The memory for rsvid is allocated by the caller.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBaddRsvRequest\fP 
+.br
+\fB_rsvExecCmd_t\fP 
+.br
+\fB_rsvExecEvent_t\fP
+.PP
+.SH "Define Statements:" 
+.PP
+\fBreservation_option\fP
+.PP
+.SH "Returns:"
+int:0 
+.br
+ The reservation was successful. 
+.PP
+int:-1 
+.br
+ The reservation failed.
+.PP
+.SH "Errors:" 
+.PP
+On failure, lsberrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+brsvadd
+.PP
+.SH "Files:" 
+.PP
+none
+.PP
+.SH "See also:"
+\fBlsb_removereservation\fP 
+.PP
+\fBlsb_modreservation\fP 
+.PP
+\fBlsb_reservationinfo\fP 
+.PP
+
+.ad l
+.nh
+.SH NAME
+addRsvRequest \- add reservation request.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBoptions\fP"
+.br
+.ti -1c
+.RI "char * \fBname\fP"
+.br
+.ti -1c
+.RI "struct {"
+.br
+.ti -1c
+.RI "   int \fBminNumProcs\fP"
+.br
+.ti -1c
+.RI "   int \fBmaxNumProcs\fP"
+.br
+.ti -1c
+.RI "} \fBprocRange\fP"
+.br
+.ti -1c
+.RI "int \fBnumAskedHosts\fP"
+.br
+.ti -1c
+.RI "char ** \fBaskedHosts\fP"
+.br
+.ti -1c
+.RI "char * \fBresReq\fP"
+.br
+.ti -1c
+.RI "char * \fBtimeWindow\fP"
+.br
+.ti -1c
+.RI "\fBrsvExecCmd_t\fP * \fBexecCmd\fP"
+.br
+.ti -1c
+.RI "char * \fBdesc\fP"
+.br
+.ti -1c
+.RI "char * \fBrsvName\fP"
+.br
+.ti -1c
+.RI "char * \fBrsvUnit\fP"
+.br
+.ti -1c
+.RI "PKVP * \fBPKVPs\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+add reservation request. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBaddRsvRequest::options\fP"
+.PP
+Reservation options \fBreservation_option\fP. 
+.PP
+.SS "char* \fBaddRsvRequest::name\fP"
+.PP
+User or group for which the reservation is made. 
+.PP
+.SS "int \fBaddRsvRequest::minNumProcs\fP"
+.PP
+Minimum number of processors the required to run the job. 
+.PP
+See the -g option of brsvadd. 
+.SS "int \fBaddRsvRequest::maxNumProcs\fP"
+.PP
+Maximum number of processors the required to run the job. 
+.PP
+
+.SS "struct { ... }   \fBaddRsvRequest::procRange\fP"
+.PP
+Range of number of processors. 
+.PP
+.SS "int \fBaddRsvRequest::numAskedHosts\fP"
+.PP
+The number of invoker specified hosts for the reservation. 
+.PP
+If numAskedHosts is 0, all qualified hosts will be considered. 
+.SS "char** \fBaddRsvRequest::askedHosts\fP"
+.PP
+The array of names of invoker specified hosts hosts for the reservation. 
+.PP
+The number of hosts is given by numAskedHosts. See the -m option of brsvadd. 
+.SS "char* \fBaddRsvRequest::resReq\fP"
+.PP
+The resource requirements of the reservation. 
+.PP
+See the -R option of brsvadd. 
+.SS "char* \fBaddRsvRequest::timeWindow\fP"
+.PP
+Active time window for a recurring reservation. 
+.PP
+See the -t option of brsvadd. 
+.SS "\fBrsvExecCmd_t\fP* \fBaddRsvRequest::execCmd\fP"
+.PP
+Info for the -exec option. 
+.PP
+
+.SS "char* \fBaddRsvRequest::desc\fP"
+.PP
+Description for the reservation to be created. 
+.PP
+The description must be provided as a double quoted text string. The maximum length is 512 chars. Equivalent to the value of brsvadd -d. 
+.SS "char* \fBaddRsvRequest::rsvName\fP"
+.PP
+User-defined advance reservation name unique in an LSF cluster. 
+.PP
+The name is a string of letters, numeric chars, underscores, and dashes beginning with a letter. The maximum length of the name is 39 chars. Equivalent to the value of brsvadd -N. 
+.SS "char* \fBaddRsvRequest::rsvUnit\fP"
+.PP
+Reservation resource unit. 
+.PP
+.SS "PKVP* \fBaddRsvRequest::PKVPs\fP"
+.PP
+Key value pairs will be used to store new fields added in the future. 
+.PP
+This allows new fields to be added without the need of new xdr version 
+
+.ad l
+.nh
+.SH NAME
+_rsvExecCmd_t \- reservation excution command  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBpath\fP"
+.br
+.ti -1c
+.RI "int \fBnumEvents\fP"
+.br
+.ti -1c
+.RI "\fBrsvExecEvent_t\fP * \fBevents\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+reservation excution command 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fB_rsvExecCmd_t::path\fP"
+.PP
+Full path to the command name. 
+.PP
+.SS "int \fB_rsvExecCmd_t::numEvents\fP"
+.PP
+Size of events array. 
+.PP
+.SS "\fBrsvExecEvent_t\fP* \fB_rsvExecCmd_t::events\fP"
+.PP
+Array of events that trigger -exec command. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+_rsvExecEvent_t \- reservation excution event  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBtype\fP"
+.br
+.ti -1c
+.RI "int \fBinfoAttached\fP"
+.br
+.ti -1c
+.RI "void * \fBinfo\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+reservation excution event 
+.SH "Field Documentation"
+.PP 
+.SS "int \fB_rsvExecEvent_t::type\fP"
+.PP
+Event type. 
+.PP
+.SS "int \fB_rsvExecEvent_t::infoAttached\fP"
+.PP
+Boolean: is there additional info? 
+.PP
+.SS "void* \fB_rsvExecEvent_t::info\fP"
+.PP
+Info pertaining to event, such as offset. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+reservation_option \- definitions of reservation options.  
+
+.PP
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBRSV_OPTION_USER\fP   0x0001"
+.br
+.ti -1c
+.RI "#define \fBRSV_OPTION_GROUP\fP   0x0002"
+.br
+.ti -1c
+.RI "#define \fBRSV_OPTION_SYSTEM\fP   0x0004"
+.br
+.ti -1c
+.RI "#define \fBRSV_OPTION_RECUR\fP   0x0008"
+.br
+.ti -1c
+.RI "#define \fBRSV_OPTION_RESREQ\fP   0x0010"
+.br
+.ti -1c
+.RI "#define \fBRSV_OPTION_HOST\fP   0x0020"
+.br
+.ti -1c
+.RI "#define \fBRSV_OPTION_OPEN\fP   0x0040"
+.br
+.ti -1c
+.RI "#define \fBRSV_OPTION_DELETE\fP   0x0080"
+.br
+.ti -1c
+.RI "#define \fBRSV_OPTION_CLOSED\fP   0x0100"
+.br
+.ti -1c
+.RI "#define \fBRSV_OPTION_EXEC\fP   0x0200"
+.br
+.ti -1c
+.RI "#define \fBRSV_OPTION_RMEXEC\fP   0x0400"
+.br
+.ti -1c
+.RI "#define \fBRSV_OPTION_NEXTINSTANCE\fP   0x0800"
+.br
+.ti -1c
+.RI "#define \fBRSV_OPTION_DISABLE\fP   0x1000"
+.br
+.ti -1c
+.RI "#define \fBRSV_OPTION_ADDHOST\fP   0x2000"
+.br
+.ti -1c
+.RI "#define \fBRSV_OPTION_RMHOST\fP   0x4000"
+.br
+.ti -1c
+.RI "#define \fBRSV_OPTION_DESCRIPTION\fP   0x8000"
+.br
+.ti -1c
+.RI "#define \fBRSV_OPTION_TWMOD\fP   0x10000"
+.br
+.ti -1c
+.RI "#define \fBRSV_OPTION_SWITCHOPENCLOSE\fP   0x20000"
+.br
+.ti -1c
+.RI "#define \fBRSV_OPTION_USERMOD\fP   0x40000"
+.br
+.ti -1c
+.RI "#define \fBRSV_OPTION_RSVNAME\fP   0x80000"
+.br
+.ti -1c
+.RI "#define \fBRSV_OPTION_EXPIRED\fP   0x100000"
+.br
+.ti -1c
+.RI "#define \fBRSV_OPTION_ADDUSER\fP   0x200000"
+.br
+.ti -1c
+.RI "#define \fBRSV_OPTION_RMUSER\fP   0x400000"
+.br
+.ti -1c
+.RI "#define \fBRSV_OPTION_HOLDER\fP   0x800000"
+.br
+.ti -1c
+.RI "#define \fBRSV_OPTION_NOSUSPEND\fP   0x1000000"
+.br
+.ti -1c
+.RI "#define \fBRSV_OPTION_SUSPEND\fP   0x2000000"
+.br
+.ti -1c
+.RI "#define \fBRSV_OPTION_QUEUE\fP   0x4000000"
+.br
+.ti -1c
+.RI "#define \fBRSV_OPTION_PRE\fP   0x8000000"
+.br
+.ti -1c
+.RI "#define \fBRSV_OPTION_PRETIME\fP   0x10000000"
+.br
+.ti -1c
+.RI "#define \fBRSV_OPTION_POST\fP   0x20000000"
+.br
+.ti -1c
+.RI "#define \fBRSV_OPTION_POSTTIME\fP   0x40000000"
+.br
+.ti -1c
+.RI "#define \fBRSV_OPTION_PKVP_XDR\fP   0x80000000"
+.br
+.ti -1c
+.RI "#define \fBRSV_FORCE_DELETE_OPTION\fP   0x01"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+definitions of reservation options. 
+.SH "Define Documentation"
+.PP 
+.SS "#define RSV_OPTION_USER   0x0001"
+.PP
+User. 
+.PP
+.SS "#define RSV_OPTION_GROUP   0x0002"
+.PP
+Group. 
+.PP
+.SS "#define RSV_OPTION_SYSTEM   0x0004"
+.PP
+System. 
+.PP
+.SS "#define RSV_OPTION_RECUR   0x0008"
+.PP
+Recur. 
+.PP
+.SS "#define RSV_OPTION_RESREQ   0x0010"
+.PP
+Resource requirement. 
+.PP
+.SS "#define RSV_OPTION_HOST   0x0020"
+.PP
+Host. 
+.PP
+.SS "#define RSV_OPTION_OPEN   0x0040"
+.PP
+Open. 
+.PP
+.SS "#define RSV_OPTION_DELETE   0x0080"
+.PP
+Delete. 
+.PP
+.SS "#define RSV_OPTION_CLOSED   0x0100"
+.PP
+Close. 
+.PP
+.SS "#define RSV_OPTION_EXEC   0x0200"
+.PP
+Execute. 
+.PP
+.SS "#define RSV_OPTION_RMEXEC   0x0400"
+.PP
+Remote execute. 
+.PP
+.SS "#define RSV_OPTION_NEXTINSTANCE   0x0800"
+.PP
+Next instance. 
+.PP
+.SS "#define RSV_OPTION_DISABLE   0x1000"
+.PP
+Disable. 
+.PP
+.SS "#define RSV_OPTION_ADDHOST   0x2000"
+.PP
+Add host. 
+.PP
+.SS "#define RSV_OPTION_RMHOST   0x4000"
+.PP
+Remote host. 
+.PP
+.SS "#define RSV_OPTION_DESCRIPTION   0x8000"
+.PP
+Description. 
+.PP
+.SS "#define RSV_OPTION_TWMOD   0x10000"
+.PP
+Timewindow mode. 
+.PP
+.SS "#define RSV_OPTION_SWITCHOPENCLOSE   0x20000"
+.PP
+Switch open/close. 
+.PP
+.SS "#define RSV_OPTION_USERMOD   0x40000"
+.PP
+User mode. 
+.PP
+.SS "#define RSV_OPTION_RSVNAME   0x80000"
+.PP
+Reservation name. 
+.PP
+.SS "#define RSV_OPTION_EXPIRED   0x100000"
+.PP
+Expired. 
+.PP
+.SS "#define RSV_OPTION_ADDUSER   0x200000"
+.PP
+Add user. 
+.PP
+.SS "#define RSV_OPTION_RMUSER   0x400000"
+.PP
+Remove user. 
+.PP
+.SS "#define RSV_OPTION_HOLDER   0x800000"
+.PP
+AR place holder. 
+.PP
+.SS "#define RSV_OPTION_NOSUSPEND   0x1000000"
+.PP
+No suspend. 
+.PP
+.SS "#define RSV_OPTION_SUSPEND   0x2000000"
+.PP
+Suspend, this is actually the default behavior, but we need it as a seperate option for brsvmod. 
+.PP
+.SS "#define RSV_OPTION_QUEUE   0x4000000"
+.PP
+-queue 
+.PP
+.SS "#define RSV_OPTION_PRE   0x8000000"
+.PP
+'-E' AR pre script 
+.PP
+.SS "#define RSV_OPTION_PRETIME   0x10000000"
+.PP
+'-Et' AR pre time, non-AR jobs will not be dispatched to AR-hosts after this time 
+.PP
+.SS "#define RSV_OPTION_POST   0x20000000"
+.PP
+'-Ep' AR post script 
+.PP
+.SS "#define RSV_OPTION_POSTTIME   0x40000000"
+.PP
+'-Ept' AR post script time 
+.PP
+.SS "#define RSV_OPTION_PKVP_XDR   0x80000000"
+.PP
+Internal use. 
+.PP
+.SS "#define RSV_FORCE_DELETE_OPTION   0x01"
+.PP
+reservation_option reservation_option definitions of reservation options. 
+.PP
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

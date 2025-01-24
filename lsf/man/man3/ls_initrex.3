@@ -1,0 +1,64 @@
+.TH "ls_initrex" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ls_initrex \- ls_initrex 
+Initializes the LSF library for remote execution.
+.PP
+\fBls_initrex\fP initializes the LSF library for remote execution. This routine must be called before any other remote execution LSLIB library routines can be used.
+.PP
+Two remote execution security options are supported in LSF. The first option is to set the effective user ID of an LSF application to root, as other UNIX applications that access remote resources (e.g., rlogin) do. Using this option, numports of the application's file descriptors are bound to privileged ports by ls_initrex(). These sockets are used only for remote connections to RES. If numports is 0, then the system will use the default value LSF_DEFAULT_SOCKS defined in <lsf/lsf.h>. If successful, the number of socket descriptors starting from FIRST_RES_SOCK (defined in <lsf/lsf.h>) that are actually bound to privileged ports is returned, -1 otherwise. To use this option for authentication, the application must be installed as setuid to root. The second security option is to use an authentication daemon supporting the Ident protocol (RFC 931/1413/1414). In this case, this routine returns the value of the input parameter numports if it succeeds, -1 otherwise.
+.PP
+.SH "ls_initrex\fP selects the security option according to the following rule: if the application program invoking it has the effective uid of root, then privileged ports are created; otherwise, no such port is created, and RES will contact an authentication daemon on a connection request (see \fBls_connect").
+.PP
+Currently, the only option that can be specified in options is KEEPUID, which instructs \fBls_initrex\fP to preserve the current user ID. If the KEEPUID bit is not set in options (i.e. options is zero), then \fBls_initrex\fP will change the real, effective and saved user ID to the real user ID.
+.PP
+Any program using this API must be setuid to root if LSF_AUTH is not defined in the lsf.conf file.
+.PP
+This function must be called before calling any other remote execution function.
+.PP
+\fB #include <lsf/lsf.h>\fP
+.PP
+\fB int ls_initrex(int num, int options) \fP
+.PP
+.SH "Parameters:"
+\fInum\fP The number of socket to be creat. 
+.br
+\fIoptions\fP Flags for \fBls_initrex\fP. Currently its value is KEEPUID.
+.PP
+.SH "Data Structures:" 
+.PP
+none
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+int:numports 
+.br
+ Function was successful. 
+.PP
+int:-1 
+.br
+ Function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lserrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+${LSF_ENVDIR:-/etc}/lsf.conf
+.PP
+.SH "See also:"
+\fBls_connect\fP 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

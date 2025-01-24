@@ -1,0 +1,235 @@
+.TH "glb_jobinfo" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+glb_jobinfo \- glb_jobinfo 
+Returns an array of running jobs that are using license tokens and licenses.
+.PP
+\fBglb_jobinfo\fP returns an array of \fBglbJob\fP structures, which contains information on each job that is using a license token and a license from the license server. Each job is either an LSF batch job or a taskman-controlled application.
+.PP
+\fB #include <glb/glb.h>\fP
+.PP
+\fB struct \fBglbJob\fP *glb_jobinfo(int *njobs) \fP
+.PP
+.SH "Parameters:"
+\fI*njobs\fP The number of jobs that are currently in the system. This parameter is used as a return value.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBglbJob\fP 
+.br
+\fBglbJobSpec\fP
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+*glbJob 
+.br
+ An array of running jobs currently using license tokens and licenses from the license server.
+.PP
+.SH "Errors:" 
+.PP
+On failure, glberrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+none
+.PP
+.SH "See also:"
+\fBglb_info\fP 
+.PP
+\fBglb_param\fP 
+.PP
+\fBglb_perror\fP 
+.PP
+\fBglb_userinfo\fP 
+.PP
+\fBglb_workloadinfo\fP 
+.PP
+
+.ad l
+.nh
+.SH NAME
+glbJob \- This data structure represent a running job using license tokens and a license from the license server.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBjobid\fP"
+.br
+.ti -1c
+.RI "char * \fBclient\fP"
+.br
+.ti -1c
+.RI "char * \fBuser\fP"
+.br
+.ti -1c
+.RI "char * \fBhost\fP"
+.br
+.ti -1c
+.RI "char * \fBcluster\fP"
+.br
+.ti -1c
+.RI "int \fBstarttime\fP"
+.br
+.ti -1c
+.RI "int \fBstatus\fP"
+.br
+.ti -1c
+.RI "int \fBnSpec\fP"
+.br
+.ti -1c
+.RI "struct \fBglbJobSpec\fP * \fBjobSpec\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+This data structure represent a running job using license tokens and a license from the license server. 
+
+A job is either an LSF batch job or a taskman controlled application. The API the returns the structure id \fBglb_jobinfo\fP. 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fBglbJob::jobid\fP"
+.PP
+jobId 
+.PP
+.SS "char* \fBglbJob::client\fP"
+.PP
+client name 
+.PP
+.SS "char* \fBglbJob::user\fP"
+.PP
+user name 
+.PP
+.SS "char* \fBglbJob::host\fP"
+.PP
+host name 
+.PP
+.SS "char* \fBglbJob::cluster\fP"
+.PP
+cluster name 
+.PP
+.SS "int \fBglbJob::starttime\fP"
+.PP
+start time 
+.PP
+.SS "int \fBglbJob::status\fP"
+.PP
+job status 
+.PP
+.SS "int \fBglbJob::nSpec\fP"
+.PP
+number of job specifications 
+.PP
+.SS "struct \fBglbJobSpec\fP* \fBglbJob::jobSpec\fP"
+.PP
+job specifications 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+glbJobSpec \- This represent a job specification, i.e.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBfeature\fP"
+.br
+.ti -1c
+.RI "int \fBnflexname\fP"
+.br
+.ti -1c
+.RI "char ** \fBflexnames\fP"
+.br
+.ti -1c
+.RI "int \fBrusage\fP"
+.br
+.ti -1c
+.RI "char * \fBserver\fP"
+.br
+.ti -1c
+.RI "char * \fBserverloc\fP"
+.br
+.ti -1c
+.RI "int \fBntty\fP"
+.br
+.ti -1c
+.RI "char ** \fBttys\fP"
+.br
+.ti -1c
+.RI "int \fBinuse\fP"
+.br
+.ti -1c
+.RI "char * \fBeffectiveProject\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+This represent a job specification, i.e. 
+
+the licenses requested by the job and their number. This data structure also captures from which Service Domain are the licenses checked out. This data is returned as part of the \fBglbJob\fP data by the \fBglb_jobinfo\fP API. 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fBglbJobSpec::feature\fP"
+.PP
+feature name 
+.PP
+.SS "int \fBglbJobSpec::nflexname\fP"
+.PP
+number of flex names 
+.PP
+.SS "char** \fBglbJobSpec::flexnames\fP"
+.PP
+flex sever feature name list 
+.PP
+.SS "int \fBglbJobSpec::rusage\fP"
+.PP
+job's rusage 
+.PP
+.SS "char* \fBglbJobSpec::server\fP"
+.PP
+server name 
+.PP
+.SS "char* \fBglbJobSpec::serverloc\fP"
+.PP
+server location 
+.PP
+.SS "int \fBglbJobSpec::ntty\fP"
+.PP
+number of ttys 
+.PP
+.SS "char** \fBglbJobSpec::ttys\fP"
+.PP
+ttys 
+.PP
+.SS "int \fBglbJobSpec::inuse\fP"
+.PP
+inuse 
+.PP
+.SS "char* \fBglbJobSpec::effectiveProject\fP"
+.PP
+effective licence project per feature 
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

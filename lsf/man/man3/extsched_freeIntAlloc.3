@@ -1,0 +1,32 @@
+.TH "extsched_freeIntAlloc" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+extsched_freeIntAlloc \- extsched_freeIntAlloc 
+Use with caution.
+.PP
+Routine frees the allocation structure and sets *allocPtr NULL.
+.PP
+This function will fail to remove an allocation if that allocation has already been assigned to a job.
+.PP
+This should not be used inside of checkAlloc(), notifyAlloc() or any handler callback.
+.PP
+Rather, this should only be called by an allocator function registered by extsched_alloc_registerallocator(). The purpose is to destroy allocations proposed by the internal allocators.
+.PP
+\fB#include <lssched.h>\fP
+.PP
+\fB void extsched_freeIntAlloc(INT_Alloc **allocPtr)\fP
+.PP
+.SH "Parameters:"
+\fIallocPtr\fP [IN/OUT] : address of an allocation structure
+.PP
+.SH "Returns:"
+void  is no return value.
+.PP
+.SH "See also:"
+\fBextsched_alloc_registerallocator\fP 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

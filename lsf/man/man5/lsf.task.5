@@ -1,0 +1,247 @@
+
+.ad l
+
+.TH lsf.task 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBlsf.task\fR
+.ce 0
+
+.sp 2
+\fBNote: \fRThis file is deprecated and might be removed in a
+future version of LSF.
+.sp 2
+Users should not have to specify a resource requirement each time
+they submit a job. LSF supports the concept of a task list. This
+chapter describes the files used to configure task lists:
+lsf.task, lsf.task.cluster_name, and .lsftask.
+.SH Changing task list configuration
+
+.sp 2
+After making any changes to the task list files, run the
+following commands:
+.sp 2
+*  lsadmin reconfig to reconfigure LIM
+.sp 2
+*  badmin reconfig to reload the configuration files
+.SH About task lists
+
+.sp 2
+A task list is a list in LSF that keeps track of the default
+resource requirements for different applications and task
+eligibility for remote execution.
+.sp 2
+The term task refers to an application name. With a task list
+defined, LSF automatically supplies the resource requirement of
+the job whenever users submit a job unless one is explicitly
+specified at job submission.
+.sp 2
+LSF takes the job\(aqs command name as the task name and uses that
+name to find the matching resource requirement for the job from
+the task list. If a task does not have an entry in the task list,
+LSF assumes the default resource requirement; that is, a host
+that has the same host type as the submission host will be chosen
+to run the job.
+.sp 2
+An application listed in a task file is considered for load
+sharing by its placement in either the local tasks or remote
+tasks list.
+.sp 2
+*  A local task is typically an application or command that it
+   does not make sense to run remotely such as ls.
+.sp 2
+*  A remote task is an application or command that can be run on
+   another machine in the LSF cluster. The compress command is an
+   example of a remote task.
+.sp 2
+Some applications require resources other than the default. LSF
+can store resource requirements for specific applications in
+remote task list files, so that LSF automatically chooses
+candidate hosts that have the correct resources available.
+.sp 2
+For frequently used commands and software packages, the LSF
+administrator can set up cluster–wide resource requirements that
+apply to all users in the cluster.
+.sp 2
+Users can modify and add to these requirements by setting up
+additional resource requirements that apply only to their own
+jobs.
+.SH Cluster-wide resource requirements
+
+.sp 2
+The resource requirements of applications are stored in the
+remote task list file.
+.sp 2
+LSF automatically picks up a job’s default resource requirement
+string from the remote task list files, unless you explicitly
+override the default by specifying the resource requirement
+string on the command line.
+.SH User-level resource requirements
+
+.sp 2
+You may have applications that you need to control yourself.
+Perhaps your administrator did not set them up for load sharing
+for all users, or you need a non-standard setup. You can use LSF
+commands to find out resource names available in your system, and
+tell LSF about the needs of your applications. LSF stores the
+resource requirements for you from then on.
+.sp 2
+You can specify resource requirements when tasks are added to the
+user\(aqs remote task list. If the task to be added is already in
+the list, its resource requirements are replaced.
+.sp 2
+\fRlsrtasks + myjob/swap>=100 && cpu\fR
+.sp 2
+This adds \fRmyjob\fR to the remote tasks list with its resource
+requirements.
+.sp 2
+Parent topic: Configuration files
+.sp 2
+
+.ce 1000
+\fBTask files\fR
+.ce 0
+
+.sp 2
+There are 3 task list files that can affect a job:
+.sp 2
+*  lsf.task - system-wide defaults apply to all LSF users, even
+   across multiple clusters if MultiCluster is installed
+.sp 2
+*  lsf.task.\fIcluster_name\fR - cluster-wide defaults apply to
+   all users in the cluster
+.sp 2
+*  $HOME/.lsftask - user-level defaults apply to a single user.
+   This file lists applications to be added to or removed from
+   the default system lists for your jobs. Resource requirements
+   specified in this file override those in the system lists.
+.sp 2
+The clusterwide task file is used to augment the systemwide file.
+The user’s task file is used to augment the systemwide and
+clusterwide task files.
+.sp 2
+LSF combines the systemwide, clusterwide, and user-specific task
+lists for each user\(aqs view of the task list. In cases of
+conflicts, such as different resource requirements specified for
+the same task in different lists, the clusterwide list overrides
+the systemwide list, and the user-specific list overrides both.
+.SH LSF_CONFDIR/lsf.task
+
+.sp 2
+Systemwide task list applies to all clusters and all users.
+.sp 2
+This file is used in a MultiCluster environment.
+.SH LSF_CONFDIR/lsf.task.\fIcluster_name\fR\fIcluster_name\fR
+
+.sp 2
+Clusterwide task list applies to all users in the same cluster.
+.SH $HOME/.lsftask
+
+.sp 2
+User task list, one per user, applies only to the specific user.
+This file is automatically created in the user’s home directory
+whenever a user first updates his task lists using the lsrtasks
+or lsltasks commands. For details about task eligibility lists,
+see the \fRls_task\fR(3) API reference man page.
+.SH Permissions
+
+.sp 2
+Only the LSF administrator can modify the systemwide task list
+(lsf.task) and the clusterwide task list
+(lsf.task.c\fIluster_name\fR).
+.sp 2
+A user can modify his own task list(.lsftask) with the lsrtasks
+and lsltasks commands.
+.sp 2
+
+.ce 1000
+\fBFormat of task files\fR
+.ce 0
+
+.sp 2
+Each file consists of two sections, \fRLocalTasks\fR and
+\fRRemoteTasks\fR. For example:
+.sp 2
+Begin LocalTasks 
+.br
+
+.sp 2
+ps
+.br
+
+.sp 2
+hostname 
+.br
+
+.sp 2
+uname 
+.br
+
+.sp 2
+crontab 
+.br
+
+.sp 2
+End LocalTasks
+.br
+
+.sp 2
+Begin RemoteTasks
+.br
+
+.sp 2
++ "newjob/mem>25" 
+.br
+
+.sp 2
++ "verilog/select[type==any && swp>100]" 
+.br
+
+.sp 2
+make/cpu 
+.br
+
+.sp 2
+nroff/- 
+.br
+
+.sp 2
+End RemoteTasks
+.br
+
+.sp 2
+Tasks are listed one per line. Each line in a section consists of
+a task name, and, for the \fRRemoteTasks\fR section, an optional
+resource requirement string separated by a slash (/).
+.sp 2
+A plus sign (+) or a minus sign (-) can optionally precede each
+entry. If no \fR+\fR or \fR-\fR is specified, \fR+\fR is assumed.
+.sp 2
+A \fR+\fR before a task name means adding a new entry (if
+non-existent) or replacing an entry (if already existent) in the
+task list. A\fR -\fR before a task name means removing an entry
+from the application\(aqs task lists if it was already created by
+reading higher level task files.
+.SH LocalTasks section
+
+.sp 2
+The section starts with \fRBegin LocalTasks\fR and ends with
+\fREnd LocalTasks\fR.
+.sp 2
+This section lists tasks that are not eligible for remote
+execution, either because they are trivial tasks or because they
+need resources on the local host.
+.SH RemoteTasks section
+
+.sp 2
+The section starts with \fRBegin RemoteTasks\fR and ends with
+\fREnd RemoteTasks\fR.
+.sp 2
+This section lists tasks that are eligible for remote execution.
+You can associate resource requirements with each task name.
+.sp 2
+See Administering IBM Spectrum LSF for information about resource
+requirement strings. If the resource requirement string is not
+specified for a remote task, the default is
+\fR"select[type==local] order[r15s:pg]"\fR.

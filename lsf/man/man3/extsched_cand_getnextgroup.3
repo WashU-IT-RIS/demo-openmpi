@@ -1,0 +1,21 @@
+.TH "extsched_cand_getnextgroup" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+extsched_cand_getnextgroup \- extsched_cand_getnextgroup 
+Iterate to the next group of candidate hosts for a job.
+.PP
+\fB#include <lssched.h>\fP
+.PP
+\fB struct candHostGroup *extsched_cand_getnextgroup(INT_CandGroupList *candGroupList)\fP
+.PP
+.SH "Parameters:"
+\fIcandGroupList\fP [IN] : current pointer to a group of candidate hosts.
+.PP
+.SH "Returns:"
+struct candHostGroup *  to a candHostGroup structure. 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

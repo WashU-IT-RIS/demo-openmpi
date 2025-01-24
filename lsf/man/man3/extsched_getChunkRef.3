@@ -1,0 +1,31 @@
+.TH "extsched_getChunkRef" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+extsched_getChunkRef \- extsched_getChunkRef 
+Whenever an allocation is made a *chunk* is created, where a chunk is a container for one or more jobs that share the allocation.
+.PP
+The primarily purpose is to support the CHUNK_JOB_SIZE parameter. However, even when this is disabled allocations are made to degenerate chunks of size 1.
+.PP
+This function to get the chunk reference of a job may be useful to some external scheduler plugins that register notifyAlloc() callbacks.
+.PP
+When an allocation is made, the job given as input to the notifyAlloc() callback may be different to the job that is given when the same allocation is destroyed. However, the two jobs must have the same chunk reference.
+.PP
+Use this function in the notifyAlloc() callback to get a pointer to the internal (opaque) chunk structure.
+.PP
+\fB#include <lssched.h>\fP
+.PP
+\fB INT_ChunkRef *extsched_getChunkRef(INT_Job *job)\fP
+.PP
+.SH "Parameters:"
+\fIjob\fP [IN] : a job
+.PP
+.SH "Returns:"
+INT_ChunkRef *  chunk reference for a job. 
+.PP
+NULL  is no chunk reference. 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

@@ -1,0 +1,102 @@
+
+.ds ]W %
+.ds ]L
+.TH QSTAT 1 "1 August 1998"
+.SH NAME
+qstat \- Displays the status of one or more lsbatch queues
+.SH SYNOPSIS
+\fBqstat [ \-l ] [ \-m ] [ \-x] [ \-a] [ \-u \fIuser-name\fP ]
+[ \fIqueue-name\fP ... ] \fR
+.br
+.SH DESCRIPTION
+\fBqstat\fP is an lsNQS version of the NQS command of the same name. It
+displays the status of lsbatch queues.
+.PP
+If no queue is specified, the current status of all lsbatch
+queues is displayed.
+Otherwise, information is displayed for the specified queues only.
+.PP
+For each specified queue,
+\fBqstat\fP
+displays a
+.I queue header\^
+(contains information about the queue itself),
+followed by information about requests in the queue.
+Ordinarily,
+\fBqstat\fP
+shows only those requests that belong to the invoker.
+.PP
+The
+.I queue header\^
+always includes the queue-name, queue type,
+queue status (see below),
+and the number of requests waiting and running in the queue.
+An extended queue header also displays the priority and run limit
+of a queue, as well as the access restrictions and resource limits.
+.PP
+By default,
+\fBqstat\fP
+displays the following information about
+a request: the
+.IR request-name\^ ,
+the
+.IR request-id\^ ,
+the owner, and the current request state (see below).
+.PP
+The relative ordering of requests within a queue
+determines the order in which the requests are run. This is subject to
+the availability of resources needed by each request, and whether the
+user interferes with the running order.
+.SH OPTIONS
+.RS
+.TP "\w'-u user-name'u+3n"
+\f3-l\fP
+Requests are displayed in a long format, and show more details than the default,
+short format.
+\fBqstat -l\fR
+shows the time at which the request was created, an indication of where mail
+is sent, the user name on the originating machine, resource limits,
+planned disposition of \fIstderr\fP, and \fIstdout\fP.
+.TP
+\f3-m\fP
+Requests are shown in a medium-length format. At present, this is the same
+as the long format.
+.TP
+\f3-x\fP
+The queue header is shown in an extended format.
+.TP
+\f3-a\fP
+Shows all requests belonging to all users.
+.TP
+\f3-u \f2user-name\^\fP
+Shows only those requests belonging to the user
+.IR user-name\^ .
+.TP
+\f2queue-name\  ...\^\fP
+Shows only those requests in the specified queue or queues .
+.RE
+.SH QUEUE STATE
+The general state of a queue is defined by whether or not requests can be
+submitted to the queue. If they can, the queue is said to be
+.IR "enabled\^" .
+Otherwise the queue is said to be
+.IR "disabled\^" .
+.SH REQUEST STATE
+The state of a request can be
+.IR waiting\^
+or
+.IR running\^ ,
+.TP
+\(bu  \fIwaiting\fP
+The request was submitted with the constraint that it cannot be run before
+a certain date and time, and that date and time have not yet arrived.
+.TP
+\(bu  \fIrunning\fP
+The request has been scheduled and is actually executing or is suspended during
+its execution. \The processes of the request can be suspended by a
+signal sent by qdel(1) from the user.
+.SH "CAVEATS"
+The output format of this command is different from \fBqstat\fP in NQS.
+.SH "SEE ALSO"
+.BR qsub (1),
+.BR qdel (1)

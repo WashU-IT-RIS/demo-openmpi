@@ -1,0 +1,33 @@
+.ds ]W %
+.ds ]L
+.TH LSNQS 1 "1 August 1998"
+.SH NAME
+lsNQS \- NQS compatible command interface for lsbatch
+.SH DESCRIPTION
+lsNQS is a subset of NQS commands that are built on top of the load
+sharing batch system, lsbatch (see
+.BR lsbatch (1)).
+lsNQS enables users who are familiar with NQS to use the
+lsbatch system.
+NQS job scripts and the following user commands are supported:
+.TP 15
+.BR qsub (1)
+submits an NQS request.
+.TP 15
+.BR qstat(1)
+displays the status of batch job queues.
+.TP 15
+.BR qdel (1)
+deletes or signals NQS requests.
+.TP 15
+.BR qchkpnt(1)
+checkpoints NQS requests.
+.TP 15
+.LP
+No other NQS commands are supported by lsNQS.
+.SH "SEE ALSO"
+.BR lsbatch (1),
+.BR qsub (1),
+.BR qstat (1),
+.BR qdel (1),
+.BR qchkpnt (1)

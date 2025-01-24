@@ -1,0 +1,92 @@
+.TH "lsb_switchjobarray" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_switchjobarray \- lsb_switchjobarray 
+Switches an unfinished job array with elements list to another queue.
+.PP
+\fBlsb_switchjobarray\fP switches an unfinished job array with elements list to another queue. Effectively, the job elements is removed from its current queue and re-queued in the new queue.
+.PP
+The switch operation can be performed only when the job is acceptable to the new queue. If the switch operation is unsuccessful, the job will stay where it is.A user can only switch his/her own unfinished jobs, but root and the LSF administrator can switch any unfinished job.
+.PP
+Any program using this API must be setuid to root if LSF_AUTH is not defined in the lsf.conf file.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB int lsb_switchjobarray (struct \fBjobArrayID\fP *id, char *queue)\fP
+.PP
+.SH "Parameters:"
+\fIid\fP The job array baseID and elements to be switched. 
+.br
+\fI*queue\fP The new queue for the job array elements.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBjobArrayID\fP
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+int:0 
+.br
+ The function was successful. 
+.PP
+int:-1 
+.br
+ Function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lsberrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+bswitch
+.PP
+.SH "Files:" 
+.PP
+${LSF_ENVDIR:-/etc}/lsf.conf
+.PP
+.SH "See also:"
+none 
+.PP
+
+.ad l
+.nh
+.SH NAME
+jobArrayID \- The job array ID.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBbaseID\fP"
+.br
+.ti -1c
+.RI "struct \fBjobArrayIndex\fP \fBarrayIndex\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+The job array ID. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBjobArrayID::baseID\fP"
+.PP
+Base ID of an array job. 
+.PP
+.SS "struct \fBjobArrayIndex\fP \fBjobArrayID::arrayIndex\fP"
+.PP
+Array index ranges. 
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

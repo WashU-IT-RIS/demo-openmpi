@@ -1,0 +1,198 @@
+.TH "lsb_hostpartinfo" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_hostpartinfo \- lsb_hostpartinfo 
+Returns informaton about host partitions.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB struct \fBhostPartInfoEnt\fP *lsb_hostpartinfo (char **hostParts, int *numHostParts)\fP
+.PP
+.SH "Parameters:"
+\fI**hostParts\fP An array of host partition names. 
+.br
+\fI*numHostHosts\fP The number of host partition names. To get information on all host partitions, set hostParts to NULL; *numHostParts will be the actual number of host partitions when this call returns.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBhostPartInfoEnt\fP 
+.br
+\fBhostPartUserInfo\fP
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+struct \fBhostPartInfoEnt\fP *:\fBhostPartInfoEnt\fP 
+.br
+ On success, returns an array of \fBhostPartInfoEnt\fP structures which hold information on the host partitions, and sets *numHostParts to the number of \fBhostPartInfoEnt\fP structures. 
+.PP
+NULL 
+.br
+ Function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lsberrno is set to indicate the error. If lsberrno is LSBE_BAD_HPART, (*hostParts)[*numHostParts] is not a host partition known to the LSF system. Otherwise, if *numHostParts is less than its original value, *numHostParts is the actual number of host partitions found.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+$LSB_CONFDIR/cluster_name/configdir/lsb.hosts
+.PP
+.SH "See also:"
+\fBlsb_usergrpinfo\fP 
+.PP
+\fBlsb_hostgrpinfo\fP 
+.PP
+
+.ad l
+.nh
+.SH NAME
+hostPartInfoEnt \- gets information entry about host partitions.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char \fBhostPart\fP [MAX_LSB_NAME_LEN]"
+.br
+.ti -1c
+.RI "char * \fBhostList\fP"
+.br
+.ti -1c
+.RI "int \fBnumUsers\fP"
+.br
+.ti -1c
+.RI "struct \fBhostPartUserInfo\fP * \fBusers\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+gets information entry about host partitions. 
+.SH "Field Documentation"
+.PP 
+.SS "char \fBhostPartInfoEnt::hostPart\fP[MAX_LSB_NAME_LEN]"
+.PP
+The name of the host partition. 
+.PP
+.SS "char* \fBhostPartInfoEnt::hostList\fP"
+.PP
+A blank-separated list of names of hosts and host groups which are members of the host partition. 
+.PP
+The name of a host group has a '/' appended. see \fBlsb_hostgrpinfo\fP. 
+.SS "int \fBhostPartInfoEnt::numUsers\fP"
+.PP
+The number of users in this host partition. 
+.PP
+i.e., the number of \fBhostPartUserInfo\fP structures. 
+.SS "struct \fBhostPartUserInfo\fP* \fBhostPartInfoEnt::users\fP"
+.PP
+An array of \fBhostPartUserInfo\fP structures which hold information on users in this host partition. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+hostPartUserInfo \- gets user information about host partitions.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBuser\fP"
+.br
+.ti -1c
+.RI "int \fBshares\fP"
+.br
+.ti -1c
+.RI "float \fBpriority\fP"
+.br
+.ti -1c
+.RI "int \fBnumStartJobs\fP"
+.br
+.ti -1c
+.RI "float \fBhistCpuTime\fP"
+.br
+.ti -1c
+.RI "int \fBnumReserveJobs\fP"
+.br
+.ti -1c
+.RI "long \fBrunTime\fP"
+.br
+.ti -1c
+.RI "float \fBshareAdjustment\fP"
+.br
+.ti -1c
+.RI "float \fBgpuRunTime\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+gets user information about host partitions. 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fBhostPartUserInfo::user\fP"
+.PP
+The user name or user group name. 
+.PP
+See \fBlsb_userinfo\fP and \fBlsb_usergrpinfo\fP 
+.SS "int \fBhostPartUserInfo::shares\fP"
+.PP
+The number of shares assigned to the user or user group, as configured in the file lsb.hosts. 
+.PP
+(See lsb.hosts.) 
+.SS "float \fBhostPartUserInfo::priority\fP"
+.PP
+The priority of the user or user group to use the host partition. 
+.PP
+Bigger values represent higher priorities. Jobs belonging to the user or user group with the highest priority are considered first for dispatch when resources in the host partition are being contended for. In general, a user or user group with more shares, fewer numStartJobs and less histCpuTime has higher priority.
+.PP
+The storage for the array of \fBhostPartInfoEnt\fP structures will be reused by the next call. 
+.SS "int \fBhostPartUserInfo::numStartJobs\fP"
+.PP
+The number of job slots belonging to the user or user group that are running or suspended in the host partition. 
+.PP
+
+.SS "float \fBhostPartUserInfo::histCpuTime\fP"
+.PP
+The normalized CPU time accumulated in the host partition during the recent period by finished jobs belonging to the user or user group. 
+.PP
+The period may be configured in the file lsb.params (see lsb.params), with a default value of five (5) hours. 
+.SS "int \fBhostPartUserInfo::numReserveJobs\fP"
+.PP
+The number of job slots that are reserved for the PEND jobs belonging to the user or user group in the host partition. 
+.PP
+
+.SS "long \fBhostPartUserInfo::runTime\fP"
+.PP
+The time unfinished jobs spend in RUN state. 
+.PP
+.SS "float \fBhostPartUserInfo::shareAdjustment\fP"
+.PP
+The fairshare adjustment value from the fairshare plugin (libfairshareadjust*). 
+.PP
+The adjustment is enabled and weighted by setting the value of FAIRSHARE_ADJUSTMENT_FACTOR in lsb.params. 
+.SS "float \fBhostPartUserInfo::gpuRunTime\fP"
+.PP
+The GPU time unfinished jobs spend in the RUN state. 
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

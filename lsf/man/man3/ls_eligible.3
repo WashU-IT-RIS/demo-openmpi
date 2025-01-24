@@ -1,0 +1,82 @@
+.TH "ls_eligible" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ls_eligible \- ls_eligible 
+Checks to see if a task is eligible for remote execution.
+.PP
+LSLIB library routine for manipulating task lists stored by LSLIB. Task lists contain information about the eligibility of tasks for remote execution and their resource requirement characteristics. LSLIB maintains two task lists: local and remote. The local list contains tasks (i.e. UNIX processes) that must be executed on the local host (for example, ps, uptime, hostname). The remote list contains tasks that are suitable for remote execution (for example, compress), together with their resource requirements.
+.PP
+Task lists are generated and stored in memory by reading the system task file() and the .lsftask file in the user's home directory. The task lists can be updated and displayed using the command lsrtasks(). See the LSF User's Guide for detailed information on the use of task lists and resource requirements.
+.PP
+\fBls_eligible\fP checks whether or not taskname is eligible for remote execution and, if so, obtains its resource requirements. \fBls_eligible\fP returns TRUE if taskname is eligible for remote execution, FALSE otherwise.
+.PP
+resreq is an output parameter; you either specify the pointer to the character array or leave it as NULL. If taskname is eligible for remote execution, the resource requirements associated with taskname in the remote task lists are copied into resreq. If resreq is NULL, the API automatically allocates memory. The API calling function must free the memory to which the resreq points. If no resource requirements are associated with taskname, an empty string is copied into resreq or nothing is changed.
+.PP
+\fB#include <lsf/lsf.h> 
+.br
+ int ls_eligible(char *taskname, char **resreq, char mode)\fP
+.PP
+.SH "Parameters:"
+\fI*taskname\fP The task that is being checked to see if it can be remotely executed. 
+.br
+\fI**resreq\fP The resource requirements associated with the 'taskname' task. If no resource requirements are associated with taskname and resreq is not NULL, an empty string is copied into resreq. If resource requirements are associated with taskname and resreq is not NULL, the resource requirements that are associated with taskname are copied into resreq. If resource requirements are associated with taskname and resreq is NULL, LSF allocates new memory space to store resource requirements that are associated with taskname. The API calling function needs to free this memory. 
+.br
+\fImode\fP One of two constants defined in <lsf/lsf.h>. 
+.br
+ If mode is LSF_LOCAL_MODE, the routine searches through the remote task lists to see if taskname is on a list. If found, the task is considered eligible for remote execution, otherwise the task is considered ineligible. 
+.br
+ If mode is LSF_REMOTE_MODE, the routine searches through the local task lists to see if taskname is on a list. If found, the task is considered ineligible for remote execution, otherwise the task is considered eligible.
+.PP
+.SH "Data Structures:" 
+.PP
+none
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+int:TRUE 
+.br
+ Returned if the task can be remotely executed. 
+.PP
+int:FALSE 
+.br
+ Returned if the task can not be remotely executed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lserrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+$LSF_CONFDIR/lsf.task 
+.br
+$LSF_CONFDIR/lsf.task.cluster_name 
+.br
+$HOME/.lsftask
+.PP
+.SH "See also:"
+\fBls_resreq\fP 
+.PP
+\fBls_listrtask\fP 
+.PP
+\fBls_listltask\fP 
+.PP
+\fBls_insertrtask\fP 
+.PP
+\fBls_insertltask\fP 
+.PP
+\fBls_deletertask\fP 
+.PP
+\fBls_deleteltask\fP 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

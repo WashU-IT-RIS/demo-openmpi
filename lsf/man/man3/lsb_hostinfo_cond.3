@@ -1,0 +1,62 @@
+.TH "lsb_hostinfo_cond" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_hostinfo_cond \- lsb_hostinfo_cond 
+Returns condensed information about job server hosts.
+.PP
+\fBlsb_hostinfo_cond\fP returns condensed information about job server hosts. While \fBlsb_hostinfo\fP returns specific information about individual hosts, \fBlsb_hostinfo_cond\fP returns the number of jobs in each state within the entire host group. The \fBcondHostInfoEnt\fP structure contains counters that indicate how many hosts are in the ok, busy, closed, full, unreach, and unavail states and an array of \fBhostInfoEnt\fP structures that indicate the status of each host in the host group.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fBstruct \fBcondHostInfoEnt\fP * lsb_hostinfo_cond (char **hosts, int *numHosts, char *resReq, int options)\fP
+.PP
+.SH "Parameters:"
+\fI**hosts\fP An array of host names belonging to the host group. 
+.br
+\fI*numHosts\fP The number of host names in the host group. To get information on all hosts in the host group, set *numHosts to 0; *numHosts will be set to the actual number of \fBhostInfoEnt\fP structures in the host group when this call returns. 
+.br
+\fI*resReq\fP Any resource requirements called with the function. 
+.br
+\fIoptions\fP Any options called with the function.
+.PP
+\fBData Structures\fP 
+.PP
+\fBcondHostInfoEnt\fP 
+.br
+ \fBhostInfoEnt\fP
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+struct \fBcondHostInfoEnt\fP *: 
+.br
+ The \fBcondHostInfoEnt\fP structure contains condensed information about the status of job server hosts in the host group. If there is no condensed host group matching the specified host, *name is set to NULL and *hostInfo contains specific host information to be displayed instead of the condensed host group information. 
+.br
+ Function was successful. 
+.PP
+NULL 
+.br
+ Function failed.
+.PP
+.SH " Errors:" 
+.PP
+If the function fails, lsberrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+none
+.PP
+.SH "See also:"
+\fBlsb_hostinfo\fP 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

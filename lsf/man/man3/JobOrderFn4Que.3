@@ -1,0 +1,30 @@
+.TH "JobOrderFn4Que" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+JobOrderFn4Que \- JobOrderFn4Que 
+Signature for the function to decide job dispatch order.
+.PP
+Use this funtion to decide which job in the ready job list passed in from the queue should go first.
+.PP
+\fB#include <lssched.h>\fP
+.PP
+\fB typedef INT_JobBlock * (*JobOrderFn4Que) (char *queueName, INT_JobList *jobList)\fP
+.PP
+.SH "Parameters:"
+\fIqueueName\fP [IN] : the name of the queue to which the job list belongs 
+.br
+\fIjobList\fP [IN] : the ready job list belonging to the queue
+.PP
+.SH "Returns:"
+INT_JobBlock *  to the job which should go first. 
+.PP
+NULL  no decision can be made.
+.PP
+.SH "See also:"
+\fBextsched_order_registerOrderFn4AllQueues\fP 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

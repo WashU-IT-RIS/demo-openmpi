@@ -1,0 +1,137 @@
+.TH "lsb_globalPolicyStatus" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_globalPolicyStatus \- lsb_globalPolicyStatus 
+Returns global policy status.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB struct \fBglobalPolicyStatusInfo\fP *lsb_globalPolicyStatus(struct \fBglobalPolicyStatusReq\fP *statusReq, int *indexOfBadName); \fP
+.PP
+.SH "Parameters:"
+\fIstatusReq\fP [IN] A pointer points to a structure of \fBglobalPolicyStatusReq\fP 
+.br
+\fIindexOfBadName\fP [OUT] When this function replies NULL and lsberrno is LSBE_BAD_GLOBAL_FAIRSHARE_NAME, *indexOfBadName indicates the index of the bad fairshare name in statusReq->globalFairshareNames.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBglobalPolicyStatusInfo\fP 
+.br
+\fBglobalPolicyStatusReq\fP
+.PP
+.SH "Returns:"
+struct \fBglobalPolicyStatusInfo\fP *:
+.br
+ A pointer of struct \fBglobalPolicyStatusInfo\fP. Function was successful. 
+.PP
+NULL
+.br
+ The function failed.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+bgpinfo 
+.PP
+
+.ad l
+.nh
+.SH NAME
+globalPolicyStatusInfo \- Status of all global policies.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBgpolicydCluster\fP"
+.br
+.ti -1c
+.RI "char * \fBgpolicydHost\fP"
+.br
+.ti -1c
+.RI "int \fBnumFairshareEnts\fP"
+.br
+.ti -1c
+.RI "struct \fBglobalFairshareStatusEnt\fP * \fBfairshareEnts\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Status of all global policies. 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fBglobalPolicyStatusInfo::gpolicydCluster\fP"
+.PP
+Name of the cluster where gpolicyd exists. 
+.PP
+
+.SS "char* \fBglobalPolicyStatusInfo::gpolicydHost\fP"
+.PP
+Name of the host where gpolicyd exists. 
+.PP
+
+.SS "int \fBglobalPolicyStatusInfo::numFairshareEnts\fP"
+.PP
+The number of global fairshare policies. 
+.PP
+
+.SS "struct \fBglobalFairshareStatusEnt\fP* \fBglobalPolicyStatusInfo::fairshareEnts\fP"
+.PP
+Global fairshare status array. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+globalPolicyStatusReq \- Request for getting global policy status.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBstatusReqFlag\fP"
+.br
+.ti -1c
+.RI "int \fBnumGlobalFairshareNames\fP"
+.br
+.ti -1c
+.RI "char ** \fBglobalFairshareNames\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Request for getting global policy status. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBglobalPolicyStatusReq::statusReqFlag\fP"
+.PP
+Flag for the startus request. 
+.PP
+\fBSee also:\fP
+.RS 4
+\fBglobal_policy_status_req_flag\fP 
+.RE
+.PP
+
+.SS "int \fBglobalPolicyStatusReq::numGlobalFairshareNames\fP"
+.PP
+Number of policy names requested, 0 implies all. 
+.PP
+.SS "char** \fBglobalPolicyStatusReq::globalFairshareNames\fP"
+.PP
+The names of policies being requested. 
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

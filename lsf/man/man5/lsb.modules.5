@@ -1,0 +1,314 @@
+
+.ad l
+
+.TH lsb.modules 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBlsb.modules\fR
+.ce 0
+
+.sp 2
+The lsb.modules file contains configuration information for LSF
+scheduler and resource broker modules. The file contains only one
+section, named PluginModule.
+.sp 2
+This file is optional. If no scheduler or resource broker modules
+are configured, LSF uses the default scheduler plug-in modules
+named schmod_default and schmod_fcfs.
+.sp 2
+The lsb.modules file is stored in the directory
+LSB_CONFDIR/\fIcluster_name\fR/configdir. The \fBLSB_CONFDIR\fR
+parameter is defined in the lsf.conf file.
+.sp 2
+Parent topic: Configuration files
+.sp 2
+
+.ce 1000
+\fBAfter you change lsb.modules configuration\fR
+.ce 0
+
+.sp 2
+After you change the lsb.modules file, run the badmin reconfig
+command to reconfigure the mbatchd daemon.
+.sp 2
+
+.ce 1000
+\fBPluginModule section\fR
+.ce 0
+
+.sp 2
+
+.ce 1000
+\fBDescription\fR
+.ce 0
+
+.sp 2
+The PluginModule section defines the plug-in modules for the LSF
+scheduler and LSF resource broker. If the PluginModule section is
+not configured, LSF uses the default scheduler plug-in modules
+that are named schmod_default and schmod_fcfs, which enable the
+LSF default scheduling features.
+.sp 2
+
+.ce 1000
+\fBExample PluginModule section\fR
+.ce 0
+
+.sp 2
+The following PluginModule section enables all scheduling
+policies provided by LSF:
+.sp 2
+Begin PluginModule 
+.br
+SCH_PLUGIN              RB_PLUGIN           SCH_DISABLE_PHASES
+.br
+schmod_default               ()                      () 
+.br
+schmod_fairshare             ()                      () 
+.br
+schmod_fcfs                  ()                      () 
+.br
+schmod_limit                 ()                      () 
+.br
+schmod_parallel              ()                      () 
+.br
+schmod_reserve               ()                      () 
+.br
+schmod_preemption            ()                      ()
+.br
+schmod_advrsv                ()                      () 
+.br
+schmod_mc                    ()                      () 
+.br
+schmod_jobweight             ()                      () 
+.br
+schmod_cpuset                ()                      () 
+.br
+schmod_pset                  ()                      ()
+.br
+schmod_ps                    ()                      () 
+.br
+schmod_aps                   ()                      () 
+.br
+schmod_affinity              ()                      () 
+.br
+schmod_demand                ()                      () 
+.br
+End PluginModule
+.br
+
+.sp 2
+
+.ce 1000
+\fBPluginModule section structure\fR
+.ce 0
+
+.sp 2
+The first line consists of the following keywords:
+.sp 2
+*  SCH_PLUGIN
+.sp 2
+*  RB_PLUGIN
+.sp 2
+*  SCH_DISABLE_PHASES
+.sp 2
+They identify the scheduler plug-ins, resource broker plug-ins,
+and the scheduler phase to be disabled for the plug-ins that you
+want to configure.
+.sp 2
+Each line describes the configuration information for one
+scheduler plug-in module, resource broker plug-in module, and
+scheduler phase, if any, to be disabled for the plug-in. Each
+line must contain one entry for each keyword. Use empty
+parentheses \fR( )\fR or a dash (\fR-\fR) to specify the default
+value for an entry.
+.sp 2
+
+.ce 1000
+\fBSCH_PLUGIN\fR
+.ce 0
+
+.sp 2
+
+.SH Description
+
+.sp 2
+Required. The SCH_PLUGIN column specifies the shared module name
+for the LSF scheduler plug-in. Scheduler plug-ins are called in
+the order they are listed in the PluginModule section.
+.sp 2
+By default, all shared modules for scheduler plug-ins are located
+in the directory defined by the \fBLSF_LIBDIR\fR parameter in the
+lsf.conf file. On UNIX and Linux, you can also specify a full
+path to the name of the scheduler plug-in.
+.sp 2
+The following modules are supplied with LSF:
+.SH schmod_default
+
+.sp 2
+Enables the default LSF scheduler features.
+.SH schmod_fcfs
+
+.sp 2
+Enables the first-come, first-served (FCFS) scheduler features.
+schmod_fcfs can appear anywhere in the SCH_PLUGIN list. By
+default, if schmod_fcfs is not configured in the lsb.modules
+file, it is loaded automatically along with schmod_default.
+.sp 2
+Source code (sch.mod.fcfs.c) for the schmod_fcfs scheduler
+plug-in module is installed in the directory
+.sp 2
+LSF_TOP/10.1/misc/examples/external_plugin/
+.br
+
+.sp 2
+Use the LSF scheduler plug-in SDK to modify the FCFS scheduler
+module code to suit the job scheduling requirements of your site.
+.SH schmod_fairshare
+
+.sp 2
+Enables the LSF fairshare scheduling features.
+.SH schmod_limit
+
+.sp 2
+Enables the LSF resource allocation limit features.
+.SH schmod_parallel
+
+.sp 2
+Enables scheduling of parallel jobs submitted with bsub -n.
+.SH schmod_reserve
+
+.sp 2
+Enables the LSF resource reservation features.
+.sp 2
+To enable processor reservation, backfill, and memory reservation
+for parallel jobs, you must configure both schmod_parallel and
+schmod_reserve in lsb.modules. If only schmod_reserve is
+configured, backfill and memory reservation are enabled only for
+sequential jobs, and processor reservation is not enabled.
+.SH schmod_preemption
+
+.sp 2
+Enables the LSF preemption scheduler features.
+.SH schmod_advrsv
+
+.sp 2
+Handles jobs that use advance reservation (brsvadd, brsvs,
+brsvdel, bsub -U)
+.SH schmod_cpuset
+
+.sp 2
+Handles jobs that use SGI cpusets (bsub -ext[sched]
+"CPUSET[\fIcpuset_options\fR]")
+.sp 2
+The schmod_cpuset plug-in name must be configured after the
+standard LSF plug-in names in the PluginModule list.
+.SH schmod_mc
+
+.sp 2
+Enables IBM Spectrum LSF multicluster capability job forwarding
+.SH schmod_ps
+
+.sp 2
+Enables resource ownership functionality of EGO-enabled SLA
+scheduling policies
+.SH schmod_aps
+
+.sp 2
+Enables absolute priority scheduling (APS) policies configured by
+the \fBAPS_PRIORITY\fR parameter in the lsb.queues file.
+.sp 2
+The schmod_aps plug-in name must be configured after the
+schmod_fairshare plug-in name in the PluginModule list so that
+the APS value can override the fairshare job-ordering decision.
+.SH schmod_affinity
+
+.sp 2
+Enables configured by the \fBAFFINITY\fR parameter in the
+lsf.conf file.
+.SH schmod_demand
+
+.sp 2
+Enables LSF resource connector functionality configured by the
+\fBLSB_RC_EXTERNAL_HOST_FLAG\fR parameter in the lsf.conf file.
+With LSF resource connector enabled, clusters borrow resources
+from IBM Spectrum Conductor with Spark based on workload.
+.SH Scheduler plug-in SDK
+
+.sp 2
+Use the LSF scheduler plug-in SDK to write customized scheduler
+modules that give you more flexibility and control over job
+scheduling. Enable your custom scheduling policies by configuring
+your modules under SCH_PLUGIN in the PluginModules section of the
+lsb.modules file.
+.sp 2
+The following directory contains sample plug-in code:
+.sp 2
+LSF_TOP/10.1/misc/examples/external_plugin/
+.br
+
+.sp 2
+
+.ce 1000
+\fBSCH_DISABLE_PHASES\fR
+.ce 0
+
+.sp 2
+
+.SH Description
+
+.sp 2
+The SCH_DISABLE_PHASES column lists the scheduler phases, if any,
+to be disabled for the plug-in. LSF scheduling has four phases:
+.sp 2
+1. Preprocessing - the scheduler checks the readiness of the job
+   for scheduling and prepares a list of ready resource seekers.
+   It also checks the start time of a job, and evaluates any job
+   dependencies.
+.sp 2
+2. Match/limit - the scheduler evaluates the job resource
+   requirements and prepares candidate hosts for jobs by matching
+   jobs with resources. It also applies resource allocation
+   limits. Jobs with all required resources matched go on to
+   order/allocation phase. Not all jobs are mapped to all
+   potential available resources. Jobs without any matching
+   resources will not go through the Order/Allocation Phase but
+   can go through the Post-processing phase, where preemption
+   might be applied to get resources the job needs to run.
+.sp 2
+3. Order/allocation - the scheduler sorts jobs with matched
+   resources and allocates resources for each job, assigning job
+   slot, memory, and other resources to the job. It also checks
+   whether the allocation satisfies all constraints defined in
+   configuration, such as queue slot limit, deadline for the job.
+.sp 2
+   3.a. In the order phase, the scheduler applies policies such
+        as FCFS, Fairshare, and Host-partition and consider job
+        priorities within user groups and share groups. By
+        default, job priority within a pool of jobs from the same
+        user is based on how long the job has been pending.
+.sp 2
+   3.b. For resource-intensive jobs (jobs that require many CPUs
+        or a large amount of memory), resources are reserved so
+        that these jobs are not starved.
+.sp 2
+   3.c. When all the currently available resources are allocated,
+        jobs go on to post-processing.
+.sp 2
+4. Post-processing - the scheduler prepares jobs from the
+   order/allocation phase for dispatch. Post-processing also
+   applies preemption or backfill policies to obtain resources
+   for the jobs with pre-processing or match/limit phases that
+   are complete, but which did not have resources available to
+   enter the next scheduling phase.
+.sp 2
+Each scheduler plug-in module invokes one or more scheduler
+phases. The processing for a give phase can be disabled or
+skipped if the plug-in module does not need to do any processing
+for that phase or the processing is already done by a previous
+plug-in module in the list.
+.SH Default
+
+.sp 2
+Undefined

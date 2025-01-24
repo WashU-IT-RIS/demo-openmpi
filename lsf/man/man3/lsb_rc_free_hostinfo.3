@@ -1,0 +1,264 @@
+.TH "lsb_rc_free_hostinfo" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_rc_free_hostinfo \- lsb_rc_free_hostinfo 
+Frees the memory allocated by \fBlsb_rc_hostinfo\fP to return RC host data.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB void lsb_rc_free_hostinfo ( struct rcHostInfoEnt* infoArray, int numElems )\fP
+.PP
+.SH "Parameters:"
+\fI*infoArray\fP A pointer to the array of \fBrcHostInfoEnt\fP structures allocated by an earlier call to \fBlsb_rc_hostinfo\fP. 
+.br
+\fInumElems\fP Number of elements in infoArray . If NULL, all hosts will be returned.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBrcHostInfoEnt\fP
+.PP
+.SH "Define Statements:" 
+.PP
+\fBrc_state\fP
+.PP
+.SH "Returns:"
+void
+.PP
+.SH "Errors:" 
+.PP
+Check lsberrno to determine if the function has completed successfully.
+.PP
+.SH "Files:" 
+.PP
+N/A 
+.PP
+
+.ad l
+.nh
+.SH NAME
+rcHostInfoEnt \- Resource connector host information entry.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBproviderName\fP"
+.br
+.ti -1c
+.RI "char * \fBclassName\fP"
+.br
+.ti -1c
+.RI "char * \fBhostName\fP"
+.br
+.ti -1c
+.RI "char * \fBaltHostName\fP"
+.br
+.ti -1c
+.RI "char * \fBrcState\fP"
+.br
+.ti -1c
+.RI "char * \fBprovState\fP"
+.br
+.ti -1c
+.RI "char * \fBlastStateUpdateTime\fP"
+.br
+.ti -1c
+.RI "char * \fBgraceExpiryTime\fP"
+.br
+.ti -1c
+.RI "char * \fBrcAccount\fP"
+.br
+.ti -1c
+.RI "char * \fBhostPrivateAddr\fP"
+.br
+.ti -1c
+.RI "char * \fBhostPublicAddr\fP"
+.br
+.ti -1c
+.RI "char * \fBuserData\fP"
+.br
+.ti -1c
+.RI "char * \fBmachineId\fP"
+.br
+.ti -1c
+.RI "char * \fBhostLaunchTime\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Resource connector host information entry. 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fBrcHostInfoEnt::providerName\fP"
+.PP
+The name of the host provider. 
+.PP
+
+.SS "char* \fBrcHostInfoEnt::className\fP"
+.PP
+The name of the host class. 
+.PP
+Indicates the template used to provision the host. 
+.SS "char* \fBrcHostInfoEnt::hostName\fP"
+.PP
+The public DNS name of the host. 
+.PP
+
+.SS "char* \fBrcHostInfoEnt::altHostName\fP"
+.PP
+The alternative, e.g. 
+.PP
+internal or private DNS name of the host. 
+.SS "char* \fBrcHostInfoEnt::rcState\fP"
+.PP
+The Resource Connector-specific state of the host. 
+.PP
+Can be one of: \fBrc_state\fP 
+.SS "char* \fBrcHostInfoEnt::provState\fP"
+.PP
+The provider-specific state of the host. 
+.PP
+Possible values depend on the provider 
+.SS "char* \fBrcHostInfoEnt::lastStateUpdateTime\fP"
+.PP
+The time when the host state was last updated, in ISO format. 
+.PP
+.SS "char* \fBrcHostInfoEnt::graceExpiryTime\fP"
+.PP
+The grace period expiration time; after that time the host will be forcefully reclaimed by provider. 
+.PP
+NULL if no reclaim request has been received for the host 
+.SS "char* \fBrcHostInfoEnt::rcAccount\fP"
+.PP
+Resource Connector acounting tag in use for the host. 
+.PP
+
+.SS "char* \fBrcHostInfoEnt::hostPrivateAddr\fP"
+.PP
+Host IP address on the provider private network. 
+.PP
+
+.SS "char* \fBrcHostInfoEnt::hostPublicAddr\fP"
+.PP
+Host IP address on the provider public network (if applicable). 
+.PP
+
+.SS "char* \fBrcHostInfoEnt::userData\fP"
+.PP
+User data supplied with the host request. 
+.PP
+
+.SS "char* \fBrcHostInfoEnt::machineId\fP"
+.PP
+Unique identifier assigned to the host by the provider. 
+.PP
+
+.SS "char* \fBrcHostInfoEnt::hostLaunchTime\fP"
+.PP
+Host launch time in ISO format. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+rc_state \- The RC host state.  
+
+.PP
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBRC_HOST_STATE_EMPTY\fP   'Empty'"
+.br
+.ti -1c
+.RI "#define \fBRC_HOST_STATE_PREPROVISION_STARTED\fP   'Preprovision_Started'"
+.br
+.ti -1c
+.RI "#define \fBRC_HOST_STATE_PREPROVISION_FAILED\fP   'Preprovision_Failed'"
+.br
+.ti -1c
+.RI "#define \fBRC_HOST_STATE_ALLOCATED\fP   'Allocated'"
+.br
+.ti -1c
+.RI "#define \fBRC_HOST_STATE_RECLAIM_RECEIVED\fP   'Reclaim_Received'"
+.br
+.ti -1c
+.RI "#define \fBRC_HOST_STATE_RELINQUISHREQ_SENT\fP   'RelinquishReq_Sent'"
+.br
+.ti -1c
+.RI "#define \fBRC_HOST_STATE_RELINQUISHED\fP   'Relinquished'"
+.br
+.ti -1c
+.RI "#define \fBRC_HOST_STATE_DEALLOCATED_SENT\fP   'Deallocated_Sent'"
+.br
+.ti -1c
+.RI "#define \fBRC_HOST_STATE_POSTPROVISION_STARTED\fP   'Postprovision_Started'"
+.br
+.ti -1c
+.RI "#define \fBRC_HOST_STATE_DONE\fP   'Done'"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+The RC host state. 
+.SH "Define Documentation"
+.PP 
+.SS "#define RC_HOST_STATE_EMPTY   'Empty'"
+.PP
+State is unknown or not initialized. 
+.PP
+
+.SS "#define RC_HOST_STATE_PREPROVISION_STARTED   'Preprovision_Started'"
+.PP
+Pre-provision script is running. 
+.PP
+
+.SS "#define RC_HOST_STATE_PREPROVISION_FAILED   'Preprovision_Failed'"
+.PP
+Pre-provision script failed. 
+.PP
+
+.SS "#define RC_HOST_STATE_ALLOCATED   'Allocated'"
+.PP
+Host is allocated for LSF use. 
+.PP
+
+.SS "#define RC_HOST_STATE_RECLAIM_RECEIVED   'Reclaim_Received'"
+.PP
+Host reclaim request received from provider. 
+.PP
+
+.SS "#define RC_HOST_STATE_RELINQUISHREQ_SENT   'RelinquishReq_Sent'"
+.PP
+mbatchd chose to relinquish the host. 
+.PP
+
+.SS "#define RC_HOST_STATE_RELINQUISHED   'Relinquished'"
+.PP
+Host relinquished by LSF. 
+.PP
+
+.SS "#define RC_HOST_STATE_DEALLOCATED_SENT   'Deallocated_Sent'"
+.PP
+Host is released by LSF in response to a reclaim request. 
+.PP
+
+.SS "#define RC_HOST_STATE_POSTPROVISION_STARTED   'Postprovision_Started'"
+.PP
+Post-provision script is running. 
+.PP
+
+.SS "#define RC_HOST_STATE_DONE   'Done'"
+.PP
+LSF is done using the host. 
+.PP
+Terminal state. 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

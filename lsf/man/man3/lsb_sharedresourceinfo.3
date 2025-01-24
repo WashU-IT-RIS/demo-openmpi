@@ -1,0 +1,154 @@
+.TH "lsb_sharedresourceinfo" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_sharedresourceinfo \- lsb_sharedresourceinfo 
+Returns the requested shared resource information in dynamic values.
+.PP
+\fBlsb_sharedresourceinfo\fP returns the requested shared resource information in dynamic values. The result of this call is a chained data structure as defined in <lsf/lsbatch.h>, which contains requested information.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB LSB_SHARED_RESOURCE_INFO_T *lsb_sharedresourceinfo( char **resources, int *numResources, char *hostName, int options)\fP
+.PP
+.SH "Parameters:"
+\fI**resources\fP resources is an NULL terminated string array storing requesting resource names.Setting resources to point to NULL returns all shared resources. 
+.br
+\fI*numResources\fP numResources is an input/output parameter. On input it indicates how many resources are requested. Value 0 means requesting all shared resources. On return it contains qualified resource number. 
+.br
+\fI*hostName\fP hostName is a string containing a host name. Only shared resource available on the specified host will be returned. If hostName is a NULL, shared resource available on all hosts will be returned. 
+.br
+\fIoptions\fP options is reserved for future use. Currently, it should be set to 0.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBlsbSharedResourceInfo\fP 
+.br
+\fBlsbSharedResourceInstance\fP
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+struct \fBlsbSharedResourceInfo\fP *:
+.br
+ A pointer to an LSB_SHARED_RESOURCE_INFO_T structure, which contains complete shared resource information. 
+.br
+ Function was successful. 
+.PP
+NULL 
+.br
+ Function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lsberrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+$LSF_CONFDIR/lsf.shared 
+.br
+$LSF_CONFDIR/lsf.cluster.cluster_name
+.PP
+.SH "See also:"
+\fBls_sharedresourceinfo\fP 
+.PP
+
+.ad l
+.nh
+.SH NAME
+lsbSharedResourceInfo \- lsb shared resource information.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBresourceName\fP"
+.br
+.ti -1c
+.RI "int \fBnInstances\fP"
+.br
+.ti -1c
+.RI "\fBLSB_SHARED_RESOURCE_INST_T\fP * \fBinstances\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+lsb shared resource information. 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fBlsbSharedResourceInfo::resourceName\fP"
+.PP
+Resource name. 
+.PP
+.SS "int \fBlsbSharedResourceInfo::nInstances\fP"
+.PP
+Number of instances. 
+.PP
+.SS "\fBLSB_SHARED_RESOURCE_INST_T\fP* \fBlsbSharedResourceInfo::instances\fP"
+.PP
+List of instances. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+lsbSharedResourceInstance \- lsb shared resource Instance.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBtotalValue\fP"
+.br
+.ti -1c
+.RI "char * \fBrsvValue\fP"
+.br
+.ti -1c
+.RI "int \fBnHosts\fP"
+.br
+.ti -1c
+.RI "char ** \fBhostList\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+lsb shared resource Instance. 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fBlsbSharedResourceInstance::totalValue\fP"
+.PP
+Value used by mbatchd. 
+.PP
+.SS "char* \fBlsbSharedResourceInstance::rsvValue\fP"
+.PP
+Reserved value. 
+.PP
+.SS "int \fBlsbSharedResourceInstance::nHosts\fP"
+.PP
+Number of Hosts associated with the resource. 
+.PP
+
+.SS "char** \fBlsbSharedResourceInstance::hostList\fP"
+.PP
+Hosts list. 
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

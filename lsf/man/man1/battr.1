@@ -1,0 +1,161 @@
+
+.ad l
+
+.TH battr 1 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBbattr\fR
+.ce 0
+
+.sp 2
+Provides a set of subcommands to manage LSF host attributes for
+attribute affinity scheduling.
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBbattr\fR subcommand [options] [arguments] [\fB-h\fR |
+\fB-V\fR]
+.SH Description
+
+.sp 2
+Use the battr command to create, delete, or show LSF host
+attributes. LSF can use host attributes to determine which hosts
+are the preferred execution hosts for jobs.
+.sp 2
+Information about each subcommand is available through the -h
+option.
+.sp 2
+Only users that are defined by the \fBATTR_CREATE_USERS\fR
+parameter in the lsb.params file can create and delete
+attributes. If this parameter is not defined or is set to
+\fRnone\fR, no users have permission to create and delete
+attributes.
+.sp 2
+LSF has a limit on the total number of attributes in the cluster
+as specified by the \fBATTR_MAX_NUM\fR parameter in the
+lsb.params file. In addition, attributes have a time-to-live
+(TTL) value that is specified by the \fBATTR_TTL\fR parameter in
+the lsb.params file.
+.SH Subcommand synopsis
+
+.sp 2
+\fBbattr create -m "\fRhost_name ...\fB"\fR [\fB-d
+"\fRdescription\fB"\fR] attr_name ...
+.sp 2
+\fBbattr delete -m "\fRhost_name ... | \fBall"\fR attr_name ...
+.sp 2
+\fBbattr show\fR [\fB-w\fR] [\fB -m "\fRhost_name ...\fB"\fR]
+[\fB -u \fRuser_name] [attr_name ...]
+.sp 2
+\fBbattr -h\fR
+.sp 2
+\fBbattr -V\fR
+.SH Options
+
+.sp 2
+\fB\fIsubcommand\fB\fR
+.br
+         Runs the specified subcommand. See the Usage section.
+.sp 2
+\fB-h\fR
+.br
+         Prints command usage to stderr and exits.
+.sp 2
+\fB-V\fR
+.br
+         Prints LSF release version to stderr and exits.
+.sp 2
+\fBbattr create -m "\fRhost_name ...\fB"\fR [\fB-d
+"\fRdescription\fB"\fR] attr_name ...
+.SH Usage
+
+.sp 2
+\fBcreate -m "\fIhost_name\fB ..." [-d "\fIdescription\fB"]
+\fIattr_name\fB ...\fR
+.br
+         Creates the specified attributes on the specified hosts.
+         Use a space to separate attribute names. Valid attribute
+         names meet the following requirements:
+.sp 2
+         *  Must begin with a letter
+.sp 2
+         *  Can contain alphanumeric characters, underscores
+            (\fR_\fR), hyphens (\fR-\fR), dots (\fR.\fR), or
+            equal signs (\fR=\fR).
+.sp 2
+         *  Length is less than 40 characters
+.sp 2
+         \fB-d\fR
+.br
+                  Specifies a description for the attributes.
+.sp 2
+         \fB-m "host_name ..."\fR
+.br
+                  Required. Specifies the hosts in which to
+                  create the attributes. Use a space to separate
+                  multiple host names. You can specify the names
+                  in condensed host formats. You cannot specify
+                  host groups, remote (lease-in) hosts, or client
+                  hosts.
+.sp 2
+\fBdelete -m "\fIhost_name\fB ... | all" \fIattr_name\fB ...\fR
+.br
+         Deletes the specified attributes from the specified
+         hosts. Use a space to separate multiple attribute names.
+         The cluster administrator and the root user can delete
+         any attributes, but normal users can only delete
+         attributes that are created by the same user.
+.sp 2
+         If the normal user is removed from the
+         \fBATTR_CREATE_USERS\fR parameter in the lsb.params
+         file, that user can no longer delete attributes.
+.sp 2
+         \fB-m "\fIhost_name\fB ... | all"\fR
+.br
+                  Required. Specifies the hosts from which to
+                  delete the attributes. Use a space to separate
+                  multiple host names or use the \fRall\fR
+                  keyword to specify all hosts in the cluster. If
+                  the \fRall\fR keyword is used by a normal user,
+                  the -m option only deletes the attributes from
+                  hosts if the specified attributes were created
+                  by that user on the host, leaving the
+                  attributes that were created by other users
+                  intact on the other hosts. If the \fRall\fR
+                  keyword is used by root or the cluster
+                  administrator, the specified attributes are
+                  deleted from all hosts.
+.sp 2
+                  You can specify the host names in condensed
+                  host formats. You cannot specify host groups,
+                  remote (lease-in) hosts, or client hosts.
+.sp 2
+\fBshow [-w] [-m "\fIhost_name\fB ..."] [-u \fIuser_name\fB]
+[\fIattr_name\fB ...]\fR
+.br
+         Shows attributes in the cluster. Use a space to separate
+         multiple attribute names. If there are no specified
+         attribute names, this command displays a warning
+         message.
+.sp 2
+         \fB-w\fR
+.br
+                  Wide format. Displays attribute information
+                  without truncating fields.
+.sp 2
+         \fB-u \fIuser_name\fB\fR
+.br
+                  Specifies the user that created the attributes
+                  that this command displays.
+.sp 2
+         \fB-m "\fIhost_name\fB ..."\fR
+.br
+                  Specifies the hosts whose attributes this
+                  command displays. Use a space to separate
+                  multiple host names. You can specify the names
+                  in condensed host formats. You cannot specify
+                  host groups, remote (lease-in) hosts, or client
+                  hosts.

@@ -1,0 +1,4926 @@
+
+.ad l
+
+.TH lsb.applications 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBlsb.applications\fR
+.ce 0
+
+.sp 2
+The lsb.applications file defines application profiles. Use
+application profiles to define common parameters for the same
+type of jobs, including the execution requirements of the
+applications, the resources they require, and how they should be
+run and managed.
+.sp 2
+This file is optional. Use the \fBDEFAULT_APPLICATION\fR
+parameter in the lsb.params file to specify a default application
+profile for all jobs. LSF does not automatically assign a default
+application profile.
+.sp 2
+This file is installed by default in the
+LSB_CONFDIR/\fIcluster_name\fR/configdir directory.
+.SH Changing lsb.applications configuration
+
+.sp 2
+After you change the lsb.applications file, run the badmin
+reconfig command to reconfigure the mbatchd daemon. Configuration
+changes apply to pending jobs only. Running jobs are not
+affected.
+.SH lsb.applications structure
+
+.sp 2
+Each application profile definition begins with the line \fRBegin
+Application\fR and ends with the line \fREnd Application\fR. The
+application name must be specified. All other parameters are
+optional.
+.SH Example
+
+.sp 2
+Begin Application
+.br
+NAME         = catia
+.br
+DESCRIPTION  = CATIA V5
+.br
+CPULIMIT     = 24:0/hostA      # 24 hours of host hostA
+.br
+FILELIMIT    = 20000
+.br
+DATALIMIT    = 20000           # jobs data segment limit
+.br
+CORELIMIT    = 20000
+.br
+TASKLIMIT    = 5               # job processor limit
+.br
+REQUEUE_EXIT_VALUES = 55 34 78
+.br
+End Application
+.sp 2
+See the lsb.applications template file for other application
+profile examples.
+.sp 2
+Parent topic: Configuration files
+.sp 2
+
+.ce 1000
+\fB#INCLUDE\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fR#INCLUDE\fR \fR"path-to-file"\fR
+.SH Description
+
+.sp 2
+Inserts a configuration setting from another file to the current
+location. Use this directive to dedicate control of a portion of
+the configuration to other users or user groups by providing
+write access for the included file to specific users or user
+groups, and to ensure consistency of configuration file settings
+in different clusters (if you are using the LSF multicluster
+capability).
+.sp 2
+See more information on shared configuration file content in
+Administering IBM Spectrum LSF
+.sp 2
+\fR#INCLUDE\fR can be inserted anywhere in the local
+configuration file.
+.SH Default
+
+.sp 2
+Not defined.
+.sp 2
+
+.ce 1000
+\fBABS_RUNLIMIT\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRABS_RUNLIMIT=y\fR | \fRY\fR
+.SH Description
+
+.sp 2
+If set, absolute (wall-clock) run time is used instead of
+normalized run time for all jobs submitted with the following
+values:
+.sp 2
+*  Run time limit or run time estimate specified by the -W or -We
+   option of bsub
+.sp 2
+*  RUNLIMIT queue-level parameter in lsb.queues
+.sp 2
+*  RUNLIMIT application-level parameter in lsb.applications
+.sp 2
+*  ESTIMATED_RUNTIME parameter in lsb.applications
+.sp 2
+The runtime estimates and limits are not normalized by the host
+CPU factor.
+.SH Default
+
+.sp 2
+Not defined. Run limit and runtime estimate are normalized.
+.sp 2
+
+.ce 1000
+\fBBIND_JOB\fR
+.ce 0
+
+.sp 2
+\fBBIND_JOB\fR specifies the processor binding policy for
+sequential and parallel job processes that run on a single host.
+On Linux execution hosts that support this feature, job processes
+are hard bound to selected processors.
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRBIND_JOB=\fR\fRNONE\fR | \fRBALANCE\fR | \fRPACK\fR |
+\fRANY\fR | \fRUSER\fR | \fRUSER_CPU_LIST\fR
+.SH Description
+
+.sp 2
+\fBNote: \fR\fBBIND_JOB\fR is deprecated in LSF Standard Edition
+and LSF Advanced Edition. You should enable LSF CPU and memory
+affinity scheduling in with the AFFINITY parameter in lsb.hosts.
+If both BIND_JOB and affinity scheduling are enabled, affinity
+scheduling takes effect, and LSF_BIND_JOB is disabled.
+\fBBIND_JOB\fR and \fBLSF_BIND_JOB\fR are the only affinity
+options available in LSF Express Edition.
+.sp 2
+If processor binding feature is not configured with the
+\fBBIND_JOB\fR parameter in an application profile in
+lsb.applications, the \fBLSF_BIND_JOB\fR configuration setting
+lsf.conf takes effect. The application profile configuration for
+processor binding overrides the lsf.conf configuration.
+.sp 2
+For backwards compatibility:
+.sp 2
+*  BIND_JOB=Y is interpreted as BIND_JOB=BALANCE
+.sp 2
+*  BIND_JOB=N is interpreted as BIND_JOB=NONE
+.SH Supported platforms
+
+.sp 2
+Linux with kernel version 2.6 or higher
+.SH Default
+
+.sp 2
+Not defined. Processor binding is disabled.
+.sp 2
+
+.ce 1000
+\fBCHKPNT_DIR\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRCHKPNT_DIR=\fR\fIchkpnt_dir\fR
+.SH Description
+
+.sp 2
+Specifies the checkpoint directory for automatic checkpointing
+for the application. To enable automatic checkpoint for the
+application profile, administrators must specify a checkpoint
+directory in the configuration of the application profile.
+.sp 2
+If CHKPNT_PERIOD, CHKPNT_INITPERIOD or CHKPNT_METHOD was set in
+an application profile but CHKPNT_DIR was not set, a warning
+message is issued and those settings are ignored.
+.sp 2
+The checkpoint directory is the directory where the checkpoint
+files are created. Specify an absolute path or a path relative to
+the current working directory for the job. Do not use environment
+variables in the directory path.
+.sp 2
+If checkpoint-related configuration is specified in the queue,
+application profile, and at job level:
+.sp 2
+*  Application-level and job-level parameters are merged. If the
+   same parameter is defined at both job-level and in the
+   application profile, the job-level value overrides the
+   application profile value.
+.sp 2
+*  The merged result of job-level and application profile
+   settings override queue-level configuration.
+.sp 2
+To enable checkpointing of jobs with the LSF multicluster
+capability, define a checkpoint directory in an application
+profile (CHKPNT_DIR, CHKPNT_PERIOD, CHKPNT_INITPERIOD,
+CHKPNT_METHOD in lsb.applications) of both submission cluster and
+execution cluster. LSF uses the directory specified in the
+execution cluster.
+.sp 2
+Checkpointing is not supported if a job runs on a leased host.
+.sp 2
+The file path of the checkpoint directory can contain up to 4000
+characters for UNIX and Linux, or up to 255 characters for
+Windows, including the directory and file name.
+.SH Default
+
+.sp 2
+Not defined
+.sp 2
+
+.ce 1000
+\fBCHKPNT_INITPERIOD\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRCHKPNT_INITPERIOD=\fR\fIinit_chkpnt_period\fR
+.SH Description
+
+.sp 2
+Specifies the initial checkpoint period in minutes. CHKPNT_DIR
+must be set in the application profile for this parameter to take
+effect. The periodic checkpoint specified by CHKPNT_PERIOD does
+not happen until the initial period has elapse.
+.sp 2
+Specify a positive integer.
+.sp 2
+Job-level command line values override the application profile
+configuration.
+.sp 2
+If administrators specify an initial checkpoint period and do not
+specify a checkpoint period (CHKPNT_PERIOD), the job will only
+checkpoint once.
+.sp 2
+If the initial checkpoint period of a job is specified, and you
+run bchkpnt to checkpoint the job at a time before the initial
+checkpoint period, the initial checkpoint period is not changed
+by bchkpnt. The first automatic checkpoint still happens after
+the specified number of minutes.
+.SH Default
+
+.sp 2
+Not defined
+.sp 2
+
+.ce 1000
+\fBCHKPNT_PERIOD\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRCHKPNT_PERIOD=\fR\fIchkpnt_period\fR
+.SH Description
+
+.sp 2
+Specifies the checkpoint period for the application in minutes.
+CHKPNT_DIR must be set in the application profile for this
+parameter to take effect. The running job is checkpointed
+automatically every checkpoint period.
+.sp 2
+Specify a positive integer.
+.sp 2
+Job-level command line values override the application profile
+and queue level configurations. Application profile level
+configuration overrides the queue level configuration.
+.SH Default
+
+.sp 2
+Not defined
+.sp 2
+
+.ce 1000
+\fBCHKPNT_METHOD\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRCHKPNT_METHOD=\fR\fIchkpnt_method\fR
+.SH Description
+
+.sp 2
+Specifies the checkpoint method. CHKPNT_DIR must be set in the
+application profile for this parameter to take effect. Job-level
+command line values override the application profile
+configuration.
+.SH Default
+
+.sp 2
+Not defined
+.sp 2
+
+.ce 1000
+\fBCHUNK_JOB_SIZE\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRCHUNK_JOB_SIZE=\fR\fIinteger\fR
+.SH Description
+
+.sp 2
+\fBNote: \fRThis parameter is deprecated and might be removed in
+a future version of LSF.
+.sp 2
+Chunk jobs only. Allows jobs submitted to the same application
+profile to be chunked together and specifies the maximum number
+of jobs allowed to be dispatched together in a chunk. Specify a
+positive integer greater than or equal to 1.
+.sp 2
+All of the jobs in the chunk are scheduled and dispatched as a
+unit, rather than individually.
+.sp 2
+Specify CHUNK_JOB_SIZE=1 to disable job chunking for the
+application. This value overrides chunk job dispatch configured
+in the queue.
+.sp 2
+Use the CHUNK_JOB_SIZE parameter to configure application
+profiles that chunk small, short-running jobs. The ideal
+candidates for job chunking are jobs that have the same host and
+resource requirements and typically take 1 to 2 minutes to run.
+.sp 2
+Job chunking can have the following advantages:
+.sp 2
+*  Reduces communication between sbatchd and mbatchd and reduces
+   scheduling overhead in mbschd.
+.sp 2
+*  Increases job throughput in mbatchd and CPU utilization on the
+   execution hosts.
+.sp 2
+However, throughput can deteriorate if the chunk job size is too
+big. Performance may decrease on profiles with CHUNK_JOB_SIZE
+greater than 30. You should evaluate the chunk job size on your
+own systems for best performance.
+.sp 2
+With the job forwarding model for the LSF multicluster
+capability, this parameter does not affect jobs that are
+forwarded to a remote cluster.
+.sp 2
+LSF ignores this parameter does not chunk jobs under the
+following conditions:
+.sp 2
+*  CPU limit greater than 30 minutes (\fBCPULIMIT\fR parameter in
+   lsb.queues or lsb.applications)
+.sp 2
+*  Run limit greater than 30 minutes (\fBRUNLIMIT\fR parameter in
+   lsb.queues or lsb.applications)
+.sp 2
+*  Runtime estimate greater than 30 minutes
+   (\fBESTIMATED_RUNTIME\fR parameter in lsb.applications)
+.SH Default
+
+.sp 2
+Not defined
+.sp 2
+
+.ce 1000
+\fBCONTAINER\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRCONTAINER=docker[image(\fR\fIimage_name\fR\fR)
+options(\fR\fIdocker_run_options\fR\fR)]\fR
+.sp 2
+\fRCONTAINER=nvidia-docker[image(\fR\fIimage_name\fR\fR)
+options(\fR\fIdocker_run_options\fR\fR)]\fR
+.sp 2
+\fRCONTAINER=shifter[image(\fR\fIimage_name\fR\fR)
+options(\fR\fIcontainer_options\fR\fR)]\fR
+.sp 2
+\fRCONTAINER=singularity[image(\fR\fIimage_name\fR\fR)
+options(\fR\fIcontainer_options\fR\fR)]\fR
+.sp 2
+\fRCONTAINER=enroot[image(\fR\fIimage_name\fR\fR)
+options(\fR\fIenroot_start_options\fR\fR)]\fR
+.SH Description
+
+.sp 2
+Enables LSF to use a supported container for jobs that are
+submitted to this application profile. This parameter uses the
+following keywords:
+.sp 2
+\fBdocker | nvidia-docker | shifter | singularity | enroot\fR
+.br
+         Required. Use one of these keywords to specify the type
+         of container to use for jobs that are submitted to this
+         application profile. Use \fRdocker\fR if you are running
+         Podman containers.
+.sp 2
+\fBimage\fR
+.br
+         Required. This keyword specifies the image name that is
+         used in running jobs.
+.sp 2
+         For Docker, NVIDIA Docker, Podman, and Enroot jobs, use
+         the \fB$LSB_CONTAINER_IMAGE\fR environment variable to
+         allow users to specify the image name for the container
+         jobs at job submission time. At job submission time,
+         users can specify a specific image name that is in the
+         specified repository server by specifying a value for
+         the \fB$LSB_CONTAINER_IMAGE\fR environment variable.
+.sp 2
+\fBoptions\fR
+.br
+         Optional. This keyword specifies the job run options for
+         the container.
+.sp 2
+         To enable a pre-execution script to run, specify an at
+         sign (\fR@\fR) and a full file path to the script, which
+         the execution host must be able to access. Before the
+         container job runs, LSF runs this script with LSF
+         administrator privileges. While the script is running,
+         the jobs\(aq environment variables are passed to the
+         script. When the script finishes running, the output is
+         used as container startup options. The script must
+         provide this output on one line. The method of
+         processing the container job depends on the result of
+         the pre-execution script:
+.sp 2
+         *  If the pre-execution script failed, the container job
+            exits with the same exit code from the script. In
+            addition, an external status message is sent to
+            inform the user that the job exited because of script
+            execution failure.
+.sp 2
+         *  If the execution of the script is successful but the
+            output contains more than 512 options, LSF only keeps
+            the first 512 options, and the remaining options are
+            ignored.
+.sp 2
+         *  If the execution of the script is successful and the
+            output is valid, the output is part of the container
+            job running options. The position of the output from
+            the script in the options is exactly where the user
+            configured the script in the options field.
+.sp 2
+         For Docker and NVIDIA Docker containers, this keyword
+         specifies the Docker job run options for the docker run
+         command, which are passed to the job container.
+.sp 2
+         \fBNote: \fR
+.sp 2
+         *  Before you specify the Docker job run options, make
+            sure that these options work with the docker run
+            command in the command line.
+.sp 2
+         *  The --cgroup-parent and --user (or -u) options are
+            reserved for LSF internal use. Do not use these
+            options in the options keyword configuration,
+            otherwise the job fails.
+.sp 2
+            If you specified a pre-execution script and the
+            output of this script contains --cgroup-parent,
+            --user, or -u, the container job also fails.
+.sp 2
+         *  The -w and --ulimit options are automatically set for
+            LSF. Do not use these options in the options keyword
+            configuration because these specifications override
+            the LSF settings.
+.sp 2
+         *  The -v option is automatically used by LSF to mount
+            the working directories that LSF requires, such as
+            the current working directory, job spool directory,
+            destination file for the bsub -f command, tmp
+            directory, the LSF_TOP, and the checkpoint directory
+            on demand.
+.sp 2
+         *  You can configure the --rm option in the options
+            keyword configuration to automatically remove
+            containers after the job is done.
+.sp 2
+         *  You can enable LSF to automatically assign a name to
+            a Docker container when it creates the Docker
+            container. To enable this feature, set the
+            \fBENABLE_CONTAINER_NAME\fR parameter to \fBTrue\fR
+            in the lsfdockerlib.py file.
+.sp 2
+            The container name uses the following naming
+            convention:
+.sp 2
+            *  Normal jobs and blaunch parallel job containers:
+               \fI<cluster_name>\fR.job.\fI<job_id>\fR
+.sp 2
+            *  Array jobs and array blaunch parallel job
+               containers:
+               \fI<cluster_name>\fR.job.\fI<job_id>\fR.\fI<job_index>\fR
+.sp 2
+            *  blaunch parallel job task containers:
+               \fI<cluster_name>\fR.job.\fI<job_id>\fR.task.\fI<task_id>\fR
+.sp 2
+            *  Array blaunch parallel job task containers:
+               \fI<cluster_name>\fR.job.\fI<job_id>\fR.\fI<job_index>\fR.task.\fI<task_id>\fR
+.sp 2
+         *  Limitation: If you use the -d option, LSF incorrectly
+            gets the status of the Docker jobs as \fRDONE\fR.
+.sp 2
+         For Shifter containers, this keyword specifies the
+         Shifter job run options for the shifter command, which
+         are passed to the job container.
+.sp 2
+         \fBNote: \fR
+.sp 2
+         *  Run shifter --help in the command line to view the
+            options that the shifter command supports.
+.sp 2
+         *  Before you specify the Shifter job run options, make
+            sure that these options work with the shifter command
+            in the command line.
+.sp 2
+         *  The \fB$LD_LIBRARY_PATH\fR directory is cleaned
+            according to the setuid bit that Shifter uses to
+            work. Therefore, for programs that depend on
+            \fB$LD_LIBRARY_PATH\fR to work (such as openmpi),
+            ensure that the setuid bit can be properly set inside
+            the container by adding \fBLD_LIBRARY_PATH\fR to the
+            \fBsiteEnvAppend\fR section of the udiRoot.conf file.
+.sp 2
+         For Singularity containers, this keyword specifies the
+         Singularity job run options for the singularity exec
+         command, which are passed to the job container.
+.sp 2
+         \fBNote: \fR
+.sp 2
+         *  Run singularity exec --help in the command line to
+            view the options that the singularity command
+            supports.
+.sp 2
+         *  Before you specify the Singularity job run options,
+            make sure that these options work with the
+            singularity exec command in the command line.
+.sp 2
+         *  The \fB$LD_LIBRARY_PATH\fR directory is cleaned
+            according to the setuid bit that Singularity uses to
+            work. Therefore, for programs that depend on
+            \fB$LD_LIBRARY_PATH\fR to work (such as openmpi),
+            ensure that the setuid bit can be properly set inside
+            the container by adding \fBLD_LIBRARY_PATH\fR to the
+            ld.so.conf file and run the ldconfig command.
+.sp 2
+         For Podman containers, this keyword specifies the Podman
+         job run options for the podman run command, which are
+         passed to the job container.
+.sp 2
+         \fBNote: \fR
+.sp 2
+         *  Before you specify the Podman job run options, make
+            sure that these options work with the podman run
+            command in the command line.
+.sp 2
+         *  The --user (or -u) option is reserved for LSF
+            internal use. Do not use these options in the options
+            keyword configuration, otherwise the job fails.
+.sp 2
+            If you specified a pre-execution script and the
+            output of this script contains --user, or -u, the
+            container job also fails.
+.sp 2
+         *  The -w and --ulimit options are automatically set for
+            LSF. Do not use these options in the options keyword
+            configuration because these specifications override
+            the LSF settings.
+.sp 2
+         *  The -v option is automatically used by LSF to mount
+            the working directories that LSF requires, such as
+            the current working directory, job spool directory,
+            destination file for the bsub -f command, tmp
+            directory, the LSF_TOP, and the checkpoint directory
+            on demand.
+.sp 2
+         *  You can configure the --rm option in the options
+            keyword configuration to automatically remove
+            containers after the job is done.
+.sp 2
+         *  Limitation: If you use the -d option, LSF incorrectly
+            gets the status of the Docker jobs as \fRDONE\fR.
+.sp 2
+         For Enroot containers, this keyword specifies the Enroot
+         job run options for the enroot start command, which are
+         passed to the job container.
+.sp 2
+         \fBNote: \fRBefore you specify the Enroot job run
+         options, make sure that these options work with the
+         enroot start command in the command line.
+.SH Examples
+
+.sp 2
+To specify an Ubuntu image for use with container jobs without
+specifying any optional keywords,
+.sp 2
+Begin Application
+.br
+NAME = dockerapp
+.br
+CONTAINER = docker[image(repository.example.com:5000/file/path/ubuntu:latest)]
+.br
+DESCRIPTION = Docker User Service
+.br
+End Application
+.sp 2
+Begin Application
+.br
+NAME = ndockerapp
+.br
+CONTAINER = nvidia-docker[image(repository.example.com:5000/file/path/ubuntu:latest)]
+.br
+DESCRIPTION = NVIDIA Docker User Service
+.br
+End Application
+.sp 2
+Begin Application
+.br
+NAME = shifterapp
+.br
+CONTAINER = shifter[image(ubuntu:latest)]
+.br
+DESCRIPTION = Shifter User Service
+.br
+End Application
+.sp 2
+Begin Application
+.br
+NAME = singapp
+.br
+CONTAINER = singularity[image(/file/path/ubuntu.img)]
+.br
+DESCRIPTION = Singularity User Service
+.br
+End Application
+.sp 2
+Begin Application
+.br
+NAME = podmanapp
+.br
+CONTAINER = docker[image(repository.example.com:5000/file/path/ubuntu:latest)]
+.br
+DESCRIPTION = Podman User Service
+.br
+End Application
+.sp 2
+Begin Application
+.br
+NAME = enrootapp
+.br
+CONTAINER = enroot[image(repository.example.com:5000/file/path/ubuntu:latest)]
+.br
+DESCRIPTION = Enroot User Service
+.br
+End Application
+.sp 2
+To specify a pre-execution script in the /share/usr/ directory,
+which generates the container startup options,
+.sp 2
+Begin Application
+.br
+NAME = dockerappoptions
+.br
+CONTAINER = docker[image(repository.example.com:5000/file/path/ubuntu:latest) options(@/share/usr/docker-options.sh)]
+.br
+DESCRIPTION = Docker User Service with pre-execution script for options
+.br
+End Application
+.sp 2
+Begin Application
+.br
+NAME = ndockerappoptions
+.br
+CONTAINER = nvidia-docker[image(repository.example.com:5000/file/path/ubuntu:latest) options(@/share/usr/docker-options.sh)]
+.br
+DESCRIPTION = NVIDIA Docker User Service with pre-execution script for options
+.br
+End Application
+.sp 2
+Begin Application
+.br
+NAME = shifterappoptions
+.br
+CONTAINER = shifter[image(ubuntu:latest) options(@/share/usr/shifter-options.sh)]
+.br
+DESCRIPTION = Shifter User Service
+.br
+End Application
+.sp 2
+Begin Application
+.br
+NAME = singappoptions
+.br
+CONTAINER = singularity[image(/file/path/ubuntu.img) options(@/share/usr/sing-options.sh)]
+.br
+DESCRIPTION = Singularity User Service
+.br
+End Application
+.sp 2
+Begin Application
+.br
+NAME = enrootappoptions
+.br
+CONTAINER = enroot[image(repository.example.com:5000/file/path/ubuntu:latest) options(@/share/usr/enroot-options.sh)]
+.br
+DESCRIPTION = Enroot User Service with pre-execution script for options
+.br
+End Application
+.sp 2
+*  For sequential jobs, specify the following \fBCONTAINER\fR
+   parameter value for LSF to automatically remove containers
+   after the job is done:
+.sp 2
+   \fRCONTAINER=docker[image(image-name) options(--rm)]\fR
+.sp 2
+*  For parallel jobs, the network and IPC must work across
+   containers to make blaunch work. The execution user ID and
+   user name mapping file must be mounted to the container for
+   blaunch authentication.
+.sp 2
+   Therefore, specify the following \fBCONTAINER\fR parameter
+   value for LSF to configure the container IPC and network
+   parameters so that blaunch can work across multiple
+   containers, to configure the container password file for
+   blaunch authentication, and automatically remove containers
+   after the job is done:
+.sp 2
+   \fRCONTAINER=docker[image(image-name) options(--rm
+   --network=host --ipc=host -v --runtime=nvidia
+   /path/to/my/passwd:/etc/passwd)]\fR
+.sp 2
+   The passwd file must be in the standard format for UNIX and
+   Linux password files, such as the following format:
+.sp 2
+   user1:x:10001:10001:::
+.br
+   user2:x:10002:10002:::
+.sp 2
+*  To allow users to specify image names for Docker, NVIDIA
+   Docker, Podman, and Enroot container jobs at job submission
+   time, use the \fB$LSB_CONTAINER_IMAGE\fR environment variable
+   as the image name when specifying the \fBimage\fR keyword.
+.sp 2
+   For example, when defining the \fBCONTAINER\fR parameter for
+   the udocker application profile, add the
+   \fB$LSB_CONTAINER_IMAGE\fR environment variable to the image
+   specification:
+.sp 2
+   Begin Application
+.br
+   NAME = udockerGPU
+.br
+   CONTAINER = docker[image(repository.example.com:5000/$LSB_CONTAINER_IMAGE) \
+.br
+               options(--rm --net=host --ipc=host -v --runtime=nvidia /gpfs/u/fred:/data )]
+.br
+   DESCRIPTION = Docker User Service
+.br
+   End Application
+.sp 2
+   Specify a container image name (such as \fRubuntu\fR) at the
+   job submission time by setting the \fB$LSB_CONTAINER_IMAGE\fR
+   environment using one of the following methods:
+.sp 2
+   *  Specify the \fB$LSB_CONTAINER_IMAGE\fR environment variable
+      according to your shell environment:
+.sp 2
+      *  In csh or tcsh:
+.sp 2
+         \fRsetenv LSB_CONTAINER_IMAGE ubuntu\fR
+.sp 2
+      *  In sh, ksh, or bash:
+.sp 2
+         \fRexport LSB_CONTAINER_IMAGE=ubuntu\fR
+.sp 2
+   *  Use the bsub -env option:
+.sp 2
+      \fRbsub -env LSB_CONTAINER_IMAGE=ubuntu -app udocker a.out
+      -in in.dat -out out.dat \fR
+.sp 2
+   *  Use an esub script to set the \fILSB_CONTAINER_IMAGE\fR
+      environment variable, then call the esub with the bsub
+      command.
+.SH Default
+
+.sp 2
+Undefined
+.sp 2
+
+.ce 1000
+\fBCORELIMIT\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRCORELIMIT=\fR\fIinteger\fR
+.SH Description
+
+.sp 2
+The per-process (soft) core file size limit for all of the
+processes belonging to a job from this application profile (see
+getrlimit(2)). Application-level limits override any default
+limit specified in the queue, but must be less than the hard
+limit of the submission queue. Job-level core limit (bsub -C)
+overrides queue-level and application-level limits.
+.sp 2
+By default, the limit is specified in KB. Use LSF_UNIT_FOR_LIMITS
+in lsf.conf to specify a larger unit for the limit (MB, GB, TB,
+PB, or EB).
+.SH Default
+
+.sp 2
+Unlimited
+.sp 2
+
+.ce 1000
+\fBCPU_FREQUENCY\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fBCPU_FREQUENCY=\fR[float_number][unit]
+.SH Description
+
+.sp 2
+Specifies the CPU frequency for an application profile. All jobs
+submit to the application profile require the specified CPU
+frequency. Value is a positive float number with units (GHz, MHz,
+or KHz). If no units are set, the default is GHz.
+.sp 2
+This value can also be set using the command bsub –freq.
+.sp 2
+The submission value will overwrite the application profile
+value, and the application profile value will overwrite the queue
+value.
+.SH Default
+
+.sp 2
+Not defined (Nominal CPU frequency is used)
+.sp 2
+
+.ce 1000
+\fBCPULIMIT\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRCPULIMIT=[\fR[\fIhour\fR\fR:\fR]\fIminute\fR[\fR/\fR\fIhost_name\fR
+| \fR/\fR\fIhost_model\fR]
+.SH Description
+
+.sp 2
+Limits the total CPU time the job can use. This parameter is
+useful for preventing runaway jobs or jobs that use up too many
+resources.
+.sp 2
+When the total CPU time for the whole job has reached the limit,
+a SIGXCPU signal is sent to all processes belonging to the job.
+If the job has no signal handler for SIGXCPU, the job is killed
+immediately. If the SIGXCPU signal is handled, blocked, or
+ignored by the application, then after the grace period expires,
+LSF sends SIGINT, SIGTERM, and SIGKILL to the job to kill it.
+.sp 2
+If a job dynamically spawns processes, the CPU time used by these
+processes is accumulated over the life of the job.
+.sp 2
+Processes that exist for fewer than 30 seconds may be ignored.
+.sp 2
+By default, jobs submitted to the application profile without a
+job-level CPU limit (bsub -c) are killed when the CPU limit is
+reached. Application-level limits override any default limit
+specified in the queue.
+.sp 2
+The number of minutes may be greater than 59. For example, three
+and a half hours can be specified either as 3:30 or 210.
+.sp 2
+If no host or host model is given with the CPU time, LSF uses the
+default CPU time normalization host defined at the queue level
+(DEFAULT_HOST_SPEC in lsb.queues) if it has been configured,
+otherwise uses the default CPU time normalization host defined at
+the cluster level (DEFAULT_HOST_SPEC in lsb.params) if it has
+been configured, otherwise uses the host with the largest CPU
+factor (the fastest host in the cluster).
+.sp 2
+On Windows, a job that runs under a CPU time limit may exceed
+that limit by up to SBD_SLEEP_TIME. This is because sbatchd
+periodically checks if the limit has been exceeded.
+.sp 2
+On UNIX systems, the CPU limit can be enforced by the operating
+system at the process level.
+.sp 2
+You can define whether the CPU limit is a per-process limit
+enforced by the OS or a per-job limit enforced by LSF with
+LSB_JOB_CPULIMIT in lsf.conf.
+.SH Default
+
+.sp 2
+Unlimited
+.sp 2
+
+.ce 1000
+\fBDATALIMIT\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRDATALIMIT=\fR\fIinteger\fR
+.SH Description
+
+.sp 2
+The per-process (soft) data segment size limit (in KB) for all of
+the processes belonging to a job running in the application
+profile (see getrlimit(2)).
+.sp 2
+By default, jobs submitted to the application profile without a
+job-level data limit (bsub -D) are killed when the data limit is
+reached. Application-level limits override any default limit
+specified in the queue, but must be less than the hard limit of
+the submission queue.
+.SH Default
+
+.sp 2
+Unlimited
+.sp 2
+
+.ce 1000
+\fBDESCRIPTION \fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRDESCRIPTION=\fR\fItext\fR
+.SH Description
+
+.sp 2
+Description of the application profile. The description is
+displayed by bapp -l.
+.sp 2
+The description should clearly describe the service features of
+the application profile to help users select the proper profile
+for each job.
+.sp 2
+The text can include any characters, including white space. The
+text can be extended to multiple lines by ending the preceding
+line with a backslash (\). The maximum length for the text is 512
+characters.
+.sp 2
+
+.ce 1000
+\fBDJOB_COMMFAIL_ACTION\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRDJOB_COMMFAIL_ACTION="KILL_TASKS|IGNORE_COMMFAIL"\fR
+.SH Description
+
+.sp 2
+Defines the action LSF should take if it detects a communication
+failure with one or more remote parallel or distributed tasks. If
+defined with "KILL_TASKS", LSF tries to kill all the current
+tasks of a parallel or distributed job associated with the
+communication failure. If defined with "IGNORE_COMMFAIL",
+failures will be ignored and the job continues. If not defined,
+LSF terminates all tasks and shuts down the entire job.
+.sp 2
+This parameter only applies to the blaunch distributed
+application framework.
+.sp 2
+When defined in an application profile, the
+LSB_DJOB_COMMFAIL_ACTION variable is set when running bsub -app
+for the specified application.
+.SH Default
+
+.sp 2
+Not defined. Terminate all tasks, and shut down the entire job.
+.sp 2
+
+.ce 1000
+\fBDJOB_DISABLED\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRDJOB_DISABLED=Y\fR | \fRN\fR
+.SH Description
+
+.sp 2
+Disables the blaunch distributed application framework.
+.SH Default
+
+.sp 2
+Not defined. Distributed application framework is enabled.
+.sp 2
+
+.ce 1000
+\fBDJOB_ENV_SCRIPT\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRDJOB_ENV_SCRIPT=\fR\fIscript_name\fR
+.SH Description
+
+.sp 2
+Defines the name of a user-defined script for setting and
+cleaning up the parallel or distributed job environment.
+.sp 2
+The specified script must support a setup argument and a cleanup
+argument. The script is executed by LSF with the setup argument
+before launching a parallel or distributed job, and with argument
+cleanup after the job is finished.
+.sp 2
+The script runs as the user, and is part of the job.
+.sp 2
+If a full path is specified, LSF uses the path name for the
+execution. Otherwise, LSF looks for the executable from
+$LSF_BINDIR.
+.sp 2
+This parameter only applies to the blaunch distributed
+application framework.
+.sp 2
+When defined in an application profile, the LSB_DJOB_ENV_SCRIPT
+variable is set when running bsub -app for the specified
+application.
+.sp 2
+The command path can contain up to 4094 characters for UNIX and
+Linux, or up to 255 characters for Windows, including the
+directory, file name, and expanded values for %J (\fIjob_ID\fR)
+and %I (\fIindex_ID\fR).
+.sp 2
+If DJOB_ENV_SCRIPT=openmpi_rankfile.sh is set in
+lsb.applications, LSF creates a host rank file and sets the
+environment variable LSB_RANK_HOSTFILE.
+.SH Default
+
+.sp 2
+Not defined.
+.sp 2
+
+.ce 1000
+\fBDJOB_HB_INTERVAL\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRDJOB_HB_INTERVAL=\fR\fIseconds\fR
+.SH Description
+
+.sp 2
+Value in seconds used to calculate the heartbeat interval between
+the task RES and job RES of a parallel or distributed job.
+.sp 2
+This parameter only applies to the blaunch distributed
+application framework.
+.sp 2
+When DJOB_HB_INTERVAL is specified, the interval is scaled
+according to the number of tasks in the job:
+.sp 2
+max(DJOB_HB_INTERVAL, 10) + \fIhost_factor\fR
+.sp 2
+where
+.sp 2
+\fIhost_factor\fR = 0.01 * \fInumber of hosts allocated for the
+job\fR
+.SH Default
+
+.sp 2
+Not defined. Interval is the default value of
+\fBLSB_DJOB_HB_INTERVAL\fR.
+.sp 2
+
+.ce 1000
+\fBDJOB_RESIZE_GRACE_PERIOD\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+DJOB_RESIZE_GRACE_PERIOD = seconds
+.SH Description
+
+.sp 2
+When a resizable job releases resources, the LSF distributed
+parallel job framework terminates running tasks if a host has
+been completely removed. A \fBDJOB_RESIZE_GRACE_PERIOD\fR defines
+a grace period in seconds for the application to clean up tasks
+itself before LSF forcibly terminates them.
+.SH Default
+
+.sp 2
+No grace period.
+.sp 2
+
+.ce 1000
+\fBDJOB_RU_INTERVAL\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRDJOB_RU_INTERVAL=\fR\fIseconds\fR
+.SH Description
+
+.sp 2
+Value in seconds used to calculate the resource usage update
+interval for the tasks of a parallel or distributed job.
+.sp 2
+This parameter only applies to the blaunch distributed
+application framework.
+.sp 2
+When DJOB_RU_INTERVAL is specified, the interval is scaled
+according to the number of tasks in the job:
+.sp 2
+max(DJOB_RU_INTERVAL, 10) + \fIhost_factor\fR
+.sp 2
+where
+.sp 2
+\fIhost_factor\fR = 0.01 * \fInumber of hosts allocated for the
+job\fR
+.SH Default
+
+.sp 2
+Not defined. Interval is the default value of
+\fBLSB_DJOB_RU_INTERVAL\fR.
+.sp 2
+
+.ce 1000
+\fBDJOB_TASK_BIND\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fBDJOB_TASK_BIND=Y\fR | \fBy\fR | \fBN\fR | \fBn\fR
+.SH Description
+
+.sp 2
+For CPU and memory affinity scheduling jobs launched with the
+blaunch distributed application framework.
+.sp 2
+To enable LSF to bind each task to the proper CPUs or NUMA nodes
+you must use blaunch to start tasks. You must set
+DJOB_TASK_BIND=Y in lsb.applications or LSB_DJOB_TASK_BIND=Y in
+the submission environment before submitting the job. When set,
+only the CPU and memory bindings allocated to the task itself
+will be set in each task\(aqs environment.
+.sp 2
+If DJOB_TASK_BIND=N or LSB_DJOB_TASK_BIND=N, or they are not set,
+each task will have the same CPU or NUMA node binding on one
+host.
+.sp 2
+If you do not use blaunch to start tasks, and use another MPI
+mechanism such as IBM Spectrum LSF MPI or IBM Parallel
+Environment, you should not set \fBDJOB_TASK_BIND\fR or set it to
+N.
+.SH Default
+
+.sp 2
+N
+.sp 2
+
+.ce 1000
+\fBDOCKER_IMAGE_AFFINITY\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fBDOCKER_IMAGE_AFFINITY=Y\fR | \fBy\fR | \fBN\fR | \fBn\fR
+.SH Description
+
+.sp 2
+When scheduling Docker-based containerized jobs, setting this
+parameter to \fRy\fR or \fRY\fR enables LSF to give preference
+for execution hosts that already have the requested Docker image.
+This reduces network bandwidth and the job start time because the
+execution host does not have to pull the Docker image from the
+repository and the job can immediately start on the execution
+host.
+.sp 2
+When this feature is enabled, LSF considers Docker image location
+information when scheduling Docker jobs. Docker image affinity
+interacts with host preference and \fBorder[]\fR string requests
+in the following manner:
+.sp 2
+*  If host preference is specified, the host preference is
+   honored first. Among hosts with the same preference level,
+   hosts with the requested Docker image are given higher
+   priority.
+.sp 2
+*  If the \fBorder[]\fR string is specified, the hosts with the
+   requested Docker image have a higher priority first. Among
+   hosts that all have the requested Docker image, the
+   \fBorder[]\fR string is then honored.
+.sp 2
+The \fBCONTAINER\fR parameter must be defined for this parameter
+to work with this application profile.
+.SH Default
+
+.sp 2
+Not defined.
+.sp 2
+
+.ce 1000
+\fBELIGIBLE_PEND_TIME_LIMIT\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRELIGIBLE_PEND_TIME_LIMIT=\fR[\fIhour\fR\fR:\fR]\fIminute\fR
+.SH Description
+
+.sp 2
+Specifies the eligible pending time limit for a job.
+.sp 2
+LSF sends the application-level eligible pending time limit
+configuration to IBM Spectrum LSF RTM, which handles the alarm
+and triggered actions such as user notification (for example,
+notifying the user that submitted the job and the LSF
+administrator) and job control actions (for example, killing the
+job). IBM Spectrum LSF RTM compares the job\(aqs eligible pending
+time to the eligible pending time limit, and if the job is in an
+eligible pending state for longer than this specified time limit,
+IBM Spectrum LSF RTM triggers the alarm and actions. This
+parameter works without IBM Spectrum LSF RTM, but LSF does not
+take any other alarm actions.
+.sp 2
+In the job forwarding model for the LSF multicluster capability,
+the job\(aqs eligible pending time limit is ignored in the execution
+cluster, while the submission cluster merges the job\(aqs queue-,
+application-, and job-level eligible pending time limit according
+to local settings.
+.sp 2
+The eligible pending time limit is in the form of
+[\fIhour\fR\fR:\fR]\fIminute\fR. The minutes can be specified as
+a number greater than 59. For example, three and a half hours can
+either be specified as 3:30, or 210.
+.sp 2
+The job-level eligible pending time limit (bsub -eptl) overrides
+the application-level limit specified here, and the
+application-level limit overrides the queue-level limit
+(\fBELIGIBLE_PEND_TIME_LIMIT\fR in lsb.queues).
+.SH Default
+
+.sp 2
+Not defined.
+.sp 2
+
+.ce 1000
+\fBENV_VARS\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRENV_VARS=\fR\fI"name=\(aqvalue\(aq[,name1=\(aqvalue1\(aq]
+[,name2=\(aqvalue2\(aq,... ]"\fR
+.SH Description
+
+.sp 2
+\fBENV_VARS\fR defines application-specific environment variables
+that will be used by jobs for the application. Use this parameter
+to define name/value pairs as environment variables. These
+environment variables are also used in the pre/post-execution
+environment.
+.sp 2
+You can include spaces within the single quotation marks when
+defining a value. Commas and double quotation marks are reserved
+by LSF and cannot be used as part of the environment variable
+name or value. If the same environment variable is named multiple
+times in \fBENV_VARS\fR and given different values, the last
+value in the list will be the one which takes effect. LSF does
+not allow environment variables to contain other environment
+variables to be expanded on the execution side. Do not redefine
+LSF environment variables in \fBENV_VARS\fR.
+.sp 2
+To define a NULL environment variable, use single quotes with
+nothing inside. For example:
+.sp 2
+\fBENV_VARS=\fR\fR"TEST_CAR=\(aq\(aq"\fR
+.sp 2
+Any variable set in the user’s environment will overwrite the
+value in \fBENV_VARS\fR. The application profile value will
+overwrite the execution host environment value.
+.sp 2
+After changing the value of this parameter, run badmin reconfig
+to have the changes take effect. The changes apply to pending
+jobs only. Running jobs are not affected.
+.SH Default
+
+.sp 2
+Not defined.
+.sp 2
+
+.ce 1000
+\fBESTIMATED_RUNTIME\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRESTIMATED_RUNTIME=\fR[\fIhour\fR\fR:\fR]\fIminute\fR[\fR/\fR\fIhost_name\fR
+| \fR/\fR\fIhost_model\fR]
+.SH Description
+
+.sp 2
+This parameter specifies an estimated run time for jobs
+associated with an application. LSF uses the ESTIMATED_RUNTIME
+value for scheduling purposes only, and does not kill jobs that
+exceed this value unless the jobs also exceed a defined RUNLIMIT.
+The format of runtime estimate is same as the RUNLIMIT parameter.
+.sp 2
+The job-level runtime estimate specified by bsub -We overrides
+the ESTIMATED_RUNTIME setting in an application profile. The
+ESTIMATED_RUNTIME setting in an application profile overrides the
+ESTIMATED_RUNTIME setting in the queue and cluster.
+.sp 2
+The following LSF features use the ESTIMATED_RUNTIME value to
+schedule jobs:
+.sp 2
+*  Job chunking
+.sp 2
+*  Advance reservation
+.sp 2
+*  SLA
+.sp 2
+*  Slot reservation
+.sp 2
+*  Backfill
+.sp 2
+*  Allocation planner
+.SH Default
+
+.sp 2
+Not defined
+.sp 2
+
+.ce 1000
+\fBEXEC_DRIVER\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+Docker and Podman jobs:
+\fREXEC_DRIVER=context[user(\fR\fIuser_name\fR\fR)]
+starter[/\fR\fIfile_path_serverdir\fR\fR/docker-starter.py]
+controller[/\fR\fIfile_path/to/serverdir\fR\fR/docker-control.py]
+monitor[/\fR\fIfile_path/to/serverdir\fR\fR/docker-monitor.py]\fR
+.sp 2
+Enroot jobs:
+\fREXEC_DRIVER=starter[/\fR\fIfile_path_serverdir\fR\fR/enroot-starter.py]\fR
+.sp 2
+Replace \fIfile_path/to/serverdir\fR with the actual file path of
+the \fILSF_SERVERDIR\fR directory.
+.SH Description
+
+.sp 2
+Optional for Enroot jobs. Specifies the execution driver
+framework for Docker, Podman, or Enroot container jobs in this
+application profile. This parameter uses the following keyword:
+.sp 2
+\fBuser\fR
+.br
+         Optional for Docker jobs and ignored for Enroot jobs.
+         This keyword specifies the user account for starting
+         scripts. The configured value is a user name instead of
+         a user ID. For Docker jobs, this user must be a member
+         of the Docker user group. For Podman jobs, the user name
+         must be set to "\fRdefault\fR".
+.sp 2
+         By default, this is the LSF primary administrator by
+         default.
+.sp 2
+         \fBNote: \fRThis cannot be the root user.
+.sp 2
+LSF includes three execution driver scripts that are used to
+start a job (docker-starter.py), monitor the resource of a job
+(docker-monitor.py), and send a signal to a job
+(docker-control.py). These scripts are located in the
+\fILSF_SERVERDIR\fR directory. Change the owner of the script
+files to the context user and change the file permissions to 700
+or 500 before using them in the \fBEXEC_DRIVER\fR parameter.
+.sp 2
+The starter script is required. For Docker container jobs, the
+monitor and control scripts are required if the cgroupfs driver
+is systemd, but are optional if the cgroupfs driver is cgroupfs.
+For Podman container jobs, the monitor script is optional while
+the control script is required. For Enroot container jobs, the
+starter script is required while all other scripts are ignored.
+.SH Interaction with the CONTAINER parameter for Docker, Podman, or
+Enroot jobs, Podman, or Enroot jobsjobs
+
+.sp 2
+For Docker, Podman, or Enroot jobs, the \fBEXEC_DRIVER\fR
+parameter interacts with the following keywords in the
+\fBCONTAINER\fR parameter:
+.sp 2
+*  \fBimage\fR, which specifies the image name
+   (\fB$LSB_CONTAINER_IMAGE\fR environment variable) is supported
+   when specifying the script names.
+.sp 2
+*  \fBoptions\fR with runtime options and the option script is
+   supported.
+.SH Example
+
+.sp 2
+Begin Application
+.br
+NAME = dockerapp
+.br
+CONTAINER = docker[image(repository.example.com:5000/file/path/ubuntu:latest)
+.br
+            options(--rm --network=host --ipc=host -v /path/to/my/passwd:/etc/passwd)]
+.br
+EXEC_DRIVER = context[user(user-name)] starter[/path/to/driver/docker-starter.py]
+.br
+              controller[/path/to/driver/docker-control.py]
+.br
+              monitor[/path/to/driver/docker-monitor.py]
+.br
+DESCRIPTION = Docker User Service
+.br
+End Application
+.sp 2
+Begin Application
+.br
+NAME = podmanapp
+.br
+CONTAINER = docker[image(repository.example.com:5000/file/path/ubuntu:latest)
+.br
+            options(--rm --network=host --ipc=host -v /path/to/my/passwd:/etc/passwd)]
+.br
+EXEC_DRIVER = context[user(default)] starter[/path/to/driver/docker-starter.py]
+.br
+              controller[/path/to/driver/docker-control.py]
+.br
+              monitor[/path/to/driver/docker-monitor.py]
+.br
+DESCRIPTION = Podman User Service
+.br
+End Application
+.sp 2
+Begin Application
+.br
+NAME = enrootapp
+.br
+CONTAINER = enroot[image(repository.example.com:5000/file/path/ubuntu:latest)
+.br
+            options(--mount /mydir:/mydir2]
+.br
+EXEC_DRIVER = starter[/path/to/driver/enroot-starter.py]
+.br
+DESCRIPTION = Enroot User Service
+.br
+End Application
+.SH Default
+
+.sp 2
+Undefined for Docker and Podman jobs.
+.sp 2
+\fRstarter[\fI$LSF_SERVERDIR\fR/enroot-starter.py]\fR for Enroot
+jobs
+.sp 2
+
+.ce 1000
+\fBFILELIMIT\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRFILELIMIT=\fR\fIinteger\fR
+.SH Description
+
+.sp 2
+The per-process (soft) file size limit (in KB) for all of the
+processes belonging to a job running in the application profile
+(see getrlimit(2)). Application-level limits override any default
+limit specified in the queue, but must be less than the hard
+limit of the submission queue.
+.SH Default
+
+.sp 2
+Unlimited
+.sp 2
+
+.ce 1000
+\fBGPU_REQ\fR
+.ce 0
+
+.sp 2
+Specify GPU requirements together in one statement.
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fBGPU_REQ = "\fR[\fBnum=\fRnum_gpus[\fB/\fR\fBtask\fR |
+\fBhost\fR]] [\fB:mode=shared\fR | \fBexclusive_process\fR]
+[\fB:mps=\fR\fByes\fR[\fB,shared\fR][\fB,nocvd\fR]| \fBno\fR]
+[\fB:j_exclusive=\fR\fByes\fR | \fBno\fR][\fB:block=\fR\fByes\fR
+| \fBno\fR] [\fB:gpack=\fR\fByes\fR | \fBno\fR]
+[\fB:gvendor=amd\fR | \fBnvidia\fR]
+[\fB:gmodel=\fRmodel_name[\fB#\fRmem_size]]
+[\fB:gtile=\fRtile_num|\fB\(aq!\(aq\fR] [\fB:gmem=\fRmem_value]
+[\fB:glink=yes\fR] [\fB:mig=\fRGI_size[\fB/\fRCI_size]]\fB"\fR
+.SH Description
+
+.sp 2
+The \fBGPU_REQ\fR parameter takes the following arguments:
+.sp 2
+\fBnum=\fInum_gpus\fB[/task | host]\fR
+.br
+         The number of physical GPUs required by the job. By
+         default, the number is per host. You can also specify
+         that the number is per task by specifying \fR/task\fR
+         after the number.
+.sp 2
+         If you specified that the number is per task, the
+         configuration of the \fRngpus_physical\fR resource in
+         the lsb.resources file is set to \fRPER_TASK\fR, or the
+         \fBRESOURCE_RESERVE_PER_TASK=Y\fR parameter is set in
+         the lsb.params file, this number is the requested count
+         per task.
+.sp 2
+\fBmode=shared | exclusive_process\fR
+.br
+         The GPU mode when the job is running, either shared or
+         exclusive_process. The default mode is shared.
+.sp 2
+         The shared mode corresponds to the Nvidia or AMD DEFAULT
+         compute mode. The exclusive_process mode corresponds to
+         the Nvidia EXCLUSIVE_PROCESS compute mode.
+.sp 2
+         \fBNote: \fR Do not specify exclusive_process when you
+         are using AMD GPUs (that is, when gvendor=amd is
+         specified).
+.sp 2
+\fBmps=yes[,nocvd][,shared] | no\fR
+.br
+         Enables or disables the Nvidia Multi-Process Service
+         (MPS) for the GPUs that are allocated to the job. Using
+         MPS effectively causes the EXCLUSIVE_PROCESS mode to
+         behave like the DEFAULT mode for all MPS clients. MPS
+         always allows multiple clients to use the GPU through
+         the MPS server.
+.sp 2
+         \fBNote: \fRTo avoid inconsistent behavior, do not
+         enable mps when you are using AMD GPUs (that is, when
+         gvendor=amd is specified). If the result of merging the
+         GPU requirements at the cluster, queue, application, and
+         job levels is gvendor=amd and mps is enabled (for
+         example, if gvendor=amd is specified at the job level
+         without specifying mps=no, but mps=yes is specified at
+         the application, queue, or cluster level), LSF ignores
+         the mps requirement.
+.sp 2
+         MPS is useful for both shared and exclusive process
+         GPUs, and allows more efficient sharing of GPU resources
+         and better GPU utilization. See the Nvidia documentation
+         for more information and limitations.
+.sp 2
+         When using MPS, use the EXCLUSIVE_PROCESS mode to ensure
+         that only a single MPS server is using the GPU, which
+         provides additional insurance that the MPS server is the
+         single point of arbitration between all CUDA process for
+         that GPU.
+.sp 2
+         You can also enable MPS daemon sharing by adding the
+         \fBshare\fR keyword with a comma and no space (for
+         example, \fRmps=yes,shared\fR enables MPS daemon sharing
+         on the host). If sharing is enabled, all jobs that are
+         submitted by the same user with the same resource
+         requirements share the same MPS daemon on the host,
+         socket, or GPU.
+.sp 2
+         \fBImportant: \fRUsing EXCLUSIVE_THREAD mode with MPS is
+         not supported and might cause unexpected behavior.
+.sp 2
+\fBj_exclusive=yes | no\fR
+.br
+         Specifies whether the allocated GPUs can be used by
+         other jobs. When the mode is set to exclusive_process,
+         the j_exclusive=yes option is set automatically.
+.sp 2
+\fBblock=yes | no\fR
+.br
+         Specifies whether to enable block distribution, that is,
+         to distribute the allocated GPUs of a job as blocks when
+         the number of tasks is greater than the requested number
+         of GPUs. If set to \fRyes\fR, LSF distributes all the
+         allocated GPUs of a job as blocks when the number of
+         tasks is bigger than the requested number of GPUs. By
+         default, \fRblock=no\fR is set so that allocated GPUs
+         are not distributed as blocks.
+.sp 2
+         For example, if a GPU job requests to run on a host with
+         4 GPUs and 40 tasks, block distribution assigns GPU0 for
+         ranks 0-9, GPU1 for ranks 10-19, GPU2 for tanks 20-29,
+         and GPU3 for ranks 30-39.
+.sp 2
+         \fBNote: \fRThe \fRblock=yes\fR setting conflicts with
+         \fRaff=yes\fR (strict CPU-GPU affinity binding). This is
+         because strict CPU-GPU binding allocates GPUs to tasks
+         based on the CPU NUMA ID, which conflicts with the
+         distribution of allocated GPUs as blocks. If
+         \fRblock=yes\fR and \fRaff=yes\fR are both specified in
+         the GPU requirements string, the \fRblock=yes\fR setting
+         takes precedence and strict CPU-GPU affinity binding is
+         disabled (that is, \fRaff=no\fR is automatically set).
+.sp 2
+\fBgpack=yes | no\fR
+.br
+         For shared mode jobs only. Specifies whether to enable
+         pack scheduling. If set to \fRyes\fR, LSF packs multiple
+         shared mode GPU jobs to allocated GPUs. LSF schedules
+         shared mode GPUs as follows:
+.sp 2
+         1. LSF sorts the candidate hosts (from largest to
+            smallest) based on the number of shared GPUs that
+            already have running jobs, then by the number of GPUs
+            that are not exclusive.
+.sp 2
+            If the order[] keyword is defined in the resource
+            requirements string, after sorting order[], LSF
+            re-sorts the candidate hosts by the gpack policy (by
+            shared GPUs that already have running jobs first,
+            then by the number of GPUs that are not exclusive).
+            The gpack policy sort priority is higher than the
+            order[] sort.
+.sp 2
+         2. LSF sorts the candidate GPUs on each host (from
+            largest to smallest) based on the number of running
+            jobs.
+.sp 2
+         After scheduling, the shared mode GPU job packs to the
+         allocated shared GPU that is sorted first, not to a new
+         shared GPU.
+.sp 2
+         If Docker attribute affinity is enabled, the order of
+         candidate hosts are sorted by Docker attribute affinity
+         before sorting by GPUs.
+.sp 2
+         By default, \fRgpack=no\fR is set so that pack
+         scheduling is disabled.
+.sp 2
+\fBgvendor=amd | nvidia\fR
+.br
+         Specifies the GPU vendor type. LSF allocates GPUs with
+         the specified vendor type.
+.sp 2
+         Specify \fRamd\fR to request AMD GPUs, or specify
+         \fRnvidia\fR to request Nvidia GPUs.
+.sp 2
+         By default, LSF requests Nvidia GPUs.
+.sp 2
+\fBgmodel=\fImodel_name\fB[-\fImem_size\fB]\fR
+.br
+         Specifies GPUs with the specific model name and,
+         optionally, its total GPU memory. By default, LSF
+         allocates the GPUs with the same model, if available.
+.sp 2
+         The \fBgmodel\fR keyword supports the following formats:
+.sp 2
+         \fBgmodel=\fImodel_name\fB\fR
+.br
+                  Requests GPUs with the specified brand and
+                  model name (for example, TeslaK80).
+.sp 2
+         \fBgmodel=\fIshort_model_name\fB\fR
+.br
+                  Requests GPUs with a specific brand name (for
+                  example, Tesla, Quadro, NVS, ) or model type
+                  name (for example, K80, P100).
+.sp 2
+         \fBgmodel=\fImodel_name\fB-\fImem_size\fB\fR
+.br
+                  Requests GPUs with the specified brand name and
+                  total GPU memory size. The GPU memory size
+                  consists of the number and its unit, which
+                  includes \fRM\fR, \fRG\fR, \fRT\fR, \fRMB\fR,
+                  \fRGB\fR, and \fRTB\fR (for example,
+                  \fR12G\fR).
+.sp 2
+         To find the available GPU model names on each host, run
+         the lsload –gpuload, lshosts –gpu, or bhosts -gpu
+         commands. The model name string does not contain space
+         characters. In addition, the slash (\fR/\fR) and hyphen
+         (\fR-\fR) characters are replaced with the underscore
+         character (\fR_\fR). For example, the GPU model name
+         “\fRTesla C2050 / C2070\fR” is converted to
+         “\fRTeslaC2050_C2070\fR” in LSF.
+.sp 2
+\fBgmem=\fImem_value\fB\fR
+.br
+         Specify the GPU memory on each GPU required by the job.
+         The format of \fImem_value\fR is the same to other
+         resource value (for example, \fRmem\fR or \fRswap\fR) in
+         the rusage section of the job resource requirements
+         (-R).
+.sp 2
+\fBgtile=! | \fItile_num\fB\fR
+.br
+         Specifies the number of GPUs per socket. Specify an
+         number to explicitly define the number of GPUs per
+         socket on the host, or specify an exclamation mark
+         (\fR!\fR) to enable LSF to automatically calculate the
+         number, which evenly divides the GPUs along all sockets
+         on the host. LSF guarantees the \fBgtile\fR requirements
+         even for affinity jobs. This means that LSF might not
+         allocate the GPU\(aqs affinity to the allocated CPUs when
+         the \fBgtile\fR requirements cannot be satisfied.
+.sp 2
+         If the \fBgtile\fR keyword is not specified for an
+         affinity job, LSF attempts to allocate enough GPUs on
+         the sockets that allocated GPUs. If there are not enough
+         GPUs on the optimal sockets, jobs cannot go to this
+         host.
+.sp 2
+         If the \fBgtile\fR keyword is not specified for a
+         non-affinity job, LSF attempts to allocate enough GPUs
+         on the same socket. If this is not available, LSF might
+         allocate GPUs on separate GPUs.
+.sp 2
+\fBnvlink=yes\fR
+.br
+         Obsolete in LSF, Version 10.1 Fix Pack 11. Use the
+         \fBglink\fR keyword instead. Enables the job enforcement
+         for NVLink connections among GPUs. LSF allocates GPUs
+         with NVLink connections in force.
+.sp 2
+\fBglink=yes\fR
+.br
+         Enables job enforcement for special connections among
+         GPUs. LSF must allocate GPUs with the special
+         connections that are specific to the GPU vendor.
+.sp 2
+         If the job requests AMD GPUs, LSF must allocate GPUs
+         with the xGMI connection. If the job requests Nvidia
+         GPUs, LSF must allocate GPUs with the NVLink connection.
+.sp 2
+         Do not use \fBglink\fR together with the obsolete
+         \fBnvlink\fR keyword.
+.sp 2
+         By default, LSF can allocate GPUs without special
+         connections when there are not enough GPUs with these
+         connections.
+.sp 2
+\fBmig=\fIGI_size\fB[/\fICI_size\fB]\fR
+.br
+         Specifies Nvidia Multi-Instance GPU (MIG) device
+         requirements.
+.sp 2
+         Specify the requested number of GPU instances for the
+         MIG job. Valid GPU instance sizes are 1, 2, 3, 4, 7.
+.sp 2
+         Optionally, specify the requested number of compute
+         instances after the specified GPU instance size and a
+         slash character (\fR/\fR). The requested compute
+         instance size must be less than or equal to the
+         requested GPU instance size. In addition, Nvidia MIG
+         does not support the following GPU/compute instance size
+         combinations: 4/3, 7/5, 7/6. If this is not specified,
+         the default compute instance size is 1.
+.sp 2
+The syntax of the GPU requirement in the -gpu option is the same
+as the syntax in the \fBLSB_GPU_REQ\fR parameter in the lsf.conf
+file and the \fBGPU_REQ\fR parameter in the lsb.queues and
+lsb.applications files.
+.sp 2
+\fBNote: \fRThe bjobs output does not show \fRaff=yes\fR even if
+you specify \fRaff=yes\fR in the bsub -gpu option.
+.sp 2
+If the \fBGPU_REQ_MERGE\fR parameter is defined as \fRY\fR or
+\fRy\fR in the lsb.params file and a GPU requirement is specified
+at multiple levels (at least two of the default cluster, queue,
+application profile, or job level requirements), each option of
+the GPU requirement is merged separately. Job level overrides
+application level, which overrides queue level, which overrides
+the default cluster GPU requirement. For example, if the mode
+option of the GPU requirement is defined on the -gpu option, and
+the mps option is defined in the queue, the mode of job level and
+the mps value of queue is used.
+.sp 2
+If the \fBGPU_REQ_MERGE\fR parameter is not defined as \fRY\fR or
+\fRy\fR in the lsb.params file and a GPU requirement is specified
+at multiple levels (at least two of the default cluster, queue,
+application profile, or job level requirements), the entire GPU
+requirement string is replaced. The entire job level GPU
+requirement string overrides application level, which overrides
+queue level, which overrides the default GPU requirement.
+.sp 2
+The esub parameter \fBLSB_SUB4_GPU_REQ\fR modifies the value of
+the -gpu option.
+.sp 2
+LSF selects the GPU that meets the topology requirement first. If
+the GPU mode of the selected GPU is not the requested mode, LSF
+changes the GPU to the requested mode. For example, if LSF
+allocates an \fRexclusive_process\fR GPU to a job that needs a
+shared GPU, LSF changes the GPU mode to shared before the job
+starts and then changes the mode back to \fRexclusive_process\fR
+when the job finishes.
+.sp 2
+The GPU requirements are converted to rusage resource
+requirements for the job. For example, \fRnum=2\fR is converted
+to \fRrusage[ngpus_physical=2]\fR. Use the bjobs, bhist, and
+bacct commands to see the merged resource requirement.
+.sp 2
+There might be complex GPU requirements that the bsub -gpu option
+and \fBGPU_REQ\fR parameter syntax cannot cover, including
+compound GPU requirements (for different GPU requirements for
+jobs on different hosts, or for different parts of a parallel
+job) and alternate GPU requirements (if more than one set of GPU
+requirements might be acceptable for a job to run). For complex
+GPU requirements, use the bsub -R command option, or the
+\fBRES_REQ\fR parameter in the lsb.applications or lsb.queues
+file to define the resource requirement string.
+.sp 2
+\fBImportant: \fRYou can define the mode, j_exclusive, and mps
+options only with the -gpu option, the \fBLSB_GPU_REQ\fR
+parameter in the lsf.conf file, or the \fBGPU_REQ\fR parameter in
+the lsb.queues or lsb.applications files. You cannot use these
+options with the rusage resource requirement string in the bsub
+-R command option or the \fBRES_REQ\fR parameter in the
+lsb.queues or lsb.applications files.
+.SH Default
+
+.sp 2
+Not defined
+.SH See also
+
+.sp 2
+*  \fBLSB_GPU_REQ\fR
+.sp 2
+*  bsub -gpu
+.sp 2
+
+.ce 1000
+\fBHOST_POST_EXEC\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fBHOST_POST_EXEC=\fRcommand
+.SH Description
+
+.sp 2
+Enables host-based post-execution processing at the application
+level. The \fBHOST_POST_EXEC\fR command runs on all execution
+hosts after the job finishes. If job based post-execution
+\fBPOST_EXEC\fR was defined at the
+queue-level/application-level/job-level, the \fBHOST_POST_EXEC\fR
+command runs after \fBPOST_EXEC\fR of any level.
+.sp 2
+Host-based post-execution commands can be configured at the queue
+and application level, and run in the following order:
+.sp 2
+1. The application-level command
+.sp 2
+2. The queue-level command.
+.sp 2
+The supported command rule is the same as the existing
+\fBPOST_EXEC\fR for the queue section. See the \fBPOST_EXEC\fR
+topic for details.
+.sp 2
+\fBNote: \fR
+.sp 2
+The host-based post-execution command cannot be executed on
+Windows platforms. This parameter cannot be used to configure
+job-based post-execution processing.
+.SH Default
+
+.sp 2
+Not defined.
+.sp 2
+
+.ce 1000
+\fBHOST_PRE_EXEC\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fBHOST_PRE_EXEC=\fRcommand
+.SH Description
+
+.sp 2
+Enables host-based pre-execution processing at the application
+level. The \fBHOST_PRE_EXEC\fR command runs on all execution
+hosts before the job starts. If job based pre-execution
+\fBPRE_EXEC\fR was defined at the
+queue-level/application-level/job-level, the \fBHOST_PRE_EXEC\fR
+command runs before \fBPRE_EXEC\fR of any level.
+.sp 2
+Host-based pre-execution commands can be configured at the queue
+and application level, and run in the following order:
+.sp 2
+1. The queue-level command
+.sp 2
+2. The application-level command.
+.sp 2
+The supported command rule is the same as the existing
+\fBPRE_EXEC\fR for the queue section. See the \fBPRE_EXEC\fR
+topic for details.
+.sp 2
+\fBNote: \fR
+.sp 2
+The host-based pre-execution command cannot be executed on
+Windows platforms. This parameter cannot be used to configure
+job-based pre-execution processing.
+.SH Default
+
+.sp 2
+Not defined.
+.sp 2
+
+.ce 1000
+\fBJOB_CWD\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRJOB_CWD=\fR\fIdirectory\fR
+.SH Description
+
+.sp 2
+Current working directory (CWD) for the job in the application
+profile. The path can be absolute or relative to the submission
+directory. The path can include the following dynamic patterns
+(which are case sensitive):
+.sp 2
+*  %J - job ID
+.sp 2
+*  %JG - job group (if not specified, it will be ignored)
+.sp 2
+*  %I - job index (default value is 0)
+.sp 2
+*  %EJ - execution job ID
+.sp 2
+*  %EI - execution job index
+.sp 2
+*  %P - project name
+.sp 2
+*  %U - user name
+.sp 2
+*  %G - user group
+.sp 2
+*  %H - first execution host name
+.sp 2
+Unsupported patterns are treated as text.
+.sp 2
+If this parameter is changed, then any newly submitted jobs with
+the -app option will use the new value for CWD if bsub -cwd is
+not defined.
+.sp 2
+\fBJOB_CWD\fR supports all LSF path conventions such as UNIX, UNC
+and Windows formats. In the mixed UNIX /Windows cluster it can be
+specified with one value for UNIX and another value for Windows
+separated by a pipe character (|).
+.sp 2
+JOB_CWD=unix_path|windows_path
+.br
+
+.sp 2
+The first part of the path must be for UNIX and the second part
+must be for Windows. Both paths must be full paths.
+.SH Default
+
+.sp 2
+Not defined.
+.sp 2
+
+.ce 1000
+\fBJOB_CWD_TTL\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRJOB_CWD_TTL=\fR\fIhours\fR
+.SH Description
+
+.sp 2
+Specifies the time-to-live (TTL) for the current working
+directory (CWD) of a job. LSF cleans created CWD directories
+after a job finishes based on the TTL value. LSF deletes the CWD
+for the job if LSF created that directory for the job. The
+following options are available:
+.sp 2
+*  0 - sbatchd deletes CWD when all process related to the job
+   finish.
+.sp 2
+*  2147483647 - Never delete the CWD for a job.
+.sp 2
+*  1 to 2147483646 - Delete the CWD for a job after the timeout
+   expires.
+.sp 2
+The system checks the directory list every 5 minutes with regards
+to cleaning and deletes only the last directory of the path to
+avoid conflicts when multiple jobs share some parent directories.
+TTL will be calculated after the post-exec script finishes. When
+LSF (sbatchd) starts, it checks the directory list file and
+deletes expired CWDs.
+.sp 2
+If the value for this parameter is not set in the application
+profile, LSF checks to see if it is set at the cluster-wide
+level. If neither is set, the default value is used.
+.SH Default
+
+.sp 2
+Not defined. The value of 2147483647 is used, meaning the CWD is
+not deleted.
+.sp 2
+
+.ce 1000
+\fBJOB_INCLUDE_POSTPROC\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fBJOB_INCLUDE_POSTPROC\fR=Y | N
+.SH Description
+
+.sp 2
+Specifies whether LSF includes the post-execution processing of
+the job as part of the job. When set to Y:
+.sp 2
+*  Prevents a new job from starting on a host until
+   post-execution processing is finished on that host
+.sp 2
+*  Includes the CPU and run times of post-execution processing
+   with the job CPU and run times
+.sp 2
+*  sbatchd sends both job finish status (\fBDONE\fR or
+   \fBEXIT\fR) and post-execution processing status
+   (\fBPOST_DONE\fR or \fBPOST_ERR\fR) to mbatchd at the same
+   time
+.sp 2
+The variable LSB_JOB_INCLUDE_POSTPROC in the user environment
+overrides the value of JOB_INCLUDE_POSTPROC in an application
+profile in lsb.applications. JOB_INCLUDE_POSTPROC in an
+application profile in lsb.applications overrides the value of
+JOB_INCLUDE_POSTPROC in lsb.params.
+.sp 2
+For CPU and memory affinity jobs, if JOB_INCLUDE_POSTPROC=Y, LSF
+does not release affinity resources until post-execution
+processing has finished, since slots are still occupied by the
+job during post-execution processing.
+.sp 2
+For SGI cpusets, if JOB_INCLUDE_POSTPROC=Y, LSF does not release
+the cpuset until post-execution processing has finished, even
+though post-execution processes are not attached to the cpuset.
+.SH Default
+
+.sp 2
+N. Post-execution processing is not included as part of the job,
+and a new job can start on the execution host before
+post-execution processing finishes.
+.sp 2
+
+.ce 1000
+\fBJOB_POSTPROC_TIMEOUT\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fBJOB_POSTPROC_TIMEOUT=\fRminutes
+.SH Description
+
+.sp 2
+Specifies a timeout in minutes for job post-execution processing.
+The specified timeout must be greater than zero
+.sp 2
+If post-execution processing takes longer than the timeout,
+sbatchd reports that post-execution has failed (POST_ERR status).
+On UNIX and Linux, it kills the entire process group of the job\(aqs
+pre-execution processes. On Windows, only the parent process of
+the pre-execution command is killed when the timeout expires, the
+child processes of the pre-execution command are not killed.
+.sp 2
+If \fBJOB_INCLUDE_POSTPROC\fR=Y, and sbatchd kills the
+post-execution processes because the timeout has been reached,
+the CPU time of the post-execution processing is set to 0, and
+the job’s CPU time does not include the CPU time of
+post-execution processing.
+.sp 2
+\fBJOB_POSTPROC_TIMEOUT\fR defined in an application profile in
+lsb.applications overrides the value in lsb.params.
+\fBJOB_POSTPROC_TIMEOUT\fR cannot be defined in user environment.
+.sp 2
+When running host-based post execution processing, set
+\fBJOB_POSTPROC_TIMEOUT\fR to a value that gives the process
+enough time to run.
+.SH Default
+
+.sp 2
+Not defined. Post-execution processing does not time out.
+.sp 2
+
+.ce 1000
+\fBJOB_PREPROC_TIMEOUT\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fBJOB_PREPROC_TIMEOUT=\fRminutes
+.SH Description
+
+.sp 2
+Specify a timeout in minutes for job pre-execution processing.
+The specified timeout must be an integer greater than zero. If
+the job\(aqs pre-execution processing takes longer than the timeout,
+LSF kills the job\(aqs pre-execution processes, kills the job with a
+pre-defined exit value of 98, and then requeues the job to the
+head of the queue. However, if the number of pre-execution
+retries has reached the pre-execution retry threshold, LSF
+suspends the job with PSUSP status instead of requeuing it.
+.sp 2
+JOB_PREPROC_TIMEOUT defined in an application profile in
+lsb.applications overrides the value in lsb.params.
+JOB_PREPROC_TIMEOUT cannot be defined in the user environment.
+.sp 2
+On UNIX and Linux, sbatchd kills the entire process group of the
+job\(aqs pre-execution processes.
+.sp 2
+On Windows, only the parent process of the pre-execution command
+is killed when the timeout expires, the child processes of the
+pre-execution command are not killed.
+.SH Default
+
+.sp 2
+Not defined. Pre-execution processing does not time out. However,
+when running host-based pre-execution processing, you cannot use
+the infinite value or it will fail. You must configure a
+reasonable value.
+.sp 2
+
+.ce 1000
+\fBJOB_SIZE_LIST\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRJOB_SIZE_LIST=\fR\fIdefault_size\fR [\fIsize\fR ...]
+.SH Description
+
+.sp 2
+A list of job sizes (number of tasks) that are allowed on this
+application.
+.sp 2
+When submitting a job or modifying a pending job that requests a
+job size by using the -n or -R options for bsub and bmod, the
+requested job size must be a single fixed value that matches one
+of the values that \fBJOB_SIZE_LIST\fR specifies, which are the
+job sizes that are allowed on this application profile. LSF
+rejects the job if the requested job size is not in this list. In
+addition, when using bswitch to switch a pending job with a
+requested job size to another queue, the requested job size in
+the pending job must also match one of the values in
+\fBJOB_SIZE_LIST\fR for the new queue.
+.sp 2
+The first value in this list is the default job size, which is
+the assigned job size request if the job was submitted without
+requesting one. The remaining values are the other job sizes
+allowed in the queue, and may be defined in any order.
+.sp 2
+When defined in both a queue (lsb.queues) and an application
+profile, the job size request must satisfy both requirements. In
+addition, \fBJOB_SIZE_LIST\fR overrides any \fBTASKLIMIT\fR
+parameters defined at the same level. Job size requirements do
+not apply to queues and application profiles with no job size
+lists, nor do they apply to other levels of job submissions (that
+is, host level or cluster level job submissions).
+.sp 2
+\fBNote: \fRAn exclusive job may allocate more slots on the host
+then is required by the tasks. For example, if
+\fRJOB_SIZE_LIST=8\fR and an exclusive job requesting -n8 runs on
+a 16 slot host, all 16 slots are assigned to the job. The job
+runs as expected, since the 8 tasks specified for the job matches
+the job size list.
+.SH Valid values
+
+.sp 2
+A space-separated list of positive integers between 1 and
+2147483646.
+.SH Default
+
+.sp 2
+Undefined
+.sp 2
+
+.ce 1000
+\fBJOB_STARTER\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRJOB_STARTER=\fR\fIstarter\fR [\fIstarter\fR] [\fR"%USRCMD"\fR]
+[\fIstarter\fR]
+.SH Description
+
+.sp 2
+Creates a specific environment for submitted jobs prior to
+execution. An application-level job starter overrides a
+queue-level job starter.
+.sp 2
+\fIstarter\fR is any executable that can be used to start the job
+(i.e., can accept the job as an input argument). Optionally,
+additional strings can be specified.
+.sp 2
+By default, the user commands run after the job starter. A
+special string, %USRCMD, can be used to represent the position of
+the user’s job in the job starter command line. The %USRCMD
+string and any additional commands must be enclosed in quotation
+marks (\fR" "\fR).
+.SH Example
+
+.sp 2
+JOB_STARTER=csh -c "%USRCMD;sleep 10"
+.br
+
+.sp 2
+In this case, if a user submits a job
+.sp 2
+bsub myjob arguments
+.br
+
+.sp 2
+the command that actually runs is:
+.sp 2
+csh -c "myjob arguments;sleep 10"
+.br
+
+.SH Default
+
+.sp 2
+Not defined. No job starter is used,
+.sp 2
+
+.ce 1000
+\fBLOCAL_MAX_PREEXEC_RETRY\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLOCAL_MAX_PREEXEC_RETRY=\fR\fIinteger\fR
+.SH Description
+
+.sp 2
+The maximum number of times to attempt the pre-execution command
+of a job on the local cluster.
+.sp 2
+When this limit is reached, the default behavior of the job is
+defined by the \fBLOCAL_MAX_PREEXEC_RETRY_ACTION\fR parameter in
+lsb.params, lsb.queues, or lsb.applications.
+.SH Valid values
+
+.sp 2
+0 < MAX_PREEXEC_RETRY < INFINIT_INT
+.sp 2
+INFINIT_INT is defined in lsf.h.
+.SH Default
+
+.sp 2
+Not defined. The number of preexec retry times is unlimited
+.SH See also
+
+.sp 2
+\fBLOCAL_MAX_PREEXEC_RETRY_ACTION\fR in lsb.params, lsb.queues,
+and lsb.applications.
+.sp 2
+
+.ce 1000
+\fBLOCAL_MAX_PREEXEC_RETRY_ACTION\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLOCAL_MAX_PREEXEC_RETRY_ACTION=SUSPEND\fR | \fREXIT\fR
+.SH Description
+
+.sp 2
+The default behavior of a job when it reaches the maximum number
+of times to attempt its pre-execution command on the local
+cluster (\fBLOCAL_MAX_PREEXEC_RETRY\fR in lsb.params, lsb.queues,
+or lsb.applications).
+.sp 2
+*  If set to \fRSUSPEND\fR, the job is suspended and its status
+   is set to PSUSP.
+.sp 2
+*  If set to \fREXIT\fR, the job exits and its status is set to
+   EXIT. The job exits with the same exit code as the last
+   pre-execution fail exit code.
+.sp 2
+This parameter is configured cluster-wide (lsb.params), at the
+queue level (lsb.queues), and at the application level
+(lsb.applications). The action specified in lsb.applications
+overrides lsb.queues, and lsb.queues overrides the lsb.params
+configuration.
+.SH Default
+
+.sp 2
+Not defined. If not defined in lsb.queues or lsb.params, the
+default action is SUSPEND.
+.SH See also
+
+.sp 2
+\fBLOCAL_MAX_PREEXEC_RETRY\fR in lsb.params, lsb.queues, and
+lsb.applications.
+.sp 2
+
+.ce 1000
+\fBMAX_JOB_PREEMPT\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRMAX_JOB_PREEMPT=\fR\fIinteger\fR
+.SH Description
+
+.sp 2
+The maximum number of times a job can be preempted. Applies to
+queue-based preemption only.
+.SH Valid values
+
+.sp 2
+0 < MAX_JOB_PREEMPT < INFINIT_INT
+.sp 2
+INFINIT_INT is defined in lsf.h.
+.SH Default
+
+.sp 2
+Not defined. The number of preemption times is unlimited.
+.sp 2
+
+.ce 1000
+\fBMAX_JOB_REQUEUE\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRMAX_JOB_REQUEUE=\fR\fIinteger\fR
+.SH Description
+
+.sp 2
+The maximum number of times to requeue a job automatically.
+.SH Valid values
+
+.sp 2
+0 < MAX_JOB_REQUEUE < INFINIT_INT
+.sp 2
+INFINIT_INT is defined in lsf.h.
+.SH Default
+
+.sp 2
+Not defined. The number of requeue times is unlimited
+.sp 2
+
+.ce 1000
+\fBMAX_PREEXEC_RETRY\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRMAX_PREEXEC_RETRY=\fR\fIinteger\fR
+.SH Description
+
+.sp 2
+Use REMOTE_MAX_PREEXEC_RETRY instead. This parameter is only
+maintained for backwards compatibility.
+.sp 2
+Job forwarding model for the LSF multicluster capability only.
+The maximum number of times to attempt the pre-execution command
+of a job from a remote cluster.
+.sp 2
+If the job\(aqs pre-execution command fails all attempts, the job is
+returned to the submission cluster.
+.SH Valid values
+
+.sp 2
+0 < MAX_PREEXEC_RETRY < INFINIT_INT
+.sp 2
+INFINIT_INT is defined in lsf.h.
+.SH Default
+
+.sp 2
+5
+.sp 2
+
+.ce 1000
+\fBMAX_TOTAL_TIME_PREEMPT\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRMAX_TOTAL_TIME_PREEMPT=\fR\fIinteger\fR
+.SH Description
+
+.sp 2
+The accumulated preemption time in minutes after which a job
+cannot be preempted again, where \fIminutes\fR is wall-clock
+time, not normalized time.
+.sp 2
+Setting this parameter in lsb.applications overrides the
+parameter of the same name in lsb.queues and in lsb.params.
+.SH Valid values
+
+.sp 2
+Any positive integer greater than or equal to one (1)
+.SH Default
+
+.sp 2
+Unlimited
+.sp 2
+
+.ce 1000
+\fBMEMLIMIT\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRMEMLIMIT=\fR\fIinteger\fR
+.SH Description
+
+.sp 2
+The per-process (soft) process resident set size limit for all of
+the processes belonging to a job running in the application
+profile.
+.sp 2
+Sets the maximum amount of physical memory (resident set size,
+RSS) that may be allocated to a process.
+.sp 2
+By default, the limit is specified in KB. Use LSF_UNIT_FOR_LIMITS
+in lsf.conf to specify a larger unit for the limit (MB, GB, TB,
+PB, or EB).
+.sp 2
+By default, jobs submitted to the application profile without a
+job-level memory limit are killed when the memory limit is
+reached. Application-level limits override any default limit
+specified in the queue, but must be less than the hard limit of
+the submission queue.
+.sp 2
+LSF has two methods of enforcing memory usage:
+.sp 2
+*  OS Memory Limit Enforcement
+.sp 2
+*  LSF Memory Limit Enforcement
+.SH OS memory limit enforcement
+
+.sp 2
+OS memory limit enforcement is the default MEMLIMIT behavior and
+does not require further configuration. OS enforcement usually
+allows the process to eventually run to completion. LSF passes
+MEMLIMIT to the OS, which uses it as a guide for the system
+scheduler and memory allocator. The system may allocate more
+memory to a process if there is a surplus. When memory is low,
+the system takes memory from and lowers the scheduling priority
+(re-nice) of a process that has exceeded its declared MEMLIMIT.
+Only available on systems that support RLIMIT_RSS for
+setrlimit().
+.sp 2
+Not supported on:
+.sp 2
+*  Sun Solaris 2.x
+.sp 2
+*  Windows
+.SH LSF memory limit enforcement
+
+.sp 2
+To enable LSF memory limit enforcement, set LSB_MEMLIMIT_ENFORCE
+in lsf.conf to \fRy\fR. LSF memory limit enforcement explicitly
+sends a signal to kill a running process once it has allocated
+memory past MEMLIMIT.
+.sp 2
+You can also enable LSF memory limit enforcement by setting
+LSB_JOB_MEMLIMIT in lsf.conf to \fRy. \fRThe difference between
+LSB_JOB_MEMLIMIT set to y and LSB_MEMLIMIT_ENFORCE set to y is
+that with LSB_JOB_MEMLIMIT, only the per-job memory limit
+enforced by LSF is enabled. The per-process memory limit enforced
+by the OS is disabled. With LSB_MEMLIMIT_ENFORCE set to y, both
+the per-job memory limit enforced by LSF and the per-process
+memory limit enforced by the OS are enabled.
+.sp 2
+Available for all systems on which LSF collects total memory
+usage.
+.SH Default
+
+.sp 2
+Unlimited
+.sp 2
+
+.ce 1000
+\fBMEMLIMIT_TYPE\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRMEMLIMIT_TYPE=JOB\fR [\fRPROCESS\fR] [\fRTASK\fR]
+.sp 2
+\fRMEMLIMIT_TYPE=PROCESS\fR [\fRJOB\fR] [\fRTASK\fR]
+.sp 2
+\fRMEMLIMIT_TYPE=TASK\fR [\fRPROCESS\fR] [\fRJOB\fR]
+.SH Description
+
+.sp 2
+A memory limit is the maximum amount of memory a job is allowed
+to consume. Jobs that exceed the level are killed. You can
+specify different types of memory limits to enforce. Use any
+combination of JOB, PROCESS, and TASK.
+.sp 2
+By specifying a value in the application profile, you overwrite
+these three parameters: LSB_JOB_MEMLIMIT, LSB_MEMLIMIT_ENFORCE,
+LSF_HPC_EXTENSIONS (TASK_MEMLIMIT).
+.sp 2
+\fBNote: \fRA task list is a list in LSF that keeps track of the
+default resource requirements for different applications and task
+eligibility for remote execution.
+.sp 2
+*  PROCESS: Applies a memory limit by OS process, which is
+   enforced by the OS on the server host (where the job is
+   running). When the memory allocated to one process of the job
+   exceeds the memory limit, LSF kills the job.
+.sp 2
+*  TASK: Applies a memory limit based on the task list file. It
+   is enforced by LSF. LSF terminates the entire parallel job if
+   any single task exceeds the limit setting for memory and swap
+   limits.
+.sp 2
+*  JOB: Applies a memory limit identified in a job and enforced
+   by LSF. When the sum of the memory allocated to all processes
+   of the job exceeds the memory limit, LSF kills the job.
+.sp 2
+*  PROCESS TASK: Enables both process-level memory limit enforced
+   by OS and task-level memory limit enforced by LSF.
+.sp 2
+*  PROCESS JOB: Enables both process-level memory limit enforced
+   by OS and job-level memory limit enforced by LSF.
+.sp 2
+*  TASK JOB: Enables both task-level memory limit enforced by LSF
+   and job-level memory limit enforced by LSF.
+.sp 2
+*  PROCESS TASK JOB: Enables process-level memory limit enforced
+   by OS, task-level memory limit enforced by LSF, and job-level
+   memory limit enforced by LSF.
+.SH Default
+
+.sp 2
+Not defined. The memory limit-level is still controlled by
+LSF_HPC_EXTENSIONS=TASK_MEMLIMIT, LSB_JOB_MEMLIMIT,
+LSB_MEMLIMIT_ENFORCE
+.sp 2
+
+.ce 1000
+\fBMIG\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRMIG=\fR\fIminutes\fR
+.SH Description
+
+.sp 2
+Enables automatic job migration and specifies the migration
+threshold for checkpointable or rerunnable jobs, in minutes.
+.sp 2
+LSF automatically migrates jobs that have been in the SSUSP state
+for more than the specified number of minutes. A value of 0
+specifies that a suspended job is migrated immediately. The
+migration threshold applies to all jobs running on the host.
+.sp 2
+Job-level command line migration threshold overrides threshold
+configuration in application profile and queue. Application
+profile configuration overrides queue level configuration.
+.sp 2
+When a host migration threshold is specified, and is lower than
+the value for the job, the queue, or the application, the host
+value is used.
+.sp 2
+Members of a chunk job can be migrated. Chunk jobs in WAIT state
+are removed from the job chunk and put into PEND state.
+.sp 2
+Does not affect jobs with the that are forwarded to a remote
+cluster.
+.SH Default
+
+.sp 2
+Not defined. LSF does not migrate checkpointable or rerunnable
+jobs automatically.
+.sp 2
+
+.ce 1000
+\fBNAME\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRNAME=\fR\fIstring\fR
+.SH Description
+
+.sp 2
+\fIRequired.\fR Unique name for the application profile.
+.sp 2
+Specify any ASCII string up to 60 characters long. You can use
+letters, digits, underscores (_), dashes (-), periods (.) or
+spaces in the name. The application profile name must be unique
+within the cluster.
+.sp 2
+\fBNote: \fRIf you want to specify the ApplicationVersion in a
+JSDL file, include the version when you define the application
+profile name. Separate the name and version by a space, as shown
+in the following example:
+.sp 2
+NAME=myapp 1.0
+.br
+
+.SH Default
+
+.sp 2
+You must specify this parameter to define an application profile.
+LSF does not automatically assign a default application profile
+name.
+.sp 2
+
+.ce 1000
+\fBNETWORK_REQ\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fBNETWORK_REQ="\fRnetwork_res_req\fB"\fR
+.sp 2
+\fInetwork_res_req\fR has the following syntax:
+.sp 2
+[\fBtype=sn_all\fR | \fBsn_single\fR]
+[\fB:protocol=\fRprotocol_name[\fB(\fRprotocol_number\fB)\fR][\fB,\fRprotocol_name[\fB(\fRprotocol_number\fB)\fR]]
+[\fB:mode=US\fR | \fBIP\fR] [\fB:usage=dedicated\fR |
+\fBshared\fR] [\fB:instance=\fRpositive_integer]
+.SH Description
+
+.sp 2
+\fBNote: \fRThis parameter is deprecated and might be removed in
+a future version of LSF.
+.sp 2
+For LSF IBM Parallel Environment (PE) integration. Specifies the
+network resource requirements for a PE job.
+.sp 2
+If any network resource requirement is specified in the job,
+queue, or application profile, the job is treated as a PE job. PE
+jobs can only run on hosts where IBM PE pnsd daemon is running.
+.sp 2
+The network resource requirement string \fInetwork_res_req\fR has
+the same syntax as the bsub -network option.
+.sp 2
+The -network bsub option overrides the value of NETWORK_REQ
+defined in lsb.queues or lsb.applications. The value of
+NETWORK_REQ defined in lsb.applications overrides queue-level
+NETWORK_REQ defined in lsb.queues.
+.sp 2
+The following IBM LoadLeveller job command file options are not
+supported in LSF:
+.sp 2
+*  collective_groups
+.sp 2
+*  imm_send_buffers
+.sp 2
+*  rcxtblocks
+.sp 2
+The following network resource requirement options are supported:
+.sp 2
+\fBtype=sn_all | sn_single\fR
+.br
+         Specifies the adapter device type to use for message
+         passing: either sn_all or sn_single.
+.sp 2
+         \fBsn_single\fR
+.br
+                  When used for switch adapters, specifies that
+                  all windows are on a single network
+.sp 2
+         \fBsn_all\fR
+.br
+                  Specifies that one or more windows are on each
+                  network, and that striped communication should
+                  be used over all available switch networks. The
+                  networks specified must be accessible by all
+                  hosts selected to run the PE job. See the
+                  Parallel Environment Runtime Edition for AIX:
+                  Operation and Use guide (SC23-6781-05) for more
+                  information about submitting jobs that use
+                  striping.
+.sp 2
+         If mode is IP and type is specified as sn_all or
+         sn_single, the job will only run on InfiniBand (IB)
+         adapters (IPoIB). If mode is IP and type is not
+         specified, the job will only run on Ethernet adapters
+         (IPoEth). For IPoEth jobs, LSF ensures the job is
+         running on hosts where pnsd is installed and running.
+         For IPoIB jobs, LSF ensures the job is running on hosts
+         where pnsd is installed and running, and that IB
+         networks are up. Because IP jobs do not consume network
+         windows, LSF does not check if all network windows are
+         used up or if the network is already occupied by a
+         dedicated PE job.
+.sp 2
+         Equivalent to the PE MP_EUIDEVICE environment variable
+         and -euidevice PE flag See the Parallel Environment
+         Runtime Edition for AIX: Operation and Use guide
+         (SC23-6781-05) for more information. Only sn_all or
+         sn_single are supported by LSF. The other types
+         supported by PE are not supported for LSF jobs.
+.sp 2
+\fBprotocol=\fIprotocol_name\fB[(\fIprotocol_number\fB)]\fR
+.br
+         Network communication protocol for the PE job,
+         indicating which message passing API is being used by
+         the application. The following protocols are supported
+         by LSF:
+.sp 2
+         \fBmpi\fR
+.br
+                  The application makes only MPI calls. This
+                  value applies to any MPI job regardless of the
+                  library that it was compiled with (PE MPI,
+                  MPICH2).
+.sp 2
+         \fBpami\fR
+.br
+                  The application makes only PAMI calls.
+.sp 2
+         \fBlapi\fR
+.br
+                  The application makes only LAPI calls.
+.sp 2
+         \fBshmem\fR
+.br
+                  The application makes only OpenSHMEM calls.
+.sp 2
+         \fB\fIuser_defined_parallel_api\fB\fR
+.br
+                  The application makes only calls from a
+                  parallel API that you define. For example:
+                  protocol=myAPI or protocol=charm.
+.sp 2
+         The default value is mpi.
+.sp 2
+         LSF also supports an optional \fIprotocol_number\fR (for
+         example, \fRmpi(2)\fR, which specifies the number of
+         contexts (endpoints) per parallel API instance. The
+         number must be a power of 2, but no greater than 128 (1,
+         2, 4, 8, 16, 32, 64, 128). LSF will pass the
+         communication protocols to PE without any change. LSF
+         will reserve network windows for each protocol.
+.sp 2
+         When you specify multiple parallel API protocols, you
+         cannot make calls to both LAPI and PAMI (lapi, pami) or
+         LAPI and OpenSHMEM (lapi, shmem) in the same
+         application. Protocols can be specified in any order.
+.sp 2
+         See the MP_MSG_API and MP_ENDPOINTS environment
+         variables and the -msg_api and -endpoints PE flags in
+         the Parallel Environment Runtime Edition for AIX:
+         Operation and Use guide (SC23-6781-05) for more
+         information about the communication protocols that are
+         supported by IBM PE.
+.sp 2
+\fBmode=US | IP\fR
+.br
+         The network communication system mode used by the
+         communication specified communication protocol: US (User
+         Space) or IP (Internet Protocol). A US job can only run
+         with adapters that support user space communications,
+         such as the IB adapter. IP jobs can run with either
+         Ethernet adapters or IB adapters. When IP mode is
+         specified, the instance number cannot be specified, and
+         network usage must be unspecified or shared.
+.sp 2
+         Each instance on the US mode requested by a task running
+         on switch adapters requires an adapter window. For
+         example, if a task requests both the MPI and LAPI
+         protocols such that both protocol instances require US
+         mode, two adapter windows will be used.
+.sp 2
+         The default value is US.
+.sp 2
+\fBusage=dedicated | shared\fR
+.br
+         Specifies whether the adapter can be shared with tasks
+         of other job steps: dedicated or shared. Multiple tasks
+         of the same job can share one network even if usage is
+         dedicated.
+.sp 2
+         The default usage is shared.
+.sp 2
+\fBinstances=\fIpositive_integer\fB\fR
+.br
+         The number of parallel communication paths (windows) per
+         task made available to the protocol on each network. The
+         number actually used depends on the implementation of
+         the protocol subsystem.
+.sp 2
+         The default value is 1.
+.sp 2
+         If the specified value is greater than
+         MAX_PROTOCOL_INSTANCES in lsb.params or lsb.queues, LSF
+         rejects the job.
+.sp 2
+LSF_PE_NETWORK_NUM must be defined to a non-zero value in
+lsf.conf for NETWORK_REQ to take effect. If LSF_PE_NETWORK_NUM is
+not defined or is set to 0, NETWORK_REQ is ignored with a warning
+message.
+.SH Example
+
+.sp 2
+The following network resource requirement string specifies that
+the requirements for an sn_all job (one or more windows are on
+each network, and striped communication should be used over all
+available switch networks). The PE job uses MPI API calls
+(protocol), runs in user-space network communication system mode,
+and requires 1 parallel communication path (window) per task.
+.sp 2
+\fRNETWORK_REQ = "protocol=mpi:mode=us:instance=1:type=sn_all"\fR
+.SH Default
+
+.sp 2
+No default value, but if you specify no value
+(\fRNETWORK_REQ=""\fR), the job uses the following:
+protocol=mpi:mode=US:usage=shared:instance=1 in the application
+profile.
+.sp 2
+
+.ce 1000
+\fBNICE\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRNICE=\fR\fIinteger\fR
+.SH Description
+
+.sp 2
+Adjusts the UNIX scheduling priority at which jobs from the
+application execute.
+.sp 2
+A value of 0 (zero) maintains the default scheduling priority for
+UNIX interactive jobs. This value adjusts the run-time priorities
+for batch jobs to control their effect on other batch or
+interactive jobs. See the \fRnice\fR(1) manual page for more
+details.
+.sp 2
+On Windows, this value is mapped to Windows process priority
+classes as follows:
+.sp 2
+*  \fRnice>=0\fR corresponds to a priority class of \fRIDLE\fR
+.sp 2
+*  \fRnice<0\fR corresponds to a priority class of \fRNORMAL\fR
+.sp 2
+LSF on Windows does not support \fRHIGH\fR or \fRREAL-TIME\fR
+priority classes.
+.sp 2
+When set, this value overrides \fBNICE\fR set at the queue level
+in lsb.queues.
+.SH Default
+
+.sp 2
+Not defined.
+.sp 2
+
+.ce 1000
+\fBNO_PREEMPT_INTERVAL\fR
+.ce 0
+
+.sp 2
+Specifies the number of minutes a preemptable job can run before
+it is preempted. If the uninterrupted run time of a preemptable
+job is longer than the specified time, it can be preempted.
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fBNO_PREEMPT_INTERVAL\fR=minutes
+.sp 2
+The value of \fIminutes\fR is wall-clock time, not normalized
+time.
+.SH Description
+
+.sp 2
+The \fRNO_PREEMPT_INTERVAL=0\fR parameter allows immediate
+preemption of jobs as soon as they start or resume running.
+.sp 2
+For example, if a job \fRA\fR needs to preempt other candidate
+preemptable jobs (\fRB\fR, \fRC\fR, and \fRD\fR), the
+\fBNO_PREEMPT_INTERVAL\fR parameter determines which job is
+preempted:
+.sp 2
+*  Run time of job \fRB\fR and job \fRC\fR is less than the
+   \fBNO_PREEMPT_INTERVAL\fR parameter: job \fRB\fR and \fRC\fR
+   are not preempted.
+.sp 2
+*  Run time of job \fRD\fR is greater than or equal to the
+   \fBNO_PREEMPT_INTERVAL\fR parameter: job \fRD\fR is preempted.
+.sp 2
+Setting this parameter in lsb.applications overrides the
+parameter of the same name in the lsb.queues and in lsb.params
+files.
+.SH Default
+
+.sp 2
+0
+.sp 2
+
+.ce 1000
+\fBNO_PREEMPT_FINISH_TIME\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fBNO_PREEMPT_FINISH_TIME\fR=minutes | percentage
+.SH Description
+
+.sp 2
+Prevents preemption of jobs that will finish within the specified
+number of minutes or the specified percentage of the estimated
+run time or run limit.
+.sp 2
+Specifies that jobs due to finish within the specified number of
+minutes or percentage of job duration should not be preempted,
+where \fIminutes\fR is wall-clock time, not normalized time.
+Percentage must be greater than 0 or less than 100% (between 1%
+and 99%).
+.sp 2
+For example, if the job run limit is 60 minutes and
+NO_PREEMPT_FINISH_TIME=10%, the job cannot be preempted after it
+runs 54 minutes or longer.
+.sp 2
+If you specify percentage for NO_PREEMPT_FINISH_TIME, requires a
+run time (bsub -We or ESTIMATED_RUNTIME in lsb.applications), or
+run limit to be specified for the job (bsub -W, or RUNLIMIT in
+lsb.queues, or RUNLIMIT in lsb.applications)
+.sp 2
+
+.ce 1000
+\fBNO_PREEMPT_RUN_TIME\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fBNO_PREEMPT_RUN_TIME\fR=minutes | percentage
+.SH Description
+
+.sp 2
+Prevents preemption of jobs that have been running for the
+specified number of minutes or the specified percentage of the
+estimated run time or run limit.
+.sp 2
+Specifies that jobs that have been running for the specified
+number of minutes or longer should not be preempted, where
+\fIminutes\fR is wall-clock time, not normalized time. Percentage
+must be greater than 0 or less than 100% (between 1% and 99%).
+.sp 2
+For example, if the job run limit is 60 minutes and
+NO_PREEMPT_RUN_TIME=50%, the job cannot be preempted after it
+running 30 minutes or longer.
+.sp 2
+If you specify percentage for NO_PREEMPT_RUN_TIME, requires a run
+time (bsub -We or ESTIMATED_RUNTIME in lsb.applications), or run
+limit to be specified for the job (bsub -W, or RUNLIMIT in
+lsb.queues, or RUNLIMIT in lsb.applications)
+.sp 2
+
+.ce 1000
+\fBPEND_TIME_LIMIT\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRPEND_TIME_LIMIT=\fR[\fIhour\fR\fR:\fR]\fIminute\fR
+.SH Description
+
+.sp 2
+Specifies the pending time limit for a job.
+.sp 2
+LSF sends the application-level pending time limit configuration
+to IBM Spectrum LSF RTM, which handles the alarm and triggered
+actions such as user notification (for example, notifying the
+user that submitted the job and the LSF administrator) and job
+control actions (for example, killing the job). IBM Spectrum LSF
+RTM compares the job\(aqs pending time to the pending time limit,
+and if the job is pending for longer than this specified time
+limit, IBM Spectrum LSF RTM triggers the alarm and actions. This
+parameter works without IBM Spectrum LSF RTM, but LSF does not
+take any other alarm actions.
+.sp 2
+In the job forwarding model for the LSF multicluster capability,
+the job\(aqs pending time limit is ignored in the execution cluster,
+while the submission cluster merges the job\(aqs queue-,
+application-, and job-level pending time limit according to local
+settings.
+.sp 2
+The pending time limit is in the form of
+[\fIhour\fR\fR:\fR]\fIminute\fR. The minutes can be specified as
+a number greater than 59. For example, three and a half hours can
+either be specified as 3:30, or 210.
+.sp 2
+The job-level pending time limit (bsub -ptl) overrides the
+application-level limit specified here, and the application-level
+limit overrides the queue-level limit (\fBPEND_TIME_LIMIT\fR in
+lsb.queues).
+.SH Default
+
+.sp 2
+Not defined.
+.sp 2
+
+.ce 1000
+\fBPERSISTENT_HOST_ORDER\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+PERSISTENT_HOST_ORDER=Y | yes | N | no
+.SH Description
+
+.sp 2
+Applies when migrating parallel jobs in the LSF multicluster
+capability. Setting \fBPERSISTENT_HOST_ORDER=Y\fR ensures that
+jobs are restarted on hosts based on alphabetical names of the
+hosts, preventing them from being restarted on the same hosts
+that they ran on before migration.
+.SH Default
+
+.sp 2
+\fBPERSISTENT_HOST_ORDER=N\fR. Migrated jobs in LSF multicluster
+capability could run on the same hosts that they ran on before.
+.sp 2
+
+.ce 1000
+\fBPLAN\fR
+.ce 0
+
+.sp 2
+For use when the \fBALLOCATION_PLANNER\fR parameter is enabled.
+Used to identify the jobs that are candidates for planning.
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRPLAN = Y | N | "<\fIkey\fR>[\fIvalue\fR] ..."\fR
+.SH Description
+
+.sp 2
+LSF requires that the \fBALLOCATION_PLANNER\fR parameter is
+enabled in order to use \fBPLAN=Y\fR.
+.sp 2
+Also defined at the cluster and queue levels. The precedence is:
+application, queue, global. For example, application level
+setting overrides the queue level setting.
+.sp 2
+The following key-value pairs are supported:
+.sp 2
+\fBTable 1. Key-Value pairs for PLAN\fR
+.sp 2
++---------------+---------------+---------------+---------------+
+| key           | value         | Default       | Description   |
++---------------+---------------+---------------+---------------+
+| DELAY         | positive      | -             | Number of     |
+|               | integer       |               | minutes to    |
+|               |               |               | delay before  |
+|               |               |               | considering   |
+|               |               |               | making a plan |
+|               |               |               | for a job     |
+|               |               |               | following the |
+|               |               |               | job\(aqs         |
+|               |               |               | submission    |
+|               |               |               | time.         |
++---------------+---------------+---------------+---------------+
+| MAX_JOBS      | positive      | -             | Maximum       |
+|               | integer       |               | number of     |
+|               |               |               | jobs that can |
+|               |               |               | have a plan   |
+|               |               |               | concurrently. |
++---------------+---------------+---------------+---------------+
+.sp 2
+\fBNote: \fR
+.sp 2
+The \fBPLAN\fR parameter replaces the existing \fBSLOT_RESERVE\fR
+parameter and \fBRESOURCE_RESERVE\fR parameter when the
+\fBALLOCATION_PLANNER\fR parameter is enabled.
+.SH Default
+
+.sp 2
+N
+.sp 2
+
+.ce 1000
+\fBPOST_EXEC\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fBPOST_EXEC=\fRcommand
+.SH Description
+
+.sp 2
+Enables post-execution processing at the application level. The
+\fBPOST_EXEC\fR command runs on the execution host after the job
+finishes. Post-execution commands can be configured at the job,
+application, and queue levels.
+.sp 2
+If both application-level (\fBPOST_EXEC\fR in lsb.applications)
+and job-level post-execution commands are specified, job level
+post-execution overrides application-level post-execution
+commands. Queue-level post-execution commands (\fBPOST_EXEC\fR in
+lsb.queues) run after application-level post-execution and
+job-level post-execution commands.
+.sp 2
+The \fBPOST_EXEC\fR command uses the same environment variable
+values as the job, and runs under the user account of the user
+who submits the job.
+.sp 2
+When a job exits with one of the application profile’s
+\fBREQUEUE_EXIT_VALUES\fR, LSF requeues the job and sets the
+environment variable \fBLSB_JOBPEND\fR. The post-execution
+command runs after the requeued job finishes.
+.sp 2
+When the post-execution command is run, the environment variable
+LSB_JOBEXIT_STAT is set to the exit status of the job. If the
+execution environment for the job cannot be set up,
+LSB_JOBEXIT_STAT is set to 0 (zero).
+.sp 2
+The command path can contain up to 4094 characters for UNIX and
+Linux, or up to 255 characters for Windows, including the
+directory, file name, and expanded values for %J \fI(job_ID\fR)
+and %I (\fIindex_ID\fR).
+.sp 2
+For UNIX:
+.sp 2
+*  The pre- and post-execution commands run in the /tmp directory
+   under /bin/sh -c, which allows the use of shell features in
+   the commands. The following example shows valid configuration
+   lines:
+.sp 2
+   PRE_EXEC= /usr/share/lsf/misc/testq_pre >> /tmp/pre.out
+.br
+
+.sp 2
+   POST_EXEC= /usr/share/lsf/misc/testq_post | grep -v "Hey!"
+.br
+
+.sp 2
+*  LSF sets the \fBPATH\fR environment variable to
+.sp 2
+   PATH="/bin /usr/bin /sbin /usr/sbin"
+.br
+
+.sp 2
+*  The stdin, stdout, and stderr are set to /dev/null
+.sp 2
+*  To allow UNIX users to define their own post-execution
+   commands, an LSF administrator specifies the environment
+   variable $USER_POSTEXEC as the \fBPOST_EXEC\fR command. A user
+   then defines the post-execution command:
+.sp 2
+   setenv USER_POSTEXEC /path_name
+.br
+
+.sp 2
+   \fBNote: \fRThe path name for the post-execution command must
+   be an absolute path. This parameter cannot be used to
+   configure host-based post-execution processing.
+.sp 2
+For Windows:
+.sp 2
+*  The pre- and post-execution commands run under cmd.exe /c
+.sp 2
+*  The standard input, standard output, and standard error are
+   set to NULL
+.sp 2
+*  The \fBPATH\fR is determined by the setup of the LSF Service
+.sp 2
+\fBNote: \fR
+.sp 2
+For post-execution commands that execute on a Windows Server
+2003, x64 Edition platform, users must have read and execute
+privileges for cmd.exe.
+.SH Default
+
+.sp 2
+Not defined. No post-execution commands are associated with the
+application profile.
+.sp 2
+
+.ce 1000
+\fBPREEMPT_DELAY\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRPREEMPT_DELAY=\fR\fIseconds\fR
+.SH Description
+
+.sp 2
+Preemptive jobs will wait the specified number of seconds from
+the submission time before preempting any low priority
+preemptable jobs. During the grace period, preemption will not be
+trigged, but the job can be scheduled and dispatched by other
+scheduling policies.
+.sp 2
+This feature can provide flexibility to tune the system to reduce
+the number of preemptions. It is useful to get better performance
+and job throughput. When the low priority jobs are short, if high
+priority jobs can wait a while for the low priority jobs to
+finish, preemption can be avoided and cluster performance is
+improved. If the job is still pending after the grace period has
+expired, the preemption will be triggered.
+.sp 2
+The waiting time is for preemptive jobs in the pending status
+only. It will not impact the preemptive jobs that are suspended.
+.sp 2
+The time is counted from the submission time of the jobs. The
+submission time means the time mbatchd accepts a job, which
+includes newly submitted jobs, restarted jobs (by brestart) or
+forwarded jobs from a remote cluster.
+.sp 2
+When the preemptive job is waiting, the pending reason is:
+.sp 2
+The preemptive job is allowing a grace period before preemption.
+.sp 2
+If you use an older version of bjobs, the pending reason is:
+.sp 2
+Unknown pending reason code <6701>;
+.sp 2
+The parameter is defined in lsb.params, lsb.queues (overrides
+lsb.params), and lsb.applications (overrides both lsb.params and
+lsb.queues).
+.sp 2
+Run badmin reconfig to make your changes take effect.
+.SH Default
+
+.sp 2
+Not defined (if the parameter is not defined anywhere, preemption
+is immediate).
+.sp 2
+
+.ce 1000
+\fBPRE_EXEC\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fBPRE_EXEC=\fRcommand
+.SH Description
+
+.sp 2
+Enables pre-execution processing at the application level. The
+\fBPRE_EXEC\fR command runs on the execution host before the job
+starts. If the \fBPRE_EXEC\fR command exits with a non-zero exit
+code, LSF requeues the job to the front of the queue.
+.sp 2
+Pre-execution commands can be configured at the application,
+queue, and job levels and run in the following order:
+.sp 2
+1. The queue-level command
+.sp 2
+2. The application-level or job-level command. If you specify a
+   command at both the application and job levels, the job-level
+   command overrides the application-level command; the
+   application-level command is ignored.
+.sp 2
+The \fBPRE_EXEC\fR command uses the same environment variable
+values as the job, and runs under the user account of the user
+who submits the job.
+.sp 2
+The command path can contain up to 4094 characters for UNIX and
+Linux, or up to 255 characters for Windows, including the
+directory, file name, and expanded values for %J \fI(job_ID\fR)
+and %I (\fIindex_ID\fR).
+.sp 2
+For UNIX:
+.sp 2
+*  The pre- and post-execution commands run in the /tmp directory
+   under /bin/sh -c, which allows the use of shell features in
+   the commands. The following example shows valid configuration
+   lines:
+.sp 2
+   PRE_EXEC= /usr/share/lsf/misc/testq_pre >> /tmp/pre.out
+.br
+
+.sp 2
+   POST_EXEC= /usr/share/lsf/misc/testq_post | grep -v "Hey!"
+.br
+
+.sp 2
+*  LSF sets the \fBPATH\fR environment variable to
+.sp 2
+   PATH="/bin /usr/bin /sbin /usr/sbin"
+.br
+
+.sp 2
+*  The stdin, stdout, and stderr are set to /dev/null
+.sp 2
+For Windows:
+.sp 2
+*  The pre- and post-execution commands run under cmd.exe /c
+.sp 2
+*  The standard input, standard output, and standard error are
+   set to NULL
+.sp 2
+*  The \fBPATH\fR is determined by the setup of the LSF Service
+.sp 2
+\fBNote: \fR
+.sp 2
+For pre-execution commands that execute on a Windows Server 2003,
+x64 Edition platform, users must have read and execute privileges
+for cmd.exe. This parameter cannot be used to configure
+host-based pre-execution processing.
+.SH Default
+
+.sp 2
+Not defined. No pre-execution commands are associated with the
+application profile.
+.sp 2
+
+.ce 1000
+\fBPROCESSLIMIT\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRPROCESSLIMIT=\fR\fIinteger\fR
+.SH Description
+
+.sp 2
+Limits the number of concurrent processes that can be part of a
+job.
+.sp 2
+By default, jobs submitted to the application profile without a
+job-level process limit are killed when the process limit is
+reached. Application-level limits override any default limit
+specified in the queue.
+.sp 2
+SIGINT, SIGTERM, and SIGKILL are sent to the job in sequence when
+the limit is reached.
+.SH Default
+
+.sp 2
+Unlimited
+.sp 2
+
+.ce 1000
+\fBPRIORITY\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRPRIORITY =\fR\fIinteger\fR
+.SH Description
+
+.sp 2
+Specifies a priority that is used as a factor when calculating
+the job priority for absolute job priority scheduling (APS).
+.SH Valid values
+
+.sp 2
+Specify an integer between 0 and 2147483646.
+.SH Default
+
+.sp 2
+Not defined.
+.sp 2
+If APS is enabled for users, user groups, or application
+profiles, the default value is 0.
+.sp 2
+
+.ce 1000
+\fBRC_ACCOUNT\fR
+.ce 0
+
+.sp 2
+Assigns an account name (tag) to hosts borrowed through LSF
+resource connector, so that they cannot be used by other user
+groups, users, or jobs.
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRRC_ACCOUNT=\fR\fIaccount_name\fR
+.SH Description
+
+.sp 2
+When a job is submitted to an application profile with the
+\fBRC_ACCOUNT\fR parameter specified, hosts borrowed to run the
+job are tagged with the value of the \fBRC_ACCOUNT\fR parameter.
+The borrowed host cannot be used by other applications that have
+a different value for the \fBRC_ACCOUNT\fR parameter (or that
+don\(aqt have the \fBRC_ACCOUNT\fR parameter defined at all).
+.sp 2
+After the borrowed host joins the cluster, use the lshosts -s
+command to view the value of the \fBRC_ACCOUNT\fR parameter for
+the host.
+.SH Example
+
+.sp 2
+RC_ACCOUNT=project1
+.SH Default
+
+.sp 2
+No account defined for the application profile
+.sp 2
+
+.ce 1000
+\fBREMOTE_MAX_PREEXEC_RETRY\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRREMOTE_MAX_PREEXEC_RETRY=\fR\fIinteger\fR
+.SH Description
+
+.sp 2
+Job forwarding model for the LSF multicluster capability only.
+The maximum number of times to attempt the pre-execution command
+of a job from a remote cluster.
+.sp 2
+If the job\(aqs pre-execution command fails all attempts, the job is
+returned to the submission cluster.
+.SH Valid values
+
+.sp 2
+up to INFINIT_INT defined in lsf.h.
+.SH Default
+
+.sp 2
+5
+.sp 2
+
+.ce 1000
+\fBREQUEUE_EXIT_VALUES\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRREQUEUE_EXIT_VALUES=\fR[\fIexit_code \fR...]
+[\fREXCLUDE(\fR\fIexit_code ...\fR\fR)\fR]
+.SH Description
+
+.sp 2
+Enables automatic job requeue and sets the LSB_EXIT_REQUEUE
+environment variable. Use spaces to separate multiple exit codes.
+Application-level exit values override queue-level values.
+Job-level exit values (bsub -Q) override application-level and
+queue-level values.
+.sp 2
+\fIexit_code\fR has the following form:
+.sp 2
+"[all] [~number ...] | [number ...]"
+.br
+
+.sp 2
+The reserved keyword all specifies all exit codes. Exit codes are
+typically between 0 and 255. Use a tilde (~) to exclude specified
+exit codes from the list.
+.sp 2
+Jobs are requeued to the head of the queue. The output from the
+failed run is not saved, and the user is not notified by LSF.
+.sp 2
+Define an exit code as EXCLUDE(\fIexit_code\fR) to enable
+exclusive job requeue, ensuring the job does not rerun on the
+samehost. Exclusive job requeue does not work for parallel jobs.
+.sp 2
+For jobs with the LSF multicluster capability forwarded to a
+remote execution cluster, the exit values specified in the
+submission cluster with the EXCLUDE keyword are treated as if
+they were non-exclusive.
+.sp 2
+You can also requeue a job if the job is terminated by a signal.
+.sp 2
+If a job is killed by a signal, the exit value is
+128+\fIsignal_value\fR. The sum of 128 and the signal value can
+be used as the exit code in the parameter REQUEUE_EXIT_VALUES.
+.sp 2
+For example, if you want a job to rerun if it is killed with a
+signal 9 (SIGKILL), the exit value would be 128+9=137. You can
+configure the following requeue exit value to allow a job to be
+requeue if it was kill by signal 9:
+.sp 2
+REQUEUE_EXIT_VALUES=137
+.br
+
+.sp 2
+In Windows, if a job is killed by a signal, the exit value is
+signal_value. The signal value can be used as the exit code in
+the parameter REQUEUE_EXIT_VALUES.
+.sp 2
+For example, if you want to rerun a job after it was killed with
+a signal 7 (SIGKILL), the exit value would be 7. You can
+configure the following requeue exit value to allow a job to
+requeue after it was killed by signal 7:
+.sp 2
+\fRREQUEUE_EXIT_VALUES=7\fR
+.sp 2
+You can configure the following requeue exit value to allow a job
+to requeue for both Linux and Windows after it was killed:
+.sp 2
+\fRREQUEUE_EXIT_VALUES=137 7\fR
+.sp 2
+If mbatchd is restarted, it does not remember the previous hosts
+from which the job exited with an exclusive requeue exit code. In
+this situation, it is possible for a job to be dispatched to
+hosts on which the job has previously exited with an exclusive
+exit code.
+.sp 2
+You should configure REQUEUE_EXIT_VALUES for interruptible
+backfill queues (INTERRUPTIBLE_BACKFILL=\fIseconds\fR).
+.SH Example
+
+.sp 2
+REQUEUE_EXIT_VALUES=30 EXCLUDE(20)
+.sp 2
+means that jobs with exit code 30 are requeued, jobs with exit
+code 20 are requeued exclusively, and jobs with any other exit
+code are not requeued.
+.SH Default
+
+.sp 2
+Not defined. Jobs are not requeued.
+.sp 2
+
+.ce 1000
+\fBRERUNNABLE\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRRERUNNABLE=yes\fR | \fRno\fR
+.SH Description
+
+.sp 2
+If yes, enables automatic job rerun (restart) for any job
+associated with the application profile.
+.sp 2
+Rerun is disabled when RERUNNABLE is set to no. The yes and no
+arguments are not case-sensitive.
+.sp 2
+Members of a chunk job can be rerunnable. If the execution host
+becomes unavailable, rerunnable chunk job members are removed
+from the job chunk and dispatched to a different execution host.
+.sp 2
+Job level rerun (bsub -r) overrides the RERUNNABLE value
+specified in the application profile, which overrides the queue
+specification. bmod -rn to make rerunnable jobs non-rerunnable
+overrides both the application profile and the queue.
+.SH Default
+
+.sp 2
+Not defined.
+.sp 2
+
+.ce 1000
+\fBRES_REQ\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRRES_REQ=\fR\fIres_req\fR
+.SH Description
+
+.sp 2
+Resource requirements used to determine eligible hosts. Specify a
+resource requirement string as usual. The resource requirement
+string lets you specify conditions in a more flexible manner than
+using the load thresholds.
+.sp 2
+The following resource requirement sections are supported:
+.sp 2
+*  select
+.sp 2
+*  rusage
+.sp 2
+*  order
+.sp 2
+*  span
+.sp 2
+*  same
+.sp 2
+*  cu
+.sp 2
+*  affinity
+.sp 2
+Resource requirement strings can be simple (applying to the
+entire job), compound (applying to the specified number of
+slots), or can contain alternative resources (alternatives
+between 2 or more simple and/or compound). When a compound
+resource requirement is set at the application-level, it will be
+ignored if any job-level resource requirements (simple or
+compound) are defined.
+.sp 2
+Compound and alternative resource requirements follow the same
+set of rules for determining how resource requirements are going
+to be merged between job, application, and queue level. In the
+event no job-level resource requirements are set, the compound or
+alternative application-level requirements interact with
+queue-level resource requirement strings in the following ways:
+.sp 2
+*  When a compound resource requirement is set at the application
+   level, it will be ignored if any job level resource
+   requirements (simple or compound) are defined.
+.sp 2
+*  If no queue-level resource requirement is defined or a
+   compound or alternative queue-level resource requirement is
+   defined, the application-level requirement is used.
+.sp 2
+*  If a simple queue-level requirement is defined, the
+   application-level and queue-level requirements combine as
+   follows:
+.sp 2
++------------------------------- ------------------------------- 
+| section                         compound/alternative          |
+|                                 application and simple queue  |
+|                                 behavior                      |
++                                                                
+| select                          both levels satisfied; queue  |
+|                                 requirement applies to all    |
+|                                 terms                         |
++                                                                
+| same                            queue level ignored           |
++                                                                
+| order                           application-level section     |
+| span                            overwrites queue-level        |
+|                                 section (if a given level is  |
+|                                 present); queue requirement   |
+|                                 (if used) applies to all      |
+|                                 terms                         |
++                                                                
+| rusage                           * both levels merge          |
+|                                  * queue requirement if a     |
+|                                 job-based resource is applied |
+|                                 to the first term, otherwise  |
+|                                 applies to all terms          |
+|                                  * if conflicts occur the     |
+|                                 application-level section     |
+|                                 overwrites the queue-level    |
+|                                 section.                      |
+|                                                               |
+|                                 For example: if the           |
+|                                 application-level requirement |
+|                                 is num1*{rusage[R1]} +        |
+|                                 num2*{rusage[R2]} and the     |
+|                                 queue-level requirement is    |
+|                                 rusage[RQ] where RQ is a job  |
+|                                 resource, the merged          |
+|                                 requirement is                |
+|                                 num1*{rusage[merge(R1,RQ)]} + |
+|                                 num2*{rusage[R2]}             |
++-------------------------------+-------------------------------+
+.sp 2
+Compound or alternative resource requirements do not support the
+cu section, or the || operator within the rusage section.
+.sp 2
+Alternative resource strings use the || operator as a separator
+for each alternative resource.
+.sp 2
+Multiple -R strings cannot be used with multi-phase rusage
+resource requirements.
+.sp 2
+For internal load indices and duration, jobs are rejected if they
+specify resource reservation requirements at the job or
+application level that exceed the requirements specified in the
+queue.
+.sp 2
+By default, memory (mem) and swap (swp) limits in select[] and
+rusage[] sections are specified in MB. Use LSF_UNIT_FOR_LIMITS in
+lsf.conf to specify a larger unit for these limits (GB, TB, PB,
+or EB).
+.sp 2
+Resource requirement strings in select sections must conform to a
+more strict syntax. The strict resource requirement syntax only
+applies to the select section. It does not apply to the other
+resource requirement sections (order, rusage, same, span, cu, or
+affinity). LSF rejects resource requirement strings where an
+rusage section contains a non-consumable resource.
+.SH select section
+
+.sp 2
+For simple resource requirements, the \fRselect\fR section
+defined at the application, queue, and job level must all be
+satisfied.
+.SH rusage section
+
+.sp 2
+The \fRrusage\fR section can specify additional requests. To do
+this, use the \fROR\fR (\fR||\fR) operator to separate additional
+\fRrusage\fR strings. The job-level rusage section takes
+precedence.
+.sp 2
+\fBNote: \fR
+.sp 2
+Compound resource requirements do not support use of the ||
+operator within the component rusage simple resource
+requirements. Multiple rusage strings cannot be used with
+multi-phase rusage resource requirements.
+.sp 2
+When both job-level and application-level rusage sections are
+defined using simple resource requirement strings, the rusage
+section defined for the job overrides the rusage section defined
+in the application profile. The rusage definitions are merged,
+with the job-level rusage taking precedence. Any queue-level
+requirements are then merged with that result.
+.sp 2
+For example:
+.sp 2
+\fBApplication-level RES_REQ:\fR
+.br
+         RES_REQ=rusage[mem=200:lic=1] ...
+.sp 2
+         For the job submission:
+.sp 2
+         bsub -R "rusage[mem=100]" ...
+.sp 2
+         the resulting requirement for the job is
+.sp 2
+         rusage[mem=100:lic=1]
+.sp 2
+         where \fRmem=100\fR specified by the job overrides
+         \fRmem=200\fR specified by the application profile.
+         However, \fRlic=1\fR from application profile is kept,
+         since job does not specify it.
+.sp 2
+\fBApplication-level RES_REQ threshold:\fR
+.br
+         RES_REQ = rusage[bwidth =2:threshold=5] ...
+.sp 2
+         For the job submission:
+.sp 2
+         bsub -R "rusage[bwidth =1:threshold=6]" ...
+.sp 2
+         the resulting requirement for the job is
+.sp 2
+         rusage[bwidth =1:threshold=6]
+.sp 2
+\fBApplication-level RES_REQ with decay and duration defined:\fR
+.br
+         RES_REQ=rusage[mem=200:duration=20:decay=1] ...
+.sp 2
+         For a job submission with no decay or duration:
+.sp 2
+         bsub -R "rusage[mem=100]" ...
+.sp 2
+         the resulting requirement for the job is:
+.sp 2
+         rusage[mem=100:duration=20:decay=1]
+.sp 2
+         Application-level duration and decay are merged with the
+         job-level specification, and \fRmem=100\fR for the job
+         overrides \fRmem=200\fR specified by the application
+         profile. However, \fRduration=20\fR and \fRdecay=1\fR
+         from application profile are kept, since job does not
+         specify them.
+.sp 2
+\fBApplication-level RES_REQ with resource reservation method:\fR
+.br
+         RES_REQ=rusage[mem=200/host:duration=20:decay=1] ...
+.sp 2
+         For a job submission with no decay or duration:
+.sp 2
+         bsub -R\(aqrusage[mem=100/task]\(aq ...
+.sp 2
+         the resulting requirement for the job is:
+.sp 2
+         rusage[mem=100/task:duration=20:decay=1]
+.sp 2
+\fBApplication-level RES_REQ with multi-phase job-level
+rusage:\fR
+.br
+         RES_REQ=rusage[mem=(200 150):duration=(10 10):decay=(1),swap=100] ...
+.sp 2
+         For a multi-phase job submission:
+.sp 2
+         bsub -app app_name -R "rusage[mem=(600 350):duration=(20 10):decay=(0 1)]" ...
+.sp 2
+         the resulting requirement for the job is:
+.sp 2
+         rusage[mem=(600 350):duration=(20 10):decay=(0 1),swap=100]
+.sp 2
+         The job-level values for mem, duration and decay
+         override the application-level values. However,
+         \fRswap=100\fR from the application profile is kept,
+         since the job does not specify swap.
+.sp 2
+\fBApplication-level RES_REQ with multi-phase application-level
+rusage:\fR
+.br
+         RES_REQ=rusage[mem=(200 150):duration=(10 10):decay=(1)] ...
+.sp 2
+         For a job submission:
+.sp 2
+         bsub -app app_name -R "rusage[mem=200:duration=15:decay=0]" ...
+.sp 2
+         the resulting requirement for the job is:
+.sp 2
+         rusage[mem=200:duration=15:decay=0]
+.sp 2
+         Job-level values override the application-level
+         multi-phase rusage string.
+.sp 2
+         \fBNote: \fRThe merged application-level and job-level
+         rusage consumable resource requirements must satisfy any
+         limits set by the parameter \fBRESRSV_LIMIT\fR in
+         lsb.queues, or the job will be rejected.
+.SH order section
+
+.sp 2
+For simple resource requirements the \fRorder\fR section defined
+at the job-level overrides any application-level order section.
+An application-level order section overrides queue-level
+specification. The \fRorder\fR section defined at the application
+level is ignored if any resource requirements are specified at
+the job level. If the no resource requirements include an
+\fRorder\fR section, the default order \fRr15s:pg\fR is used.
+.sp 2
+The command syntax is:
+.sp 2
+\fR[!][-]resource_name [: [-]resource_name]\fR
+.sp 2
+For example:
+.sp 2
+\fRbsub -R "order[!ncpus:mem]" myjob\fR
+.sp 2
+"\fR!\fR" only works with consumable resources because resources
+can be specified in the rusage[] section and their value may be
+changed in schedule cycle (for example, slot or memory). In LSF
+scheduler, slots under RUN, SSUSP, USUP and RSV may be freed in
+different scheduling phases. Therefore, the slot value may change
+in different scheduling cycles.
+.SH span section
+
+.sp 2
+For simple resource requirements the \fRspan\fR section defined
+at the job-level overrides an application-level span section,
+which overrides a queue-level span section.
+.sp 2
+\fBNote: \fRDefine span[hosts=-1] in the application profile or
+in bsub -R resource requirement string to disable the span
+section setting in the queue.
+.SH same section
+
+.sp 2
+For simple resource requirements all \fRsame\fR sections defined
+at the job-level, application-level, and queue-level are combined
+before the job is dispatched.
+.SH cu section
+
+.sp 2
+For simple resource requirements the job-level cu section
+overrides the application-level, and the application-level cu
+section overrides the queue-level.
+.SH affinity section
+
+.sp 2
+For simple resource requirements the job-level affinity section
+overrides the application-level, and the application-level
+affinity section overrides the queue-level.
+.SH Default
+
+.sp 2
+\fRselect[type==local] order[r15s:pg]\fR
+.sp 2
+If this parameter is defined and a host model or Boolean resource
+is specified, the default type is any.
+.sp 2
+
+.ce 1000
+\fBRESIZABLE_JOBS\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fBRESIZABLE_JOBS = [Y|N|auto]\fR
+.SH Description
+
+.sp 2
+\fRN|n\fR: The resizable job feature is disabled in the
+application profile. Under this setting, all jobs attached to
+this application profile are not resizable. All bresize and bsub
+-ar commands will be rejected with a proper error message.
+.sp 2
+\fRY|y\fR: Resize is enabled in the application profile and all
+jobs belonging to the application are resizable by default. Under
+this setting, users can run bresize commands to cancel pending
+resource allocation requests for the job or release resources
+from an existing job allocation, or use bsub to submit an
+autoresizable job.
+.sp 2
+\fRauto\fR: All jobs belonging to the application will be
+autoresizable.
+.sp 2
+Resizable jobs must be submitted with an application profile that
+defines \fBRESIZABLE_JOBS\fR as either auto or Y. If an
+application defines \fBRESIZABLE_JOBS=auto\fR, but an
+administrator changes it to N and reconfigures LSF, jobs without
+the job-level auto resizable attribute are no longer
+autoresizable. For running jobs that are in the middle of the
+notification stage, LSF lets the current notification complete
+and stops scheduling. Changing \fBRESIZABLE_JOBS\fR configuration
+does not affect jobs with the job-level autoresizable attribute
+(This behavior is the same as for exclusive jobs, bsub -x, and
+the \fBEXCLUSIVE\fR parameter at the queue level).
+.sp 2
+Resizable jobs can have alternative and compound resource
+requirements. When using bresize release to release slots from
+compound resource requirements, you can only release slots
+represented by the last term of the compound resource
+requirement. To release slots in earlier terms, run bresize
+release repeatedly to release slots in subsequent last terms.
+.SH Default
+
+.sp 2
+If the parameter is undefined, the default value is N.
+.SH See also
+
+.sp 2
+\fBRESIZABLE_JOBS\fR in lsb.params
+.sp 2
+
+.ce 1000
+\fBRESIZE_NOTIFY_CMD\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+RESIZE_NOTIFY_CMD = notification_command
+.SH Description
+
+.sp 2
+Defines an executable command to be invoked on the first
+execution host of a job when a resize event occurs. The maximum
+length of notification command is 4 KB.
+.SH Default
+
+.sp 2
+Not defined. No resize notification command is invoked.
+.sp 2
+
+.ce 1000
+\fBRESUME_CONTROL\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRRESUME_CONTROL=\fR\fIsignal\fR | \fIcommand\fR
+.sp 2
+\fBRemember: \fRUnlike the JOB_CONTROLS parameter in lsb.queues,
+the RESUME_CONTROL parameter does not require square brackets ([
+]) around the action.
+.sp 2
+*  \fIsignal\fR is a UNIX signal name. The specified signal is
+   sent to the job. The same set of signals is not supported on
+   all UNIX systems. To display a list of the symbolic names of
+   the signals (without the SIG prefix) supported on your system,
+   use the kill -l command.
+.sp 2
+*  \fIcommand\fR specifies a /bin/sh command line to be invoked.
+   Do not quote the command line inside an action definition. Do
+   not specify a signal followed by an action that triggers the
+   same signal. For example, do not specify
+   \fRRESUME_CONTROL=bresume\fR. This causes a deadlock between
+   the signal and the action.
+.SH Description
+
+.sp 2
+Changes the behavior of the RESUME action in LSF.
+.sp 2
+*  The contents of the configuration line for the action are run
+   with \fR/bin/sh -c\fR so you can use shell features in the
+   command.
+.sp 2
+*  The standard input, output, and error of the command are
+   redirected to the NULL device, so you cannot tell directly
+   whether the command runs correctly. The default null device on
+   UNIX is /dev/null.
+.sp 2
+*  The command is run as the user of the job.
+.sp 2
+*  All environment variables set for the job are also set for the
+   command action. The following additional environment variables
+   are set:
+.sp 2
+   *  LSB_JOBPGIDS — a list of current process group IDs of the
+      job
+.sp 2
+   *  LSB_JOBPIDS —a list of current process IDs of the job
+.sp 2
+*  If the command fails, LSF retains the original job status.
+.sp 2
+The command path can contain up to 4094 characters for UNIX and
+Linux, or up to 255 characters for Windows, including the
+directory, file name, and expanded values for %J (\fIjob_ID\fR)
+and %I (\fIindex_ID\fR).
+.SH Default
+
+.sp 2
+*  On UNIX, by default, RESUME sends SIGCONT.
+.sp 2
+*  On Windows, actions equivalent to the UNIX signals have been
+   implemented to do the default job control actions. Job control
+   messages replace the SIGINT and SIGTERM signals, but only
+   customized applications are able to process them.
+.sp 2
+
+.ce 1000
+\fBRTASK_GONE_ACTION\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRRTASK_GONE_ACTION="\fR[\fRKILLJOB_TASKDONE\fR |
+\fRKILLJOB_TASKEXIT\fR] [\fRIGNORE_TASKCRASH\fR]\fR"\fR
+.SH Description
+
+.sp 2
+Defines the actions LSF should take if it detects that a remote
+task of a parallel or distributed job is gone.
+.sp 2
+This parameter only applies to the blaunch distributed
+application framework.
+.sp 2
+\fBIGNORE_TASKCRASH\fR
+.br
+         A remote task crashes. LSF does nothing. The job
+         continues to launch the next task.
+.sp 2
+\fBKILLJOB_TASKDONE\fR
+.br
+         A remote task exits with zero value. LSF terminates all
+         tasks in the job.
+.sp 2
+\fBKILLJOB_TASKEXIT\fR
+.br
+         A remote task exits with non-zero value. LSF terminates
+         all tasks in the job.
+.SH Environment variable
+
+.sp 2
+When defined in an application profile, the
+LSB_DJOB_RTASK_GONE_ACTION variable is set when running bsub -app
+for the specified application.
+.sp 2
+You can also use the environment variable
+LSB_DJOB_RTASK_GONE_ACTION to override the value set in the
+application profile.
+.SH Example
+
+.sp 2
+RTASK_GONE_ACTION="IGNORE_TASKCRASH KILLJOB_TASKEXIT"
+.br
+
+.SH Default
+
+.sp 2
+Not defined. LSF does nothing.
+.sp 2
+
+.ce 1000
+\fBRUNLIMIT\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRRUNLIMIT=\fR[\fIhour\fR\fR:\fR]\fIminute\fR[\fR/\fR\fIhost_name\fR
+| \fR/\fR\fIhost_model\fR]
+.SH Description
+
+.sp 2
+The default run limit. The name of a host or host model specifies
+the runtime normalization host to use.
+.sp 2
+By default, jobs that are in the RUN state for longer than the
+specified run limit are killed by LSF. You can optionally provide
+your own termination job action to override this default.
+.sp 2
+Jobs submitted with a job-level run limit (bsub -W) that is less
+than the run limit are killed when their job-level run limit is
+reached. Jobs submitted with a run limit greater than the maximum
+run limit are rejected. Application-level limits override any
+default limit specified in the queue.
+.sp 2
+\fBNote: \fRIf you want to provide an estimated run time for
+scheduling purposes without killing jobs that exceed the
+estimate, define the ESTIMATED_RUNTIME parameter in the
+application profile, or submit the job with -We instead of a run
+limit.
+.sp 2
+The run limit is in the form of [\fIhour\fR\fR:\fR]\fIminute\fR.
+The minutes can be specified as a number greater than 59. For
+example, three and a half hours can either be specified as 3:30,
+or 210.
+.sp 2
+The run limit you specify is the normalized run time. This is
+done so that the job does approximately the same amount of
+processing, even if it is sent to host with a faster or slower
+CPU. Whenever a normalized run time is given, the actual time on
+the execution host is the specified time multiplied by the CPU
+factor of the normalization host then divided by the CPU factor
+of the execution host.
+.sp 2
+If ABS_RUNLIMIT=Y is defined in lsb.params or in the application
+profile, the runtime limit is not normalized by the host CPU
+factor. Absolute wall-clock run time is used for all jobs
+submitted to an application profile with a run limit configured.
+.sp 2
+Optionally, you can supply a host name or a host model name
+defined in LSF. You must insert ‘\fR/\fR’ between the run limit
+and the host name or model name. (See lsinfo(1) to get host model
+information.)
+.sp 2
+If no host or host model is given, LSF uses the default runtime
+normalization host defined at the queue level (DEFAULT_HOST_SPEC
+in lsb.queues) if it has been configured; otherwise, LSF uses the
+default CPU time normalization host defined at the cluster level
+(DEFAULT_HOST_SPEC in lsb.params) if it has been configured;
+otherwise, the host with the largest CPU factor (the fastest host
+in the cluster).
+.sp 2
+For jobs with the LSF multicluster capability, if no other CPU
+time normalization host is defined and information about the
+submission host is not available, LSF uses the host with the
+largest CPU factor (the fastest host in the cluster).
+.sp 2
+Jobs submitted to a chunk job queue are not chunked if RUNLIMIT
+is greater than 30 minutes.
+.SH Default
+
+.sp 2
+Unlimited
+.sp 2
+
+.ce 1000
+\fBRUNTIME\fR
+.ce 0
+
+.sp 2
+This parameter is deprecated. Use ESTIMATED_RUNTIME instead.
+.sp 2
+
+.ce 1000
+\fBSTACKLIMIT\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRSTACKLIMIT=\fR\fIinteger\fR
+.SH Description
+
+.sp 2
+The per-process (soft) stack segment size limit for all of the
+processes belonging to a job from this queue (see getrlimit(2)).
+Application-level limits override any default limit specified in
+the queue, but must be less than the hard limit of the submission
+queue.
+.sp 2
+By default, the limit is specified in KB. Use LSF_UNIT_FOR_LIMITS
+in lsf.conf to specify a larger unit for the limit (MB, GB, TB,
+PB, or EB).
+.SH Default
+
+.sp 2
+Unlimited
+.sp 2
+
+.ce 1000
+\fBSUCCESS_EXIT_VALUES\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRSUCCESS_EXIT_VALUES=\fR[\fIexit_code\fR …]
+.SH Description
+
+.sp 2
+Specifies exit values used by LSF to determine if job was done
+successfully. Use spaces to separate multiple exit codes.
+Job-level success exit values specified with the
+LSB_SUCCESS_EXIT_VALUES environment variable override the
+configration in application profile.
+.sp 2
+Use SUCCESS_EXIT_VALUES for applications that successfully exit
+with non-zero values so that LSF does not interpret non-zero exit
+codes as job failure.
+.sp 2
+\fIexit_code\fR should be the value between 0 and 255. Use spaces
+to separate exit code values.
+.sp 2
+If both \fBSUCCESS_EXIT_VALUES\fR and \fBREQUEUE_EXIT_VALUES\fR
+are defined with the same exit code, \fBREQUEUE_EXIT_VALUES\fR
+will take precedence and the job will be set to PEND state and
+requeued.
+.SH Default
+
+.sp 2
+0
+.sp 2
+
+.ce 1000
+\fBSUSPEND_CONTROL\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRSUSPEND_CONTROL=\fR\fIsignal\fR | \fIcommand\fR | \fRCHKPNT\fR
+.sp 2
+\fBRemember: \fRUnlike the JOB_CONTROLS parameter in lsb.queues,
+the SUSPEND_CONTROL parameter does not require square brackets ([
+]) around the action.
+.sp 2
+*  \fIsignal\fR is a UNIX signal name (for example, SIGTSTP). The
+   specified signal is sent to the job. The same set of signals
+   is not supported on all UNIX systems. To display a list of the
+   symbolic names of the signals (without the SIG prefix)
+   supported on your system, use the kill -l command.
+.sp 2
+*  \fIcommand\fR specifies a /bin/sh command line to be invoked.
+.sp 2
+   *  Do not quote the command line inside an action definition.
+.sp 2
+   *  Do not specify a signal followed by an action that triggers
+      the same signal. For example, do not specify
+      \fRSUSPEND_CONTROL=bstop\fR. This causes a deadlock between
+      the signal and the action.
+.sp 2
+*  CHKPNT is a special action, which causes the system to
+   checkpoint the job. The job is checkpointed and then stopped
+   by sending the SIGSTOP signal to the job automatically.
+.SH Description
+
+.sp 2
+Changes the behavior of the SUSPEND action in LSF.
+.sp 2
+*  The contents of the configuration line for the action are run
+   with \fR/bin/sh -c\fR so you can use shell features in the
+   command.
+.sp 2
+*  The standard input, output, and error of the command are
+   redirected to the NULL device, so you cannot tell directly
+   whether the command runs correctly. The default null device on
+   UNIX is /dev/null.
+.sp 2
+*  The command is run as the user of the job.
+.sp 2
+*  All environment variables set for the job are also set for the
+   command action. The following additional environment variables
+   are set:
+.sp 2
+   *  LSB_JOBPGIDS - a list of current process group IDs of the
+      job
+.sp 2
+   *  LSB_JOBPIDS - a list of current process IDs of the job
+.sp 2
+   *  LSB_SUSP_REASONS - an integer representing a bitmap of
+      suspending reasons as defined in lsbatch.h The suspending
+      reason can allow the command to take different actions
+      based on the reason for suspending the job.
+.sp 2
+   *  LSB_SUSP_SUBREASONS - an integer representing the load
+      index that caused the job to be suspended
+.sp 2
+*  If the command fails, LSF retains the original job status.
+.sp 2
+When the suspending reason SUSP_LOAD_REASON (suspended by load)
+is set in LSB_SUSP_REASONS, LSB_SUSP_SUBREASONS is set to one of
+the load index values defined in lsf.h.
+.sp 2
+Use LSB_SUSP_REASONS and LSB_SUSP_SUBREASONS together in your
+custom job control to determine the exact load threshold that
+caused a job to be suspended.
+.sp 2
+*  If an additional action is necessary for the SUSPEND command,
+   that action should also send the appropriate signal to the
+   application. Otherwise, a job can continue to run even after
+   being suspended by LSF. For example, \fRSUSPEND_CONTROL=bkill
+   $LSB_JOBPIDS; \fR\fIcommand\fR
+.sp 2
+The command path can contain up to 4094 characters for UNIX and
+Linux, or up to 255 characters for Windows, including the
+directory, file name, and expanded values for %J (\fIjob_ID\fR)
+and %I (\fIindex_ID\fR).
+.SH Default
+
+.sp 2
+*  On UNIX, by default, SUSPEND sends SIGTSTP for parallel or
+   interactive jobs and SIGSTOP for other jobs.
+.sp 2
+*  On Windows, actions equivalent to the UNIX signals have been
+   implemented to do the default job control actions. Job control
+   messages replace the SIGINT and SIGTERM signals, but only
+   customized applications are able to process them.
+.sp 2
+
+.ce 1000
+\fBSWAPLIMIT\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRSWAPLIMIT=\fR\fIinteger\fR
+.SH Description
+
+.sp 2
+Limits the amount of total virtual memory limit for the job.
+.sp 2
+This limit applies to the whole job, no matter how many processes
+the job may contain. Application-level limits override any
+default limit specified in the queue.
+.sp 2
+The action taken when a job exceeds its SWAPLIMIT or PROCESSLIMIT
+is to send SIGQUIT, SIGINT, SIGTERM, and SIGKILL in sequence. For
+CPULIMIT, SIGXCPU is sent before SIGINT, SIGTERM, and SIGKILL.
+.sp 2
+By default, the limit is specified in KB. Use LSF_UNIT_FOR_LIMITS
+in lsf.conf to specify a larger unit for the limit (MB, GB, TB,
+PB, or EB).
+.SH Default
+
+.sp 2
+Unlimited
+.sp 2
+
+.ce 1000
+\fBTASKLIMIT\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRTASKLIMIT=\fR[\fIminimum_limit\fR [\fIdefault_limit\fR]]
+\fImaximum_limit\fR
+.SH Description
+
+.sp 2
+\fBNote: \fR\fBTASKLIMIT\fR replaces \fBPROCLIMIT\fR as of LSF
+9.1.3.
+.sp 2
+Maximum number of tasks that can be allocated to a job. For
+parallel jobs, the maximum number of tasks that can be allocated
+to the job.
+.sp 2
+Queue level \fBTASKLIMIT\fR has the highest priority over
+application level \fBTASKLIMIT\fR and job level \fBTASKLIMIT\fR.
+Application level \fBTASKLIMIT\fR has higher priority than job
+level \fBTASKLIMIT\fR. Job-level limits must fall within the
+maximum and minimum limits of the application profile and the
+queue.
+.sp 2
+\fBNote: \fRIf you also defined \fBJOB_SIZE_LIST\fR in the same
+application profile where you defined \fBTASKLIMIT\fR, the
+\fBTASKLIMIT\fR parameter is ignored.
+.sp 2
+Optionally specifies the minimum and default number of job tasks.
+All limits must be positive numbers greater than or equal to 1
+that satisfy the following relationship:
+.sp 2
+1 <= \fIminimum\fR <= \fIdefault\fR <= \fImaximum\fR
+.sp 2
+In the job forwarding model for the LSF multicluster capability,
+the local cluster considers the receiving queue\(aqs \fBTASKLIMIT\fR
+on remote clusters before forwarding jobs. If the receiving
+queue\(aqs \fBTASKLIMIT\fR definition in the remote cluster cannot
+satisfy the job\(aqs task requirements, the job is not forwarded to
+that remote queue.
+.SH Default
+
+.sp 2
+Unlimited, the default number of tasks is 1
+.sp 2
+
+.ce 1000
+\fBTERMINATE_CONTROL\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRTERMINATE_CONTROL=\fR\fIsignal\fR | \fIcommand\fR |
+\fRCHKPNT\fR
+.sp 2
+\fBRemember: \fRUnlike the JOB_CONTROLS parameter in lsb.queues,
+the TERMINATE_CONTROL parameter does not require square brackets
+([ ]) around the action.
+.sp 2
+*  \fIsignal\fR is a UNIX signal name (for example, SIGTERM). The
+   specified signal is sent to the job. The same set of signals
+   is not supported on all UNIX systems. To display a list of the
+   symbolic names of the signals (without the SIG prefix)
+   supported on your system, use the kill -l command.
+.sp 2
+*  \fIcommand\fR specifies a /bin/sh command line to be invoked.
+.sp 2
+   *  Do not quote the command line inside an action definition.
+.sp 2
+   *  Do not specify a signal followed by an action that triggers
+      the same signal. For example, do not specify
+      \fRTERMINATE_CONTROL=bkill\fR. This causes a deadlock
+      between the signal and the action.
+.sp 2
+*  CHKPNT is a special action, which causes the system to
+   checkpoint the job. The job is checkpointed and killed
+   automatically.
+.SH Description
+
+.sp 2
+Changes the behavior of the TERMINATE action in LSF.
+.sp 2
+*  The contents of the configuration line for the action are run
+   with \fR/bin/sh -c\fR so you can use shell features in the
+   command.
+.sp 2
+*  The standard input, output, and error of the command are
+   redirected to the NULL device, so you cannot tell directly
+   whether the command runs correctly. The default null device on
+   UNIX is /dev/null.
+.sp 2
+*  The command is run as the user of the job.
+.sp 2
+*  All environment variables set for the job are also set for the
+   command action. The following additional environment variables
+   are set:
+.sp 2
+   *  LSB_JOBPGIDS — a list of current process group IDs of the
+      job
+.sp 2
+   *  LSB_JOBPIDS —a list of current process IDs of the job
+.sp 2
+The command path can contain up to 4094 characters for UNIX and
+Linux, or up to 255 characters for Windows, including the
+directory, file name, and expanded values for %J (\fIjob_ID\fR)
+and %I (\fIindex_ID\fR).
+.SH Default
+
+.sp 2
+*  On UNIX, by default, TERMINATE sends SIGINT, SIGTERM and
+   SIGKILL in that order.
+.sp 2
+*  On Windows, actions equivalent to the UNIX signals have been
+   implemented to do the default job control actions. Job control
+   messages replace the SIGINT and SIGTERM signals, but only
+   customized applications are able to process them. Termination
+   is implemented by the TerminateProcess() system call.
+.sp 2
+
+.ce 1000
+\fBTHREADLIMIT\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRTHREADLIMIT=\fR\fIinteger\fR
+.SH Description
+
+.sp 2
+Limits the number of concurrent threads that can be part of a
+job. Exceeding the limit causes the job to terminate. The system
+sends the following signals in sequence to all processes belongs
+to the job: SIGINT, SIGTERM, and SIGKILL.
+.sp 2
+By default, jobs submitted to the queue without a job-level
+thread limit are killed when the thread limit is reached.
+Application-level limits override any default limit specified in
+the queue.
+.sp 2
+The limit must be a positive integer.
+.SH Default
+
+.sp 2
+Unlimited
+.sp 2
+
+.ce 1000
+\fBUSE_PAM_CREDS\fR
+.ce 0
+
+.sp 2
+Applies PAM limits to this application.
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRUSE_PAM_CREDS=y\fR | \fRn\fR | [\fRlimits\fR] [\fRsession\fR]
+.SH Description
+
+.sp 2
+\fBUSE_PAM_CREDS\fR is only supported on Linux systems. If the
+execution host does not have PAM configured and this parameter is
+enabled, the job fails.
+.sp 2
+If \fBUSE_PAM_CREDS\fR is set to \fBy\fR or \fBlimits\fR, LSF can
+apply PAM limits to an application when its job is dispatched to
+a Linux host using PAM LSF. The LSF job does not run within the
+PAM session.
+.sp 2
+If \fBUSE_PAM_CREDS\fR is set to \fBsession\fR:
+.sp 2
+*  If a job is started on the first execution host, the job RES
+   opens a PAM session for the user and forks a RES process
+   within that session. This RES process becomes the user\(aqs job.
+.sp 2
+*  If a task is launched by the blaunch command or an API, the
+   task RES opens a PAM session for the user and executes a RES
+   process within that session. This RES process becomes the
+   user\(aqs task.
+.sp 2
+The \fBlimits\fR keyword can be defined together with the
+\fBsession\fR keyword.
+.sp 2
+If LSF limits are more restrictive than PAM limits, LSF limits
+are used, otherwise PAM limits are used. PAM limits are system
+resource limits defined in the limits.conf file.
+.sp 2
+For parallel jobs, PAM sessions are only launched on the first
+execution host if \fBUSE_PAM_CREDS=y\fR or
+\fBUSE_PAM_CREDS=limits\fR is defined. PAM sessions are launched
+on all tasks if \fBUSE_PAM_CREDS=session\fR or
+\fBUSE_PAM_CREDS=limits session\fR is defined.
+.sp 2
+\fBNote: \fRWhen configuring Linux PAM to be used with LSF, you
+must configure Linux PAM so that it does not ask users for their
+passwords because jobs are not usually interactive.
+.sp 2
+Depending on the \fBUSE_PAM_CREDS\fR parameter setting, LSF
+assumes that the following Linux PAM services are created:
+.sp 2
+*  If \fBUSE_PAM_CREDS\fR is set to \fRy\fR or \fRlimits\fR, LSF
+   assumes that the Linux PAM service "lsf" is created.
+.sp 2
+*  If \fBUSE_PAM_CREDS\fR is set to \fRsession\fR, LSF assumes
+   that the Linux PAM service "lsf-\fR\fI<clustername>\fR\fR" is
+   created.
+.sp 2
+*  If \fBUSE_PAM_CREDS\fR is set to \fRlimits session\fR, LSF
+   assumes that the Linux PAM services "lsf" and
+   "lsf-\fR\fI<clustername>\fR\fR" are created.
+.sp 2
+It is also assumed that the "lsf" service is used in conjunction
+with the /etc/security/limits.conf file.
+.sp 2
+The job sbatchd daemon checks the lsf service, and the job or
+task RES daemon checks the lsf-\fR\fI<clustername>\fR\fR service.
+.sp 2
+Overrides \fBMEMLIMIT_TYPE=Process\fR.
+.sp 2
+Overridden (for CPU limit only) by \fBLSB_JOB_CPULIMIT=y\fR.
+.sp 2
+Overridden (for memory limits only) by \fBLSB_JOB_MEMLIMIT=y\fR.
+.sp 2
+The \fBUSE_PAM_CREDS\fR value in lsb.applications overrides the
+\fBUSE_PAM_CREDS\fR value in lsb.queues.
+.SH Default
+
+.sp 2
+n. \fBUSE_PAM_CREDS\fR is disabled.
+.sp 2
+
+.ce 1000
+\fBWATCHDOG\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRWATCHDOG=script[\fR\fIfile\fR\fR/\fR\fIpath\fR\fR/\fR\fIto\fR\fR/\fR\fIscript\fR\fR]\fR
+\fR init[\fR\fIinit_delay\fR\fR]\fR\fR
+period[\fR\fIstart_interval\fR\fR]\fR
+.SH Description
+
+.sp 2
+Enables LSF to use the watchdog feature to regularly run external
+scripts that check application data, logs, and other information.
+LSF can use these scripts to pass on the job information.
+.sp 2
+This parameter uses the following keywords:
+.sp 2
+\fBscript\fR
+.br
+         Required. This keyword specifies the file path to the
+         external watchdog script to check the application data
+         and other information. This file must have the proper
+         permissions for the job submission user to execute the
+         script.
+.sp 2
+\fBinit\fR
+.br
+         Optional. This keyword specifies the delay to start the
+         watchdog script after the job starts, in seconds.
+         Specify a number larger than 30 seconds. The default
+         value is 60 seconds.
+.sp 2
+\fBperiod\fR
+.br
+         Optional. This keyword specifies the interval in which
+         to start the watchdog script after the previous time
+         that the watchdog script started, in seconds. Specify a
+         number larger than 30 seconds. The default value is 60
+         seconds.
+.sp 2
+All job environment variables are available to the watchdog
+scripts. In addition, the following LSF job-level resource
+consumption environment variables are available to the watchdog
+scripts:
+.sp 2
+*  \fBLSB_GPU_ALLOC_INFO\fR
+.sp 2
+*  \fBLSB_JOB_AVG_MEM\fR
+.sp 2
+*  \fBLSB_JOB_CPU_TIME\fR
+.sp 2
+*  \fBLSB_JOB_MAX_MEM\fR
+.sp 2
+*  \fBLSB_JOB_MEM\fR
+.sp 2
+*  \fBLSB_JOB_NTHREAD\fR
+.sp 2
+*  \fBLSB_JOB_PGIDS\fR
+.sp 2
+*  \fBLSB_JOB_PIDS\fR
+.sp 2
+*  \fBLSB_JOB_RUN_TIME\fR
+.sp 2
+*  \fBLSB_JOB_SWAP\fR
+.SH Default
+
+.sp 2
+Not defined.
+.sp 2
+
+.ce 1000
+\fBAutomatic time-based configuration\fR
+.ce 0
+
+.sp 2
+Use if-else constructs and time expressions to define time
+windows in the file. Configuration defined within in a time
+window applies only during the specified time period;
+configuration defined outside of any time window applies at all
+times. After editing the file, run badmin reconfig to reconfigure
+the cluster.
+.sp 2
+Time expressions in the file are evaluated by LSF every 10
+minutes, based on the mbatchd daemon start time. When an
+expression evaluates true, LSF changes the configuration in real
+time, without restarting mbatchd, providing continuous system
+availability.
+.sp 2
+Time-based configuration also supports LSF multicluster
+capability configuration in terms of shared configuration for
+groups of clusters (using the \fR#include\fR parameter). You can
+include a common configuration file by using the time-based
+feature in local configuration files.
+.SH Example
+
+.sp 2
+Begin application
+.br
+NAME=app1
+.br
+#if time(16:00-18:00 EDT)
+.br
+CPULIMIT=180/hostA
+.br
+#else
+.br
+CPULIMIT=60/hostA
+.br
+#endif
+.br
+End application
+.br
+
+.sp 2
+In this example, for two hours every day, the configuration is
+the following:
+.sp 2
+Begin application
+.br
+NAME=app1
+.br
+CPULIMIT=180/hostA
+.br
+End application
+.br
+
+.sp 2
+The rest of the time, the configuration is the following:
+.sp 2
+Begin application
+.br
+NAME=app1
+.br
+CPULIMIT=60/hostA
+.br
+End application
+.br
+
+.sp 2
+Specifying the time zone is optional. If you do not specify a
+time zone, LSF uses the local system time zone. LSF supports all
+standard time zone abbreviations.

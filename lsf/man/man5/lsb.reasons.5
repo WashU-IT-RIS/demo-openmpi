@@ -1,0 +1,149 @@
+
+.ad l
+
+.TH lsb.reasons 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBlsb.reasons\fR
+.ce 0
+
+.sp 2
+The lsb.reasons file allows for individual configuration of
+pending reason messages. This enables administrators to make
+messages clear and may inform users on which action they may take
+to allow the job to run. Messages may be customized for one or
+more pending reasons as well as priority given to particular
+resources.
+.sp 2
+This file is optional. It is installed by default in
+config/lsbatch/\fI<cluster_name>\fR/configdir/lsb.reasons.
+.sp 2
+After making any changes to lsb.reasons, run badmin reconfig
+.sp 2
+Parent topic: Configuration files
+.sp 2
+
+.ce 1000
+\fB#INCLUDE\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fR#INCLUDE\fR \fR"path-to-file"\fR
+.SH Description
+
+.sp 2
+Inserts a configuration setting from another file to the current
+location. Use this directive to dedicate control of a portion of
+the configuration to other users or user groups by providing
+write access for the included file to specific users or user
+groups, and to ensure consistency of configuration file settings
+in different clusters (if you are using the LSF multicluster
+capability).
+.sp 2
+See more information on shared configuration file content in
+Administering IBM Spectrum LSF
+.sp 2
+\fR#INCLUDE\fR can be inserted anywhere in the local
+configuration file.
+.SH Default
+
+.sp 2
+Not defined.
+.sp 2
+
+.ce 1000
+\fBCustomPendingReason section\fR
+.ce 0
+
+.sp 2
+
+.SH Configurable message for one or more pending reasons
+
+.sp 2
+In the lsb.reasons configuration file, each CustomPendingReason
+section may be configured with a message to describe one or more
+pending reason messages. The pending reason messages are
+identified with a REASON_ID number. All pending reasons and their
+associated ID numbers are included at the end of the lsb.reasons
+file. Both main reasons and host pending reasons can be specified
+in the REASON_ID list.
+.SH Configurable message and priority for a particular resource
+
+.sp 2
+To allow users to highlight key resources, lsb.reasons can be
+used to prioritize the pending reason for particular resources in
+the cluster and a custom message can be shown when those
+resources are unavailable. For example, in many cases, software
+licenses are the most critical or are scarce resources. If a job
+is pending due to the lack of a license, any other reasons do not
+matter. However, access to hardware, a specific critical license,
+or some other resource may be the most relevant reason to the
+user community. For these resources, it may be preferable to
+specify something more informative than "Job\(aqs requirements for
+reserving resource (xyz) not satisfied". Resources that are
+configured with a priority in lsb.reasons always have higher
+priority than those not configured in lsb.reasons. If a resource
+is only configured with a message, it shares the same priority
+with those resources not configured in lsb.reasons. In
+lsb.reasons, at least one of MESSAGE or PRIORITY must be
+specified when defining the custom pending reason for a resource.
+In the following example, three resources (emu_a, lic_a, and gpu)
+are configured with a customized message and a priority. If a job
+requested all three resources, and not all of these requirements
+could be met by a host, the message <\fRNo Type A emulators
+available\fR> would be shown for the pending job as emu_a has the
+highest priority.
+.sp 2
+Begin CustomPendingReason
+.br
+RESOURCE=emu_a
+.br
+MESSAGE=No type A emulators available
+.br
+PRIORITY=107
+.br
+End CustomPendingReason
+.br
+ 
+.br
+Begin CustomPendingReason
+.br
+RESOURCE=lic_a
+.br
+MESSAGE=No license for SimWorkBench
+.br
+PRIORITY=10
+.br
+End CustomPendingReason
+.br
+
+.br
+Begin CustomPendingReason
+.br
+RESOURCE=gpu
+.br
+MESSAGE=All GPUs are in use
+.br
+PRIORITY=5
+.br
+End CustomPendingReason
+.SH Interaction
+
+.sp 2
+A custom message for a resource takes priority over a custom
+message for pending reason.
+.SH Support for the LSF multicluster capabilityLSF multicluster capability
+
+.sp 2
+When using the LSF multicluster capability, if both the
+submission cluster and the execution cluster have a custom
+pending reason message configured, the message is shown according
+to the submission cluster configuration. If both the submission
+cluster and the execution cluster have priority for a resource
+configured, the priority of the resource in the execution cluster
+applies to the selection of the single reason.

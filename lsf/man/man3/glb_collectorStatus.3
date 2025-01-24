@@ -1,0 +1,92 @@
+.TH "glb_collectorStatus" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+glb_collectorStatus \- glb_collectorStatus 
+Returns an array of license scheduler collectors information.
+.PP
+\fBglb_collectorStatus\fP returns an array of the glbCollector structure, which contains the collector name, the collector's last update time, and a array of globCollectorFlex structures that contains the name and last update time for each license server. \fB #include <glb/glb.h>\fP
+.PP
+\fB struct glbCollector *glb_collectorStatus(struct \fBglbHandle\fP *h2, int *num) \fP
+.PP
+.SH "Parameters:"
+\fI*h2\fP The License Scheduler daemon containing the desired collector information.
+.br
+\fI*num\fP The number of desired glbCollector structures returned in the array.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBglbHandle\fP 
+.br
+glbCollector 
+.br
+globCollectorFlex
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+*glbCollector 
+.br
+ An array of glbCollector structures which stores the collector information and sets num to the size of the array
+.PP
+.SH "Errors:" 
+.PP
+On failure, glberrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+blcstat
+.PP
+.SH "Files:" 
+.PP
+LSF_CONFDIR/lsf.licensescheduler 
+.PP
+
+.ad l
+.nh
+.SH NAME
+glbHandle \- This handle represent a live connection to globd.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBname\fP"
+.br
+.ti -1c
+.RI "int \fBhandle\fP"
+.br
+.ti -1c
+.RI "struct sockaddr_storage \fBglobd\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+This handle represent a live connection to globd. 
+
+The API and the globd communicate over a TCP/IP connection. The handle member name holds the authentication informations needed by globd to authorise token withdraw from a project by a connected client, LSF mbatchd or taskman. Only the API that requests tokens, glb_gettokens() and the administrative API glb_admin() need to set the name member because they require authentication. Other API do not need to manage the handle explicitly. 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fBglbHandle::name\fP"
+.PP
+client name 
+.PP
+.SS "int \fBglbHandle::handle\fP"
+.PP
+channel handle 
+.PP
+.SS "struct sockaddr_storage \fBglbHandle::globd\fP"
+.PP
+details socket information 
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

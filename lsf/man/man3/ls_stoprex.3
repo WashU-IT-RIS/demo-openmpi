@@ -1,0 +1,58 @@
+.TH "ls_stoprex" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ls_stoprex \- ls_stoprex 
+Stops the Networks I/O Server and restores the local tty environment.
+.PP
+\fBls_stoprex\fP stops the Network I/O Server (NIOS) and restores the local tty environment. This routine is necessary only for those LSF applications that explicitly catch job control signals (that is, SIGTSTP) and eventually suspend themselves. For most applications, the default SIGTSTP handler in the LSF library provides the desired behavior, without the requirement of calling this routine.
+.PP
+When NIOS receives a SIGTSTP signal, it sends the signal to all its remote tasks. If the local client also needs to be stopped, then \fBls_stoprex\fP must be called to stop the NIOS and restore the tty environment for the parent application first.
+.PP
+Any program using this routine must call \fBls_initrex\fP first.
+.PP
+Any program using this API must be setuid to root if LSF_AUTH is not defined in the lsf.conf file.
+.PP
+\fB #include <lsf/lsf.h>\fP
+.PP
+\fB int ls_stoprex(void) \fP
+.PP
+.SH "Parameters:"
+\fInone\fP 
+.PP
+.SH "Data Structures:" 
+.PP
+none
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+int:0 
+.br
+ Function was successful. 
+.PP
+int:-1 
+.br
+ Function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lserrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+${LSF_ENVDIR:-/etc}/lsf.conf
+.PP
+.SH "See also:"
+\fBls_initrex\fP 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

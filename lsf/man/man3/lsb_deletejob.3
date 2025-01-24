@@ -1,0 +1,87 @@
+.TH "lsb_deletejob" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_deletejob \- lsb_deletejob 
+Kills a job in a queue
+.PP
+Use \fBlsb_deletejob\fP to send a signal to kill a running, user-suspended, or system-suspended job. The job can be requeued or deleted from the batch system.If the job is requeued, it retains its \fBsubmit\fP time but it is dispatched according to its requeue time. When the job is requeued, it is assigned the PEND status and re-run.If the job is deleted from the batch system, it is no longer available to be requeued.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB int lsb_deletejob (LS_LONG_INT jobId, int times, int options)\fP
+.PP
+.SH "Parameters:"
+\fIjobId\fP The job to be killed. If an element of a job array is to be killed, use the array form jobID[i] where jobID is the job array name, and i is the index value. 
+.br
+\fItimes\fP Original job \fBsubmit\fP time. 
+.br
+\fIoptions\fP If the preprocessor macro LSB_KILL_REQUEUE in lsbatch.h is compared with options and found true, then requeue the job using the same job ID. If the preprocessor macro LSB_KILL_REQUEUE in lsbatch.h is compared with options and found false, then the job is deleted from the batch system.
+.PP
+.SH "Data Structures:" 
+.PP
+none
+.PP
+.SH "Define Statements:" 
+.PP
+\fBkill_requeue\fP
+.PP
+.SH "Returns:"
+int:0 
+.br
+ The function was successful. 
+.PP
+int:-1 
+.br
+ The function failed.
+.PP
+.SH "Note:"
+Any program using this API must be setuid to root if LSF_AUTH is not defined in the 
+.br
+ lsf.conf file.
+.PP
+.SH "Errors:" 
+.PP
+On failure, lsberrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+bkill 
+.br
+brequeue -J
+.PP
+.SH "Files:" 
+.PP
+${LSF_ENVDIR:-/etc}/lsf.conf
+.PP
+.SH "See also:"
+\fBlsb_signaljob\fP 
+.PP
+\fBlsb_chkpntjob\fP 
+.PP
+
+.ad l
+.nh
+.SH NAME
+kill_requeue \- kill and requeue a job options()  
+
+.PP
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBLSB_KILL_REQUEUE\fP   0x10"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+kill and requeue a job options() 
+.SH "Define Documentation"
+.PP 
+.SS "#define LSB_KILL_REQUEUE   0x10"
+.PP
+Kill then re-queue a job. 
+.PP
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

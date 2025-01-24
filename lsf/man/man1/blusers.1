@@ -1,0 +1,259 @@
+
+.ad l
+
+.TH blusers 1 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBblusers\fR
+.ce 0
+
+.sp 2
+Displays license usage information for LSF License Scheduler.
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBblusers\fR [\fB-J\fR [\fB-u\fR user_name]] [\fB-t\fR
+token_name...] [\fB-l\fR]
+.sp 2
+\fBblusers\fR \fB-P\fR [\fB-lm\fR] \fB-j\fR job_ID \fB-u\fR
+user_name \fB-m\fR host_name [\fB-c\fR cluster_name]
+.sp 2
+\fBblusers\fR [\fB-h\fR | \fB-V\fR]
+.SH Description
+
+.sp 2
+By default, displays summarized information about usage of
+licenses.
+.SH Options
+
+.sp 2
+\fB-J\fR
+.br
+         Displays detailed license resource request information
+         about each job.
+.sp 2
+         In cluster mode, blusers -J displays tokens for features
+         where the job checks out licenses in excess of the
+         \fRrusage\fR value, which are tokens that are checked
+         out to features that a job did not explicitly request.
+         These features have an \fRINUSE\fR value, but no
+         \fRRUSAGE\fR value.
+.sp 2
+\fB-u \fIuser_name\fB\fR
+.br
+         Displays detailed license resource request information
+         about each job that belongs to the single user
+         specified.
+.sp 2
+\fB-t\fR
+.br
+         Displays detailed license resource request information
+         about each job that uses the token names specified.
+.sp 2
+\fB-l\fR
+.br
+         Long format. Displays more license usage information.
+.sp 2
+\fB-P [-lm] -j \fIjob_ID\fB -u \fIuser_name\fB -m
+\fIhost_name\fB\fR
+.br
+\fB-P [-lm] -c \fIcluster_name\fB -j \fIjob_ID\fB -u
+\fIuser_name\fB -m \fIhost_name\fB\fR
+.br
+         This string of options is used in a customized
+         preemption script. To identify a job, specify the LSF
+         job ID, the user name, the name of the host where the
+         job is running, and the cluster name.
+.br
+         If the job is an interactive task that is submitted with
+         the taskman command, do not specify the \fR-c
+         \fIcluster_name\fR\fR option.
+.sp 2
+         You see the display terminal that is used by the job,
+         its checked out licenses, and the license servers that
+         provided the licenses. Each license feature from each
+         license server has one line of output, in the following
+         format:
+.sp 2
+         \fR\fIport_number\fR@\fIhost_name token_name user_name
+         host_name display\fR\fR
+.sp 2
+         Specify the -lm option to display the license manager
+         system type and the necessary information that is used
+         in a customized preemption script. The -lm option is
+         required to display information on Reprise License
+         Manager features. Each license feature from each license
+         server has one line of output, in the following format:
+.sp 2
+         \fRFLEXLM \fIport_number\fR@\fIhost_name token_name
+         user_name host_name display\fR\fR
+.sp 2
+         \fRRLM \fIhost_name port_number vendor handle\fR\fR
+.sp 2
+         If you use Reprise License Manager and you do not
+         specify the -lm option, the output for the Reprise
+         License Manager feature is \fRNO TTY
+         \fIfeature_name\fR\fR.
+.sp 2
+\fB-h\fR
+.br
+         Prints command usage to stderr and exits.
+.sp 2
+\fB-V\fR
+.br
+         Prints LSF License Scheduler release version to stderr
+         and exits.
+.SH Default output
+
+.sp 2
+\fBFEATURE \fR
+.br
+         The license name. This feature name becomes the license
+         token name.
+.sp 2
+\fBSERVICE_DOMAIN\fR
+.br
+         The name of the service domain that provided the
+         license.
+.sp 2
+\fBUSER \fR
+.br
+         The name of the user who submitted the jobs.
+.sp 2
+\fBHOST \fR
+.br
+         The name of the host where jobs started.
+.sp 2
+\fBNLICS\fR
+.br
+         The number of licenses that are checked out from
+         FlexNet.
+.sp 2
+\fBNTASKS\fR
+.br
+         The number of running tasks that use these licenses.
+.SH -J output
+
+.sp 2
+The -J option displays the following summary information for each
+job:
+.sp 2
+\fBJOBID \fR
+.br
+         The job ID assigned by LSF.
+.sp 2
+\fBUSER \fR
+.br
+         The name of the user who submitted the job.
+.sp 2
+\fBHOST \fR
+.br
+         The name of the host where the job started.
+.sp 2
+\fBPROJECT \fR
+.br
+         The name of the license project that the job is
+         associated with.
+.sp 2
+\fBCLUSTER \fR
+.br
+         The name of the LSF cluster that the job is associated
+         with. Displays a dash (\fR-\fR) for an interactive job.
+.sp 2
+\fBSTART_TIME \fR
+.br
+         The job start time.
+.sp 2
+The -J option displays the following information for each license
+in use by the job:
+.sp 2
+\fBRESOURCE\fR
+.br
+         The name of the license that is requested by the job.
+.sp 2
+\fBRUSAGE \fR
+.br
+         The number of licenses that are requested by the job.
+.sp 2
+\fBSERVICE_DOMAIN\fR
+.br
+         The name of the service domain that provided the
+         license.
+.sp 2
+         The keyword \fRUNKNOWN\fR means that the job requested a
+         license from LSF License Scheduler but did not check out
+         the license from FlexNet.
+.sp 2
+\fBINUSE\fR
+.br
+         The number of checked out licenses. Displays a dash
+         (\fR-\fR) when the \fRSERVICE_DOMAIN\fR value is
+         \fRUNKNOWN\fR.
+.sp 2
+\fBEFFECTIVE_PROJECT\fR
+.br
+         The actual project that the job used. If group project
+         paths are enabled (the \fRPROJECT_GROUP_PATH=Y\fR
+         parameter in the Parameters section of the
+         lsf.licensescheduler file), LSF License Scheduler
+         attempts to calculate a proper project according to the
+         configuration if the license project does not exist or
+         is not authorized for the feature. Otherwise, the
+         submission license project is the effective license
+         project.
+.SH Long output with the -l option
+
+.sp 2
+The -l option displays the default output and the following
+additional information for each job:
+.sp 2
+\fBOTHERS\fR
+.br
+         License usage for non-managed or non-LSF workload.
+.sp 2
+\fBDISPLAYS\fR
+.br
+         Terminal display that is associated with the license
+         feature. When Reprise License Manager is the license
+         manager (the \fRLM_TYPE=RLM\fR parameter in the
+         lsf.licensescheduler file), this field displays no
+         information: \fR()\fR.
+.SH Examples
+
+.sp 2
+blusers -l
+.br
+FEATURE  SERVICE_DOMAIN  USER   HOST    NLICS   NTASKS OTHERS  DISPLAYS 
+.br
+feat1    LanServer       user1  hostA   1       1      0     (/dev/tty) 
+.br
+
+.sp 2
+blusers -J
+.br
+JOBID   USER      HOST      PROJECT             CLUSTER        START_TIME
+.br
+553     user1     hostA     project3            cluster1       Oct  5 15:47:14
+.br
+RESOURCE        RUSAGE        SERVICE_DOMAIN   INUSE  EFFECTIVE_PROJECT
+.br
+feature1        1             SD1              1      /group2/project3
+.br
+feature2        1             SD1              1      /group2/others
+.br
+feature3        -             SD1              1      /group2/project3
+.br
+
+.sp 2
+blusers -P -lm -j 101 -u user1 -m hostA -c cluster1
+.br
+FLEXLM 19999@server f1 user1 hostA /dev/tty
+.br
+RLM server1 5053 demo 41
+.SH See also
+
+.sp 2
+blhosts, blinfo, blstat

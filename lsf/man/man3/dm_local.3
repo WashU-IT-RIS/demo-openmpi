@@ -1,0 +1,37 @@
+.TH "dm_local" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+dm_local \- dm_local 
+Use this function to query the local DM to obtain the DM candidate host list, current DM master host, and the DM listening port.
+.PP
+\fB#include <lsf/dm.def.h>
+.br
+ include <lsf/dm.api.h>\fP
+.PP
+\fB int dm_local(char** hostList, char** masterHost, int* port)\fP
+.PP
+.SH "Parameters:"
+\fI**hostList\fP Returns a list of master and candidate DM hosts.
+.br
+\fI**masterHost\fP Returns the current master DM host.
+.br
+\fI*port\fP Returns the listening port of the current master DM host.
+.PP
+.SH "Returns:"
+DAS_NO_ERROR 
+.br
+ Function was successful.
+.PP
+-1 
+.br
+ Function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, daserrno is set to indicate the error. 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

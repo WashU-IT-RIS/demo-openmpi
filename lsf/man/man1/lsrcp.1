@@ -1,0 +1,175 @@
+
+.ad l
+
+.TH lsrcp 1 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBlsrcp\fR
+.ce 0
+
+.sp 2
+Remotely copies files through LSF.
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBlsrcp\fR [\fB-a\fR] source_file target_file
+.sp 2
+\fBlsrcp\fR [\fB-h\fR | \fB-V\fR]
+.SH Description
+
+.sp 2
+The lsrcp command is a load-sharing remote copy program that
+transfers a single file between hosts in an LSF cluster. The
+lsrcp command uses RES on an LSF host to transfer files. If LSF
+is not installed on a host or if RES is not running, then lsrcp
+uses rcp to copy the file.
+.sp 2
+If the \fBLSF_REMOTE_COPY_CMD\fR parameter is defined in the
+lsf.conf file, the lsrcp command uses the specified command and
+options to copy the file if the RES cannot copy the file.
+.sp 2
+To use lsrcp, you must have read access to the file to be copied.
+.sp 2
+Both the source and target file must be owned by the user who
+enters the command.
+.sp 2
+The lsrcp command uses the rcp command to copy a source file to a
+target file owned by another user.
+.SH Options
+
+.sp 2
+\fB-a\fR
+.br
+         Appends source_file to target_file.
+.sp 2
+\fB\fIsource_file\fB \fItarget_file\fB\fR
+.br
+         Specify an existing file on a local or remote host that
+         you want to copy, and a file to which you want to copy
+         the source file.
+.sp 2
+         The file has the following format:
+.sp 2
+         [[\fIuser_name\fR@]\fIhost_name\fR:][\fIpath\fR/]\fIfile_name\fR
+.sp 2
+         \fB\fIuser_name\fB \fR
+.br
+                  Login name to be used for accessing files on
+                  the remote host. If \fIuser_name\fR is not
+                  specified, the name of the user who entered the
+                  command is used.
+.sp 2
+         \fB\fIhost_name\fB \fR
+.br
+                  Name of the remote host where the file is
+                  located. If \fIhost_name\fR is not specified,
+                  the local host, the host from which the command
+                  was entered, is used.
+.sp 2
+         \fB\fIpath\fB \fR
+.br
+                  Absolute path name or a path name relative to
+                  the login directory of the user. Shell file
+                  name expansion is not supported on either the
+                  local or remote hosts. Only single files can be
+                  copied from one host to another.
+.sp 2
+                  Use a backslash (\fR∖\fR) to transfer files
+                  from a Windows host to another Windows host.
+.sp 2
+                  Use a forward slash (\fR/\fR) to transfer files
+                  from a UNIX host to a UNIX host.
+.sp 2
+                  Always use a forward slash (\fR/\fR) to
+                  transfer files from a UNIX host to a Windows
+                  host, or from a Windows host to a UNIX host.
+                  The operating system interprets the backslash
+                  (\fR∖\fR) as an escape character, and lsrcp
+                  opens the wrong files.
+.sp 2
+         \fB\fIfile_name\fB \fR
+.br
+                  Name of source file. File name expansion is not
+                  supported. File names cannot include the colon
+                  character (\fR:\fR).
+.sp 2
+\fB-h\fR
+.br
+         Prints command usage to stderr and exits.
+.sp 2
+\fB-V\fR
+.br
+         Prints LSF release version to stderr and exits.
+.SH Examples
+
+.sp 2
+\fRlsrcp myfile @hostC:/home/usr/dir1/otherfile\fR
+.sp 2
+Copies file myfile from the local host to file otherfile on
+\fRhostC\fR.
+.sp 2
+\fRlsrcp user1@hostA:/home/myfile user1@hostB:otherfile\fR
+.sp 2
+Copies the file myfile from \fRhostA\fR to file otherfile on
+\fRhostB\fR.
+.sp 2
+\fRlsrcp -a user1@hostD:/home/myfile /dir1/otherfile\fR
+.sp 2
+Appends the file myfile on \fRhostD\fR to the file otherfile on
+the local host.
+.sp 2
+\fRlsrcp /tmp/myfile user1@hostF:~/otherfile\fR
+.sp 2
+Copies the file myfile from the local host to file otherfile on
+\fRhostF\fR in the home directory of \fRuser1\fR.
+.SH Diagnostics
+
+.sp 2
+The lsrcp command attempts to copy source_file to target_file
+using RES. If RES is down or fails to copy the source_file, the
+lsrcp command uses the rsh command. When the -a option is
+specified, the lsrcp command uses the shell command that is
+specified by the \fBLSF_RSH\fR parameter in the lsf.conf file.
+When the -a option is not specified, the lsrcp command uses rcp.
+.SH Limitations
+
+.sp 2
+File transfer with the lsrcp command is not supported in the
+following contexts:
+.sp 2
+*  If LSF account mapping is used, the lsrcp command fails when
+   it runs under a different user account.
+.sp 2
+*  LSF client hosts do not run RES, so the lsrcp command cannot
+   contact RES on the submission host.
+.sp 2
+*  
+   The lsrcp command does not support third-party copies, when
+   the source and target file are not on the local host. In this
+   case, the rcp command or the rsh command (or the shell command
+   that is specified by the \fBLSF_RSH\fR parameter in the
+   lsf.conf file) is used. If the target file exists, the lsrcp
+   command preserves the file permission modes. If the target
+   file does not exist, the lsrcp command uses the source file
+   modes consistent with the \fRumask\fR of the source host.
+.sp 2
+The following actions are supported:
+.sp 2
+*  The rcp command on UNIX. If the lsrcp command cannot contact
+   RES on the submission host, it attempts to use the UNIX rcp
+   command to copy the file. You must set up the /etc/hosts.equiv
+   or HOME/.rhosts file to use the rcp command.
+.sp 2
+*  You can replace the lsrcp command with your own file transfer
+   mechanism if it supports the same syntax as the lsrcp command.
+   Replacing the lsrcp command can advantage of a faster
+   interconnection network, or to overcome limitations with the
+   existing lsrcp command. The sbatchd daemon looks for the lsrcp
+   executable file in the LSF_BINDIR directory.
+.SH See also
+
+.sp 2
+rsh, rcp, res

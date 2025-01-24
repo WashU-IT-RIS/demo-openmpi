@@ -1,0 +1,118 @@
+.TH "lsb_calendarop" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_calendarop \- lsb_calendarop 
+Adds, modifies or deletes a calendar.
+.PP
+\fBlsb_calendarop\fP is used to add, modify or delete a calendar. The oper parameter is one of CALADD, CALMOD, or CALDEL. When the operation CALADD is specified, the first element of the names array is used as the name of the calendar to add. The desc and calExpr parameters should point to the description string and the time expression list, respectively. See bcaladd() for a description of time expressions.
+.PP
+CALMOD permits the modification of the description or time expression list associated with an existing calendar. The first name in the names array indicates the calendar to be modified. The desc and calExpr parameters can be set to the updated value or to NULL to indicate that the existing value should be maintained.
+.PP
+If the operation is CALDEL then the names parameter points to an array of calendar names to be deleted. numNames gives the number of names in the array. options is reserved for the future use.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB int *lsb_calendarop(int oper, int numNames, char **names, char *desc, char *calExpr, int options, char **badStr)\fP
+.PP
+.SH "Parameters:"
+\fIoper\fP One of CALADD, CALMOD, or CALDEL. Depending on which one is chosen, adds, modifies, or deletes a calendar.Defined in \fBcalendar_command\fP. 
+.br
+\fInumNames\fP The number of names in the array. 
+.br
+\fI**names\fP Depending on oper, it defines the name of the calendar is going to be added, modified or deleted. 
+.br
+\fI*desc\fP The calendar's description list. 
+.br
+\fI*calExpr\fP A calendar expression. 
+.br
+\fIoptions\fP Currently unused. 
+.br
+\fI**badStr\fP Return from mbatchd indicating bad name or event time of calendar.
+.PP
+.SH "Data Structures:" 
+.PP
+none
+.PP
+.SH "Define Statements:" 
+.PP
+\fBcalendar_command\fP
+.PP
+.SH "Returns:"
+int: 0 
+.br
+ Function was successful. 
+.PP
+int:-1 
+.br
+ Function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lsberrno is set to indicate the error. If error is related to bad calendar name or time expression, the routine returns the name or expression in badStr.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+none
+.PP
+.SH "See also:"
+\fBlsb_calendarinfo\fP 
+.PP
+
+.ad l
+.nh
+.SH NAME
+calendar_command \- options for user calendar commands  
+
+.PP
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBCALADD\fP   1"
+.br
+.ti -1c
+.RI "#define \fBCALMOD\fP   2"
+.br
+.ti -1c
+.RI "#define \fBCALDEL\fP   3"
+.br
+.ti -1c
+.RI "#define \fBCALUNDEL\fP   4"
+.br
+.ti -1c
+.RI "#define \fBCALOCCS\fP   5"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+options for user calendar commands 
+.SH "Define Documentation"
+.PP 
+.SS "#define CALADD   1"
+.PP
+Add calenda. 
+.PP
+.SS "#define CALMOD   2"
+.PP
+Modify calenda. 
+.PP
+.SS "#define CALDEL   3"
+.PP
+Delete calenda. 
+.PP
+.SS "#define CALUNDEL   4"
+.PP
+Undelete calenda. 
+.PP
+.SS "#define CALOCCS   5"
+.PP
+Calenda occs. 
+.PP
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

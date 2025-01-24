@@ -1,0 +1,83 @@
+
+.ad l
+
+.TH brsvdel 8 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBbrsvdel\fR
+.ce 0
+
+.sp 2
+Deletes an advance reservation.
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBbrsvdel \fRreservation_ID ...
+.sp 2
+\fBbrsvdel\fR {\fB-h\fR | \fB-V\fR | \fB-f\fR}
+.SH Description
+
+.sp 2
+\fBCAUTION: \fR
+.sp 2
+By default, this command can be used only by LSF administrators
+or root.
+.sp 2
+Deletes advance reservations for the specified reservation IDs.
+.sp 2
+For example, the following command was used to create the
+reservation \fRuser1#0\fR,
+.sp 2
+brsvadd -n 1024 -m hostA -u user1 -b 13:0 -e 18:0
+.br
+Reservation "user1#0" is created
+.br
+
+.sp 2
+The following command deletes the reservation:
+.sp 2
+brsvdel user1#0
+.br
+Reservation user1#0 is being deleted
+.br
+
+.sp 2
+You can delete multiple reservations at a time.
+.sp 2
+To allow users to delete their own advance reservations without
+administrator intervention, configure advance reservation
+policies in the \fRResourceReservation\fR section of the
+lsb.resources file.
+.sp 2
+Administrators and root can delete any reservations. Users who
+are listed in the \fRResourceReservation\fR section can delete
+only reservations that they created themselves.
+.SH Options
+
+.sp 2
+\fB-h\fR
+.br
+         Prints command usage and exits.
+.sp 2
+\fB-V\fR
+.br
+         Prints LSF release version and exits.
+.sp 2
+\fB-f\fR
+.br
+         Forces deletion of an AR. The running jobs will be
+         detached and treated as regular jobs.
+.br
+         If \fBLSB_DISABLE_SUSPEND_AR_JOBS\fR under lsf.conf is
+         set to Y, then these jobs will continue running and
+         other regular suspending jobs will continue to be
+         suspended. If it is set to N, these jobs will be
+         suspended and will compete with other regular jobs for
+         slots.
+.SH See also
+
+.sp 2
+brsvadd, brsvmod, brsvs, lsb.resources

@@ -1,0 +1,774 @@
+.TH "lsb_hostinfo_ex" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_hostinfo_ex \- lsb_hostinfo_ex 
+Returns informaton about job server hosts that satisfy specified resource requirements.
+.PP
+\fBlsb_hostinfo_ex\fP returns information about job server hosts that satisfy the specified resource requirements.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB struct \fBhostInfoEnt\fP *lsb_hostinfo_ex(char **hosts, int *numHosts, char *resReq, int options)\fP
+.PP
+.SH "Parameters:"
+\fI**hosts\fP An array of host or cluster names. 
+.br
+\fI*numHosts\fP The number of host names. To get information on all hosts, set *numHosts to 0; *numHosts will be set to the actual number of \fBhostInfoEnt\fP structures when this call returns. If *numHosts is 1 and hosts is NULL, information on the local host is returned. 
+.br
+\fI*resReq\fP Resource requirements. If this option is specified, then only host information for those hosts that satisfy the resource requirements is returned. Returned hosts are sorted according to the load on the resource() given in resReq, or by default according to CPU and paging load. 
+.br
+\fIoptions\fP Options is reserved for the future use.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBhostInfoEnt\fP
+.PP
+.SH "Define Statements:" 
+.PP
+\fBhost_status\fP 
+.br
+\fBhost_load_BusyReason\fP 
+.br
+\fBhost_attributes\fP
+.PP
+.SH "Returns:"
+struct \fBhostInfoEnt\fP *:
+.br
+ An array of \fBhostInfoEnt\fP structures which hold the host information and sets *numHosts to the number of \fBhostInfoEnt\fP structures. 
+.br
+ Function was successful. 
+.PP
+NULL 
+.br
+ Function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lsberrno is set to indicate the error. If lsberrno is LSBE_BAD_HOST, (*hosts)[*numHosts] is not a host known to the batch system. Otherwise, if *numHosts is less than its original value, *numHosts is the actual number of hosts found.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+$LSB_CONFDIR/cluster_name/configdir/lsb.hosts
+.PP
+.SH "See also:"
+\fBls_info\fP 
+.PP
+\fBls_loadofhosts\fP 
+.PP
+\fBlsb_hostinfo\fP 
+.PP
+\fBlsb_queueinfo\fP 
+.PP
+\fBlsb_userinfo\fP 
+.PP
+
+.ad l
+.nh
+.SH NAME
+hostInfoEnt \- host information entry.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBhost\fP"
+.br
+.ti -1c
+.RI "int \fBhStatus\fP"
+.br
+.ti -1c
+.RI "int * \fBbusySched\fP"
+.br
+.ti -1c
+.RI "int * \fBbusyStop\fP"
+.br
+.ti -1c
+.RI "float \fBcpuFactor\fP"
+.br
+.ti -1c
+.RI "int \fBnIdx\fP"
+.br
+.ti -1c
+.RI "float * \fBload\fP"
+.br
+.ti -1c
+.RI "float * \fBloadSched\fP"
+.br
+.ti -1c
+.RI "float * \fBloadStop\fP"
+.br
+.ti -1c
+.RI "char * \fBwindows\fP"
+.br
+.ti -1c
+.RI "int \fBuserJobLimit\fP"
+.br
+.ti -1c
+.RI "int \fBmaxJobs\fP"
+.br
+.ti -1c
+.RI "int \fBnumJobs\fP"
+.br
+.ti -1c
+.RI "int \fBnumRUN\fP"
+.br
+.ti -1c
+.RI "int \fBnumSSUSP\fP"
+.br
+.ti -1c
+.RI "int \fBnumUSUSP\fP"
+.br
+.ti -1c
+.RI "int \fBmig\fP"
+.br
+.ti -1c
+.RI "int \fBattr\fP"
+.br
+.ti -1c
+.RI "float * \fBrealLoad\fP"
+.br
+.ti -1c
+.RI "int \fBnumRESERVE\fP"
+.br
+.ti -1c
+.RI "int \fBchkSig\fP"
+.br
+.ti -1c
+.RI "float \fBcnsmrUsage\fP"
+.br
+.ti -1c
+.RI "float \fBprvdrUsage\fP"
+.br
+.ti -1c
+.RI "float \fBcnsmrAvail\fP"
+.br
+.ti -1c
+.RI "float \fBprvdrAvail\fP"
+.br
+.ti -1c
+.RI "float \fBmaxAvail\fP"
+.br
+.ti -1c
+.RI "float \fBmaxExitRate\fP"
+.br
+.ti -1c
+.RI "float \fBnumExitRate\fP"
+.br
+.ti -1c
+.RI "char * \fBhCtrlMsg\fP"
+.br
+.ti -1c
+.RI "int \fBnumNetwork\fP"
+.br
+.ti -1c
+.RI "struct networkInfoEnt * \fBnetworkInfoArray\fP"
+.br
+.ti -1c
+.RI "char * \fBaffinityCpulist\fP"
+.br
+.ti -1c
+.RI "\fBlsf_topology_t\fP \fBhostTp\fP"
+.br
+.ti -1c
+.RI "int \fBpowerStatus\fP"
+.br
+.ti -1c
+.RI "int \fBidleTime\fP"
+.br
+.ti -1c
+.RI "int \fBcycleTimeLeft\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+host information entry. 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fBhostInfoEnt::host\fP"
+.PP
+The name of the host. 
+.PP
+
+.SS "int \fBhostInfoEnt::hStatus\fP"
+.PP
+The status of the host. 
+.PP
+It is the bitwise inclusive OR. see \fBhost_status\fP 
+.SS "int* \fBhostInfoEnt::busySched\fP"
+.PP
+Indicate host loadSched busy reason. 
+.PP
+.SS "int* \fBhostInfoEnt::busyStop\fP"
+.PP
+Indicate host loadStop busy reason. 
+.PP
+
+.SS "float \fBhostInfoEnt::cpuFactor\fP"
+.PP
+The host CPU factor used to scale CPU load values to account for differences in CPU speeds. 
+.PP
+The faster the CPU, the larger the CPU factor. 
+.SS "int \fBhostInfoEnt::nIdx\fP"
+.PP
+The number of load indices in the load, loadSched and loadStop arrays. 
+.PP
+
+.SS "float* \fBhostInfoEnt::load\fP"
+.PP
+Load information array on a host. 
+.PP
+This array gives the load information that is used for scheduling batch jobs. This load information is the effective load information from \fBls_loadofhosts\fP (see \fBls_loadofhosts\fP) plus the load reserved for running jobs (see lsb.queues for details on resource reservation). The load array is indexed the same as loadSched and loadStop (see loadSched and loadStop below). 
+.SS "float* \fBhostInfoEnt::loadSched\fP"
+.PP
+Stop scheduling new jobs if over. 
+.PP
+.SS "float* \fBhostInfoEnt::loadStop\fP"
+.PP
+Stop jobs if over this load. 
+.PP
+The loadSched and loadStop arrays control batch job scheduling, suspension, and resumption. The values in the loadSched array specify the scheduling thresholds for the corresponding load indices. Only if the current values of all specified load indices of this host are within (below or above, depending on the meaning of the load index) the corresponding thresholds of this host, will jobs be scheduled to run on this host. Similarly, the values in the loadStop array specify the stop thresholds for the corresponding load indices. If any of the load index values of the host goes beyond its stop threshold, the job will be suspended. The loadSched and loadStop arrays are indexed by the following constants: 
+.br
+ R15S 
+.br
+ 15-second average CPU run queue length. 
+.br
+ R1M 
+.br
+ 1-minute average CPU run queue length. 
+.br
+ R15M 
+.br
+ 15-minute average CPU run queue length. 
+.br
+ UT 
+.br
+ CPU utilization over the last minute. 
+.br
+ PG 
+.br
+ Average memory paging rate, in pages per second. 
+.br
+ IO 
+.br
+ Average disk I/O rate, in KB per second. 
+.br
+ LS 
+.br
+ Number of current login users. 
+.br
+ IT 
+.br
+ Idle time of the host in minutes. 
+.br
+ TMP 
+.br
+ The amount of free disk space in the file system containing /tmp, in MB. 
+.br
+ SWP 
+.br
+ The amount of swap space available, in MB. 
+.br
+ MEM 
+.br
+ The amount of available user memory on this host, in MB. 
+.SS "char* \fBhostInfoEnt::windows\fP"
+.PP
+ASCII desp of run windows.One or more time windows in a week during which batch jobs may be dispatched to run on this host . 
+.PP
+The default is no restriction, or always open (i.e., 24 hours a day seven days a week). These windows are similar to the dispatch windows of batch job queues. See \fBlsb_queueinfo\fP. 
+.SS "int \fBhostInfoEnt::userJobLimit\fP"
+.PP
+The maximum number of job slots any user is allowed to use on this host. 
+.PP
+
+.SS "int \fBhostInfoEnt::maxJobs\fP"
+.PP
+The maximum number of job slots that the host can process concurrently. 
+.PP
+
+.SS "int \fBhostInfoEnt::numJobs\fP"
+.PP
+The number of job slots running or suspended on the host. 
+.PP
+
+.SS "int \fBhostInfoEnt::numRUN\fP"
+.PP
+The number of job slots running on the host. 
+.PP
+
+.SS "int \fBhostInfoEnt::numSSUSP\fP"
+.PP
+The number of job slots suspended by the batch daemon on the host. 
+.PP
+
+.SS "int \fBhostInfoEnt::numUSUSP\fP"
+.PP
+The number of job slots suspended by the job submitter or the LSF system administrator. 
+.PP
+
+.SS "int \fBhostInfoEnt::mig\fP"
+.PP
+The migration threshold in minutes after which a suspended job will be considered for migration. 
+.PP
+
+.SS "int \fBhostInfoEnt::attr\fP"
+.PP
+The host attributes; the bitwise inclusive OR of some of \fBhost_attributes\fP. 
+.PP
+.SS "float* \fBhostInfoEnt::realLoad\fP"
+.PP
+The effective load of the host. 
+.PP
+
+.SS "int \fBhostInfoEnt::numRESERVE\fP"
+.PP
+The number of job slots reserved by LSF for the PEND jobs. 
+.PP
+
+.SS "int \fBhostInfoEnt::chkSig\fP"
+.PP
+If attr has an H_ATTR_CHKPNT_COPY attribute, chkSig is set to the signal which triggers checkpoint and copy operation. 
+.PP
+Otherwise, chkSig is set to the signal which triggers checkpoint operation on the host 
+.SS "float \fBhostInfoEnt::cnsmrUsage\fP"
+.PP
+Num of resource used by the consumer. 
+.PP
+.SS "float \fBhostInfoEnt::prvdrUsage\fP"
+.PP
+Num of resource used by the provider. 
+.PP
+.SS "float \fBhostInfoEnt::cnsmrAvail\fP"
+.PP
+Num of resource available for the consumer to use. 
+.PP
+.SS "float \fBhostInfoEnt::prvdrAvail\fP"
+.PP
+Num of resource available for the provider to use. 
+.PP
+.SS "float \fBhostInfoEnt::maxAvail\fP"
+.PP
+Num maximum of resource available in total. 
+.PP
+.SS "float \fBhostInfoEnt::maxExitRate\fP"
+.PP
+The job exit rate threshold on the host. 
+.PP
+.SS "float \fBhostInfoEnt::numExitRate\fP"
+.PP
+Number of job exit rate on the host. 
+.PP
+.SS "char* \fBhostInfoEnt::hCtrlMsg\fP"
+.PP
+AdminAction - host control message. 
+.PP
+.SS "int \fBhostInfoEnt::numNetwork\fP"
+.PP
+The number of PE networks on this host. 
+.PP
+.SS "struct networkInfoEnt* \fBhostInfoEnt::networkInfoArray\fP"
+.PP
+Detailed PE network information. 
+.PP
+.SS "char* \fBhostInfoEnt::affinityCpulist\fP"
+.PP
+The CPU list which can be used in affinity scheduling. 
+.PP
+.SS "\fBlsf_topology_t\fP \fBhostInfoEnt::hostTp\fP"
+.PP
+host topology tree info 
+.PP
+.SS "int \fBhostInfoEnt::powerStatus\fP"
+.PP
+host power status 
+.PP
+.SS "int \fBhostInfoEnt::idleTime\fP"
+.PP
+host idle time 
+.PP
+.SS "int \fBhostInfoEnt::cycleTimeLeft\fP"
+.PP
+host cycle time left 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+host_status \- The status of the host.  
+
+.PP
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBHOST_STAT_OK\fP   0x0"
+.br
+.ti -1c
+.RI "#define \fBHOST_STAT_BUSY\fP   0x01"
+.br
+.ti -1c
+.RI "#define \fBHOST_STAT_WIND\fP   0x02"
+.br
+.ti -1c
+.RI "#define \fBHOST_STAT_DISABLED\fP   0x04"
+.br
+.ti -1c
+.RI "#define \fBHOST_STAT_LOCKED\fP   0x08"
+.br
+.ti -1c
+.RI "#define \fBHOST_STAT_FULL\fP   0x10"
+.br
+.ti -1c
+.RI "#define \fBHOST_STAT_UNREACH\fP   0x20"
+.br
+.ti -1c
+.RI "#define \fBHOST_STAT_UNAVAIL\fP   0x40"
+.br
+.ti -1c
+.RI "#define \fBHOST_STAT_UNLICENSED\fP   0x80"
+.br
+.ti -1c
+.RI "#define \fBHOST_STAT_NO_LIM\fP   0x100"
+.br
+.ti -1c
+.RI "#define \fBHOST_STAT_EXCLUSIVE\fP   0x200"
+.br
+.ti -1c
+.RI "#define \fBHOST_STAT_LOCKED_MASTER\fP   0x400"
+.br
+.ti -1c
+.RI "#define \fBHOST_STAT_REMOTE_DISABLED\fP   0x800"
+.br
+.ti -1c
+.RI "#define \fBHOST_STAT_LEASE_INACTIVE\fP   0x1000"
+.br
+.ti -1c
+.RI "#define \fBHOST_STAT_DISABLED_RES\fP   0x4000"
+.br
+.ti -1c
+.RI "#define \fBHOST_STAT_DISABLED_RMS\fP   0x8000"
+.br
+.ti -1c
+.RI "#define \fBHOST_STAT_LOCKED_EGO\fP   0x10000"
+.br
+.ti -1c
+.RI "#define \fBHOST_CLOSED_BY_ADMIN\fP   0x20000"
+.br
+.ti -1c
+.RI "#define \fBHOST_STAT_CU_EXCLUSIVE\fP   0x40000"
+.br
+.ti -1c
+.RI "#define \fBHOST_STAT_ACOK\fP   0x100000"
+.br
+.ti -1c
+.RI "#define \fBHOST_STAT_SCHED_OK\fP   0x400000"
+.br
+.ti -1c
+.RI "#define \fBHOST_STAT_POWER_CLOSED\fP   0x800000"
+.br
+.ti -1c
+.RI "#define \fBHOST_STAT_IN_CYCLETIME\fP   0x1000000"
+.br
+.ti -1c
+.RI "#define \fBHOST_STAT_DISCONNECTED\fP   0x2000000"
+.br
+.ti -1c
+.RI "#define \fBHOST_STAT_RELINQUISHED\fP   0x4000000"
+.br
+.ti -1c
+.RI "#define \fBHOST_STAT_CLOSED_HFACTORY\fP   0x8000000"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+The status of the host. 
+
+It is the bitwise inclusive OR of some of the following: 
+.SH "Define Documentation"
+.PP 
+.SS "#define HOST_STAT_OK   0x0"
+.PP
+Ready to accept and run jobs. 
+.PP
+.SS "#define HOST_STAT_BUSY   0x01"
+.PP
+The host load is greater than a scheduling threshold. 
+.PP
+In this status, no new job will be scheduled to run on this host. 
+.SS "#define HOST_STAT_WIND   0x02"
+.PP
+The host dispatch window is closed. 
+.PP
+In this status, no new job will be accepted. 
+.SS "#define HOST_STAT_DISABLED   0x04"
+.PP
+The host has been disabled by the LSF administrator and will not accept jobs. 
+.PP
+In this status, no new job will be scheduled to run on this host. 
+.SS "#define HOST_STAT_LOCKED   0x08"
+.PP
+The host is locked by a exclusive task. 
+.PP
+In this status, no new job will be scheduled to run on this host. 
+.SS "#define HOST_STAT_FULL   0x10"
+.PP
+Great than job limit. 
+.PP
+The host has reached its job limit. In this status, no new job will be scheduled to run on this host. 
+.SS "#define HOST_STAT_UNREACH   0x20"
+.PP
+The sbatchd on this host is unreachable. 
+.PP
+
+.SS "#define HOST_STAT_UNAVAIL   0x40"
+.PP
+The LIM and sbatchd on this host are unavailable. 
+.PP
+
+.SS "#define HOST_STAT_UNLICENSED   0x80"
+.PP
+The host does not have an LSF license. 
+.PP
+
+.SS "#define HOST_STAT_NO_LIM   0x100"
+.PP
+The host is running an sbatchd but not a LIM. 
+.PP
+
+.SS "#define HOST_STAT_EXCLUSIVE   0x200"
+.PP
+Running exclusive job. 
+.PP
+.SS "#define HOST_STAT_LOCKED_MASTER   0x400"
+.PP
+Lim locked by master LIM. 
+.PP
+.SS "#define HOST_STAT_REMOTE_DISABLED   0x800"
+.PP
+Close a remote lease host. 
+.PP
+This flag is used together with HOST_STAT_DISABLED. 
+.SS "#define HOST_STAT_LEASE_INACTIVE   0x1000"
+.PP
+Close a remote lease host due to the lease is renewing or terminating. 
+.PP
+
+.SS "#define HOST_STAT_DISABLED_RES   0x4000"
+.PP
+Host is disabled by RES. 
+.PP
+.SS "#define HOST_STAT_DISABLED_RMS   0x8000"
+.PP
+Host is disabled by RMS. 
+.PP
+.SS "#define HOST_STAT_LOCKED_EGO   0x10000"
+.PP
+The host is disabled by EGO. 
+.PP
+.SS "#define HOST_CLOSED_BY_ADMIN   0x20000"
+.PP
+If none of the above hold, hStatus is set to HOST_STAT_OK to indicate that the host is ready to accept and run jobs. 
+.PP
+
+.SS "#define HOST_STAT_CU_EXCLUSIVE   0x40000"
+.PP
+Running cu exclusive job. 
+.PP
+.SS "#define HOST_STAT_ACOK   0x100000"
+.PP
+Dynamic Cluster is ready for provision. 
+.PP
+.SS "#define HOST_STAT_SCHED_OK   0x400000"
+.PP
+power policy triggered power save 
+.PP
+.SS "#define HOST_STAT_POWER_CLOSED   0x800000"
+.PP
+badmin hpower triggered power save 
+.PP
+.SS "#define HOST_STAT_IN_CYCLETIME   0x1000000"
+.PP
+host is in cycle time 
+.PP
+.SS "#define HOST_STAT_DISCONNECTED   0x2000000"
+.PP
+Disconnected mbatchd to sbd. 
+.PP
+.SS "#define HOST_STAT_RELINQUISHED   0x4000000"
+.PP
+host is relinquished to host factory 
+.PP
+.SS "#define HOST_STAT_CLOSED_HFACTORY   0x8000000"
+.PP
+host is disabled by host factory policy 
+.PP
+.ad l
+.nh
+.SH NAME
+host_load_BusyReason \- If hStatus is HOST_STAT_BUSY, these indicate the host loadSched or loadStop busy reason.  
+
+.PP
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBHOST_BUSY_NOT\fP   0x000"
+.br
+.ti -1c
+.RI "#define \fBHOST_BUSY_R15S\fP   0x001"
+.br
+.ti -1c
+.RI "#define \fBHOST_BUSY_R1M\fP   0x002"
+.br
+.ti -1c
+.RI "#define \fBHOST_BUSY_R15M\fP   0x004"
+.br
+.ti -1c
+.RI "#define \fBHOST_BUSY_UT\fP   0x008"
+.br
+.ti -1c
+.RI "#define \fBHOST_BUSY_PG\fP   0x010"
+.br
+.ti -1c
+.RI "#define \fBHOST_BUSY_IO\fP   0x020"
+.br
+.ti -1c
+.RI "#define \fBHOST_BUSY_LS\fP   0x040"
+.br
+.ti -1c
+.RI "#define \fBHOST_BUSY_IT\fP   0x080"
+.br
+.ti -1c
+.RI "#define \fBHOST_BUSY_TMP\fP   0x100"
+.br
+.ti -1c
+.RI "#define \fBHOST_BUSY_SWP\fP   0x200"
+.br
+.ti -1c
+.RI "#define \fBHOST_BUSY_MEM\fP   0x400"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+If hStatus is HOST_STAT_BUSY, these indicate the host loadSched or loadStop busy reason. 
+
+If none of the thresholds have been exceeded, the value is HOST_BUSY_NOT. Otherwise the value is the bitwise inclusive OR of some of the following: 
+.SH "Define Documentation"
+.PP 
+.SS "#define HOST_BUSY_NOT   0x000"
+.PP
+Host not busy. 
+.PP
+.SS "#define HOST_BUSY_R15S   0x001"
+.PP
+The 15 second average CPU run queue length is too high. 
+.PP
+
+.SS "#define HOST_BUSY_R1M   0x002"
+.PP
+The 1 minute average CPU run queue length is too high. 
+.PP
+
+.SS "#define HOST_BUSY_R15M   0x004"
+.PP
+The 15 minute average CPU run queue length is too high. 
+.PP
+
+.SS "#define HOST_BUSY_UT   0x008"
+.PP
+The CPU utilization is too high. 
+.PP
+
+.SS "#define HOST_BUSY_PG   0x010"
+.PP
+The paging rate is too high. 
+.PP
+
+.SS "#define HOST_BUSY_IO   0x020"
+.PP
+The I/O rate is too high. 
+.PP
+
+.SS "#define HOST_BUSY_LS   0x040"
+.PP
+There are too many login sessions. 
+.PP
+
+.SS "#define HOST_BUSY_IT   0x080"
+.PP
+Host has not been idle long enough. 
+.PP
+
+.SS "#define HOST_BUSY_TMP   0x100"
+.PP
+There is not enough free space in the file system containing /tmp. 
+.PP
+
+.SS "#define HOST_BUSY_SWP   0x200"
+.PP
+There is not enough free swap space. 
+.PP
+
+.SS "#define HOST_BUSY_MEM   0x400"
+.PP
+There is not enough free memory. 
+.PP
+
+.ad l
+.nh
+.SH NAME
+host_attributes \- The host attributes.  
+
+.PP
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBH_ATTR_CHKPNTABLE\fP   0x1"
+.br
+.ti -1c
+.RI "#define \fBH_ATTR_CHKPNT_COPY\fP   0x2"
+.br
+.ti -1c
+.RI "#define \fBH_ATTR_VNODE\fP   0x4"
+.br
+.ti -1c
+.RI "#define \fBH_ATTR_DC_REPROVISIONABLE\fP   0x08"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+The host attributes. 
+.SH "Define Documentation"
+.PP 
+.SS "#define H_ATTR_CHKPNTABLE   0x1"
+.PP
+This host can checkpoint jobs. 
+.PP
+.SS "#define H_ATTR_CHKPNT_COPY   0x2"
+.PP
+This host provides kernel support for checkpoint copy. 
+.PP
+
+.SS "#define H_ATTR_VNODE   0x4"
+.PP
+This host is a virtual node. 
+.PP
+
+.SS "#define H_ATTR_DC_REPROVISIONABLE   0x08"
+.PP
+This DC host is re-provisionable. 
+.PP
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

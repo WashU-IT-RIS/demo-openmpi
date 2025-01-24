@@ -1,0 +1,56 @@
+.TH "lsb_readrankfile" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_readrankfile \- lsb_readrankfile 
+Reads the specified rank file and returns the host list.
+.PP
+If the path is NULL, reads the rank file specified by LSB_DJOB_RANKFILE. The rank file is assumed to be in the format of one host per line. A host can appear in the list more than once and in any order.
+.PP
+This function allocates the memory for the host list. It is the responsibility of the caller to free the lists when they are no longer needed. If successful, the host list is a list of strings. You must free the individual elements before freeing the host list.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB int lsb_readrankfile(char ***hostlist, char *path)\fP
+.PP
+.SH "Parameters:"
+\fI***hostlist\fP [OUT] A null-terminated list of host names 
+.br
+\fI*path\fP [IN] Path to the host file, if NULL, use LSB_DJOB_HOSTFILE
+.PP
+.SH "Data Structures:" 
+.PP
+none
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+>0 
+.br
+ Function was successful. Returns the length of the host list, not including the last null element. 
+.PP
+-1 
+.br
+ Function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lsberrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+none
+.PP
+.SH "See also:"
+none 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

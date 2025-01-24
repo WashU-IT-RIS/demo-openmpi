@@ -1,0 +1,28 @@
+.TH "extsched_resreq_getextresreq" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+extsched_resreq_getextresreq \- extsched_resreq_getextresreq 
+Get user-specified resource requirement message for the peer jobs.
+.PP
+\fB#include <lssched.h>\fP
+.PP
+\fB char **extsched_resreq_getextresreq(INT_RsrcReq *resreq, int *msgCnt)\fP
+.PP
+.SH "Parameters:"
+\fIresreq\fP [IN] : Internal object representing resource requirements for peer jobs. 
+.br
+\fImsgCnt\fP [OUT] : Number of user-specified messages submitted with the peer jobs.
+.PP
+.SH "Returns:"
+char **  of user-specified messages submitted with the peer jobs. 
+.PP
+NULL  are no such messages.
+.PP
+.SH "See also:"
+\fBextsched_job_getextresreq\fP 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

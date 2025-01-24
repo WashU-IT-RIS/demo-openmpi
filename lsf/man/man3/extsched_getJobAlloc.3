@@ -1,0 +1,23 @@
+.TH "extsched_getJobAlloc" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+extsched_getJobAlloc \- extsched_getJobAlloc 
+This function returns the current allocation that is made to a job, if it exists.
+.PP
+\fB#include <lssched.h>\fP
+.PP
+\fB INT_Alloc *extsched_getJobAlloc(INT_Job *job)\fP
+.PP
+.SH "Parameters:"
+\fIjob\fP [IN] : a job
+.PP
+.SH "Returns:"
+INT_Alloc *  pointer to the internal (opaque) allocation structure currently assigned to the job. 
+.PP
+NULL  is no allocation. 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

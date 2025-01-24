@@ -1,0 +1,764 @@
+
+.ad l
+
+.TH lsb.users 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBlsb.users\fR
+.ce 0
+
+.sp 2
+The lsb.users file is used to configure user groups, hierarchical
+fairshare for users and user groups, and job slot limits for
+users and user groups. It is also used to configure account
+mappings in a MultiCluster environment.
+.sp 2
+This file is optional.
+.sp 2
+The lsb.users file is stored in the directory
+LSB_CONFDIR/\fIcluster_name\fR/configdir, where LSB_CONFDIR is
+defined in lsf.conf.
+.SH Changing lsb.users configuration
+
+.sp 2
+After making any changes to lsb.users, run badmin reconfig to
+reconfigure mbatchd.
+.sp 2
+Parent topic: Configuration files
+.sp 2
+
+.ce 1000
+\fB#INCLUDE\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fR#INCLUDE\fR \fR"path-to-file"\fR
+.SH Description
+
+.sp 2
+Inserts a configuration setting from another file to the current
+location. Use this directive to dedicate control of a portion of
+the configuration to other users or user groups by providing
+write access for the included file to specific users or user
+groups, and to ensure consistency of configuration file settings
+in different clusters (if you are using the LSF multicluster
+capability).
+.sp 2
+See more information on shared configuration file content in
+Administering IBM Spectrum LSF
+.sp 2
+\fR#INCLUDE\fR can be inserted anywhere in the local
+configuration file.
+.SH Default
+
+.sp 2
+Not defined.
+.sp 2
+
+.ce 1000
+\fBUserGroup section\fR
+.ce 0
+
+.sp 2
+Optional. Defines user groups.
+.sp 2
+The name of the user group can be used in other user group and
+queue definitions, as well as on the command line. Specifying the
+name of a user group in the GROUP_MEMBER section has exactly the
+same effect as listing the names of all users in the group.
+.sp 2
+The total number of user groups cannot be more than 1024.
+.SH Structure
+
+.sp 2
+The first line consists of two mandatory keywords, GROUP_NAME and
+GROUP_MEMBER. Other keywords are optional. Subsequent lines name
+a group and list its membership and optionally its share
+assignments and administrator.
+.sp 2
+Each line must contain one entry for each keyword. Use empty
+parentheses () or a dash - to specify the default value for an
+entry.
+.sp 2
+\fBRestriction: \fRIf specifying a specific user name for a user
+group, that entry must precede all user groups.
+.SH Examples of a UserGroup section
+
+.sp 2
+Example 1:
+.sp 2
+Begin UserGroup 
+.br
+GROUP_NAME          GROUP_MEMBER                 GROUP_ADMIN           PRIORITY
+.br
+groupA              (user1 user2 user3 user4)    (user5[full])          100
+.br
+groupB              (user7 user8 user9)          (groupA[usershares])   50
+.br
+groupC              (groupA user5)               (groupA)               50
+.br
+groupD              (!)                          ()                     10
+.sp 2
+Example 2:
+.sp 2
+Begin UserGroup 
+.br
+GROUP_NAME           GROUP_MEMBER                 GROUP_ADMIN     PRIORITY
+.br
+groupA               (user1 user2 user3 user4)    (user5)         200
+.br
+groupB               (groupA user5)               (groupA)        100
+.br
+groupC               (!)                          ()              50
+.br
+End UserGroup
+.sp 2
+Example 3:
+.sp 2
+Begin UserGroup 
+.br
+GROUP_NAME   GROUP_MEMBER            USER_SHARES                PRIORITY 
+.br
+groupB       (user1 use r2)          ()                         100
+.br
+groupC       (user3 user4)           ([User3,3] [User4,4])      200
+.br
+groupA       (GroupB GroupC user5)   ([User5,1] [default,10])   50
+.br
+End UserGroup
+.sp 2
+
+.ce 1000
+\fBGROUP_NAME\fR
+.ce 0
+
+.sp 2
+An alphanumeric string representing the user group name. You
+cannot use the reserved name all or a \fR"/"\fR in a group name.
+.sp 2
+
+.ce 1000
+\fBFS_POLICY\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+(global_fairshare_\fIpolicy_name\fR ...)
+.SH Description
+
+.sp 2
+Optional. Enables partial \fBSYNC_MODE\fR global fairshare policy
+for the defined user group. It specifies which partial
+\fBSYNC_MODE\fR global fairshare policy the share account will
+participate into.
+.SH Default
+
+.sp 2
+Not defined.
+.SH Example
+
+.sp 2
+Begin UserGroup
+.br
+GROUP_NAME   GROUP_MEMBER  USER_SHARES          FS_POLICY
+.br
+group1       (user1 user2) ([default, 10])      (utopia)
+.br
+End UserGroup
+.sp 2
+
+.ce 1000
+\fBGROUP_MEMBER\fR
+.ce 0
+
+.sp 2
+User group members are the users who belong to the group. You can
+specify both user names and user group names.
+.sp 2
+User and user group names can appear on multiple lines because
+users can belong to multiple groups.
+.sp 2
+\fBNote: \fR
+.sp 2
+When a user belongs to more than one group, any of the
+administrators specified for any of the groups the user belongs
+to can control that users’ jobs. Limit administrative control by
+defining \fRSTRICT_UG_CONTROL=Y\fR in lsb.params and submitting
+jobs with the -G option, specifying which user group the job is
+submitted with.
+.sp 2
+User groups may be defined recursively but must not create a
+loop.
+.SH Syntax
+
+.sp 2
+(\fIuser_name\fR | \fIuser_group\fR ...) | (all) | (!)
+.sp 2
+Enclose the entire group member list in parentheses. Use space to
+separate multiple names.
+.sp 2
+You can combine user names and user group names in the same list.
+.SH Valid values
+
+.sp 2
+*  all
+.sp 2
+   The reserved name all specifies all users in the cluster.
+.sp 2
+*  !
+.sp 2
+   An exclamation mark (\fR!\fR) indicates an externally-defined
+   user group, which the egroup executable retrieves.
+.sp 2
+*  \fIuser_name \fR
+.sp 2
+   User names must be valid login names.
+.sp 2
+   To specify a Windows user account, include the domain name in
+   uppercase letters (\fIDOMAIN_NAME\fR\\fIuser_name\fR).
+.sp 2
+*  \fIuser_group \fR
+.sp 2
+   User group names can be LSF user groups defined previously in
+   this section, or UNIX and Windows user groups.
+.sp 2
+   If you specify a name that is both a UNIX user group and also
+   a UNIX user, append a backslash to make sure it is interpreted
+   as a group (\fIuser_group\fR\fB/\fR).
+.sp 2
+   To specify a Windows user group, include the domain name in
+   uppercase letters (\fIDOMAIN_NAME\fR\\fIuser_group\fR).
+.sp 2
+
+.ce 1000
+\fBGROUP_ADMIN\fR
+.ce 0
+
+.sp 2
+User group administrators can administer the jobs of group
+members. You can specify both user names and user group names.
+.sp 2
+*  If you specify a user group as an administrator for another
+   user group, all members of the first user group become
+   administrators for the second user group.
+.sp 2
+*  You can also specify that all users of a group are also
+   administrators of that same group.
+.sp 2
+*  Users can be administrators for more than one user group at
+   the same time.
+.sp 2
+   \fBNote: \fR
+.sp 2
+   When a user belongs to more than one group, any of the
+   administrators specified for any of the groups the user
+   belongs to can control that users’ jobs. Define
+   \fRSTRICT_UG_CONTROL=Y\fR in lsb.params to limit user group
+   administrator control to the user group specified by -G at job
+   submission.
+.sp 2
+By default a user group administrator has privileges equivalent
+to those of a job owner, and is allowed to control any job
+belonging to member users of the group they administer. A user
+group administrator can also resume jobs stopped by the LSF
+administrator or queue administrator if the job belongs to a
+member of their user group.
+.sp 2
+Optionally, you can specify additional user group administrator
+rights for each user group administrator.
+.sp 2
+User group administrator rights are inherited. For example, if
+admin2 has full rights for user group ugA and user group ugB is a
+member of ugA, admin2 also has full rights for user group ugB.
+.sp 2
+\fBRestriction: \fR
+.sp 2
+Unlike a job owner, a user group administrator cannot run
+brestart and bread -a \fIdata_file\fR.
+.sp 2
+To manage security concerns, you cannot specify user group
+administrators for any user group containing the keyword all as a
+member unless \fRSTRICT_UG_CONTROL=Y\fR is defined in lsb.params.
+.SH Syntax
+
+.sp 2
+(\fIuser_name\fR |
+\fIuser_name\fR\fR[\fR\fIadmin_rights\fR\fR]\fR |
+\fIuser_group\fR |
+\fIuser_group\fR\fR[\fR\fIadmin_rights\fR\fR]\fR ...)
+.sp 2
+Enclose the entire group administrator list in parentheses. If
+you specify administrator rights for a user or group, enclose
+them in square brackets.
+.sp 2
+You can combine user names and user group names in the same list.
+Use space to separate multiple names.
+.SH Valid values
+
+.sp 2
+*  \fIuser_name \fR
+.sp 2
+   User names must be valid login names.
+.sp 2
+   To specify a Windows user account, include the domain name in
+   uppercase letters (\fIDOMAIN_NAME\fR\\fIuser_name\fR).
+.sp 2
+*  \fIuser_group \fR
+.sp 2
+   User group names can be LSF user groups defined previously in
+   this section, or UNIX and Windows user groups.
+.sp 2
+   If you specify a name that is both a UNIX user group and also
+   a UNIX user, append a backslash to make sure it is interpreted
+   as a group (\fIuser_group\fR\fB/\fR).
+.sp 2
+   To specify a Windows user group, include the domain name in
+   uppercase letters (\fIDOMAIN_NAME\fR\\fIuser_group\fR).
+.sp 2
+*  \fIadmin_rights \fR
+.sp 2
+   *  
+      If no rights are specified, only default job control rights
+      are given to user group administrators.
+.sp 2
+   *  
+      usershares: user group administrators with usershares
+      rights can adjust user shares using bconf update.
+.sp 2
+   *  
+      full: user group administrators with full rights can use
+      bconf to delete the user group, create new user groups, and
+      adjust usershares, group members, and user group
+      priorities.
+.sp 2
+      User group administrators with full rights can only add a
+      user group member to the user group if they also have full
+      rights for the member user group.
+.sp 2
+      User group administrators adding a new user group with
+      bconf create are automatically added to GROUP_ADMIN with
+      full rights for the new user group.
+.SH Restrictions
+
+.sp 2
+*  Wildcard and special characters are not supported (for
+   example: *, !, $, #, &, ~)
+.sp 2
+*  The reserved keywords others, default, allremote are not
+   supported.
+.sp 2
+*  User groups with the keyword all as a member can only have
+   user group administrators configured if
+   \fRSTRICT_UG_CONTROL=Y\fR is defined in lsb.params.
+.sp 2
+*  User groups with the keyword all as a member cannot be user
+   group administrators.
+.sp 2
+*  User groups and user groups administrator definitions cannot
+   be recursive or create a loop.
+.sp 2
+
+.ce 1000
+\fBPRIORITY\fR
+.ce 0
+
+.sp 2
+Optional. Specifies a priority that is used as a factor when
+calculating the job priority for absolute job priority scheduling
+(APS).
+.SH Valid values
+
+.sp 2
+Specify an integer between 0 and 2147483646.
+.SH Default
+
+.sp 2
+Not defined.
+.sp 2
+If APS is enabled for users, user groups, or application
+profiles, the default value is 0.
+.sp 2
+
+.ce 1000
+\fBUSER_SHARES\fR
+.ce 0
+
+.sp 2
+Optional. Enables hierarchical fairshare and defines a share tree
+for users and user groups.
+.sp 2
+By default, when resources are assigned collectively to a group,
+the group members compete for the resources according to FCFS
+scheduling. You can use hierarchical fairshare to further divide
+the shares among the group members.
+.SH Syntax
+
+.sp 2
+([\fIuser\fR, \fInumber_shares\fR])
+.sp 2
+Specify the arguments as follows:
+.sp 2
+*  Enclose the list in parentheses, even if you do not specify
+   any user share assignments.
+.sp 2
+*  Enclose each user share assignment in square brackets, as
+   shown.
+.sp 2
+*  Separate the list of share assignments with a space.
+.sp 2
+*  \fIuser\fR—Specify users or user groups. You can assign the
+   shares to:
+.sp 2
+   *  A single user (specify \fIuser_name\fR). To specify a
+      Windows user account, include the domain name in uppercase
+      letters (\fIDOMAIN_NAME\fR\\fIuser_name\fR).
+.sp 2
+   *  Users in a group (specify \fIgroup_name\fR). To specify a
+      Windows user group, include the domain name in uppercase
+      letters (\fIDOMAIN_NAME\fR\\fIgroup_name\fR).
+.sp 2
+   *  Users not included in any other share assignment,
+      individually (specify the keyword default) or collectively
+      (specify the keyword others).
+.sp 2
+   \fBNote: \fRBy default, when resources are assigned
+   collectively to a group, the group members compete for the
+   resources on a first-come, first-served (FCFS) basis. You can
+   use hierarchical fairshare to further divide the shares among
+   the group members. When resources are assigned to members of a
+   group individually, the share assignment is recursive. Members
+   of the group and of all subgroups always compete for the
+   resources according to FCFS scheduling, regardless of
+   hierarchical fairshare policies.
+.sp 2
+*  \fInumber_shares\fR—Specify a positive integer representing
+   the number of shares of the cluster resources assigned to the
+   user. The number of shares assigned to each user is only
+   meaningful when you compare it to the shares assigned to other
+   users or to the total number of shares. The total number of
+   shares is just the sum of all the shares assigned in each
+   share assignment.
+.sp 2
+
+.ce 1000
+\fBUser section\fR
+.ce 0
+
+.sp 2
+Optional. If this section is not defined, all users and user
+groups can run an unlimited number of jobs in the cluster.
+.sp 2
+This section defines the maximum number of jobs a user or user
+group can run concurrently in the cluster. This is to avoid
+situations in which a user occupies all or most of the system
+resources while other users’ jobs are waiting.
+.SH Structure
+
+.sp 2
+One field is mandatory: \fRUSER_NAME\fR.
+.sp 2
+All other fields are optional.
+.sp 2
+You must specify a dash (-) to indicate the default value
+(unlimited) if a user or user group is specified. Fields cannot
+be left blank.
+.SH Example of a User section
+
+.sp 2
+Begin User 
+.br
+USER_NAME   MAX_JOBS   JL/P   MAX_PEND_JOBS     PRIORITY
+.br
+user1       10          -        1000           200
+.br
+user2        4          -           -           100
+.br
+user3        -          -           -           300
+.br
+groupA      10          1      100000           400
+.br
+groupA@      -          1         100           200
+.br
+groupC       -          -         500           100
+.br
+default      6          1          10             0
+.br
+End User
+.sp 2
+
+.ce 1000
+\fBUSER_NAME\fR
+.ce 0
+
+.sp 2
+User or user group for which job slot limits are defined.
+.sp 2
+Use the reserved user name default to specify a job slot limit
+that applies to each user and user group not explicitly named.
+Since the limit specified with the keyword default applies to
+user groups also, make sure you select a limit that is high
+enough, or explicitly define limits for user groups.
+.sp 2
+User group names can be the LSF user groups defined previously,
+and/or UNIX and Windows user groups. To specify a Windows user
+account or user group, include the domain name in uppercase
+letters (\fIDOMAIN_NAME\fR\\fIuser_name\fR or
+\fIDOMAIN_NAME\fR\\fIuser_group\fR).
+.sp 2
+Job slot limits apply to a group as a whole. Append the at sign
+(\fR@\fR) to a group name to make the job slot limits apply
+individually to each user in the group. If a group contains a
+subgroup, the job slot limit also applies to each member in the
+subgroup recursively.
+.sp 2
+If the group contains the keyword all in the user list, the at
+sign (\fR@\fR) has no effect. To specify job slot limits for each
+user in a user group containing all, use the keyword default.
+.sp 2
+
+.ce 1000
+\fBMAX_JOBS\fR
+.ce 0
+
+.sp 2
+Per-user or per-group job slot limit for the cluster. Total
+number of job slots that each user or user group can use in the
+cluster.
+.sp 2
+\fBNote: \fRIf a group contains the keyword all as a member, all
+users and user groups are included in the group. The per-group
+job slot limit set for the group applies to the group as a whole,
+limiting the entire cluster even when \fBENFORCE_ONE_UG_LIMIT\fR
+is set in lsb.params.
+.sp 2
+
+.ce 1000
+\fBJL/P\fR
+.ce 0
+
+.sp 2
+Per processor job slot limit per user or user group.
+.sp 2
+Total number of job slots that each user or user group can use
+per processor. This job slot limit is configured per processor so
+that multiprocessor hosts will automatically run more jobs.
+.sp 2
+This number can be a fraction such as 0.5, so that it can also
+serve as a per-host limit. This number is rounded up to the
+nearest integer equal to or greater than the total job slot
+limits for a host. For example, if \fRJL/P\fR is 0.5, on a 4-CPU
+multiprocessor host, the user can only use up to 2 job slots at
+any time. On a uniprocessor machine, the user can use 1 job slot.
+.sp 2
+
+.ce 1000
+\fBMAX_PEND_JOBS\fR
+.ce 0
+
+.sp 2
+Per-user or per-group pending job limit. This is the total number
+of pending jobs that each user or user group can have in the
+system. If a user is a member of multiple user groups, the user’s
+pending jobs are counted towards the pending job limits of all
+groups from which the user has membership.
+.sp 2
+If \fBENFORCE_ONE_UG_LIMITS\fR is set to Y in lsb.params and you
+submit a job while specifying a user group, only the limits for
+that user group (or any parent user group) apply to the job even
+if there are overlapping user group members.
+.sp 2
+
+.ce 1000
+\fBMAX_PEND_SLOTS\fR
+.ce 0
+
+.sp 2
+Per-user or per-group pending job slot limit. This is the total
+number of pending job slots that each user or user group can have
+in the system. If a user is a member of multiple user groups, the
+user’s pending jobs are counted towards the pending job slot
+limits of all groups from which the user has membership.
+.sp 2
+If \fBENFORCE_ONE_UG_LIMITS\fR is set to Y in lsb.params and you
+submit a job while specifying a user group, only the limits for
+that user group (or any parent user group) apply to the job even
+if there are overlapping user group members.
+.sp 2
+
+.ce 1000
+\fBPRIORITY\fR
+.ce 0
+
+.sp 2
+Optional. Specifies a priority that is used as a factor when
+calculating the job priority for absolute job priority scheduling
+(APS).
+.SH Valid values
+
+.sp 2
+Specify an integer between 0 and 2147483646.
+.SH Default
+
+.sp 2
+Not defined.
+.sp 2
+If APS is enabled for users, user groups, or application
+profiles, the default value is 0.
+.sp 2
+
+.ce 1000
+\fBUserMap section\fR
+.ce 0
+
+.sp 2
+Optional. Used only in a MultiCluster environment with a
+non-uniform user name space. Defines system-level cross-cluster
+account mapping for users and user groups, which allows users to
+submit a job from a local host and run the job as a different
+user on a remote host. Both the local and remote clusters must
+have corresponding user account mappings configured.
+.sp 2
+
+.SH Structure
+
+.sp 2
+The following three fields are all required:
+.sp 2
+*  LOCAL
+.sp 2
+*  REMOTE
+.sp 2
+*  DIRECTION
+.sp 2
+\fBLOCAL\fR
+.br
+         A list of users or user groups in the local cluster. To
+         specify a Windows user account or user group, include
+         the domain name in uppercase letters
+         (\fIDOMAIN_NAME\fR\\fIuser_name\fR or
+         \fIDOMAIN_NAME\fR\\fIuser_group\fR). Separate multiple
+         user names by a space and enclose the list in
+         parentheses ( ):
+.sp 2
+         (user4 user6)
+.br
+
+.sp 2
+\fBREMOTE\fR
+.br
+         A list of remote users or user groups in the form
+         \fIuser_name@cluster_name\fR or
+         \fIuser_group@cluster_name\fR. To specify a Windows user
+         account or user group, include the domain name in
+         uppercase letters
+         (\fIDOMAIN_NAME\fR\\fIuser_name@cluster_name\fR or
+         \fIDOMAIN_NAME\fR\\fIuser_group@cluster_name\fR).
+         Separate multiple user names by a space and enclose the
+         list in parentheses ( ):
+.sp 2
+         (user4@cluster2 user6@cluster2)
+.br
+
+.sp 2
+\fBDIRECTION\fR
+.br
+         Specifies whether the user account runs jobs locally or
+         remotely. Both directions must be configured on the
+         local and remote clusters.
+.sp 2
+         *  The export keyword configures local users/groups to
+            run jobs as remote users/groups.
+.sp 2
+         *  The import keyword configures remote users/groups to
+            run jobs as local users/groups.
+.SH Example of a UserMap section
+
+.sp 2
+On cluster1:
+.sp 2
+Begin UserMap 
+.br
+LOCAL    REMOTE                             DIRECTION 
+.br
+user1    user2@cluster2                     export 
+.br
+user3    user6@cluster2    export 
+.br
+End UserMap
+.sp 2
+On cluster2:
+.sp 2
+Begin UserMap 
+.br
+LOCAL    REMOTE                             DIRECTION 
+.br
+user2    user1@cluster1                     import 
+.br
+user6    user3@cluster1                     import 
+.br
+End UserMap
+.sp 2
+Cluster1 configures user1 to run jobs as user2 and user3 to run
+jobs as user6.
+.sp 2
+Cluster2 configures user1 to run jobs as user2 and user3 to run
+jobs as user6.
+.sp 2
+
+.ce 1000
+\fBAutomatic time-based configuration\fR
+.ce 0
+
+.sp 2
+Variable configuration is used to automatically change LSF
+configuration based on time windows. You define automatic
+configuration changes in lsb.users by using if-else constructs
+and time expressions. After you change the files, reconfigure the
+cluster with the badmin reconfig command.
+.sp 2
+The expressions are evaluated by LSF every 10 minutes based on
+mbatchd start time. When an expression evaluates true, LSF
+dynamically changes the configuration based on the associated
+configuration statements. Reconfiguration is done in real time
+without restarting mbatchd, providing continuous system
+availability.
+.sp 2
+
+.ce 1000
+\fBExample\fR
+.ce 0
+
+.sp 2
+From 12 - 1 p.m. daily (in Eastern Daylight Time), user
+\fRsmith\fR has 10 job slots, but during other hours, user has
+only 5 job slots.
+.sp 2
+Begin User
+.br
+USER_NAME  MAX_JOBS  JL/P
+.br
+#if time(12-13 EDT)
+.br
+smith      10         -
+.br
+#else
+.br
+smith       5         -
+.br
+default     1         -
+.br
+#endif
+.br
+End User
+.sp 2
+Specifying the time zone is optional. If you do not specify a
+time zone, LSF uses the local system time zone. LSF supports all
+standard time zone abbreviations.

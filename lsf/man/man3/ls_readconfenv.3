@@ -1,0 +1,118 @@
+.TH "ls_readconfenv" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ls_readconfenv \- ls_readconfenv 
+Reads the LSF configuration parameters from the *confPath/lsf.conf file.
+.PP
+.SH "ls_readconfenv\fP reads the LSF configuration parameters from the *confPath/lsf.conf file. If confPath is NULL, the LSF configurable parameters are read from the ${LSF_ENVDIR:-/etc}/lsf.conf file. See lsf.conf. The input paramList is an array of data structures that are defined in <lsf/lsf.h>. The paramName parameter in the \fBconfig_param\fP data structure should be the pointer to the configuration parameter name defined in the *confPath/lsf.conf or /etc/lsf.conf file if confPath is NULL. The paramValue parameter in the \fBconfig_param" data structure must initially contain NULL and is then modified to point to a result string if a matching paramName is found in the lsf.conf file. A typical data structure declaration is as follows:
+.PP
+struct \fBconfig_param\fP paramList[] = 
+.br
+ { 
+.br
+ #define LSF_CONFDIR 0 
+.br
+       {'LSF_CONFDIR', NULL}, 
+.br
+ #define LSF_LOGDIR 1 
+.br
+       {'LSF_LOGDIR', NULL}, 
+.br
+ #define LSF_SERVERDIR 2 
+.br
+       {'LSF_SERVERDIR', NULL}, 
+.br
+ #define LSF_RES_DEBUG 3 
+.br
+       {'LSF_RES_DEBUG', NULL}, 
+.br
+ #define LSF_NPARAMS 4 
+.br
+       {NULL, NULL}, 
+.br
+ };
+.PP
+By calling \fBls_readconfenv\fP (paramList, '/localpath/etc'), it is possible to read in the required parameters and use the defined constants as indices for referencing the parameters when needed. If a certain parameter name is not found in the lsf.conf file, then its paramValue will remain NULL on return.
+.PP
+\fB#include <lsf/lsf.h>\fP
+.PP
+\fB int ls_readconfenv(struct \fBconfig_param\fP *paramList, char *confPath)\fP
+.PP
+.SH "Parameters:"
+\fI*paramlist\fP An array of data structures that are defined in <lsf/lsf.h>.
+.br
+\fI*confPath\fP The config file's path.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBconfig_param\fP 
+.br
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+int:0 
+.br
+ Function was successful.
+.PP
+int:-1 
+.br
+ Function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lserrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+${LSF_ENVDIR:-/etc}/lsf.conf
+.PP
+.SH "See also:"
+none 
+.PP
+
+.ad l
+.nh
+.SH NAME
+config_param \- The configurational parameter.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBparamName\fP"
+.br
+.ti -1c
+.RI "char * \fBparamValue\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+The configurational parameter. 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fBconfig_param::paramName\fP"
+.PP
+The pointer to the configuration parameter name defined in the *confPath/lsf.conf or /etc/lsf.conf file if confPath is NULL. 
+.PP
+
+.SS "char* \fBconfig_param::paramValue\fP"
+.PP
+The \fBconfig_param\fP data structure must initially contain NULL and is then modified to point to a result string if a matching paramName is found in the lsf.conf file. 
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

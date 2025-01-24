@@ -1,0 +1,36 @@
+.TH "RsrcReqHandler_SortFn" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+RsrcReqHandler_SortFn \- RsrcReqHandler_SortFn 
+Signature for functions that sort candidate hosts by preferences for peer jobs.
+.PP
+These 'sort' functions are called after matching is finished.
+.PP
+\fB#include <lssched.h>\fP
+.PP
+\fB typedef int (*RsrcReqHandler_SortFn)(void *handlerData, INT_CandGroupList *candGroupList, INT_Reason *reasonPtr)\fP
+.PP
+.SH "Parameters:"
+\fIhandlerData\fP [IN] : Handler-specific data attached to resource requirements for peer jobs. 
+.br
+\fIcandGroupList\fP [IN/OUT] list of candidate host groups. 
+.br
+\fIreasonPtr\fP [IN/OUT] pointer to internal object that collects pending reasons.
+.PP
+.SH "Returns:"
+int:0  normally return with 0.
+.PP
+.SH "See also:"
+\fBextsched_cand_getnextgroup\fP 
+.PP
+\fBRsrcReqHandlerType\fP 
+.PP
+\fBRsrcReqHandler_NewFn\fP 
+.PP
+\fBextsched_resreq_registerhandler\fP 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

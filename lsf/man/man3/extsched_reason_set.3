@@ -1,0 +1,31 @@
+.TH "extsched_reason_set" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+extsched_reason_set \- extsched_reason_set 
+Provide the reason why a host is not considered usable for a job.
+.PP
+reasonId must be either a pre-defined reason number, or a customized reason number between 20001 and 25000. LSF reserves pending reason numbers from 1 - 20000. Please refer lsbatch.h for reason ID definitions.
+.PP
+\fB#include <lssched.h>\fP
+.PP
+\fB int extsched_reason_set(INT_Reason *reasonPtr, struct candHost *candHost, int reasonId)\fP
+.PP
+.SH "Parameters:"
+\fIreasonPtr\fP [IN/OUT] : the pointer to internal object that collects pending reasons for the job. 
+.br
+\fIcandHost\fP [IN] : host that cannot be used by job 
+.br
+\fIreasonId\fP [IN] : the ID of the reason why host cannot be used.
+.PP
+RETURNS
+.PP
+.SH "Returns:"
+int:0 . 
+.PP
+int:<0 . 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

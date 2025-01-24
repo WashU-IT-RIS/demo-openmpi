@@ -1,0 +1,117 @@
+
+.ad l
+
+.TH bbot 1 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBbbot\fR
+.ce 0
+
+.sp 2
+Moves a pending job to the bottom of the queue relative to the
+last job in the queue.
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBbbot \fR [\fB-u\fR] job_ID |
+\fB"\fRjob_ID\fB[\fRindex_list\fB]"\fR [position]
+.sp 2
+\fBbbot\fR \fB-h\fR | \fB-V\fR
+.SH Description
+
+.sp 2
+Changes the queue position of a pending job or job array element
+to affect the order in which jobs are considered for dispatch.
+.sp 2
+By default, LSF dispatches jobs in a queue in the order of
+arrival (that is, first-come, first-served), subject to
+availability of suitable server hosts.
+.sp 2
+The bbot command allows users and the LSF administrator to
+manually change the order in which jobs are considered for
+dispatch. Users can operate only on their own jobs. LSF
+administrators can operate on any jobs.
+.sp 2
+If used by the LSF administrator, the bbot command moves the
+selected job after the last job with the same priority in the
+queue.
+.sp 2
+If used by a user, the bbot command moves the selected job after
+the last job submitted by the user with the same priority in the
+queue.
+.sp 2
+Pending jobs are displayed by the bjobs command in the order that
+they are considered for dispatch.
+.sp 2
+You can use the bbot command to change the dispatch order of
+fairshare jobs. However, if a fairshare job is moved by the LSF
+administrator with the btopcommand, the job is not subject to
+fairshare scheduling unless the same job is later moved by the
+LSF administrator with the bbotcommand. In this case, the job is
+scheduled again with the same fairshare policy.
+.sp 2
+To prevent users from changing the queue position of a pending
+job with the bbot command, configure the
+\fBJOB_POSITION_CONTROL_BY_ADMIN=Y\fR parameter in the lsb.params
+file.
+.sp 2
+You cannot run the bbot command on jobs that are pending in an
+absolute priority scheduling (APS) queue.
+.SH Options
+
+.sp 2
+\fB-u\fR
+.br
+         Optional. When specified, allows jobs to be moved
+         relative to the normal user\(aqs own job list. This option
+         can only be used by the LSF administrator. If used by a
+         normal user, this option is ignored.
+.sp 2
+\fB\fIjob_ID\fB | "\fIjob_ID\fB[\fIindex_list\fB]"\fR
+.br
+         Required. Job ID of the job or job array on which to
+         operate.
+.sp 2
+         For a job array, the index list, the square brackets,
+         and the quotation marks are required. An index list is
+         used to operate on a job array. The index list is a
+         comma-separated list whose elements have the following
+         syntax:
+.sp 2
+         start_index[-end_index[:step]]
+.sp 2
+         The \fIstart_index\fR, \fIend_index\fR, and \fIstep\fR
+         values are positive integers. If the step is omitted, a
+         step of one is assumed. The job array index starts at
+         one. The maximum job array index is 1000. All jobs in
+         the array have the same job ID and parameters. Each
+         element of the array is distinguished by its array
+         index.
+.sp 2
+\fB\fIposition\fB\fR
+.br
+         Optional. The position argument can be specified to
+         indicate where in the queue the job is to be placed. The
+         value of \fIposition\fR is a positive number that
+         indicates the target position of the job from the end of
+         the queue. The positions are relative to only the
+         applicable jobs in the queue, depending on whether the
+         invoker is a regular user or the LSF administrator. The
+         default value of 1 means the position is after all other
+         jobs with the same priority.
+.sp 2
+\fB-h\fR
+.br
+         Prints command usage to stderr and exits.
+.sp 2
+\fB-V\fR
+.br
+         Prints LSF release version to stderr and exits.
+.SH See also
+
+.sp 2
+bjobs, bswitch, btop, \fBJOB_POSITION_CONTROL_BY_ADMIN\fR
+parameter in the lsb.params file

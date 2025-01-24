@@ -1,0 +1,130 @@
+.TH "lsb_openstatus" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_openstatus \- lsb_openstatus 
+Open and create an lsb.status file.
+.PP
+\fBlsb_openstatus\fP opens the statusFile .
+.PP
+This API function is inside liblsbstream.so.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB int lsb_openstatus(const struct lsbStream *params)\fP
+.PP
+.SH "Parameters:"
+\fI*params\fP Parameters.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBlsbStream\fP
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+int:0 
+.br
+ The function was successful. 
+.PP
+int:-1 or NULL 
+.br
+ The function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lsberrno is set to indicate the error.
+.PP
+.SH "Equivalent line command:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+$LSB_CONFDIR/cluster_name/configdir/lsb.params
+.PP
+.SH "See also:"
+\fBlsb_closestatus\fP 
+.PP
+\fBlsb_readstatusline\fP 
+.PP
+\fBlsb_writestatus\fP 
+.PP
+\fBlsb_readstatus\fP 
+.PP
+
+.ad l
+.nh
+.SH NAME
+lsbStream \- Stream interface.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBstreamFile\fP"
+.br
+.ti -1c
+.RI "int \fBmaxStreamSize\fP"
+.br
+.ti -1c
+.RI "int \fBmaxStreamFileNum\fP"
+.br
+.ti -1c
+.RI "int \fBtrace\fP"
+.br
+.ti -1c
+.RI "int(* \fBtrs\fP )(const char *)"
+.br
+.ti -1c
+.RI "char * \fBstatusFile\fP"
+.br
+.ti -1c
+.RI "char * \fBpendingreasonsFile\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Stream interface. 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fBlsbStream::streamFile\fP"
+.PP
+Pointer to full path to the stream file. 
+.PP
+.SS "int \fBlsbStream::maxStreamSize\fP"
+.PP
+Max size of the stream file. 
+.PP
+.SS "int \fBlsbStream::maxStreamFileNum\fP"
+.PP
+Max number of backup stream files. 
+.PP
+.SS "int \fBlsbStream::trace\fP"
+.PP
+Set to 1 to enable trace of the stream. 
+.PP
+.SS "int(* \fBlsbStream::trs\fP)(const char *)"
+.PP
+Pointer to a function that the library invokes, passing a trace buffer. 
+.PP
+
+.SS "char* \fBlsbStream::statusFile\fP"
+.PP
+Pointer to full path to the status file. 
+.PP
+.SS "char* \fBlsbStream::pendingreasonsFile\fP"
+.PP
+Pointer to full path to pendingreason file. 
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

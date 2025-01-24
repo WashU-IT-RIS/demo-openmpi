@@ -1,0 +1,446 @@
+
+.ad l
+
+.TH blinfo 1 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBblinfo\fR
+.ce 0
+
+.sp 2
+Displays static LSF License Scheduler configuration information
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBblinfo\fR \fB-Lp\fR | \fB-p\fR | \fB-D\fR | \fB-G\fR |
+\fB-P\fR
+.sp 2
+\fBblinfo\fR [\fB-a\fR [\fB-t\fR token_name | \fB"\fRtoken_name
+ ...\fB"\fR]] [\fB-o\fR \fBalpha\fR | \fBtotal\fR] [\fB-g
+"\fRfeature_group ...\fB"\fR]
+.sp 2
+\fBblinfo\fR \fB-A\fR [\fB-t\fR token_name | \fB"\fRtoken_name
+ ...\fB"\fR] [\fB-o\fR \fBalpha\fR | \fBtotal\fR ] [\fB-g
+"\fRfeature_group ...\fB"\fR]
+.sp 2
+\fBblinfo\fR \fB-C\fR [\fB-t\fR token_name | \fB"\fRtoken_name
+ ...\fB"\fR] [\fB-o\fR \fBalpha\fR | \fBtotal\fR\fB\fR] [\fB-g
+"\fRfeature_group ...\fB"\fR]
+.sp 2
+\fBblinfo\fR [\fB-t\fR token_name | \fB"\fRtoken_name ...\fB"\fR]
+[\fB-o\fR \fBalpha\fR | \fBtotal\fR] [\fB-g "\fRfeature_group
+ ...\fB"\fR]
+.sp 2
+\fBblinfo\fR [ \fB-h\fR | \fB-V\fR]
+.SH Description
+
+.sp 2
+By default, displays information about the distribution of
+licenses that are managed by LSF License Scheduler.
+.SH Options for cluster mode and project mode
+
+.sp 2
+\fB-a\fR
+.br
+         Shows all information, including information about
+         non-shared licenses (defined by the
+         \fBNON_SHARED_DISTRIBUTION\fR parameter) and workload
+         distribution (defined by the \fBWORKLOAD_DISTRIBUTION\fR
+         parameter).
+.sp 2
+         You can optionally provide license token names.
+.sp 2
+         The blinfo -a command does not display non-shared
+         information for hierarchical project group scheduling
+         policies. Use the blinfo -G command to see hierarchical
+         license project group configuration.
+.sp 2
+\fB-C\fR
+.br
+         Shows the cluster locality information for license
+         features.
+.sp 2
+         You can optionally provide license token names.
+.sp 2
+\fB-D\fR
+.br
+         Lists the LSF License Scheduler service domains and the
+         corresponding license server hosts.
+.sp 2
+\fB-g \fIfeature_group\fB ...\fR
+.br
+         When the \fBFEATURE_GROUP\fR parameter is configured for
+         a group of license features in the lsf.licensescheduler
+         file, shows only information about the features that are
+         configured in the \fBFEATURE_LIST\fR parameter of the
+         specified feature groups. You can specify more than one
+         feature group at one time.
+.sp 2
+         When you specify feature names with the -t option,
+         features in the feature list that is defined by the -t
+         option and feature groups are both displayed.
+.sp 2
+         Feature groups that are listed with -g but not defined
+         in the lsf.licensescheduler file are ignored.
+.sp 2
+\fB-o alpha | total\fR
+.br
+         Sorts license feature information by total tokens.
+.sp 2
+         \fBalpha\fR
+.br
+                  Features are listed in descending alphabetical
+                  order.
+.sp 2
+         \fBtotal\fR
+.br
+                  Features are sorted by the descending order of
+                  the sum of licenses that are allocated to LSF
+                  workload from all the service domains that are
+                  configured to supply licenses to the feature.
+                  Licenses that are borrowed by non-LSF workload
+                  are included in this amount.
+.sp 2
+\fB-p\fR
+.br
+         Displays values of lsf.licensescheduler configuration
+         parameters and lsf.conf parameters that are related to
+         LSF License Scheduler. Use this option for
+         troubleshooting.
+.sp 2
+\fB-t \fItoken_name\fB | "\fItoken_name\fB ..."\fR
+.br
+         Shows only information about specified license tokens.
+         Use spaces to separate multiple names, and enclose them
+         in quotation marks.
+.sp 2
+\fB-P\fR
+.br
+         When the \fRLS_FEATURE_PERCENTAGE=Y\fR or
+         \fRLS_ACTIVE_PERCENTAGE=Y\fR parameter is specified,
+         lists the license ownership (if applicable) in
+         percentage.
+.sp 2
+\fB-h\fR
+.br
+         Prints command usage to stderr and exits.
+.sp 2
+\fB-V\fR
+.br
+         Prints the LSF License Scheduler release version to
+         stderr and exits.
+.SH Options for project mode only
+
+.sp 2
+\fB-G\fR
+.br
+         Lists the hierarchical configuration information.
+.sp 2
+         If the \fBPRIORITY\fR parameter is defined in the
+         \fRProjectGroup\fR section of the lsf.licensescheduler
+         file, shows the priorities of each project.
+.sp 2
+\fB-Lp\fR
+.br
+         Lists the active projects that are managed by LSF
+         License Scheduler.
+.sp 2
+         The -Lp option displays only projects that are
+         associated with configured features.
+.sp 2
+         If the \fBPRIORITY\fR parameter is defined in the
+         \fRProjectGroup\fR section of the lsf.licensescheduler
+         file, shows the priorities of each project.
+.SH Default output
+
+.sp 2
+Displays the following fields:
+.sp 2
+\fBFEATURE\fR
+.br
+         The license name. This name becomes the license token
+         name.
+.sp 2
+         When the \fBLOCAL_TO\fR parameter is configured for a
+         feature in the lsf.licensescheduler file, the blinfo
+         command shows the cluster locality information for the
+         license features.
+.sp 2
+\fBMODE\fR
+.br
+         The mode of the license.
+.sp 2
+         \fB\fRCluster\fB\fR
+.br
+                  Cluster mode.
+.sp 2
+         \fB\fRProject\fB\fR
+.br
+                  Project mode.
+.sp 2
+\fBSERVICE_DOMAIN\fR
+.br
+         The name of the service domain that provided the
+         license.
+.sp 2
+\fBTOTAL\fR
+.br
+         The total number of licenses that are managed by
+         FlexNet. This number comes from FlexNet.
+.sp 2
+\fBDISTRIBUTION\fR
+.br
+         The distribution of the licenses among license projects
+         in the format \fR[\fIproject_name\fR,
+         \fIpercentage\fR[/\fInumber_licenses_owned\fR]]\fR.
+         Distribution shows how many licenses a project is
+         entitled to use when there is competition for licenses.
+         The percentage is calculated from the share that is
+         specified in the configuration file.
+.SH All output with the -a option
+
+.sp 2
+As default output, plus all other feature-level parameters
+defined for each feature.
+.SH Cluster locality output with the -C option
+
+.sp 2
+\fBNAME\fR
+.br
+         The license feature token name.
+.sp 2
+         When the \fBLOCAL_TO\fR parameter is configured for a
+         feature in the lsf.licensescheduler file, the blinfo
+         command shows the cluster locality information for the
+         license features.
+.sp 2
+\fBLM_LICENSE_NAME\fR
+.br
+         The actual FlexNet feature name, which is the name that
+         is used by FlexNet to identify the type of license.
+         Might be different from the LSF License Scheduler token
+         name if a different \fBLM_LICENSE_NAME\fR is specified
+         in the lsf.licensescheduler file.
+.sp 2
+\fBCLUSTER_NAME \fR
+.br
+         The name of the cluster the feature is assigned to.
+.sp 2
+\fBFEATURE\fR
+.br
+         The license feature name. This name becomes the license
+         token name.
+.sp 2
+         When the \fBLOCAL_TO\fR parameter is configured for a
+         feature in the lsf.licensescheduler file, the blinfo
+         command shows the cluster locality information for the
+         license features.
+.sp 2
+\fBSERVICE_DOMAIN\fR
+.br
+         The service domain name.
+.SH Service Domain Output with the -D option
+
+.sp 2
+\fBSERVICE_DOMAIN\fR
+.br
+         The service domain name.
+.sp 2
+\fBLIC_SERVERS\fR
+.br
+         Names of license server hosts that belong to the service
+         domain. Each host name is enclosed in parentheses, as
+         shown:
+.sp 2
+         \fR(\fIport_number\fR@\fIhost_name\fR)\fR
+.sp 2
+         Redundant hosts, which share the same license manager
+         license file, are grouped as shown:
+.sp 2
+         \fR(\fIport_number\fR@\fIhost_name
+         port_number\fR@\fIhost_name
+         port_number\fR@\fIhost_name\fR)\fR
+.sp 2
+\fBLM\fR
+.br
+         The license manager system that the license servers in
+         the service domain are using.
+.SH Parameters Output with the -p option
+
+.sp 2
+Displays values set in the Parameters section of the
+lsf.licensescheduler file.
+.sp 2
+Displays the following parameter values from the lsf.conf file:
+.sp 2
+\fBLS_LOG_MASK or LOG_MASK\fR
+.br
+         Specifies the logging level of error messages for LSF
+         License Scheduler daemons. If the \fBLS_LOG_MASK\fR
+         parameter is not defined in the lsf.licensescheduler
+         file, the value of the \fBLSF_LOG_MASK\fR parameter in
+         the lsf.conf file is used. If the \fBLS_LOG_MASK\fR
+         parameter and the \fBLSF_LOG_MASK\fR parameter are not
+         defined, the default is \fRLOG_WARNING\fR.
+.sp 2
+         LS_LOG_MASK=LOG_DEBUG
+.br
+
+.sp 2
+         The following log levels in order from highest to lowest
+         are supported:
+.sp 2
+         *  \fRLOG_WARNING\fR
+.sp 2
+         *  \fRLOG_DEBUG\fR
+.sp 2
+         *  \fRLOG_DEBUG1\fR
+.sp 2
+         *  \fRLOG_DEBUG2\fR
+.sp 2
+         *  \fRLOG_DEBUG3\fR
+.sp 2
+         The most important LSF License Scheduler log messages
+         are at the \fRLOG_WARNING\fR level. Messages at the
+         \fRLOG_DEBUG\fR level are useful only for debugging.
+.sp 2
+\fBLSF_LIC_SCHED_HOSTS\fR
+.br
+         List of hosts that are candidate LSF License Scheduler
+         hosts. Defined in the lsf.conf file.
+.sp 2
+\fBLSF_LIC_SCHED_PREEMPT_REQUEUE\fR
+.br
+         Specifies whether to requeue or suspend a job whose
+         license is preempted by LSF License Scheduler. Defined
+         in the lsf.conf file.
+.sp 2
+\fBLSF_LIC_SCHED_PREEMPT_SLOT_RELEASE\fR
+.br
+         Specifies whether to release the resources of a job that
+         is suspended when its license is preempted by LSF
+         License Scheduler. Defined in the lsf.conf file.
+.sp 2
+\fBLSF_LIC_SCHED_PREEMPT_STOP\fR
+.br
+         Specifies whether to use job controls to stop a job that
+         is preempted. Defined in the lsf.conf file.
+.SH Allocation output with -A option, project mode
+
+.sp 2
+\fBFEATURE\fR
+.br
+         The license name. This name becomes the license token
+         name.
+.sp 2
+         When the \fBLOCAL_TO\fR parameter is configured for a
+         feature in the lsf.licensescheduler file, the blinfo
+         command shows the cluster locality information for the
+         license features.
+.sp 2
+\fBPROJECT\fR
+.br
+         The LSF License Scheduler project name.
+.sp 2
+\fBALLOCATION\fR
+.br
+         The percentage of shares that are assigned to each
+         cluster for a feature and a project.
+.SH Hierarchical Output with the -G option, project mode
+
+.sp 2
+The following fields describe the values of their corresponding
+configuration fields in the \fRProjectGroup\fR Section of the
+lsf.licensescheduler file.
+.sp 2
+\fBGROUP\fR
+.br
+         The project names in the hierarchical grouping and its
+         relationships. Each entry specifies the name of the
+         hierarchical group and its members. The entry is
+         enclosed in parentheses as shown:
+.sp 2
+         \fR(\fIgroup\fR (\fImember\fR ...))\fR
+.sp 2
+\fBSHARES\fR
+.br
+         The shares that are assigned to the hierarchical group
+         member projects.
+.sp 2
+\fBOWNERSHIP\fR
+.br
+         The number of licenses that each project owns.
+.sp 2
+\fBLIMITS\fR
+.br
+         The maximum number of licenses that the hierarchical
+         group member project can use at any one time.
+.sp 2
+\fBNON_SHARED\fR
+.br
+         The number of licenses that the hierarchical group
+         member projects use exclusively.
+.sp 2
+\fBPRIORITY\fR
+.br
+         The priority of the project if it is different from the
+         default behavior. A larger number indicates a higher
+         priority.
+.sp 2
+\fBDESCRIPTION\fR
+.br
+         The description of the project group.
+.SH Project Output with the -LP option, project mode
+
+.sp 2
+List of active LSF License Scheduler projects.
+.sp 2
+-Lp displays only projects that are associated with configured
+features.
+.sp 2
+\fBPROJECT\fR
+.br
+         The project name.
+.sp 2
+\fBPRIORITY\fR
+.br
+         The priority of the project if it is different from the
+         default behavior. A larger number indicates a higher
+         priority.
+.sp 2
+\fBDESCRIPTION\fR
+.br
+         The description of the project.
+.SH Examples
+
+.sp 2
+The blinfo -a command (project mode) displays both
+\fRNON_SHARED_DISTRIBUTION\fR and \fRWORKLOAD_DISTRIBUTION\fR
+information when they are defined:
+.sp 2
+blinfo -a
+.br
+FEATURE      SERVICE_DOMAIN  TOTAL  DISTRIBUTION
+.br
+g1           LS              3      [p1, 50.0%] [p2, 50.0% / 2]
+.br
+                                   NON_SHARED_DISTRIBUTION
+.br
+                                   [p2, 2]
+.br
+                                   WORKLOAD_DISTRIBUTION
+.br
+                                   [LSF 66.7%, NON_LSF 33.3%]
+.br
+
+.SH Files
+
+.sp 2
+Reads the lsf.licensescheduler file
+.SH See also
+
+.sp 2
+blstat, blusers, lsf.licensescheduler, lsf.conf

@@ -1,0 +1,60 @@
+.TH "ls_gethostmodel" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ls_gethostmodel \- ls_gethostmodel 
+Returns the model of the specified host.
+.PP
+This routine obtains static resource information about hosts. Static resources include configuration information as determined by LSF configuration files (see lsf.shared and lsf.cluster) as well as others determined automatically by LIM at start up.
+.PP
+\fBls_gethostmodel\fP returns the model of the specified host. This routine returns a pointer to dynamically allocated data structures which can be freed in subsequent calls.
+.PP
+\fB#include <lsf/lsf.h> 
+.br
+ char *ls_gethostmodel(char *hostname)\fP
+.PP
+.SH "Parameters:"
+\fI*hostname\fP The host whose model is to be determined.
+.PP
+.SH "Data Structures:" 
+.PP
+none
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+char *:A pointer to the host model of the given host. 
+.br
+ Function was successful. 
+.PP
+NULL 
+.br
+ Function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lserrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+$LSF_CONFDIR/lsf.shared 
+.br
+$LSF_CONFDIR/lsf.cluster.cluster_name
+.PP
+.SH "See also:"
+\fBls_gethosttype\fP 
+.PP
+\fBls_gethostfactor\fP 
+.PP
+\fBls_gethostinfo\fP 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

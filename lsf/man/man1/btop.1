@@ -1,0 +1,113 @@
+
+.ad l
+
+.TH btop 1 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBbtop\fR
+.ce 0
+
+.sp 2
+Moves a pending job relative to the first job in the queue.
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBbtop \fR [\fB-u\fR] job_ID |
+\fB"\fRjob_ID\fB[\fRindex_list\fB]"\fR [position]
+.sp 2
+\fBbtop\fR [\fB-h\fR | \fB-V\fR]
+.SH Description
+
+.sp 2
+Changes the queue position of a pending job or a pending job
+array element to affect the order in which jobs are considered
+for dispatch.
+.sp 2
+By default, LSF dispatches jobs in a queue in the order of their
+arrival (that is, first come, first served), subject to
+availability of suitable server hosts.
+.sp 2
+Use the btop command to manually change the order in which jobs
+are considered for dispatch. Users can operate only on their own
+jobs. LSF administrators can operate on any user’s jobs. Users
+can change the relative position only for their own jobs.
+.sp 2
+If the LSF administrator uses the btop command, the selected job
+is moved before the first job with the same priority that is
+submitted to the queue. The positions of all users’ jobs in the
+queue can be changed by the LSF administrator.
+.sp 2
+If a regular user uses the btop command, the selected job is
+moved before the first job with the same priority that is
+submitted by the user to the queue. Pending jobs are displayed by
+the bjobs command in the order in which they are considered for
+dispatch.
+.sp 2
+You can use the btop command to change the dispatch order of your
+jobs that was scheduled through a fairshare policy. If the LSF
+administrator uses the btop command to move a job that was
+scheduled through a fairshare policy, the job is not subject to
+further fairshare scheduling unless the same job is later moved
+by the LSF administrator with the bbot command. In this case, the
+job is scheduled again by using the same fairshare policy.
+.sp 2
+To prevent users from changing the queue position of a pending
+job with the btop command, configure the
+\fBJOB_POSITION_CONTROL_BY_ADMIN=Y\fR in the lsb.params file.
+.sp 2
+You cannot run the btop command on jobs that are pending in an
+absolute priority scheduling (APS) queue.
+.SH Options
+
+.sp 2
+\fB-u\fR
+.br
+         Optional. When specified, allows jobs to be moved
+         relative to the normal user\(aqs own job list. This option
+         can only be used by the LSF administrator. If used by a
+         normal user, this option is ignored.
+.sp 2
+\fB\fIjob_ID\fB | "\fIjob_ID[index_list]\fB"\fR
+.br
+         Required. Job ID of the job or of the job array on which
+         to operate.
+.sp 2
+         For a job array, the index list, the square brackets,
+         and the quotation marks are required. An index list is
+         used to operate on a job array. The index list is a
+         comma-separated list whose elements have the syntax
+         \fR\fIstart_index\fR[-\fIend_index\fR[:\fIstep\fR]]\fR
+         where \fIstart_index\fR, \fIend_index\fR, and \fIstep\fR
+         are positive integers. If the step is omitted, a step of
+         one is assumed. The job array index starts at one. The
+         maximum job array index is 1000. All jobs in the array
+         have the same job ID and parameters. Each element of the
+         array is distinguished by its array index.
+.sp 2
+\fB\fIposition\fB\fR
+.br
+         Optional. The \fIposition\fR argument can be specified
+         to indicate where in the queue the job is to be placed.
+         The \fR\fIposition\fR\fR option is a positive number
+         that indicates the target position of the job from the
+         beginning of the queue. The positions are relative to
+         only the applicable jobs in the queue, depending on
+         whether the invoker is a regular user or the LSF
+         administrator. The default value of \fR1\fR means the
+         position is before all the other jobs in the queue that
+         have the same priority.
+.sp 2
+\fB-h\fR
+.br
+         Prints command usage to stderr and exits.
+.sp 2
+\fB-V\fR
+.br
+         Prints LSF release version to stderr and exits.
+.SH See also
+
+.sp 2
+bbot, bjobs, bswitch

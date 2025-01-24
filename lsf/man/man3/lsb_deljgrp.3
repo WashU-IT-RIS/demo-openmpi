@@ -1,0 +1,54 @@
+.TH "lsb_deljgrp" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_deljgrp \- lsb_deljgrp 
+Deletes the job group.
+.PP
+\fBlsb_deljgrp\fP deletes the job group.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB int lsb_deljgrp(char *jgrpSpec, int options, struct jgrpReply **jgrpReplyPtr)\fP
+.PP
+.SH "Parameters:"
+\fI*jgrpSpec\fP The name of the job group. 
+.br
+\fIoptions\fP The option of this API (for future use) 
+.br
+\fIjgrpReply\fP *jgrpReplyPtr The pointer to the job group reply structure.
+.PP
+.SH "Data Structures:" 
+.PP
+jgrpReply
+.PP
+.SH "Define Statements:" none
+.PP
+.SH "Returns:"
+int:0 
+.br
+ Function was successful. 
+.PP
+int:-1 
+.br
+ Function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lsberrno and jgrpReplyPtr-> will be set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+bgdel
+.PP
+.SH "Files:" 
+.PP
+${LSF_ENVDIR:-/etc}/lsf.conf
+.PP
+.SH "See also:"
+none 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

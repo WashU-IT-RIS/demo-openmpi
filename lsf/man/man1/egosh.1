@@ -1,0 +1,2831 @@
+.ds ]W %
+.ds ]L
+.hy 0
+.nh
+.na
+.TH egosh 1 "Mar 2014   EGO 3.4.0"
+.br
+
+.SH NAME
+\fBegosh\fR - Launches the administrative command interface to EGO.
+
+.SH Synopsis
+.BR
+.PP
+ egosh  egosh subcommand [options]  egosh -h | help  egosh -V 
+.SH Description
+.BR
+.PP
+
+.PP
+With no subcommands specified, launches an interactive command console to 
+EGO. Once it is open, you can continue to issue subcommands until you 
+close the console.
+
+.PP
+Use the egosh command with one or more subcommands from within a script to 
+run commands in batch mode.
+
+.PP
+If you want to issue administrative subcommands to control EGO objects, you must 
+first log on to EGO using the user logon subcommand. You are not 
+required to log on to view EGO objects.
+
+.SS -h
+.BR
+.PP
+
+.PP
+When running the egosh command in command-line mode, prints command 
+usage to stderr and exits.
+
+.SS help
+.BR
+.PP
+
+.PP
+When running the egosh command in console mode, displays usage information.
+
+.SS -V
+.BR
+.PP
+
+.PP
+Prints product version to stderr and exits.
+
+.SH Subcommand synopsis
+.BR
+.PP
+ activity kill [-s signal] -t activity_ID  activity kill [-s signal] -a alloc_ID | -p consumer_name | -c client_name  activity list [-l] [-a alloc_ID | -p consumer_name | -c client_name | -t activity_ID | -r resource_name]  activity start -a alloc_ID -r resource_name [-t activity_name] [-d CWD] [-C CPU_limit] [-F file_limit] [-D data_limit] [-S stack_limit] [-O core_limit] [-R rss_limit] [-N nofile_limit] [-A as_limit] [-e env_name=value[;env_name=value]...] command  activity view activity_ID ...  alloc free -a alloc_ID  alloc free -p consumer_name | -c client_name  alloc list [-l] [-a alloc_ID |-p consumer_name | -c client_name | -t activity_ID |-r resource_name]  alloc modify -a alloc_ID -m min_slot -M max_slot [-delta]  alloc new [-a alloc_name] -p consumer_name [-g resource_group] -m min_slots -M max_slots [-exclusive] [-s slots_per_host] [-R res_req]  alloc release -a alloc_ID [-block] [-autoadjust] [-modify] host_name:nslots ...  alloc unblock-a alloc_ID -n nhosts host_name ...  alloc view [alloc_ID ...]  client list [-l] [-c client_name] [-a alloc_ID] [-p consumer_name] [-r resource_name] [-t activity_ID]  client reg -c client_name [-d description] [-t TTL]  client rm -c client_name ...  client unreg  client view [client_name ...]  consumer alloc [consumer_name ...] [-l]  consumer list [-l]  consumer view [consumer_name]  debug pemoff [host_name ...| all]  debug pemon [-t] [-c log_class] [-p timing_level] [-f log_file] [[-o "key=value"] ...] [host_name ...| all]  debug vemkdoff  debug vemkdon [-t] [-c log_class] [-p timing_level] [-f log_file] [[-o "key=value"]...]  ego elimrestart env_suffix env_value [-f] [host_name ... | all]  ego execpasswd -u user_name [-x password] [-noverify]  ego info  ego restart [-f] [host_name ...| all]   ego shutdown [-f] [host_name ...| all]  ego start [-f] [host_name ...| all]  entitlement info  quit  resource close [-reclaim] resource_name ...  resource group | rg [-l] [group_name ...] [group_name ...]  resource list [-l] [-m | -s | -t | -a | -o attribute,...] [-R res_req] [resource_name ...]  resource open resource_name [resource_name...]  resource removehost host_name [host_name...]  resource setpriority -lowest | -normal resource_name ...  resource view [resource_name ...]  service list [-l] [-s service_name] [-a alloc_ID] [-p consumer_name] [-r resource_name]  service start service_name ... | all  service stop service_name ... | all  service view [service_name ...]  user add -u user_account -x password [-e email] [-t telephone] [-d description]  user assignrole -u user_account -r role [-p consumer_name]  user delete -u user_account  user list [-l]  user logoff  user logon [-u user_account] [-x password]  user modify -u user_account -x password [-e email] [-t telephone] [-d description]  user roles4user -u user_account  user users4role -r role [-p consumer_name]  user unassignrole -u user_account -r role [-p consumer_name]  user view [user_account ...] 
+.SH activity kill [-s signal] -t activity_ID
+.BR
+.PP
+
+.PP
+Terminates an activity.
+
+.SS -s signal
+.BR
+.PP
+
+.PP
+Sends a specific signal.
+
+.PP
+Signals are operating-system dependent. Refer to the list of signals available for 
+your operating system.
+
+.SS -t activity_ID
+.BR
+.PP
+
+.PP
+Specifies the activity to terminate.
+
+.SH activity kill [-s signal] -a alloc_ID | -p consumer_name | -c client_name
+.BR
+.PP
+
+.PP
+Terminates all activities for the specified allocation, consumer or client.
+
+.SS -s signal
+.BR
+.PP
+
+.PP
+Sends a specific signal.
+
+.PP
+Signals are operating-system dependent. Refer to the list of signals available for 
+your operating system.
+
+.SS -a alloc_ID
+.BR
+.PP
+
+.PP
+Specifies the allocation to which this action applies.
+
+.SS -p consumer_name
+.BR
+.PP
+
+.PP
+Terminates all activities for the specified consumer.
+
+.PP
+Specify the unique consumer name, or the full path to the consumer name. Specify 
+as many levels within the resource distribution tree as required to uniquely identify 
+the consumer, as follows:
+ /top-level_consumer_name/. . . /leaf_consumer_name 
+.SS -c client_name
+.BR
+.PP
+
+.PP
+Specifies the name of the client to which this action applies.
+
+.SH activity list [-l] [-a alloc_ID | -p consumer_name | -c client_name | -t activity_ID | -r resource_name]
+.BR
+.PP
+
+.PP
+Lists all activities in the cluster.
+
+.SS -l
+.BR
+.PP
+
+.PP
+Provides the same information with a longer name field, if some are truncated when 
+-l is not specified.
+
+.SS -a alloc_ID
+.BR
+.PP
+
+.PP
+Lists all activities that belong to the specified allocation.
+
+.SS -p consumer_name
+.BR
+.PP
+
+.PP
+Lists all activities for the specified consumer.
+
+.PP
+Specify the unique consumer name, or the full path to the consumer name. Specify 
+as many levels within the resource distribution tree as required to uniquely identify 
+the consumer, as follows:
+ /top-level_consumer_name/. . . /leaf_consumer_name 
+.SS -c client_name
+.BR
+.PP
+
+.PP
+Specifies the name of the client to which this action applies.
+
+.SS -t activity_ID
+.BR
+.PP
+
+.PP
+Specifies the activity to list.
+
+.SS -r resource_name
+.BR
+.PP
+
+.PP
+Lists all the activities that are using the specified resource.
+
+.SH activity start -a alloc_ID -r resource_name [-t activity_name] [-d CWD] [-C cpu_limit] [-F file_limit] [-D data_limit] [-S stack_limit] [-O core_limit] [-R rss_limit] [-N nofile_limit] [-A as_limit] [-e env_name=value[;env_name=value] ...] [-f OUT=file;ERR=file | -f ERR=file;OUT=file ] command
+.BR
+.PP
+
+.PP
+Starts an activity on the specified host.
+
+.SS -a alloc_ID
+.BR
+.PP
+
+.PP
+Specifies the allocation this activity belongs to.
+
+.SS -r resource_name
+.BR
+.PP
+
+.PP
+Specifies the host on which to start the activity.
+
+.SS -t activity_name
+.BR
+.PP
+
+.PP
+Specifies to start the activity using the name specified.
+
+.SS -d CWD
+.BR
+.PP
+
+.PP
+Specifies the current working directory from which the activity is started.
+
+.PP
+If you do not specify a directory, /tmp is used on UNIX systems, and %TEMP% is used 
+on Windows systems.
+
+.SS -C cpu_limit
+.BR
+.PP
+
+.PP
+Specifies the maximum amount of CPU time this activity may use before being 
+terminated by the system. 
+
+.PP
+After specifying a value, specify the units for measuring CPU time:
+.RS
+.HP 3
+o  
+s: seconds. For example, 20s specifies a CPU limit of 20 seconds.
+.HP 3
+o  
+m: minutes. For example, 40m specifies a CPU limit of 40 minutes.
+.HP 3
+o  
+h: hours. For example, 2h specifies a CPU limit of two hours.
+.RE
+
+.SS -F file_limit
+.BR
+.PP
+
+.PP
+Specifies the maximum file size this activity may use before being terminated by the 
+system.
+
+.PP
+After specifying a maximum file size, specify one of the following values:
+.RS
+.HP 3
+o  
+b: bytes. For example, 400b specifies a limit of 400 bytes.
+.HP 3
+o  
+k: kilobytes. For example, 40k specifies a limit of 40 kilobytes.
+.HP 3
+o  
+m: megabytes. For example, 4m specifies a limit of 4 megabytes.
+.HP 3
+o  
+g: gigabytes. For example, 4g specifies a limit of 4 gigabytes.
+.RE
+
+.SS -D data_limit
+.BR
+.PP
+
+.PP
+Specifies the maximum data segment size limit for each of the processes belonging 
+to the activity. If this limit is exceeded, the activity is terminated by the system.
+
+.PP
+After specifying a value, specify the units for measuring the data limit:
+.RS
+.HP 3
+o  
+b: bytes. For example, 400b specifies a limit of 400 bytes.
+.HP 3
+o  
+k: kilobytes. For example, 40k specifies a limit of 40 kilobytes.
+.HP 3
+o  
+m: megabytes. For example, 4m specifies a limit of 4 megabytes.
+.HP 3
+o  
+g: gigabytes. For example, 4g specifies a limit of 4 gigabytes.
+.RE
+
+.SS -S stack_limit
+.BR
+.PP
+
+.PP
+Specifies the maximum stack segment size for each of the processes belonging to 
+the activity. If this limit is exceeded, the activity is terminated by the system.
+
+.PP
+After specifying a value, specify the units for measuring the stack limit:
+.RS
+.HP 3
+o  
+b: bytes. For example, 400b specifies a limit of 400 bytes.
+.HP 3
+o  
+k: kilobytes. For example, 40k specifies a limit of 40 kilobytes.
+.HP 3
+o  
+m: megabytes. For example, 4m specifies a limit of 4 megabytes.
+.HP 3
+o  
+g: gigabytes. For example, 4g specifies a limit of 4 gigabytes.
+.RE
+
+.SS -O core_limit
+.BR
+.PP
+
+.PP
+Specifies the maximum core file size for all the processes belonging to the activity. 
+If this limit is exceeded, the activity is terminated by the system.
+
+.PP
+After specifying a value, specify the units for measuring the core size limit:
+.RS
+.HP 3
+o  
+b: bytes. For example, 400b specifies a limit of 400 bytes.
+.HP 3
+o  
+k: kilobytes. For example, 40k specifies a limit of 40 kilobytes.
+.HP 3
+o  
+m: megabytes. For example, 4m specifies a limit of 4 megabytes.
+.HP 3
+o  
+g: gigabytes. For example, 4g specifies a limit of 4 gigabytes.
+.RE
+
+.SS -R rss_limit
+.BR
+.PP
+
+.PP
+Specifies the maximum resident set size, limiting physical memory usage for each 
+process belonging to the activity. If this limit is exceeded, the activity is terminated 
+by the system.
+
+.PP
+After specifying a value, specify the units for measuring the physical memory limit:
+.RS
+.HP 3
+o  
+b: bytes. For example, 400b specifies a limit of 400 bytes.
+.HP 3
+o  
+k: kilobytes. For example, 40k specifies a limit of 40 kilobytes.
+.HP 3
+o  
+m: megabytes. For example, 4m specifies a limit of 4 megabytes.
+.HP 3
+o  
+g: gigabytes. For example, 4g specifies a limit of 4 gigabytes.
+.RE
+
+.SS -N nofile_limit
+.BR
+.PP
+
+.PP
+Specifies the maximum number of open file descriptors this activity may use.
+
+.SS -A as_limit
+.BR
+.PP
+
+.PP
+Specifies the maximum process size (address space) for each process belonging to 
+the activity.
+
+.PP
+After specifying a value, specify the units for measuring the address space limit:
+.RS
+.HP 3
+o  
+b: bytes. For example, 400b specifies a limit of 400 bytes.
+.HP 3
+o  
+k: kilobytes. For example, 40k specifies a limit of 40 kilobytes.
+.HP 3
+o  
+m: megabytes. For example, 4m specifies a limit of 4 megabytes.
+.HP 3
+o  
+g: gigabytes. For example, 4g specifies a limit of 4 gigabytes.
+.RE
+
+.SS -e env_name=value ...
+.BR
+.PP
+
+.PP
+Sets the environment variables for this activity. Specify as many environment 
+variable/value pairs as required to define the environment.
+
+.PP
+To specify multiple environment variable/value pairs, separate the pairs with a 
+space.
+
+.SS -f OUT=file;ERR=file | -f ERR=file;OUT=file
+.BR
+.PP
+
+.PP
+Sets the standard output and standard error output file of the specified activity.
+
+.SS command
+.BR
+.PP
+
+.PP
+Specifies the command to run.
+
+.PP
+The command to run must always be specified last.
+
+.SH activity view [activity_ID ...]
+.BR
+.PP
+
+.PP
+Displays detailed information about the activities in the cluster, including its 
+resources, allocations, current status, start time, and so on.
+
+.SS activity_ID ...
+.BR
+.PP
+
+.PP
+Specifies the ID for the activity for which you want detailed information.
+
+.SH alloc free -a alloc_ID
+.BR
+.PP
+
+.PP
+Frees the specified allocation, returning all of its resources to the cluster and 
+removing the allocation.
+
+.SS -a alloc_ID
+.BR
+.PP
+
+.PP
+Specifies the ID of the allocation to free.
+
+.SH alloc free -p consumer_name | -c client_name
+.BR
+.PP
+
+.PP
+Frees all allocations for the specified consumer or client, returning resources to the 
+cluster and removing the allocation names.
+
+.SS -p consumer_name
+.BR
+.PP
+
+.PP
+Frees all activities for the specified consumer.
+
+.PP
+Specify the unique consumer name, or the full path to the consumer name. Specify 
+as many levels within the resource distribution tree as required to uniquely identify 
+the consumer, as follows:
+ /top-level_consumer_name/. . . /leaf_consumer_name 
+.SS -c client_name
+.BR
+.PP
+
+.PP
+Specifies the name of the client to which the allocation was made.
+
+.SH alloc list [-l] [-a alloc_ID | -p consumer_name | -c client_name | -t activity_ID | -r resource_name]
+.BR
+.PP
+
+.PP
+Lists all allocations in the cluster, listing the allocation ID, consumer, client, 
+resource groups and resources used by each allocation.
+
+.SS -l
+.BR
+.PP
+
+.PP
+Provides the same information with a longer name field, if some are truncated when 
+-l is not specified.
+
+.SS -a alloc _ID
+.BR
+.PP
+
+.PP
+Lists the allocated resources for the specified allocation.
+
+.SS -p consumer_name
+.BR
+.PP
+
+.PP
+Lists all activities for the specified consumer.
+
+.PP
+Specify the unique consumer name, or the full path to the consumer name. Specify 
+as many levels within the resource distribution tree as required to uniquely identify 
+the consumer, as follows:
+ /top-level_consumer_name/. . . /leaf_consumer_name 
+.SS -c client_name
+.BR
+.PP
+
+.PP
+Lists the resources allocated to the specified client.
+
+.SS -t activity_ID
+.BR
+.PP
+
+.PP
+Lists all allocations that include the specified activity.
+
+.SS -r resource_name
+.BR
+.PP
+
+.PP
+Lists all allocations that include the specified resource.
+
+.SH alloc modify -a alloc_ID -m min_slots -M max_slots [-delta]
+.BR
+.PP
+
+.PP
+Requests an increased number of resources for an existing allocation.
+
+.SS -a alloc_ID
+.BR
+.PP
+
+.PP
+Specifies the ID of the allocation to change.
+
+.SS -m min_slots
+.BR
+.PP
+
+.PP
+Specifies the minimum number of slots to be allocated, or the minimum additional 
+slots to be allocated, depending on if -delta is specified.
+
+.SS -M max_slots
+.BR
+.PP
+
+.PP
+Specifies the maximum number of slots to be allocated, or the maximum additional 
+slots to be allocated, depending on if -delta is specified.
+
+.SS -delta
+.BR
+.PP
+
+.PP
+Specifies that the minimum and maximum slots requested are in addition to the 
+existing allocation for this consumer.
+
+.SH alloc new [-a alloc_name] -p consumer_name [-g resource_group] -m min_slots -M max_slots [-exclusive] [-s slots_per_host] [-R res_req]
+.BR
+.PP
+
+.PP
+Requests a new resource allocation for the specified consumer from the specified 
+resource group.
+
+.SS -a alloc_name
+.BR
+.PP
+
+.PP
+Specifies a name to identify the new allocation request.
+
+.PP
+Specify a name that is unique within the cluster. Specify up to 40 alphanumeric 
+characters.
+
+.SS -p consumer_name
+.BR
+.PP
+
+.PP
+Specifies the consumer to allocate the resources to.
+
+.PP
+Specify the unique consumer name, or the full path to the consumer name. Specify 
+as many levels within the resource distribution tree as required to uniquely identify 
+the consumer, as follows:
+ /top-level_consumer_name/. . . /leaf_consumer_name 
+.SS -g resource_group
+.BR
+.PP
+
+.PP
+Specifies the resource group from which to allocate resources.
+
+.SS -m min_slots
+.BR
+.PP
+
+.PP
+Specifies the minimum number of slots to be allocated.
+
+.SS -M max_slots
+.BR
+.PP
+
+.PP
+Specifies the maximum number of slots to be allocated.
+
+.SS -exclusive
+.BR
+.PP
+
+.PP
+Specifies that this allocation request is for the exclusive use of these resources by 
+this consumer.
+
+.PP
+Note that a host may still be distributed to several allocations if it appears in 
+multiple host groups, despite indicating exclusive usage.
+
+.SS -s slots_per_host
+.BR
+.PP
+
+.PP
+Specifies the number of slots per host required (on both single- and multi-CPU 
+hosts).
+
+.SS -R res_req
+.BR
+.PP
+
+.PP
+Specifies the resource requirement to use to select the most appropriate host for this 
+allocation.
+
+.PP
+Specify name value pairs for the resource requirement(s). Multiple resource 
+requirements are separated with the characters &&.
+
+.PP
+important:  
+
+.PP
+If the command is issued in whole from the shell console, enclose the requirement 
+in double quotation marks. For example: 
+ >egosh resource list -R "select(mem>100 && it>1)" 
+.PP
+If the command is issued from the egosh console, do not use quotation marks. For example: 
+ >egosh  >resource list -R select(mem>100 && it>1) 
+.SH alloc release -a alloc_ID [-block] [-autoadjust] [-modify] host_name:nslots ...
+.BR
+.PP
+
+.PP
+Reduces an allocation by the specified number of hosts or slots.
+
+.SS -a alloc_ID
+.BR
+.PP
+
+.PP
+Specifies the ID of the allocation from which to release the slots.
+
+.SS -block
+.BR
+.PP
+
+.PP
+Releases the slots and prevents this host from being allocated to this consumer 
+again.
+
+.PP
+Use this option if a host is not behaving properly. You can reverse this option later 
+using the alloc unblock subcommand.
+
+.SS -autoadjust
+.BR
+.PP
+
+.PP
+Automatically adjusts the allocation request to match the current number of slots. 
+This prevents the resources from being assigned back to the current allocation.
+
+.PP
+Issuing this command without specifying a number of slots removes any unfulfilled 
+slot requests for this allocation, and modifies the request to the current number of 
+slots.
+
+.PP
+Use this option when you do not expect to need the slots anymore.
+
+.SS -modify
+.BR
+.PP
+
+.PP
+Automatically decrements the allocation request by the number of slots being 
+released. The -autoadjust option takes precedence over the -modify option.
+
+.SS host_name:nslots ...
+.BR
+.PP
+
+.PP
+Releases the specified number of slots from the specified hosts.
+
+.PP
+Specify the name of the host followed by the number of slots to release from that 
+host.
+
+.PP
+To specify multiple hosts and numbers of slots, separate the host and slot 
+combinations with a space.
+
+.SH alloc unblock -a alloc_ID -n nhosts host_name ...
+.BR
+.PP
+
+.PP
+Specifies to stop preventing blocked hosts from being allocated to this consumer. 
+Use this command to undo a previous alloc release -block subcommand.
+
+.SS -a alloc_ID
+.BR
+.PP
+
+.PP
+Specifies the ID of the allocation from which to unblock the host.
+
+.SS -n nhosts
+.BR
+.PP
+
+.PP
+Specifies the number of hosts to unblock, allowing the hosts to be allocated to this 
+consumer again.
+
+.SS host_name ...
+.BR
+.PP
+
+.PP
+Specifies the host names to unblock.
+
+.PP
+To specify multiple hosts, separate the hosts with a space.
+
+.SH alloc view [alloc_ID ...]
+.BR
+.PP
+
+.PP
+Displays detailed information about all allocations, including the allocation ID, 
+current users, consumer, resource groups, resource requirements, minimum and 
+maximum slots requested, whether it has exclusive use of the host, names of the 
+allocated hosts, and any blocked hosts.
+
+.SS alloc_ID ...
+.BR
+.PP
+
+.PP
+Displays information about the specified allocation.
+
+.SH client list [-l] [-c client_name] [-a alloc_ID] [-p consumer_name] [-r resource_name] [-t activity_ID]
+.BR
+.PP
+
+.PP
+Displays a list of the registered clients in the cluster, and information about each 
+client, including the host name and port number, the channel, and whether the 
+client is connected. Client names are truncated to 12 characters.
+
+.SS -l
+.BR
+.PP
+
+.PP
+Provides the same information with a longer name field, if some are truncated when 
+-l is not specified.
+
+.SS -c client_name
+.BR
+.PP
+
+.PP
+Specifies the client to which this action applies.
+
+.SS -a alloc_ID
+.BR
+.PP
+
+.PP
+Lists the client who has allocated to the specified allocation.
+
+.SS -p consumer_name
+.BR
+.PP
+
+.PP
+Lists all the clients for the specified consumer.
+
+.SS -r resource_name
+.BR
+.PP
+
+.PP
+Lists all the clients that are using the specified resource.
+
+.SS -t activity_ID
+.BR
+.PP
+
+.PP
+Lists the client that has started the specified activities.
+
+.SH client reg -c client_name [-d description] [-t TTL]
+.BR
+.PP
+
+.PP
+Registers the current EGO client with the system so that it can start sending 
+requests to EGO for resources. Following registration, the client may be 
+assigned allocations. The client is assigned a unique identifier such as 
+autoAssignedClient 0 or autoAssignedClient1.
+
+.SS -c client_name 
+.BR
+.PP
+
+.PP
+Specifies to register the client with a specific identifier.
+
+.PP
+Specify a name that is unique within the cluster. Specify up to 40 ASCII characters.
+
+.SS -d description 
+.BR
+.PP
+
+.PP
+Specifies a description for the client being registered. This description appears with 
+the information displayed using the client view subcommand. Enclose 
+description in quotation marks if there are spaces within it.
+
+.SS -t TTL 
+.BR
+.PP
+
+.PP
+Specifies the client TTL (time to live) in seconds. If the option is not set, default TTL 
+is 900 seconds.
+
+.SH client rm client_name ...
+.BR
+.PP
+
+.PP
+Removes and unregisters the specified client from the system. Use this command 
+to remove a client that is not responding.
+
+.SS  client_name ...
+.BR
+.PP
+
+.PP
+Specifies the name of the client to be removed.
+
+.SH client unreg
+.BR
+.PP
+
+.PP
+Unregisters the current client from the system. Once this operation completes, the 
+client can no longer request resources from EGO.
+
+.PP
+After unregistration, all allocations to this client are released.
+
+.SH client view [client_name ...]
+.BR
+.PP
+
+.PP
+Displays a list of the registered clients in the cluster, and information about each 
+client, including the host name and port number, the channel, and whether the 
+client is connected.
+
+.SS  client_name ...
+.BR
+.PP
+
+.PP
+Specifies the name of one or more clients you want to view. 
+
+.PP
+Displays information about the specified client, including the host name and port 
+number, the channel, and whether the client is connected.
+
+.SH consumer alloc [consumer_name ...] [-l]
+.BR
+.PP
+
+.PP
+Displays allocation and demand information for each leaf consumer.
+
+.SS consumer_name
+.BR
+.PP
+
+.PP
+Specifies the name of the consumer(s) for which you want to display information.
+
+.SS -l
+.BR
+.PP
+
+.PP
+Provides the same information with a longer name field, if some are truncated when 
+-l is not specified.
+
+.SH consumer list [-l]
+.BR
+.PP
+
+.PP
+Displays a list of the full paths to the consumers in the cluster, and lists the 
+administrators assigned to each consumer.
+
+.SS -l
+.BR
+.PP
+
+.PP
+Provides the same information with a longer name field, if some are truncated when 
+-l is not specified.
+
+.SH consumer view [consumer_name ...]
+.BR
+.PP
+
+.PP
+Displays a list of the consumers in the cluster, and detailed information about each 
+consumer, including the administrators assigned to that consumer and the resource 
+policies applied to each consumer.
+
+.SS consumer_name
+.BR
+.PP
+
+.PP
+Displays information about the specified consumer.
+
+.PP
+Specify the unique consumer name, or the full path to the consumer name. Specify 
+as many levels within the resource distribution tree as required to uniquely identify 
+the consumer, as follows:
+ /top-level_consumer_name/. . . /leaf_consumer_name 
+.SH debug pemoff [host_name ... | all]
+.BR
+.PP
+
+.PP
+Turns off debugging of the pem daemon on the specified hosts.
+
+.PP
+This is an administrative subcommand. You must first log on as cluster 
+administrator before you can issue this subcommand.
+
+.SS host_name
+.BR
+.PP
+
+.PP
+Turns off debugging of the pem daemon on the specified host.
+
+.SS all
+.BR
+.PP
+
+.PP
+Turns off debugging of the pem daemon on all hosts in the cluster.
+
+.SH debug pemon [-t] [-c log_class] [-p timing_level] [-f log_file] [[-o "key=value"] ...] [host_name ...| all]
+.BR
+.PP
+
+.PP
+Turns on debugging of the pem daemon to LOG_DEBUG level on the specified 
+host.
+
+.PP
+This is an administrative subcommand. You must first log on as cluster 
+administrator before you can issue this subcommand.
+
+.SS -t
+.BR
+.PP
+
+.PP
+Sets the logging level to LOG_TRACE, which logs all program steps.
+
+.SS -c log_class
+.BR
+.PP
+
+.PP
+Specifies a log class, which limits the messages collected to specific types, or limits 
+debugging to specific components. Use this option to filter out and reduce the 
+amount of data kept. 
+
+.PP
+To specify multiple log classes, separate the log classes with a space, and enclose the 
+string in double quotes. 
+
+.SS -p timing_level
+.BR
+.PP
+
+.PP
+Specifies function performance timing level to specify the number of layers of 
+components to measure the time a process takes. Specify a number from 1 (time the 
+process at the top component level) to 5 (time the processes at five layers depth). If 
+no value is specified, timing is disabled.
+
+.SS -f log_file
+.BR
+.PP
+
+.PP
+Specifies the path and file name to where the log files are to be written. For example, 
+if you specify -f /tmp/debuglog, the messages are logged to 
+/tmp/debuglog.pem.log.hostname
+
+.PP
+If you do not specify a file name and path, defaults to the current log file.
+
+.SS -o "key=value"
+.BR
+.PP
+
+.PP
+Specifies the debug object class and identifier. The format is key=value, where valid 
+values for key are ACTIVITY and ALLOC and value is the ID of the activity or 
+allocation.
+
+.PP
+To specify multiple key and value pairs, specify -o for each object class and separate 
+the options with a space.
+
+.SS host_name
+.BR
+.PP
+
+.PP
+Turns on debugging of the pem daemon on the specified host.
+
+.SS all
+.BR
+.PP
+
+.PP
+Turns on debugging of the pem daemons on all hosts in the cluster.
+
+.SH debug vemkdoff
+.BR
+.PP
+
+.PP
+Turns off dynamic debugging of the EGO kernel daemon vemkd.
+
+.PP
+This is an administrative subcommand. You must first log on as cluster 
+administrator before you can issue this subcommand.
+
+.SH debug vemkdon [-t] [-c log_class] [-p timing_level] [-f log_file] [[-o "key=value"] ...]
+.BR
+.PP
+
+.PP
+Turns on dynamic debugging of the EGO kernel daemon vemkd to 
+LOG_DEBUG level.
+
+.PP
+This is an administrative subcommand. You must first log on as cluster 
+administrator before you can issue this subcommand.
+
+.SS -t
+.BR
+.PP
+
+.PP
+Sets the logging level to LOG_TRACE, which logs all program steps.
+
+.SS -c log_class
+.BR
+.PP
+
+.PP
+Specifies a log class, which limits the messages collected to specific types, or limits 
+debugging to specific components. Use this option to filter out and reduce the 
+amount of data kept.
+
+.PP
+To specify multiple log classes, separate the log classes with a space and enclose the 
+string in double quotes.
+
+.SS -p timing_level
+.BR
+.PP
+
+.PP
+Specifies function performance timing level to specify the number of layers of 
+components to measure the time a process takes. Specify a number from 1 (time the 
+process at the top component level) to 5 (time the processes at five layers depth). If 
+no value is specified, timing is disabled.
+
+.SS -f log_file
+.BR
+.PP
+
+.PP
+Specifies the path to where the log files are to be written. For example, if you specify 
+-f /tmp/debuglog, the messages are logged to 
+/tmp/debuglog.vemkd.log.hostname
+
+.PP
+If you do not specify a file name and path, defaults to the current log file.
+
+.SS -o "key=value"
+.BR
+.PP
+
+.PP
+Specifies the debug object class and identifier. The format is key=value, where valid 
+values for key are ACTIVITY and ALLOC and value is the ID of the activity or 
+allocation.
+
+.PP
+To specify multiple key and value pairs, specify -o for each object class and separate 
+the options with a space.
+
+.SH ego execpasswd -u user_name [-x password] [-noverify]
+.BR
+.PP
+
+.PP
+Registers and verifies the password for a Windows execution user account.
+
+.PP
+Registering the password allows EGO to use the account to run work on 
+Windows hosts.
+
+.PP
+This is an administrative command. You must be cluster administrator to issue this 
+command. In addition, to verify the password, you must be logged on to Windows 
+as the OS account administrator, egoadmin.
+
+.SS -u user_name
+.BR
+.PP
+
+.PP
+Specifies the fully-qualified Windows user name of the execution account to 
+register the password for.
+
+.SS -x password
+.BR
+.PP
+
+.PP
+Specifies the password to register for the Windows execution user account.
+
+.SS -noverify
+.BR
+.PP
+
+.PP
+Registers the password without verification. This option is required if you run this 
+command from a UNIX host. Only a Windows host can verify this password.
+
+.SH ego elimrestart env_suffix env_value [-f] [host_name ... | all]
+.BR
+.PP
+
+.PP
+restriction:  
+
+.PP
+Host harvesting is a feature for use with IBM Spectrum Symphony only.
+
+.PP
+Restarts/reconfigures external load information manager(s) with an environment 
+variable (elim.sa). Generally used for host harvesting feature. During restart, the 
+lim passes along configuration information to the harvesting agent about the 
+thresholds of resources that are used to evaluate trigger conditions, and whether the 
+host is currently enabled for harvesting.
+
+.PP
+note:  
+
+.PP
+After running this command, it takes several seconds for the new configuration to take 
+effect, dependent upon how frequently EGO refreshes host information (as set in 
+EGO_RESOURCE_UPDATE_INTERVAL in ego.conf).
+
+.PP
+You must be logged on to Windows as the local systems OS account administrator, 
+or logged on to Linux as the root OS account.
+
+.SS env_suffix 
+.BR
+.PP
+
+.PP
+Always specify SA (harvesting agent) to indicate the host harvesting feature.
+
+.SS env_value
+.BR
+.PP
+
+.PP
+Specifies if host harvesting is currently enabled (on) or disabled (off) on this host. 
+Specifies the thresholds of load indices used to evaluate host workload and to 
+trigger host harvesting.
+
+.PP
+Enter the environment value in this format, delimited by commas without any 
+spaces: 
+<harvesting_flag>,<user_idle_time_threshold_in_minutes>,<CPU_utilization_thre
+shold_in_percentage>,<CPU_idle_time_threshold_in_minutes>.
+
+.PP
+For example:
+ egosh ego elimrestart SA on,2,0.3,1.67 all 
+.PP
+This example enables (turns "on") host harvesting on all hosts, sets the user idle 
+time threshold (uit_t) to 2 minutes, CPU utilization threshold (cu_t) to 30%, and 
+CPU idle time threshold (cit_t) to 1.67 minutes (or 100 seconds). 
+
+.PP
+note:  
+
+.PP
+Threshold values are specified by numbers greater than zero. They do not need to be 
+whole numbers.
+
+.SS -f 
+.BR
+.PP
+
+.PP
+Executes command immediately without asking for confirmation. Use this option 
+when you are issuing egosh ego elimrestart from within a script and do not 
+want the script to stop running to respond to prompts.
+
+.SS host_name ...
+.BR
+.PP
+
+.PP
+Specifies the name of the host or hosts on which to restart/reconfigure the external 
+load information manager(s).
+
+.PP
+To specify multiple hosts, separate the host names with a space.
+
+.PP
+If no host name is given, then control is assumed to be local.
+
+.SS all
+.BR
+.PP
+
+.PP
+Restarts/reconfigures the external load information manager (elim) on all hosts in 
+the cluster.
+
+.SH ego info
+.BR
+.PP
+
+.PP
+Displays information about the cluster, including the cluster name, the name of the 
+master host, and the version of EGO.
+
+.SH ego restart [-f] [host_name ... | all]
+.BR
+.PP
+
+.PP
+Restarts EGO on the local host. Does not affect running work or services.
+
+.PP
+This is an administrative subcommand. On UNIX, you must be logged on with 
+root permissions to issue this command. On Windows, you must be logged on as 
+cluster administrator to issue this command.
+
+.SS -f
+.BR
+.PP
+
+.PP
+Forces the restart action on the host without validating the configuration file. Use 
+this option when you are issuing egosh ego restart from within a script and do 
+not want the script to stop running to respond to prompts.
+
+.SS host_name ...
+.BR
+.PP
+
+.PP
+Specifies the name of the host or hosts on which to restart EGO. 
+
+.PP
+To specify multiple hosts, separate the host names with a space.
+
+.PP
+You cannot use this option from a compute host unless the master host is up and 
+running.
+
+.SS all
+.BR
+.PP
+
+.PP
+Restarts EGO on all hosts in the cluster.
+
+.PP
+You cannot use this option from a compute host unless the master host is up and 
+running.
+
+.SH ego shutdown [-f] [host_name ... | all]
+.BR
+.PP
+
+.PP
+Stops EGO on the local host.
+
+.PP
+This is an administrative subcommand. On UNIX, you must be logged on with 
+root permissions to issue this command. On Windows, you must be logged on as 
+cluster administrator to issue this command.
+
+.SS -f
+.BR
+.PP
+
+.PP
+Forces the shutdown action on the host without validating the configuration file. 
+Use this option when you are issuing egosh ego shutdown from within a script and 
+do not want the script to stop running to respond to prompts.
+
+.SS host_name ...
+.BR
+.PP
+
+.PP
+Specifies the name of the host or hosts on which to stop EGO.
+
+.PP
+To specify multiple hosts, separate the host names with a space.
+
+.PP
+You cannot use this option from a compute host unless the master host is up and 
+running.
+
+.SS all
+.BR
+.PP
+
+.PP
+Stops EGO on all hosts in the cluster.
+
+.PP
+caution:  
+
+.PP
+Never use this option to shut down the cluster. To shut down the entire cluster, run the 
+egoshutdown command. 
+
+.PP
+You cannot use this option from a compute host unless the master host is up and 
+running.
+
+.SH ego start [-f] [host_name ... | all]
+.BR
+.PP
+
+.PP
+Starts EGO on the local host.
+
+.PP
+This is an administrative subcommand. On UNIX, you must be logged on with 
+root permissions to issue this command. On Windows, you must be logged on as 
+cluster administrator to issue this command.
+
+.SS -f
+.BR
+.PP
+
+.PP
+Forces the start action on the host without validating the configuration file. Use this 
+option when you are issuing egosh ego start from within a script and do not want 
+the script to stop running to respond to prompts.
+
+.SS host_name ...
+.BR
+.PP
+
+.PP
+Specifies the name of the host or hosts on which to start EGO. 
+
+.PP
+To specify multiple hosts, separate the host names with a space.
+
+.PP
+You cannot use this option from a compute host unless the master host is up and 
+running.
+
+.PP
+To use this option on UNIX, you must have root permission on each host and have 
+rsh configured for your account for each host. You may need to add an entry for 
+the local host in the .rhosts file for root.
+
+.PP
+note:  
+
+.PP
+You cannot start EGO on a UNIX host from a Windows host, or vice versa.
+
+.SS all
+.BR
+.PP
+
+.PP
+Starts EGO on all hosts in the cluster. Use this option when you want to 
+start the entire cluster.
+
+.PP
+You cannot use this option from a compute host unless the master host is up and 
+running.
+
+.PP
+To use this option on UNIX, you must have root permission on each host and have 
+rsh configured for your account. You may need to add an entry for the local host in 
+the .rhosts file for root.
+
+.PP
+note:  
+
+.PP
+You cannot start EGO on UNIX hosts from a Windows host, or vice versa.
+
+.SH entitlement info
+.BR
+.PP
+
+.PP
+Displays the number of supported cores, the type of entitlement installed in 
+the cluster, and the entitlement status of add-on products.
+
+.SH quit
+.BR
+.PP
+
+.PP
+Closes the interactive command console. If you are logged on to EGO, 
+quit does not log you off when it closes the command console. Alias: q.
+
+.SH resource close [-reclaim] resource_name ...
+.BR
+.PP
+
+.PP
+Closes a resource, preventing further allocation. Closing a resource does not change 
+its allocation status. If the resource is currently allocated to a consumer, the 
+resource remains allocated until the consumer returns it voluntarily. If the resource 
+is not currently allocated to a consumer, the resource remains in its unallocated 
+state. Existing workload units finish running before closing.
+
+.PP
+This is an administrative subcommand. You must first log on as cluster 
+administrator before you can issue this subcommand.
+
+.SS -reclaim
+.BR
+.PP
+
+.PP
+EGO reclaims the host before it closes; running workload units terminate 
+as per the configured grace period. The host is prevented from further allocation. 
+If the resource is currently allocated to a consumer, it is reclaimed. Once reclaimed, 
+it is not allocated to another consumer. 
+
+.PP
+After issuing this command, the host status changes to CLOSED; the reported 
+reason is "cluster administrator closes and reclaims host".
+
+.SS resource_name ...
+.BR
+.PP
+
+.PP
+Specifies the name of the resource or resources to close.
+
+.PP
+To close multiple resources, separate the resource names with a space.
+
+.SH resource group | rg [-l] [group_name ...] [group_name ...]
+.BR
+.PP
+
+.PP
+Displays information about all of the resource groups in the cluster including the 
+number of hosts in the group, the total number of slots, the number of free and 
+allocated slots, and detailed usage information describing distribution among 
+consumers.
+
+.SS rg
+.BR
+.PP
+
+.PP
+Is an alias to the resource group subcommand. You can use this as a shortcut 
+instead of typing the full subcommand name.
+.RS
+.HP 3
+o  
+ALLOCATED: Indicates the total number of resources allocated to a consumer.
+.HP 3
+o  
+FREE: Indicates the total number of unused resources, including unused 
+owned and unused shared (guaranteed), as per the resource plan
+.HP 3
+o  
+OWN: Indicates the configured ownership numbers, as per the resource plan.
+.HP 3
+o  
+SHARE: Indicates the configured share percentage among siblings, as per the 
+resource plan.
+.RE
+
+.SS -l 
+.BR
+.PP
+
+.PP
+Lists values for allocated and free slots within resource groups. Detailed usage 
+information includes breakdown of owned, shared, and borrowed slots (both in-use 
+and unused slots) in the cluster:
+.RS
+.HP 3
+o  
+OWN_USE: Indicates number of owned resources assigned to consumer.
+.HP 3
+o  
+SHARE_USE: Indicates number of resources assigned to consumer from share 
+pool.
+.HP 3
+o  
+BORROW_USE: Indicates number of resources borrowed from other 
+consumers.
+.HP 3
+o  
+OWN_FREE: Indicates number of remaining (unused) owned resources as 
+guaranteed from resource plan.
+.HP 3
+o  
+SHARE_FREE: Indicates number of remaining (unused) share pool resources 
+as guaranteed from resource plan.
+.RE
+
+.PP
+note:  
+
+.PP
+Values for OWN_FREE and SHARE_FREE may not add up to the actual "free" or total 
+number of resources for the resource group. Some resources reflected in the number may be 
+reclaimed resources.
+
+.SS group_name ...
+.BR
+.PP
+
+.PP
+Specifies the name of the resource group for which you want information displayed. 
+For example, ManagementHosts.
+
+.SH resource list [-l ] [-m | -s | -t | -a | -o attribute,...] [-R res_req] [resource_name ...]
+.BR
+.PP
+
+.PP
+Displays information about the resources in the cluster, listing each host and 
+information about the resources on each host.
+
+.SS -l
+.BR
+.PP
+
+.PP
+Provides the same information with a longer name field, if some are truncated when 
+-l is not specified.
+
+.SS -m
+.BR
+.PP
+
+.PP
+Displays the list of failover candidate hosts in the cluster and identifies which host 
+is currently the master.
+
+.SS -s
+.BR
+.PP
+
+.PP
+Displays summaries of the hosts in the cluster, including information on host states 
+and resource utilization.
+
+.SS -t
+.BR
+.PP
+
+.PP
+Displays a list of host types defined in the cluster.
+
+.SS -a
+.BR
+.PP
+
+.PP
+Displays all load indices for all resources. 
+
+.SS -o attribute,...
+.BR
+.PP
+
+.PP
+Specifies the attributes to include in the display. Use this option to customize the 
+output, including only those attributes you are interested in. For example: 
+ resource list -o status,type,ncpus 
+.PP
+Specify one (or more) of the following:
+.RS
+.HP 3
+o  
+status: Current state of the host
+.HP 3
+o  
+type: Type of host
+.HP 3
+o  
+ncpus: Number of CPUs as seen by EGO (value used to determine the 
+number of slots; can be overridden by resource group configuration)
+.HP 3
+o  
+nprocs: Number of physical processors (if ncpus defined as procs, then ncpus 
+= nprocs)
+.HP 3
+o  
+ncores: Number of cores per processor (if ncpus defined as cores, then ncpus 
+= nprocs * ncores)
+.HP 3
+o  
+nthreads: Number of threads per core (if ncpus defined as threads, then ncpus 
+= nprocs * ncores * nthreads)
+.HP 3
+o  
+ut: CPU utilization
+.HP 3
+o  
+mem: Available memory
+.HP 3
+o  
+swp: Available swap space
+.HP 3
+o  
+pg: Paging rate
+.HP 3
+o  
+io: Disk I/O rate
+.HP 3
+o  
+slot: Number of slots
+.HP 3
+o  
+freeslot: Number of free slots
+.HP 3
+o  
+r15s: 15-second load
+.HP 3
+o  
+r15m: 15-minute load
+.HP 3
+o  
+r1m: 1-minute load
+.HP 3
+o  
+model: The host model
+.HP 3
+o  
+cpuf: The CPU factor
+.HP 3
+o  
+maxmem: Maximum memory
+.HP 3
+o  
+maxswp: Maximum swap space
+.HP 3
+o  
+tmp: Available temp space
+.HP 3
+o  
+maxtmp: Maximum space in /tmp
+.HP 3
+o  
+ndisks: Number of local disks
+.HP 3
+o  
+it: Idle time
+.HP 3
+o  
+ls: Logon users
+.HP 3
+o  
+resourceattr: Resource attributes assigned to this host
+.HP 3
+o  
+processpri: The OS process priority of cluster workloads (either normal or 
+lowest)
+.RE
+
+.PP
+note:  
+
+.PP
+You cannot use this command option to view global ncpu settings. This information can 
+only be viewed directly in the shared copy of ego.conf.
+
+.SS -R res_req
+.BR
+.PP
+
+.PP
+Displays information about the resources that match the resource requirement 
+string specified.
+
+.PP
+Specify name value pairs for the resource requirement(s). Multiple resource 
+requirements are separated with the characters &&.
+
+.PP
+important:  
+
+.PP
+If the command is issued in whole from the shell console, enclose the requirement 
+in double quotation marks. For example: 
+ >egosh resource list -R "select(mem>100 && it>1)" 
+.PP
+If the command is issued from the egosh console, do not use quotation marks. For example: 
+ >egosh  >resource list -R select(mem>100 && it>1) 
+.SS resource _name ...
+.BR
+.PP
+
+.PP
+Specifies the name of the resource you want to list.
+
+.PP
+Displays information about the resource with the specified name.
+
+.SH resource open resource_name ...
+.BR
+.PP
+
+.PP
+Opens the specified resource, allowing it to accept requests.
+
+.PP
+This is an administrative subcommand. You must first log on as cluster 
+administrator before you can issue this subcommand.
+
+.SS resource _name ...
+.BR
+.PP
+
+.PP
+Specifies the name of the resource or resources to open.
+
+.PP
+ To open multiple resources, separate the resource names with a space.
+ 
+.SH resource removehost host_name ...
+.BR
+.PP
+
+.PP
+Removes the specified host from the cluster. To remove a host, 
+it must be dynamic and either unavailable or closed without running workload.
+
+.PP
+This is an administrative subcommand. You must first log on as cluster 
+administrator before you can issue this subcommand.
+
+.SS host_name ...
+.BR
+.PP
+
+.PP
+Specifies the name of the host or hosts to remove.
+
+.PP
+To remove multiple hosts, separate the host names with a space.
+
+.SH resource setpriority -lowest | -normal resource_name ...
+.BR
+.PP
+
+.PP
+Sets the OS process priority of cluster workloads running on scavenge-capable 
+hosts. 
+
+.PP
+restriction:  
+
+.PP
+Host harvesting is a feature for use with IBM Spectrum Symphony only.
+
+.PP
+This is an administrative subcommand. You must first log on as cluster 
+administrator before you can issue this subcommand.
+
+.SS -lowest
+.BR
+.PP
+
+.PP
+Specifies to set the process priority to lowest. EGO allocates this resource 
+to run workload units at the lowest process priority as controlled by the operating 
+system. 
+
+.SS -normal
+.BR
+.PP
+
+.PP
+Specifies to set the process priority to normal (default). EGO allocates this 
+resource to run workload units at normal process priority as controlled by the 
+operating system.
+
+.SS resource _name ...
+.BR
+.PP
+
+.PP
+Specifies the name of the resource or resources on which to set the OS process 
+priority.
+
+.PP
+Separate multiple resource names with a space.
+
+.SH resource view [resource_name ...]
+.BR
+.PP
+
+.PP
+Displays all the information about all resources.
+
+.SS resource _name ...
+.BR
+.PP
+
+.PP
+Specifies the name of the resource or resources you want to view.
+
+.PP
+Displays information about the specified resource or resources. 
+
+.PP
+To view multiple resources, separate the resource names with a space.
+
+.SH service list [-l] [-s service_name] [-a alloc_ID] [-p consumer_name] [-r resource_name]
+.BR
+.PP
+
+.PP
+Lists registered service(s) defined in EGO service controller.
+
+.SS -l
+.BR
+.PP
+
+.PP
+Provides the same information with a longer name field, if some are truncated when 
+-l is not specified.
+
+.SS -s service_name
+.BR
+.PP
+
+.PP
+Specifies the service to which this action applies.
+
+.SS -a alloc_ID
+.BR
+.PP
+
+.PP
+Lists all services that belong to the specified allocation.
+
+.SS -p consumer_name
+.BR
+.PP
+
+.PP
+Lists all the services for the specified consumer.
+
+.SS -r resource_name
+.BR
+.PP
+
+.PP
+Lists all the services that are using the specified resource.
+
+.SH service start service_name ... | -p consumer_name | all
+.BR
+.PP
+
+.PP
+Starts registered service(s) defined in EGO service controller. If this is a 
+service that is configured to start automatically, enables the service to be started 
+automatically.
+
+.PP
+This is an administrative subcommand. You must first log on as cluster 
+administrator or have EGO_SERVICE_CONTROL permission before you can issue this subcommand.
+
+.SS service_name ...
+.BR
+.PP
+
+.PP
+Starts the specified service(s).
+
+.SS -p consumer_name
+.BR
+.PP
+
+.PP
+Starts all the services for the specified consumer. You can specify a consumer name or you can specify the path for a leaf or non-leaf consumer. If you specify the path or name for a non-leaf consumer, all registered services that belong to its descendents are started. If you specify the consumer path as ��/��, all registered services of the cluster are started.
+.SS all
+.BR
+.PP
+
+.PP
+Starts all registered services.
+
+.SH service stop service_name ... | -p consumer_name | all
+.BR
+.PP
+
+.PP
+Stops registered service(s) defined in EGO service controller.
+
+.PP
+This is an administrative subcommand. You must first log on as cluster 
+administrator or have EGO_SERVICE_CONTROL permission before you can issue this subcommand.
+
+.SS service_name ... 
+.BR
+.PP
+
+.PP
+Stops the specified service(s).
+.SS -p consumer_name
+.BR
+.PP
+
+.PP
+Stops all the services for the specified consumer. You can specify a consumer name or you can specify the path  for a leaf or non-leaf consumer. If you specify the path or name for a non-leaf consumer, all registered services that belong to its descendents are stopped. If you specify the consumer path as ��/��, all registered services of the cluster are stopped.
+
+.SS all
+.BR
+.PP
+
+.PP
+Stops all registered services.
+
+.SH service view [service_name ...]
+.BR
+.PP
+
+.PP
+Displays registered service(s) defined in EGO service controller.
+
+.SS service_name ...
+.BR
+.PP
+
+.PP
+Displays information about the specified service(s).
+
+.SH user add -u user_account -x password [-e email] [-t telephone] [-d description]
+.BR
+.PP
+
+.PP
+Creates a new user account in the EGO user database with the specified 
+name.
+
+.PP
+This is an administrative subcommand. You must first log on as cluster 
+administrator before you can issue this subcommand.
+
+.SS -u user_account
+.BR
+.PP
+
+.PP
+Specifies the name of the user account to create.
+
+.PP
+Specify a unique name with up to 32 alphanumeric or special characters, except 
+greater than (>), less than (<), ampersand (&), or control characters (Ctrl + key).
+
+.SS -x password
+.BR
+.PP
+
+.PP
+Specifies the password to be used to authenticate the user when this user account is 
+accessed.
+
+.PP
+Specify one to eight alphanumeric or special characters, except greater than (>), less 
+than (<), ampersand (&), or control characters (Ctrl + key).
+
+.SS -e email
+.BR
+.PP
+
+.PP
+Specifies the email address of the user to whom this account belongs.
+
+.PP
+Specify up to 64 alphanumeric or special characters, except greater than (>), less 
+than (<), ampersand (&), or control characters (Ctrl + key).
+
+.SS -t telephone
+.BR
+.PP
+
+.PP
+Specifies the telephone number of the user to whom this account belongs. 
+
+.PP
+Specify up to 20 numbers and spaces.
+
+.SS -d description
+.BR
+.PP
+
+.PP
+Specifies any additional information about the user account or the user to whom 
+this account belongs.
+
+.PP
+Specify up to 200 alphanumeric or special characters, except control 
+characters (Ctrl + key). Enclose description in quotation marks if there are spaces 
+within it.
+
+.SH user assignrole -u user_account -r role [-p consumer_name]
+.BR
+.PP
+
+.PP
+Assigns the specified role to the specified user account, and optionally specifies the 
+consumer this role applies to.
+
+.PP
+This is an administrative subcommand. You must first log on as cluster 
+administrator or consumer administrator before you can issue this subcommand.
+
+.SS -u user_account
+.BR
+.PP
+
+.PP
+Specifies the user account to assign the role to. The user account specified must 
+already exist prior to issuing this command.
+
+.SS -r role
+.BR
+.PP
+
+.PP
+Specifies the role to assign. Specify one of the following:
+.RS
+.HP 3
+o  
+CLUSTER_ADMIN
+.HP 3
+o  
+CONSUMER_ADMIN
+.HP 3
+o  
+CONSUMER_USER
+.RE
+
+.PP
+Specify CLUSTER_ADMIN to assign a user account the role of cluster 
+administrator, with administrative authority for all consumers in the cluster. You do 
+not need to specify a path.
+
+.PP
+Specify CONSUMER_ADMIN to assign a user account the role of consumer 
+administrator for the specified consumer. You must specify the full path to the 
+consumer name over which this user account should have administrative authority.
+
+.PP
+Specify CONSUMER_USER to assign a user account the role of consumer user. 
+This role has no administrative authority, but is authorized to use resources 
+allocated to the specified consumer. You must specify the full path to the consumer 
+name when specifying this role.
+
+.SS -p consumer_name
+.BR
+.PP
+
+.PP
+Specifies the consumer for which this user is assigned the specified role.
+
+.SH Examples: 
+.BR
+.PP
+
+.PP
+The following example assigns George Smith the role of cluster administrator:
+ egoadmin@egosh> user assignrole -u gsmith -r CLUSTER_ADMIN 
+.PP
+The following example assigns Mark Chase the role of consumer user for the 
+bugtest application, which is a descendent of the UAT consumer:
+ egoadmin@egosh> user assignrole -u mchase -r CONSUMER_USER -p testcluster/UAT/bugtest 
+.SH user delete -u user_account 
+.BR
+.PP
+
+.PP
+Deletes a user account from the EGO user database.
+
+.PP
+This is an administrative subcommand. You must first log on as cluster 
+administrator before you can issue this subcommand.
+
+.SS -u user_account
+.BR
+.PP
+
+.PP
+Specifies the name of the user account to be deleted.
+
+.SH user list [-l]
+.BR
+.PP
+
+.PP
+Displays all user accounts in the EGO user database and the values 
+specified for phone, email, and description.
+
+.SS -l
+.BR
+.PP
+
+.PP
+Provides the same information with a longer name field, if some are truncated when 
+-l is not specified.
+
+.SH user logoff
+.BR
+.PP
+
+.PP
+Logs off the current user account from EGO. Logging off does not close 
+the interactive command interface session but does prevent the user from issuing 
+administrative subcommands.
+
+.SH user logon [-u user_account] [-x password]
+.BR
+.PP
+
+.PP
+Initiates the log on sequence to EGO, prompting for user account and 
+password.
+
+.PP
+note:  
+
+.PP
+You are automatically logged off of EGO after 8 hours. To perform another administrative 
+command after expiry, you are required to log on again. The logon expiry time is not configurable.
+
+.SS -u user_account
+.BR
+.PP
+
+.PP
+Specifies the EGO user account to use to log on.
+
+.SS -x password
+.BR
+.PP
+
+.PP
+Specifies the password to use to authenticate the log on sequence.
+
+.SH user modify -u user_account -x password [-e email] [-t telephone] [-d description]
+.BR
+.PP
+
+.PP
+Changes user account values to those specified for a user account defined in the 
+EGO user database.
+
+.PP
+This is an administrative subcommand. You must first log on as cluster 
+administrator before you can issue this subcommand.
+
+.SS -u user_account
+.BR
+.PP
+
+.PP
+Specifies the name of the user account to modify. You cannot modify the name 
+itself.
+
+.SS -x password
+.BR
+.PP
+
+.PP
+Specifies the new password to be used to authenticate the user when this user 
+account is accessed.
+
+.PP
+Specify one to eight alphanumeric or special characters, except greater than (>), less 
+than (<), ampersand (&), or control characters (Ctrl + key).
+
+.SS -e email
+.BR
+.PP
+
+.PP
+Specifies a new email address of the user to whom this account belongs.
+
+.PP
+Specify up to 64 alphanumeric or special characters, except greater than (>), less 
+than (<), ampersand (&), or control characters (Ctrl + key).
+
+.SS -t telephone
+.BR
+.PP
+
+.PP
+Specifies the telephone number of the user to whom this account belongs.
+
+.PP
+Specify up to 20 numbers and spaces.
+
+.SS -d description
+.BR
+.PP
+
+.PP
+Specifies any additional information about the user account or the user to whom 
+this account belongs.
+
+.PP
+Specify up to 200 alphanumeric or special characters, except control characters 
+(Ctrl + key). Enclose description in quotation marks if there are spaces within it.
+
+.SH user roles4user -u user_account
+.BR
+.PP
+
+.PP
+Lists the roles assigned to a user account.
+
+.SS -u user_account
+.BR
+.PP
+
+.PP
+Specifies the user account for which to list the roles.
+
+.SH user users4role -r role [-p consumer_name]
+.BR
+.PP
+
+.PP
+Lists all user accounts in the EGO user database that have the specified 
+role. For consumer administrators, this command also lists the consumer this user 
+can administer. For consumer users, this command also lists the consumer to which 
+the user has access.
+
+.SS -r role
+.BR
+.PP
+
+.PP
+Specifies the role to list all users for. Specify one of the following:
+.RS
+.HP 3
+o  
+CLUSTER_ADMIN
+.HP 3
+o  
+CONSUMER_ADMIN
+.HP 3
+o  
+CONSUMER_USER 
+.RE
+
+.SS -p consumer_name
+.BR
+.PP
+
+.PP
+Lists all users' accounts and their roles for the specified consumer. If you specified 
+the role CLUSTER_ADMIN, a consumer_name is not needed. If you specified 
+either of the other two roles, a consumer_name is required.
+
+.SH user unassignrole -u user_account -r role [-p consumer_name]
+.BR
+.PP
+
+.PP
+Removes the specified role from the specified user account. Optionally, specifies 
+the consumer to which this action applies or removes this role from all descendents 
+of the specified consumer.
+
+.PP
+This is an administrative subcommand. You must first log on as cluster 
+administrator or consumer administrator before you can issue this subcommand.
+
+.SS -u user_account 
+.BR
+.PP
+
+.PP
+Specifies the user account to remove the role from.
+
+.SS -r role
+.BR
+.PP
+
+.PP
+Specifies the role to remove. Specify one of the following: 
+.RS
+.HP 3
+o  
+CLUSTER_ADMIN
+.HP 3
+o  
+CONSUMER_ADMIN
+.HP 3
+o  
+CONSUMER_USER
+.RE
+
+.SS -p consumer_name
+.BR
+.PP
+
+.PP
+Specifies the consumer for which this role is removed from the user account.
+
+.SH user view [user_account ...]
+.BR
+.PP
+
+.PP
+Displays a list of EGO user accounts.
+
+.SS -u user_account
+.BR
+.PP
+
+.PP
+Specifies the name of the specific user account(s) to view.
+
+.SH Logging levels and classes
+.BR
+.PP
+
+.SS Logging levels
+.BR
+.PP
+
+.PP
+Valid logging levels are as follows:
+
+.SS LOG_EMERG
+.BR
+.PP
+
+.PP
+Logs only those messages in which the system is unusable.
+
+.SS LOG_ALERT
+.BR
+.PP
+
+.PP
+Logs only those messages for which action must be taken immediately.
+
+.SS LOG_CRIT
+.BR
+.PP
+
+.PP
+Logs only those messages that are critical.
+
+.SS LOG_ERR
+.BR
+.PP
+
+.PP
+Logs only those messages that indicate error conditions.
+
+.SS LOG_WARNING
+.BR
+.PP
+
+.PP
+Logs only those messages that are warnings or more serious messages. This is the 
+default level of debug information.
+
+.SS LOG_NOTICE
+.BR
+.PP
+
+.PP
+Logs those messages that indicate normal but significant conditions or warnings 
+and more serious messages.
+
+.SS LOG_INFO
+.BR
+.PP
+
+.PP
+Logs all informational messages and more serious messages.
+
+.SS LOG_DEBUG
+.BR
+.PP
+
+.PP
+Logs all debug-level messages.
+
+.SS LOG_TRACE
+.BR
+.PP
+
+.PP
+Logs all available messages.
+
+.SS Logging classes for vemkd and pem
+.BR
+.PP
+
+.PP
+Valid logging classes are as follows:
+
+.SS LC_TRACE
+.BR
+.PP
+
+.PP
+Logs significant program steps.
+
+.SS LC_COMM
+.BR
+.PP
+
+.PP
+Logs messages related to communications.
+
+.SS LC_AUTH
+.BR
+.PP
+
+.PP
+Logs messages related to users and authentication.
+
+.SS LC_MEM
+.BR
+.PP
+
+.PP
+Logs messages related to memory allocation.
+
+.SS LC_SYS
+.BR
+.PP
+
+.PP
+Logs messages related to system calls.
+
+.SS LC_PERF
+.BR
+.PP
+
+.PP
+Logs messages related to performance.
+
+.SS LC_RSRC
+.BR
+.PP
+
+.PP
+Logs messages related to resources, including host status changes.
+
+.SS LC_ALLOC
+.BR
+.PP
+
+.PP
+Logs messages related to the resource allocation engine.
+
+.SS LC_ACTIVITY
+.BR
+.PP
+
+.PP
+Logs messages related to activities.
+
+.SS LC_PEM
+.BR
+.PP
+
+.PP
+Logs messages related to the process execution manager (pem).
+
+.SS LC_EVENT
+.BR
+.PP
+
+.PP
+Logs messages related to the event notification service.
+
+.SS LC_QUERY
+.BR
+.PP
+
+.PP
+Logs messages related to client queries.
+
+.SS LC_RECOVER
+.BR
+.PP
+
+.PP
+Logs messages related to recovery and data persistence.
+
+.SS LC_CONF
+.BR
+.PP
+
+.PP
+Logs messages related to configuration.
+
+.SS Logging classes for lim
+.BR
+.PP
+
+.PP
+Valid logging classes are as follows:
+
+.SS LC_SCHED
+.BR
+.PP
+
+.PP
+Logs LSF scheduler (mbschd) messages.
+
+.SS LC_EXEC
+.BR
+.PP
+
+.PP
+Logs significant steps for job execution.
+
+.SS LC_TRACE
+.BR
+.PP
+
+.PP
+Logs significant program steps.
+
+.SS LC_COMM
+.BR
+.PP
+
+.PP
+Logs messages related to communications.
+
+.SS LC_XDR
+.BR
+.PP
+
+.PP
+Logs everything transferred by XDR.
+
+.SS LC_CHKPNT
+.BR
+.PP
+
+.PP
+Logs checkpointing messages.
+
+.SS LC_LICENSE
+.BR
+.PP
+
+.PP
+Logs entitlement management messages.
+
+.SS LC_FILE
+.BR
+.PP
+
+.PP
+Logs file transfer messages.
+
+.SS LC_AFS
+.BR
+.PP
+
+.PP
+Logs AFS messages.
+
+.SS LC_AUTH
+.BR
+.PP
+
+.PP
+Logs messages related to users and authentication.
+
+.SS LC_HANG
+.BR
+.PP
+
+.PP
+Marks where a program might hang.
+
+.SS LC_MULTI
+.BR
+.PP
+
+.PP
+Logs messages pertaining to MultiCluster.
+
+.SS LC_SIGNAL
+.BR
+.PP
+
+.PP
+Logs messages pertaining to signals.
+
+.SS LC_DCE
+.BR
+.PP
+
+.PP
+Logs messages pertaining to DCE support.
+
+.SS LC_PIM
+.BR
+.PP
+
+.PP
+Logs PIM messages.
+
+.SS LC_MEMORY
+.BR
+.PP
+
+.PP
+Logs memory limit messages.
+
+.SS LC_SYS
+.BR
+.PP
+
+.PP
+Logs system call messages.
+
+.SS LC_JLIMIT
+.BR
+.PP
+
+.PP
+Logs job slot limit messages. 
+
+.SS LC_FAIR
+.BR
+.PP
+
+.PP
+Logs fairshare policy messages.
+
+.SS LC_PREEMPT
+.BR
+.PP
+
+.PP
+Logs preemption policy messages.
+
+.SS LC_PEND
+.BR
+.PP
+
+.PP
+Logs messages related to job pending reasons.
+
+.SS LC_EEVENTD
+.BR
+.PP
+
+.PP
+Logs eeventd messages.
+
+.SS LC_LOADINDX
+.BR
+.PP
+
+.PP
+Logs load index messages.
+
+.SS LC_RESOURCE
+.BR
+.PP
+
+.PP
+Logs information used by resource broker (resource gathering and reporting).
+
+.SS LC_JGRP
+.BR
+.PP
+
+.PP
+Logs job group messages.
+
+.SS LC_JARRAY
+.BR
+.PP
+
+.PP
+Logs job array messages.
+
+.SS LS_MPI
+.BR
+.PP
+
+.PP
+Logs MPI messages.
+
+.SS LC_ELIM
+.BR
+.PP
+
+.PP
+Logs ELIM messages.
+
+.SS LC_M_LOG
+.BR
+.PP
+
+.PP
+Logs multievent logging messages.
+
+.SS LC_PERFM
+.BR
+.PP
+
+.PP
+Logs performance messages.
+
+.SS LC_HPC
+.BR
+.PP
+
+.PP
+Logs information specific to HPC integration.
+
+.SS LC_LICSCHED
+.BR
+.PP
+
+.PP
+Logs LSF License Scheduler messages.
+

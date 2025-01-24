@@ -1,0 +1,77 @@
+.ds ]W %
+.ds ]L
+.TH QDEL 1 "1 August 1998"
+.SH NAME
+qdel \- Delete or signal one ore more NQS requests
+.SH SYNOPSIS
+\fBqdel [ \fB\-k\fP ] [ \-\fIsigno\fP ] [ \fB\-u\fP \fIuser-name\fP ] \fIrequest-id\fP ...\fR
+.SH DESCRIPTION
+The lsNQS version of the NQS command of the same name.
+lsNQS allows you to use NQS commands to work with the load sharing batch
+system,
+.BR lsbatch (1).
+.I qdel
+deletes or sends a signal to the NQS requests that have been submitted to
+lsbatch and whose
+.IR request-id s
+are listed on the command line.
+.PP
+An lsNQS request is always uniquely identified by its \fIrequest-id\fR,
+regardless of which machine it has been dispatched to by lsbatch.
+The \fIrequest-id\fR
+of any NQS request is displayed when the request is first submitted,
+unless the
+.I silent
+mode of operation for the given lsNQS command was specified (see
+.BR qsub (1)).
+You can also obtain the \fIrequest-id\fR
+of any request through the use of the
+.BR qstat (1)
+command.
+.SH OPTIONS
+.TP 5
+.B -k
+Sends the signal \f3\s-1SIGKILL\s+1\fR to all requests that have
+\fIrequest-id\fRs listed on the command line.
+This causes a receiving request to exit and be deleted.
+In the absence of this and the \fB-signo\fP flags, \fIqdel\fR will not
+delete a \fIrunning\fR NQS request.
+.TP 5
+.B -signo
+Sends the specified signal, instead of the default \f3\s-1SIGKILL\s+1\fR signal,
+to all requests that have \fIrequest-id\fRs listed on the command line.
+\fIsigno\fR can be either a signal number or a signal name.
+The signal names are as given in \fI/usr/include/signal.h\fR, stripped
+of the common SIG prefix.
+To delete or signal an NQS request, you must
+be the owner (that is, the submitter of the request) or the superuser.
+.TP 5
+.B -u user-name
+Deletes or signals requests owned by the user whose account name
+is \fIuser-name\fR.
+Normally, you can only signal or delete your own requests.
+Only the lsbatch administrator is allowed to delete or signal a request
+submitted by another user.
+.SH CAVEATS
+When an NQS request is signaled by the methods discussed above,
+the proper signal is sent to
+.I all
+processes comprising each qualifying NQS request
+that are in the same process group.
+Whenever an NQS request is spawned, a new process group
+is established for all processes in the request.
+However, if one or more processes of the request successfully executes a
+\fBsetpgrp\fR (2) system call, such processes do not
+receive any signals sent by the
+.BR qdel (1)
+command. This can lead to ``rogue'' request processes that must be killed by
+other means such as the
+.BR kill (1)
+command.
+.SH "SEE ALSO"
+.BR qsub (1),
+.BR qstat (1),
+.BR kill (1),
+.BR setpgrp (2),
+.BR signal (3c),
+.BR lsbatch (1)

@@ -1,0 +1,28 @@
+.TH "extsched_alloc_registerallocator" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+extsched_alloc_registerallocator \- extsched_alloc_registerallocator 
+Register a function that adjusts allocation decisions for jobs.
+.PP
+These functions will be called after internal scheduling policies have decided allocations for jobs.
+.PP
+\fB#include <lssched.h>\fP
+.PP
+\fB int extsched_alloc_registerallocator(AllocatorFn  allocator)\fP
+.PP
+.SH "Parameters:"
+\fIallocator\fP [IN] : Pointer to the function that adjusts alocations.
+.PP
+.SH "Returns:"
+int:0  registered. 
+.PP
+int:<0  to register the function.
+.PP
+.SH "See also:"
+\fBAllocatorFn\fP 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

@@ -1,0 +1,25 @@
+.TH "extsched_getResType" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+extsched_getResType \- extsched_getResType 
+A little helper routine returning the string from the enum restype.
+.PP
+Don't free the returned string (it points to a static buffer).
+.PP
+\fB#include <lssched.h>\fP
+.PP
+\fB char *extsched_getResType(const struct resources *r)<\fB\fP >\fP
+.PP
+\fB 
+.PP
+.SH "Parameters:"
+\fIr\fP [IN] : pointer to the resource structure
+.PP
+.SH "Returns:"
+char *  of 'STATIC_RESOURCE', 'DYNAMIC_RESOURCE', 'SHARED_RESOURCE', or ''. 
+.PP
+\fP
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

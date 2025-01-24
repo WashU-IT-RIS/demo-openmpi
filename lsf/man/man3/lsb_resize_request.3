@@ -1,0 +1,112 @@
+.TH "lsb_resize_request" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_resize_request \- lsb_resize_request 
+Request adding more slots to a running resizable job.
+.PP
+If a notification command is defined through job submission, application profile,or the \fBlsb_resize_request\fP API, the notification command is invoked on the first execution host of the job allocation once allocation resize requests have been satisfied.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB int lsb_resize_request(struct job_resize_request *req);\fP
+.PP
+.SH "Parameters:"
+\fI*req\fP job resize grow request.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBjob_resize_request\fP
+.PP
+.SH "Define Statements:" 
+.PP
+\fBresizablejob_related\fP
+.PP
+.SH "Returns:"
+int:0 
+.br
+ On success, returns zero. 
+.PP
+int:-1 
+.br
+ On failure, returns -1.
+.PP
+.SH "Errors:" 
+.PP
+lsberrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+request [-c] [-rnc resize_notification_cmd | -rncn] [min_slot,] slots job_ID
+.PP
+.SH "Files:" 
+.PP
+none
+.PP
+.SH "See also:"
+\fBlsb_resize_release\fP 
+.PP
+\fBlsb_resize_cancel\fP 
+.PP
+
+.ad l
+.nh
+.SH NAME
+job_resize_request \- job resize request, i.e.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SH "Detailed Description"
+.PP 
+job resize request, i.e. 
+
+to grow a job's allocation. 
+
+.ad l
+.nh
+.SH NAME
+resizablejob_related \- Resizable job related definitions.  
+
+.PP
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBLSB_RESIZE_REL_NONE\fP   0x0"
+.br
+.ti -1c
+.RI "#define \fBLSB_RESIZE_REL_ALL\fP   0x01"
+.br
+.ti -1c
+.RI "#define \fBLSB_RESIZE_REL_CANCEL\fP   0x02"
+.br
+.ti -1c
+.RI "#define \fBLSB_RESIZE_REL_NO_NOTIFY\fP   0x04"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Resizable job related definitions. 
+.SH "Define Documentation"
+.PP 
+.SS "#define LSB_RESIZE_REL_NONE   0x0"
+.PP
+Means release no slots. 
+.PP
+.SS "#define LSB_RESIZE_REL_ALL   0x01"
+.PP
+Means release all slots-In this case, nHosts, hosts and slots indicate the slots that are not released. 
+.PP
+.SS "#define LSB_RESIZE_REL_CANCEL   0x02"
+.PP
+Means cancel any pending resize request. 
+.PP
+.SS "#define LSB_RESIZE_REL_NO_NOTIFY   0x04"
+.PP
+Means execute no resize notification command. 
+.PP
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

@@ -1,0 +1,246 @@
+.TH "ls_rwait" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ls_rwait \- ls_rwait 
+Collects the status of a remote task started by \fBls_rtask\fP or \fBls_rtaske\fP.
+.PP
+\fBls_rwait\fP collects the status of a remote child (task) that has been started by \fBls_rtask\fP or \fBls_rtaske\fP. This call is similar to the UNIX wait3() call, except that the child is located on a remote host.
+.PP
+If a remote child's status is successfully obtained, then the remote task ID (which is returned by an earlier \fBls_rtask\fP or \fBls_rtaske\fP call) is returned. Also, if status is not NULL, the status of the exited child is stored in the structure pointed to by status. If ru is not NULL, and the remote child's machine supports the rusage structure in its wait3() call, the resource usage information of the exited child is stored in the structure pointed to by ru. Only the ru_utime and ru_stime fields are set in the structure if the remote child's machine does not support the rusage structure in the wait3() call. If the remote child is run on a different platform than the parent, then only the fields in the resource structure that are common between the two platforms are filled in (the rusage structure is not identical across all platforms). If the child runs on a 64-bit machine, and the parent runs on a 32-bit machine, each of the values in the rusage structure that will overflow on a 32-bit machine are set to LONG_MAX.
+.PP
+The \fBls_rwait\fP call are automatically restarted when the parent receives a signal while awaiting termination of a remote child process, unless the SV_INTERRUPT bit has been set for the signal (see sigaction()).
+.PP
+Use the blocking mode of \fBls_rwait\fP with care. If there are both local and remote children, \fBls_rwait\fP take care only of remote children; none of them will return even though a local child has exited. In such cases, you can call wait(), \fBls_rwait\fP and/or \fBls_rwaittid\fP via signal handlers (for SIGCHLD and SIGUSR1, respectively) to process local and remote children.
+.PP
+When a remote child terminates, SIGUSR1 is sent to the parent process. Thus, \fBls_rwait\fP is typically called from inside the SIGUSR1 signal handler of the parent process.
+.PP
+Any program using these routines must call \fBls_initrex\fP first.
+.PP
+Any program using these routines must be setuid to root if LSF_AUTH is not defined in the lsf.conf file.
+.PP
+The remote file operations make use of a Remote File Server on the remote host. When this RFS shuts down, its status will be reported to its client. The client should ignore this status.
+.PP
+\fB #include <sys/types.h> 
+.br
+#include <sys/wait.h> 
+.br
+#include <sys/time.h> 
+.br
+#include <sys/resource.h> 
+.br
+#include <lsf/lsf.h>\fP
+.PP
+\fB int ls_rwait(LS_WAIT_T *status, int options, struct rusage *ru) \fP
+.PP
+.SH "Parameters:"
+\fI*status\fP \fBreturn_values_waittid\fP 
+.br
+\fIoptions\fP If specified as 0, and there is at least one remote child, then the calling host is blocked until a remote child exits. If options is specified to be WNOHANG, the routine checks for any exited (remote) child and returns immediately. The options parameter may be extended to provide more options in the future. 
+.br
+\fI*ru\fP The structure where the resource usage information of the exited child is stored.
+.PP
+.SH "Data Structures:" 
+.PP
+none
+.PP
+.SH "Define Statements:" 
+.PP
+\fBreturn_values_waittid\fP
+.PP
+.SH "Returns:"
+char:remote task ID 
+.br
+ The function was successful. 
+.PP
+int:-1 
+.br
+ Function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lserrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+${LSF_ENVDIR:-/etc}/lsf.conf
+.PP
+.SH "See also:"
+\fBls_rwaittid\fP 
+.PP
+\fBls_rtask\fP 
+.PP
+\fBls_rtaske\fP 
+.PP
+
+.ad l
+.nh
+.SH NAME
+return_values_waittid \- Special signals returned in status codes from \fBls_rwait\fP.  
+
+.PP
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBSTATUS_TIMEOUT\fP   125"
+.br
+.ti -1c
+.RI "#define \fBSTATUS_IOERR\fP   124"
+.br
+.ti -1c
+.RI "#define \fBSTATUS_EXCESS\fP   123"
+.br
+.ti -1c
+.RI "#define \fBSTATUS_REX_NOMEM\fP   122"
+.br
+.ti -1c
+.RI "#define \fBSTATUS_REX_FATAL\fP   121"
+.br
+.ti -1c
+.RI "#define \fBSTATUS_REX_CWD\fP   120"
+.br
+.ti -1c
+.RI "#define \fBSTATUS_REX_PTY\fP   119"
+.br
+.ti -1c
+.RI "#define \fBSTATUS_REX_SP\fP   118"
+.br
+.ti -1c
+.RI "#define \fBSTATUS_REX_FORK\fP   117"
+.br
+.ti -1c
+.RI "#define \fBSTATUS_REX_AFS\fP   116"
+.br
+.ti -1c
+.RI "#define \fBSTATUS_REX_UNKNOWN\fP   115"
+.br
+.ti -1c
+.RI "#define \fBSTATUS_REX_NOVCL\fP   114"
+.br
+.ti -1c
+.RI "#define \fBSTATUS_REX_NOSYM\fP   113"
+.br
+.ti -1c
+.RI "#define \fBSTATUS_REX_VCL_INIT\fP   112"
+.br
+.ti -1c
+.RI "#define \fBSTATUS_REX_VCL_SPAWN\fP   111"
+.br
+.ti -1c
+.RI "#define \fBSTATUS_REX_EXEC\fP   110"
+.br
+.ti -1c
+.RI "#define \fBSTATUS_REX_MLS_INVAL\fP   109"
+.br
+.ti -1c
+.RI "#define \fBSTATUS_REX_MLS_CLEAR\fP   108"
+.br
+.ti -1c
+.RI "#define \fBSTATUS_REX_MLS_RHOST\fP   107"
+.br
+.ti -1c
+.RI "#define \fBSTATUS_REX_MLS_DOMIN\fP   106"
+.br
+.ti -1c
+.RI "#define \fBSTATUS_DENIED\fP   105"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Special signals returned in status codes from \fBls_rwait\fP. 
+.SH "Define Documentation"
+.PP 
+.SS "#define STATUS_TIMEOUT   125"
+.PP
+Timed_out status code for rpid. 
+.PP
+.SS "#define STATUS_IOERR   124"
+.PP
+The remote task failed with an I/O error. 
+.PP
+
+.SS "#define STATUS_EXCESS   123"
+.PP
+Too many tasks are currently executing. 
+.PP
+
+.SS "#define STATUS_REX_NOMEM   122"
+.PP
+RES failed to allocate memory. 
+.PP
+.SS "#define STATUS_REX_FATAL   121"
+.PP
+Fatal error, check RES err log. 
+.PP
+.SS "#define STATUS_REX_CWD   120"
+.PP
+Cannot change to current working directory. 
+.PP
+.SS "#define STATUS_REX_PTY   119"
+.PP
+RES cannot allocate a pty. 
+.PP
+.SS "#define STATUS_REX_SP   118"
+.PP
+RES cannot allocate socket pair. 
+.PP
+.SS "#define STATUS_REX_FORK   117"
+.PP
+RES failed to fork the taks. 
+.PP
+.SS "#define STATUS_REX_AFS   116"
+.PP
+RES failed to set AFS tokens. 
+.PP
+.SS "#define STATUS_REX_UNKNOWN   115"
+.PP
+Internal error in RES. 
+.PP
+.SS "#define STATUS_REX_NOVCL   114"
+.PP
+RES failed to load VCL object. 
+.PP
+.SS "#define STATUS_REX_NOSYM   113"
+.PP
+Failed to loacte any VCL handler. 
+.PP
+.SS "#define STATUS_REX_VCL_INIT   112"
+.PP
+res_vcl_node_init failed 
+.PP
+.SS "#define STATUS_REX_VCL_SPAWN   111"
+.PP
+res_vcl_pre_spawn failed 
+.PP
+.SS "#define STATUS_REX_EXEC   110"
+.PP
+execit() failed 
+.PP
+.SS "#define STATUS_REX_MLS_INVAL   109"
+.PP
+Invalid MLS label. 
+.PP
+.SS "#define STATUS_REX_MLS_CLEAR   108"
+.PP
+Not enough clearance. 
+.PP
+.SS "#define STATUS_REX_MLS_RHOST   107"
+.PP
+rhost.conf reject require MLS label 
+.PP
+.SS "#define STATUS_REX_MLS_DOMIN   106"
+.PP
+Require label doesn't dominate. 
+.PP
+.SS "#define STATUS_DENIED   105"
+.PP
+User permission denied. 
+.PP
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

@@ -1,0 +1,52 @@
+.TH "lsb_init" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_init \- lsb_init 
+Initializes the LSF batch library (LSBLIB), and gets the configuration environment.
+.PP
+You must use \fBlsb_init\fP before any other LSBLIB library routine in your application.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB int lsb_init(char *appname)\fP
+.PP
+.SH "Parameters:"
+\fI*appName\fP The name of your application. If appName holds the name of your application, a logfile with the same name as your application receives LSBLIB transaction information. If appName is NULL, the logfile $LSF_LOGDIR/bcmd receives LSBLIB transaction information.
+.PP
+.SH "Data Structures:" 
+.PP
+none
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+int:0 
+.br
+ The function was successful. 
+.PP
+int:-1 
+.br
+ The function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lsberrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+none
+.PP
+.SH "See also:"
+none 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

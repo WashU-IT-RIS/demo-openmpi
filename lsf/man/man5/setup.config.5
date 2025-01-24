@@ -1,0 +1,211 @@
+
+.ad l
+
+.TH setup.config 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBsetup.config\fR
+.ce 0
+
+.sp 2
+
+.SH About setup.config
+
+.sp 2
+The setup.config file contains options for License Scheduler
+installation and configuration for systems without LSF. You only
+need to edit this file if you are installing License Scheduler as
+a standalone product without LSF.
+.SH Template location
+
+.sp 2
+A template setup.config is included in the License Scheduler
+installation script tar file and is located in the directory
+created when you uncompress and extract the installation script
+tar file. Edit the file and uncomment the options you want in the
+template file. Replace the example values with your own settings
+to specify the options for your new License Scheduler
+installation.
+.sp 2
+\fBImportant: \fRThe sample values in the setup.config template
+file are examples only. They are not default installation values.
+.sp 2
+After the License Scheduler installation, the setup.config
+containing the options you specified is located in
+LS_TOP/10.1/install/.
+.SH Format
+
+.sp 2
+Each entry in setup.config has the form:
+.sp 2
+NAME="STRING1 STRING2 ..."
+.br
+
+.sp 2
+The equal sign \fR=\fR must follow each \fRNAME\fR even if no
+value follows and there should be no spaces around the equal
+sign.
+.sp 2
+A value that contains multiple strings separated by spaces must
+be enclosed in quotation marks.
+.sp 2
+Blank lines and lines starting with a pound sign (\fR#\fR) are
+ignored.
+.SH Parameters
+
+.sp 2
+*  
+   LS_ADMIN
+.sp 2
+*  
+   LS_HOSTS
+.sp 2
+*  
+   LS_LMSTAT_PATH
+.sp 2
+*  
+   LS_TOP
+.sp 2
+Parent topic: Configuration files
+.sp 2
+
+.ce 1000
+\fBLS_ADMIN\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLS_ADMIN\fR="\fIuser_name \fR[\fIuser_name ... \fR]"
+.SH Description
+
+.sp 2
+Lists the License Scheduler administrators. The first user
+account name in the list is the primary License Scheduler
+administrator.
+.sp 2
+The primary License Scheduler administrator account is typically
+named lsadmin.
+.sp 2
+\fBCAUTION: \fRYou should \fInot\fR configure the root account as
+the primary License Scheduler administrator.
+.SH Valid Values
+
+.sp 2
+User accounts for License Scheduler administrators must exist on
+all hosts using License Scheduler prior to installation.
+.SH Example
+
+.sp 2
+LS_ADMINS="lsadmin user1 user2"
+.br
+
+.SH Default
+
+.sp 2
+The user running the License Scheduler installation script.
+.sp 2
+
+.ce 1000
+\fBLS_HOSTS\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLS_HOSTS\fR="\fIhost_name\fR [\fIhost_name\fR ... ]"
+.SH Description
+
+.sp 2
+Defines a list of hosts that are candidates to become License
+Scheduler management hosts. Provide at least one host from which
+the License Scheduler daemon will run.
+.SH Valid Values
+
+.sp 2
+Any valid License Scheduler host name.
+.SH Example
+
+.sp 2
+LS_HOSTS="host_name1 host_name2"
+.br
+
+.SH Default
+
+.sp 2
+The local host in which the License Scheduler installation script
+is running.
+.sp 2
+
+.ce 1000
+\fBLS_LMSTAT_PATH\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLS_LMSTAT_PATH\fR="/\fIpath\fR"
+.SH Description
+
+.sp 2
+Defines the full path to the lmstat program. License Scheduler
+uses lmstat to gather the FlexNet license information for
+scheduling. This path does not include the name of the lmstat
+program itself.
+.SH Example
+
+.sp 2
+LS_LMSTAT_PATH="/usr/bin"
+.br
+
+.SH Default
+
+.sp 2
+The installation script attempts to find a working copy of lmstat
+on the current system. If it is unsuccessful, the path is set as
+blank ("").
+.sp 2
+
+.ce 1000
+\fBLS_TOP\fR
+.ce 0
+
+.sp 2
+
+.SH Syntax
+
+.sp 2
+\fRLS_TOP\fR="/\fIpath\fR"
+.SH Description
+
+.sp 2
+Defines the full path to the top level License Scheduler
+installation directory.
+.SH Valid Values
+
+.sp 2
+Must be an absolute path to a shared directory that is accessible
+to all hosts using License Scheduler. Cannot be the root
+directory (/).
+.SH Recommended Value
+
+.sp 2
+The file system containing LS_TOP must have enough disk space for
+all host types (approximately 1.5 GB per host type).
+.SH Example
+
+.sp 2
+LS_TOP="/usr/share/ls"
+.br
+
+.SH Default
+
+.sp 2
+None — required variable

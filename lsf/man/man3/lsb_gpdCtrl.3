@@ -1,0 +1,61 @@
+.TH "lsb_gpdCtrl" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_gpdCtrl \- lsb_gpdCtrl 
+Controls the global policy daemon.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB int lsb_gpdCtrl(int ctrlCode, char *msg, int options);\fP
+.PP
+.SH "Parameters:"
+\fIctrlCode\fP [IN] operation applied, defined in \fBgpd_control_code\fP 
+.br
+\fImsg\fP [IN] the message attached by admin 
+.br
+\fIoptions\fP not used so far
+.PP
+.SH "Define Statements:" 
+.PP
+\fBgpd_control_code\fP
+.PP
+.SH "Returns:"
+0: 
+.br
+ The function was successful. 
+.PP
+NULL: 
+.br
+ The function failed.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+bgpinfo 
+.PP
+
+.ad l
+.nh
+.SH NAME
+gpd_control_code \- Options for calling \fBlsb_gpdCtrl\fP.  
+
+.PP
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBGPD_CTRL_RESTART\fP   0"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Options for calling \fBlsb_gpdCtrl\fP. 
+.SH "Define Documentation"
+.PP 
+.SS "#define GPD_CTRL_RESTART   0"
+.PP
+gpolicyd restart 
+.PP
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

@@ -1,0 +1,27 @@
+.TH "extsched_alloc_type" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+extsched_alloc_type \- extsched_alloc_type 
+Return the type of allocation given to the job (reservation or dispatch).
+.PP
+\fB#include <lssched.h>\fP
+.PP
+\fB int extsched_alloc_type(INT_Alloc *alloc)\fP
+.PP
+.SH "Parameters:"
+\fIalloc\fP [IN] : Internal allocation object. Allocated slots for the job.
+.PP
+.SH "Returns:"
+int:SCH_MOD_DECISION_NONE  is NULL. No decision has been made. 
+.PP
+int:SCH_MOD_DECISION_DISPATCH  is a dispatch decision. 
+.PP
+int:SCH_MOD_DECISION_RESERVE 
+.br
+ alloc is a reservation decision. 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

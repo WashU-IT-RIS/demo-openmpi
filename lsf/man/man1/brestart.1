@@ -1,0 +1,142 @@
+
+.ad l
+
+.TH brestart 1 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBbrestart\fR
+.ce 0
+
+.sp 2
+Restarts checkpointed jobs.
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBbrestart\fR [bsub_options] [\fB-f\fR] checkpoint_dir [job_ID |
+\fB"\fRjob_ID\fB[\fRindex\fB]"\fR]
+.sp 2
+\fBbrestart\fR [\fB-h\fR | \fB-V\fR]
+.SH Option List
+
+.sp 2
+\fB-B\fR
+.sp 2
+\fB-f\fR
+.sp 2
+\fB-N\fR | \fB-Ne\fR
+.sp 2
+\fB-x\fR
+.sp 2
+\fB-a "\fResub_application[([argument[,argument...]])]...\fB"\fR
+.sp 2
+\fB-b \fRbegin_time
+.sp 2
+\fB-C \fRcore_limit
+.sp 2
+\fB-c [\fRhour\fB:\fR]minute[\fB/\fRhost_name |
+\fB/\fRhost_model]
+.sp 2
+\fB-D \fRdata_limit
+.sp 2
+\fB-E "\fRpre_exec_command [argument ...]"
+.sp 2
+\fB-F \fRfile_limit
+.sp 2
+\fB-m "\fRhost_name[\fB+\fR[pref_level]] |
+host_group[\fB+\fR[pref_level]] ...\fB"\fR
+.sp 2
+\fB-G \fRuser_group
+.sp 2
+\fB-M \fRmem_limit
+.sp 2
+\fB-q "\fRqueue_name ...\fB"\fR
+.sp 2
+\fB-R "\fRres_req\fB"\fR [\fB-R\fR "res_req" ...]
+.sp 2
+\fB-S \fRstack_limit
+.sp 2
+\fB-t \fRterm_time
+.sp 2
+\fB-w \(aq\fRdependency_expression\fB\(aq\fR [\fB-ti\fR]
+.sp 2
+\fB-W \fRrun_limit[\fB/\fRhost_name| \fB/\fRhost_model]
+.sp 2
+\fB\fRcheckpoint_dir [job_ID | \fB"\fRjob_ID\fB[\fRindex\fB]"\fR]
+.SH Description
+
+.sp 2
+Restarts a checkpointed job by using the checkpoint files that
+are saved in the directory \fIcheckpoint_dir/last_job_ID/\fR.
+Only jobs that are successfully checkpointed can be restarted.
+.sp 2
+Jobs are resubmitted and assigned a new job ID. The checkpoint
+directory is renamed by using the new job ID,
+\fIcheckpoint_dir/new_job_ID/\fR.
+.sp 2
+The file path of the checkpoint directory can contain up to 4094
+characters for UNIX and Linux, or up to 255 characters for
+Windows, including the directory and file name.
+.sp 2
+By default, jobs are restarted with the same output file and file
+transfer specifications, job name, window signal value,
+checkpoint directory and period, and rerun options as the
+original job.
+.sp 2
+A job can be restarted on another host under the following
+conditions for both hosts:
+.sp 2
+*  Must be binary compatible
+.sp 2
+*  Must run the same OS version
+.sp 2
+*  Have access to the executable files
+.sp 2
+*  Have access to all open files (LSF must locate them with an
+   absolute path name)
+.sp 2
+*  Have access to the checkpoint directory
+.sp 2
+The environment variable \fBLSB_RESTART\fR is set to \fRY\fR when
+a job is restarted.
+.sp 2
+LSF invokes the erestart executable file in the LSF_SERVERDIR
+directory to restart the job.
+.sp 2
+Only the bsub options that are listed here can be used with the
+brestart command.
+.sp 2
+Like the bsub command, the brestart command calls the parent esub
+file (the mesub file), which calls the executable file named esub
+(without \fI.application\fR) if it exists in the LSF_SERVERDIR
+directory. The mesub file also calls any mandatory esub
+executable files that are configured by an LSF administrator.
+Only esub executable files that are called by the bsub command
+can change the job environment on the submission host. An esub
+file that is called by the brestart command cannot change the job
+environment. Arguments for the esub executable files can also be
+modified.
+.sp 2
+You can use the brestart -R command to specify new resource
+requirements when you restart a checkpointable job. The new
+resource requirements must be \fRmem\fR or \fRswap\fR. You can
+use the brestart to specify multiple -R options for multiple
+resource requirement strings, specify compound resource
+requirements, and specify alternative resource requirements.
+.SH Options
+
+.sp 2
+The following option applies only to the brestart command.
+.sp 2
+\fB-f\fR
+.br
+         Forces the job to be restarted even if non-restartable
+         conditions exist (these conditions are operating system
+         specific).
+.SH See also
+
+.sp 2
+bsub, bjobs, bmod, bqueues, bhosts, bchkpnt, lsbqueues, echkpnt,
+erestart, mbatchd

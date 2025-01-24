@@ -1,0 +1,46 @@
+.TH "glb_close_all" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+glb_close_all \- glb_close_all 
+Closes the connections to all License Scheduler daemons.
+.PP
+\fBglb_close_all\fP is a routine that closes the connections to all License Scheduler daemons specified in lsf.licensescheduler. This is useful when there are multiple License Scheduler master and slave daemons running for failover purposes.
+.PP
+\fB #include <glb/glb.h>\fP
+.PP
+\fB void glb_close_all(void) \fP
+.PP
+.SH "Parameters:"
+\fInone\fP 
+.PP
+.SH "Data Structures:" 
+.PP
+none
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+none
+.PP
+.SH "Errors:" 
+.PP
+On failure, glberrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+LSF_CONFDIR/lsf.licensescheduler
+.PP
+.SH "See also:"
+\fBglb_init_all\fP 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

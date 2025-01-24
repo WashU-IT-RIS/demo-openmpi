@@ -1,0 +1,30 @@
+.TH "CanBePreemptedFn" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+CanBePreemptedFn \- CanBePreemptedFn 
+Signature for functions that determine if a job should be preempted.
+.PP
+Use these functions to allow/disallow the scheduler to preempt (ie. suspend) a specific job.
+.PP
+\fB#include <lssched.h>\fP
+.PP
+\fB typedef int (*CanBePreemptedFn)(INT_Job *job)\fP
+.PP
+.SH "Parameters:"
+\fIjob\fP - (IN) internal job object, should this job be preempted?
+.PP
+.SH "Returns:"
+int:0  job should not be preempted. 
+.PP
+int:!=0  is ok if the job is preempted.
+.PP
+SEE ALSO
+.PP
+.SH "See also:"
+\fBextsched_register_canBePreempted\fP 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

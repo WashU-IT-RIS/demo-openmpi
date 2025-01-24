@@ -1,0 +1,25 @@
+.TH "extsched_delRef_" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+extsched_delRef_ \- extsched_delRef_ 
+This function is to be used when the hash table uses reference data, i.e.
+.PP
+more that one hash table contains the address of the data. This is useful when the data can be searched using different keys. Using the reference avoid to duplicate the memory.
+.PP
+\fB#include <lssched.h>\fP
+.PP
+\fB void extsched_delRef_(INT_hTab *t, INT_hEnt *e)\fP
+.PP
+.SH "Parameters:"
+\fIt\fP [IN|OUT] pointer to a hash table object 
+.br
+\fIe\fP [IN|OUT] pointer to entry object
+.PP
+.SH "Returns:"
+void  is no return value. 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

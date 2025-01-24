@@ -1,0 +1,64 @@
+.TH "ls_stdinmode" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ls_stdinmode \- ls_stdinmode 
+Allows an application program to query and specify how stdin is assigned to remote tasks on a local application.
+.PP
+\fBls_stdinmode\fP gives an application program the ability to query and specify how stdin is assigned to remote tasks. It allows you to assign stdin to the local program only. You can change this setting at any time.
+.PP
+\fBls_stdinmode\fP specifies whether standard input is read by the calling (local) application or its remote children.
+.PP
+This routine returns 0 on success; otherwise, it returns -1 and sets lserrno to indicate the error
+.PP
+Any program using this routine must call \fBls_initrex\fP first.
+.PP
+Any program using this API must be setuid to root if LSF_AUTH is not defined in the lsf.conf file.
+.PP
+\fB #include <lsf/lsf.h>\fP
+.PP
+\fB int ls_stdinmode(int remote) \fP
+.PP
+.SH "Parameters:"
+\fIremote\fP If remote is non-zero, then the application will not read subsequent standard input, and the remote children will read standard input. This mode of operation is called the remote stdin mode. Remote stdin mode is the default. In remote stdin mode, standard input is read by the Network I/O Server (NIOS) and forwarded to the appropriate remote tasks. If remote is zero, then the application reads the subsequent standard input, and it is not forwarded to remote children. This mode of operation is called the local stdin mode.
+.PP
+.SH "Data Structures:" 
+.PP
+none
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+int:0 
+.br
+ Function was successful. 
+.PP
+int:-1 
+.br
+ Function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lserrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+${LSF_ENVDIR:-/etc}/lsf.conf
+.PP
+.SH "See also:"
+\fBls_setstdin\fP 
+.PP
+\fBls_getstdin\fP 
+.PP
+\fBls_initrex\fP 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

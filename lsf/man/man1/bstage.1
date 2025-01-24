@@ -1,0 +1,431 @@
+
+.ad l
+
+.TH bstage 1 "May 2016" "" ""n.ll 72
+
+.ce 1000
+\fBbstage\fR
+.ce 0
+
+.sp 2
+Stages data files for jobs with data requirements by copying
+files or creating symbolic links for them between the local
+staging cache and the job execution environment. You must run
+bstage only within the context of an LSF job (like blaunch). To
+access a file with bstage, you must have permission to read it.
+.sp 2
+
+.ad l
+
+.TH bstage 1 "May 2016" "" ""n.ll 72
+
+.ce 1000
+\fBbstage in\fR
+.ce 0
+
+.sp 2
+Stages in data files for jobs with data requirements. bstage
+copies or symbolically links files \fIfrom\fR the data manager
+staging area \fIto\fR the job execution host.
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBbstage in -all\fR [\fB-dst\fR path] [\fB-link\fR]
+.sp 2
+\fBbstage in -src\fR
+[host_name\fB:\fR]abs_file_path[\fB/\fRfile_name] [\fB-dst\fR
+path[\fB/\fRfile_name]] [\fB-link\fR]
+.sp 2
+\fBbstage in -tag\fR tag_name [\fB-u\fR user_name] [\fB-dst\fR
+path] [\fB-link\fR]
+.SH Description
+
+.sp 2
+Copy or symbolically link files \fIfrom\fR the data manager
+staging cache \fIto\fR the job execution host. You must specify
+one of \fR-all\fR, \fR-src\fR, or \fR-tag \fItag_name\fR\fR.
+.sp 2
+If the containing job is an array element, bstage checks that a
+subdirectory exists in the job staging area that corresponds to
+the array index of the containing job.
+.sp 2
+By default, the required files are staged into the local staging
+area cache as soon as the job is submitted. The bstage in command
+inside the job finds the location of the file in the cache.
+bstage in copies (cp or scp) or links (ln) the file from the
+cache location to the job current working directory.
+.SH Options
+
+.sp 2
+\fB-all\fR
+.br
+         Copy all the files that are requested with the job
+         submission to the job current working directory. The
+         command finds the location of each requested stage in
+         file in the cache. All files are copied to the folder in
+         a flat directory structure. Input files with the same
+         name overwrite one another.
+.sp 2
+         Essentially this option is a shortcut for the following
+         command:
+.sp 2
+         bstage in -src host_name:/abs_path/file_name -dst path/file_name
+.sp 2
+         To copy entire folders while preserving the directory
+         structure, use the -src option with a directory
+         wildcard.
+.sp 2
+\fB-dst \fIpath\fB\fR
+.br
+         The destination folder for the staged files.
+.sp 2
+         The target of the copy can be a relative path to the job
+         current working directory, or an absolute path. If any
+         directories in the path do not exist, bstage in attempts
+         to create them. If you do not specify -dst, the default
+         is the job execution current working directory.
+.sp 2
+         If the path does not exist and -src specifies a single
+         file, the path is interpreted as the destination file to
+         copy to.
+.sp 2
+         If the path exists and -src is a single file, the file
+         is either copied or replaced:
+.sp 2
+         *  If path is a directory, the file is copied into the
+            directory under its original name.
+.sp 2
+         *  If path is a file, the file is replaced with the new
+            file.
+.sp 2
+         If you specify -tag or -all, or you specify -src with a
+         directory wildcard, the destination is interpreted as a
+         folder name relative to the job current working
+         directory. If this directory does not exist, LSF
+         attempts to create it.
+.sp 2
+\fB-src [\fIhost_name\fB:]\fIabs_path\fB[/\fIfile_name\fB]\fR
+.br
+         Copy only the file that is requested with
+         \fR\fIhost_name\fR:\fIabs_file_path\fR\fR option in the
+         job submission to your current working directory. The
+         host and file path specification must match the
+         requirement that is specified when the job was
+         submitted. Use bjobs -data to see the exact host and
+         file path specification. For example;
+.sp 2
+         bjobs -data 1962
+.br
+         JOBID   USER    STAT  QUEUE  FROM_HOST  EXEC_HOST  JOB_NAME   SUBMIT_TIME
+.br
+         1962    user1   PEND  normal hostA                 *p 1000000 Sep 20 16:31 
+.br
+         FILE                                 SIZE   MODIFIED 
+.br
+         datahost:/proj/user1/input1.dat      500 M   Jun 27 16:37:52 
+.br
+         datahost:/proj/user1/input2.dat      100 M   Jun 27 16:37:52 
+.br
+         datahost:/proj/user1/input3.dat      -      -
+.sp 2
+         You can omit the host name to request files locally
+         accessible on the submission host.
+.sp 2
+         For example, if you submit a job with a data requirement
+         like the following:
+.sp 2
+          bsub -data “hostA:/tmp/” ...
+.sp 2
+         LSF stages the entire /tmp directory on \fRhostA\fR.
+         Your job can then call:
+.sp 2
+         bstage in -src hostA:/tmp/ -dst directory
+.sp 2
+         LSF replicates the entire subdirectory structure under
+         \fIdirectory\fR in the job execution current working
+         directory.
+.sp 2
+\fB-link\fR
+.br
+         Create symbolic links to the requested source files from
+         the staging area cache location instead of copying them.
+         Use -link to avoid unnecessary file copying between the
+         execution host and the staging area. The staging area
+         must be directly mounted on the job execution host to
+         create the link.
+.sp 2
+\fB-tag \fItag_name\fB\fR
+.br
+         Copy all files in the local cache that are associated
+         with the specified tag name to the folder specified by
+         the destination option (-dst). If -dst is specified, the
+         destination is interpreted as a folder, and the entire
+         directory structure under this tag folder is replicated
+         in the destination.
+.sp 2
+         Use -tag when a job uses intermediate data that is
+         created by an earlier job. You must have read permission
+         on the tag directory.
+.sp 2
+         Valid tag names can contain only alphanumeric characters
+         (\fR[A-z|a-z|0-9]\fR), and a period (\fR.\fR),
+         underscore (\fR_\fR), and dash (\fR-\fR). The tag name
+         cannot contain the special operating system names for
+         parent directory (\fR../\fR), current directory
+         (\fR./\fR), or user home directory (\fR~/\fR). Tag names
+         cannot contain spaces. Tag names cannot begin with a
+         dash (\fR-\fR).
+.sp 2
+         Use bdata tags clean to remove tags.
+.sp 2
+         \fBImportant: \fRYou are responsible for the name space
+         of your tags. LSF does not check whether the tag is
+         valid. Use strings like the job ID, array index, and
+         cluster name as part of your tag names to make sure that
+         your tag is unique.
+.sp 2
+\fB-u \fIuser_name\fB\fR
+.br
+         By default, your job can stage in files associated only
+         with your own tags. Use the -u option to stage in files
+         associated with tags belonging to another user name. The
+         \fBCACHE_ACCESS_CONTROL = Y\fR parameter must be
+         configured in the lsf.datamanager file to use the -u
+         option.
+.sp 2
+         You must make sure that the tag exists and that you have
+         appropriate permission to use the files assoicated with
+         that tag before you submit your job.
+.sp 2
+
+.ad l
+
+.TH bstage 1 "May 2016" "" ""n.ll 72
+
+.ce 1000
+\fBbstage out\fR
+.ce 0
+
+.sp 2
+Stages out data files for jobs with data requirements. The bstage
+command copies or creates symbolic links to files \fIfrom \fR the
+job current working directory \fIto\fR the data management cache.
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBbstage out -src\fR file_path [\fB-dst\fR
+[host_name\fB:\fR]path[\fB/\fRfile_name]] [\fB-link\fR]
+.sp 2
+\fBbstage out -src\fR path[\fB/\fRfile_name] \fB-tag\fR tag_name
+[\fB-link\fR | \fB-g\fR user_group_name]
+.SH Description
+
+.sp 2
+Copy or symbolically link files \fIfrom\fR the job current
+working directory \fIto\fR the data manager staging cache.
+.sp 2
+bstage out uses the value of the LSB_DATA_CACHE_TOP environment
+variable to find the staging area.
+.sp 2
+By default (if you specify -src, but not -tag), a transfer job is
+submitted by the LSF data manager to stage the file out from the
+staging area to the remote destination specified in the -dst
+option. If you specify -tag, the file is only copied to the tag
+folder in the staging area and no transfer job is submitted.
+.sp 2
+\fBNote: \fRWith the -src option, the transfer job that is
+submitted to LSF runs asynchronously even after the command
+returns. When you are staging out different files, use a
+different destination for each one since the order in which the
+files are transferred is not guaranteed.
+.SH Options
+
+.sp 2
+\fB-src \fIfile_path\fB\fR
+.br
+         Required. Path to the file to be copied from the job
+         execution environment. Relative paths are resolved
+         relative to the job current working directory.
+.sp 2
+         If -tag is also specified, the specified path can be a
+         directory or a file.
+.sp 2
+         If -tag is not specified, the path must be to a file.
+         LSF contacts the LSF data manager to determine whether
+         the file exists in the STAGING_AREA/stgout directory for
+         the job. If the file does not exist, the file is first
+         copied to the job stgout directory in the cache. LSF
+         data manager then contacts LSF to submit a transfer job
+         to LSF to stage the file out to the destination.
+.sp 2
+         If the path contains symbolic links, LSF data manager
+         uses the symbolic link name and copies the contents of
+         the file to the staging area. For example, if the path
+         is /tmp/linkdir1/outfile1, and linkdir1 is a symbolic
+         link to /home/user1, the contents of the file outfile1
+         are copied to the cache in the appropriate stage out or
+         tag folder under the relative path
+         tmp/linkdir1/outfile1/, not tmp/home/user1/outfile1/.
+.sp 2
+\fB-dst [\fIhost_name\fB:]\fIpath\fB][/\fIfile_name\fB]\fR
+.br
+         Path to the final destination of the transfer job that
+         copies the file out of the staging area. If you do not
+         specify -dst, the submission host and directory that is
+         specified by the LSB_OUTDIR environment variable is
+         assumed to be the root and the path that is provided to
+         -src is appended to this root. The default
+         \fIhost_name\fR is the submission host.
+.sp 2
+         The following table shows the mapping of the -dst
+         argument and ultimate destination sent to the transfer
+         tool command to stage out the job:
+.sp 2
+
+.br
++-------------------------------+-------------------------------+
+.br
+| Command                       | Transfer job destination      |
+.br
++-------------------------------+-------------------------------+
+.br
+| -dst not specified            | $LSB_SUB_HOST:$LSB_OUTDIR     |
+.br
++-------------------------------+-------------------------------+
+.br
+| -dst  relative_path           |                               |
+.br
+|                               | $LSB_SUB_HOST:$LSB_OUTDIR/rel |
+.br
+|                               | ative_path                    |
+.br
++-------------------------------+-------------------------------+
+.br
+| -dst  absolute_path           |  $LSB_SUB_HOST:absolute_path  |
+.br
++-------------------------------+-------------------------------+
+.br
+| -dst  host_name:absolute_path | host_name:absolute_path       |
+.br
++-------------------------------+-------------------------------+
+.br
+
+.br
+  
+.sp 2
+         The argument to -dst accepts both relative and absolute
+         paths, both with and without host names, but all of
+         these arguments are translated into an absolute
+         \fRhost_name:path\fR pair according to the table. You
+         cannot use path descriptors that contain special names
+         \fR~/\fR, \fR./\fR, and \fR../\fR.
+.sp 2
+         If the folders in the destination location do not exist,
+         the success or failure of the transfer job depends on
+         the transfer tool configured. For example, the default
+         tool (scp) does not create destination folders, but
+         other tools (such as rsync) do.
+.sp 2
+\fB-link\fR
+.br
+         Create symbolic links from the requested source files to
+         the staging area cache location instead of copying them.
+         Use -link to avoid unnecessary file copying between the
+         execution host and the staging area. The staging area
+         must be directly mounted on the job execution host to
+         create the link.
+.sp 2
+         \fBImportant: \fRYou must ensure that the source file
+         will not be cleaned up after the end of the job to avoid
+         the symbolic link from becoming stale before the file is
+         staged out or used by a subsequent job.
+.sp 2
+\fB-tag \fItag_name\fB\fR
+.br
+         Copy the file to the staging area tag directory
+         associated with \fItag_name\fR. LSF creates the
+         directory if necessary. The LSF data manager does not
+         submit a job to transfer out the file, or create a
+         record for it in the cache. You cannot use -tag with
+         -dst or -link.
+.sp 2
+         LSF data manager associates the required files to an
+         arbitrary name you choose, and the LSF data manager
+         reports the existence of that tag if you query it with
+         bdata tags.
+.sp 2
+         Valid tag names can contain only alphanumeric characters
+         (\fR[A-z|a-z|0-9]\fR), and a period (\fR.\fR),
+         underscore (\fR_\fR), and dash (\fR-\fR). The tag name
+         cannot contain the special operating system names for
+         parent directory (\fR../\fR), current directory
+         (\fR./\fR), or user home directory (\fR~/\fR). Tag names
+         cannot contain spaces. Tag names cannot begin with a
+         dash (\fR-\fR).
+.sp 2
+         Use bdata tags clean to remove tags.
+.sp 2
+         You must be the owner of the tag folder to copy files
+         into it.
+.sp 2
+         \fBImportant: \fRYou are responsible for the name space
+         of your tags. LSF does not check whether the tag is
+         valid. Use strings like the job ID, array index, and
+         cluster name as part of your tag names to ensure that
+         your tag is unique.
+.sp 2
+\fB-g \fIuser_group_name\fB\fR
+.br
+         By default, when a job stages out files to a tag, the
+         tag directory is only accessible by the user who
+         submitted the job. When the \fBCACHE_ACCESS_CONTROL =
+         Y\fR parameter is configured in the lsf.datamanager
+         file, the -g option changes the group associated with
+         the tag. The \fIuser_group_name\fRargument specifies the
+         user group name to be associated with the tag. The
+         permissions on the tag directory and its contents are
+         set so that the specified group can access the files.
+         You can also use the following command to change the
+         group associated with a tag: \fRbdata chgrp -g
+         \fIgroup_name\fR -tag \fItag_name\fR\fR command.
+.sp 2
+
+.ad l
+
+.TH bstage 1 "May 2016" "" ""n.ll 72
+
+.ce 1000
+\fBHelp and version options\fR
+.ce 0
+
+.sp 2
+IBM Spectrum LSF Data Manager help and version display options
+.sp 2
+\fBbstage\fR [\fB-h\fR[\fBelp\fR] | \fB-V\fR]
+.sp 2
+\fB-h[help]\fR
+.br
+         Displays the command usage of the bstage command to
+         stderr and exits.
+.sp 2
+\fB-V\fR
+.br
+         Prints IBM Spectrum LSF Data Manager release version to
+         stderr and exits.
+.sp 2
+
+.ad l
+
+.TH bstage 1 "May 2016" "" ""n.ll 72
+
+.ce 1000
+\fBSee also\fR
+.ce 0
+
+.sp 2
+bdata, bhist, bjobs, bmod, bsub, lsf.conf, lsf.datamanager
+.sp 2

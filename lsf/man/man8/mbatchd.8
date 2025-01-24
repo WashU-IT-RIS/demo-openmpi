@@ -1,0 +1,146 @@
+
+.ad l
+
+.TH mbatchd 8 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBmbatchd\fR
+.ce 0
+
+.sp 2
+mbatchd, sbatchd - management and server daemons of the LSF
+system
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+LSF_SERVERDIR\fB/mbatchd\fR [ \fB-h\fR ] [ \fB-V\fR ] [ \fB-C\fR
+] [ \fB-d \fRenv_dir ] [ \fB-\fRdebug_level ]
+.sp 2
+LSF_SERVERDIR\fB/sbatchd\fR [ \fB-h\fR ] [ \fB-V\fR ] [ \fB-d
+\fRenv_dir ] [ \fB-\fRdebug_level ]
+.SH Description
+
+.sp 2
+LSF is a load sharing batch system that supports distributed
+batch job processing. There is a server batch daemon, sbatchd, on
+every server host. The server batch daemon on the same host as
+the management host Load Information Manager (LIM) of the
+underlying LSF base is responsible for starting a management
+batch daemon, mbatchd, on its host for the local LSF cluster. The
+sbatchds are typically started at system boot time by
+rc.local(8). You must never start the mbatchd daemon unless you
+are running it with the -C option.
+.sp 2
+In order to use the LSF system, mbatchd and sbatchd must be
+registered in the services database, such as /etc/services or the
+NIS services map, or \fBLSB_MBD_PORT\fR and \fBLSB_SBD_PORT\fR
+must be defined in the file lsf.conf. The service names are
+mbatchd and sbatchd respectively, and the protocol is tcp (see
+services(8)). You can select any unused port numbers.
+.sp 2
+You can submit batch jobs from any host to the mbatchd. mbatchd
+contacts the LIM to obtain current load information about hosts
+that satisfy the resource requirements provided at job submission
+(see bsub(1)). If no suitable hosts are found, the jobs are held
+by the mbatchd (that is, they are pending). Once suitable
+execution hosts are found, mbatchd dispatches the jobs to one or
+more sbatchds on the selected hosts for execution.
+.sp 2
+An sbatchd accepts job execution requests from the mbatchd,
+starts the jobs and monitors the progress of the jobs. Based on
+the execution conditions specified by the mbatchd at job dispatch
+time, an sbatchd may stop and resume a job in response to changes
+in the host load conditions, interactive user activities and
+queue or host run windows. Such actions by an sbatchd are
+reported back to the mbatchd. When a job is finished (either
+completed successfully or with an error, or terminated by a user,
+a LSF administrator or the queue administrator), the job output
+is either mailed to the user who submitted the job, or stored in
+a file specified at job submission (see bsub(1)).
+.sp 2
+Besides processing user requests, mbatchd performs most of the
+scheduling functions of LSF. LSF is fault tolerant: a new mbatchd
+is started if the host of the current mbatchd fails, and no jobs
+are lost, except those running on the failed host. These jobs may
+be rerun from begin on some other hosts or, if they are
+checkpointable, restarted from their last checkpoint on some
+other hosts.
+.sp 2
+Most of the user’s environment (such as the current working
+directory, umask, and user groups) at the time of batch job
+submission is retained and used for batch job execution. mbatchd
+and sbatchd read the file lsf.conf (see -d option) to get the
+environment information. The file lsf.conf is a generic
+configuration file shared by LSF and applications built on top of
+it. It contains environment information as to where the specific
+configuration files and data files are and other information that
+dictates the behavior of the software. See lsf.conf(5) for
+details.
+.SH Options
+
+.sp 2
+\fB-h\fR
+.br
+         Print command usage to stderr and exit.
+.sp 2
+\fB-V\fR
+.br
+         Print LSF release version to stderr and exit.
+.sp 2
+\fB-C\fR
+.br
+         This option applies to mbatchd only. If specified,
+         mbatchd does syntax checking on the LSF configuration
+         files and prints verbose messages to stdout. After the
+         checking, mbatchd exits. mbatchd with the -C option does
+         not have to be run on the management host (as returned
+         by lsid(1)). You must never start mbatchd manually
+         unless the -C option is used.
+.sp 2
+\fB-d \fIenv_dir\fB\fR
+.br
+         Read lsf.conf file from the directory env_dir, rather
+         than from the default directory /etc, or from the
+         directory \fBLSF_ENVDIR\fR that is set in the
+         environment variable.
+.sp 2
+\fB-\fIdebug_level\fB\fR
+.br
+         Debug mode level. Possible values are either 1 or 2.
+         When debug mode is set, the daemons are run in debug
+         mode and can be started by a normal user (non-root). If
+         debug level is 1, sbatchd will go to background when
+         started. If debug level is 2, sbatchd will stay in
+         foreground. mbatchd is always started by sbatchd with
+         the same options, and therefore has the same debug
+         level. If LSF daemons are running in debug mode,
+         \fBLSB_DEBUG\fR must be defined in the file lsf.conf in
+         order for LSF commands to talk with the daemons.
+.SH Queues and logs
+
+.sp 2
+Visible to users are a number of job queues to which jobs can be
+submitted. Job queues are defined by the LSF administrator in the
+cluster configuration file lsb.queues. See lsb.queues(5) for a
+description of the queue configuration.
+.sp 2
+Two types of log files are maintained by mbatchd: event log and
+job log files. The files are named lsb.events and lsb.acct,
+respectively. See lsb.events(5) and lsb.acct(5) for descriptions.
+.SH Error reporting
+
+.sp 2
+mbatchd and sbatchd have no controlling tty. Serious errors are
+mailed to the LSF administrator. Less serious errors are sent to
+syslog with log level \fBLOG_ERR\fR, or written to the file
+LSF_LOGDIR/mbatchd.log.<\fIhostname\fR> or
+LSF_LOGDIR/sbatchd.log.<\fIhostname\fR>, if \fBLSF_LOGDIR\fR is
+defined in the file lsf.conf.
+.SH See also
+
+.sp 2
+lsf.conf(5), lsf.cluster(5), lsb.queues(5), lsb.events(5),
+lsb.acct(5), bsub(1), lsid(1), lim(8), rc.local(8), sevices(8)

@@ -1,0 +1,92 @@
+.TH "ls_ropen" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ls_ropen \- ls_ropen 
+Opens a file on a remote host.
+.PP
+This routine performs operations on files located on remote hosts. This call corresponds to the UNIX open() system calls.
+.PP
+\fBls_ropen\fP opens the named file located on the remote host. A remote file descriptor, rfd, is returned on success. You can use this descriptor in subsequent remote file calls as an argument.
+.PP
+Either the RES must be running at the remote host to service any remote file operation or rcp() be available.
+.PP
+\fBls_initrex\fP must be called before calling any remote file operation.
+.PP
+This remote file operation makes use of a Remote File Server on the remote host. When this RFS shuts down, its status will be reported to its client. The client should ignore this status.
+.PP
+\fB #include <sys/types.h> 
+.br
+ #include <unistd.h> 
+.br
+ #include <sys/stat.h> 
+.br
+ #include <fcntl.h> 
+.br
+ #include <limits.h> 
+.br
+ #include <lsf/lsf.h>\fP
+.PP
+\fB int ls_ropen(char *host, char *path, int flags, int mode) \fP
+.PP
+.SH "Parameters:"
+\fI*host\fP The host where the file to be opened is located. 
+.br
+\fI*path\fP The path name to the file to be opened. 
+.br
+\fIflags\fP Options for openning the file on the remote host. 
+.br
+\fImode\fP File access permission related options.
+.PP
+.SH "Data Structures:" 
+.PP
+none
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+int: 0 
+.br
+ Response is the same from its UNIX counterpart.
+.PP
+int:-1 
+.br
+ Function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lserrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+none
+.PP
+.SH "See also:"
+\fBls_rread\fP 
+.PP
+\fBls_rwrite\fP 
+.PP
+\fBls_rlseek\fP 
+.PP
+\fBls_rclose\fP 
+.PP
+\fBls_rstat\fP 
+.PP
+\fBls_rfstat\fP 
+.PP
+\fBls_rgetmnthost\fP 
+.PP
+\fBls_rfcontrol\fP 
+.PP
+\fBls_initrex\fP 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

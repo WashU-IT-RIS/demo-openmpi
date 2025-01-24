@@ -1,0 +1,55 @@
+
+.ad l
+
+.TH wguser 8 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBwguser\fR
+.ce 0
+
+.sp 2
+Modifies user accounts for a Microsoft Windows workgroup
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBwguser\fR [\fB-r\fR] user_name ...
+.sp 2
+\fBwguser\fR [\fB-h\fR]
+.SH Description
+
+.sp 2
+\fBImportant: \fRYou must run this command on a host in a
+Microsoft Windows workgroup. You must have administrative
+privileges on every host in the workgroup.
+.sp 2
+Modifies accounts on every host in the workgroup that you have
+administrative privileges on.
+.sp 2
+By default, prompts for a default password to use for all of the
+accounts, and then creates the specified user accounts on each
+host, if they do not exist.
+.sp 2
+Use -r to remove accounts from the workgroup.
+.SH Options
+
+.sp 2
+\fB-r\fR
+.br
+         Removes the specified user accounts from each host, if
+         they exist.
+.sp 2
+\fB\fIuser_name\fB ...\fR
+.br
+         Required. Specifies the accounts to add or remove.
+.sp 2
+\fB-h\fR
+.br
+         Prints command usage to stderr and exits.
+.SH Output
+
+.sp 2
+For each host in the workgroup, returns the result of the
+operation (\fRSUCCESS\fR or \fRFAILED\fR).

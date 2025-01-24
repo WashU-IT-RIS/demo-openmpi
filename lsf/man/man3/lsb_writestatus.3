@@ -1,0 +1,8311 @@
+.TH "lsb_writestatus" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_writestatus \- lsb_writestatus 
+Writes a current version \fBeventRec\fP structure into the lsb_status file.
+.PP
+\fBlsb_writestatus\fP writes an eventrRec to the open statusFile. This API function is inside liblsbstream.so.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB int lsb_writestatus(struct eventRec *logPtr)\fP
+.PP
+.SH "Parameters:"
+\fI*logPtr\fP Pointer to the \fBeventRec\fP structure. 
+.br
+ see \fBlsb_geteventrec\fP for details on the \fBeventRec\fP structure.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBeventRec\fP 
+.br
+\fBeventLog\fP 
+.br
+\fBxFile\fP 
+.br
+\fBjobAttrSetLog\fP 
+.br
+\fBlogSwitchLog\fP 
+.br
+\fBdataLoggingLog\fP 
+.br
+\fBjgrpNewLog\fP 
+.br
+\fBjgrpCtrlLog\fP 
+.br
+\fBjgrpStatusLog\fP 
+.br
+\fBjobNewLog\fP 
+.br
+\fBjobModLog\fP 
+.br
+\fBjobStartLog\fP 
+.br
+\fBjobStartAcceptLog\fP 
+.br
+\fBjobExecuteLog\fP 
+.br
+\fBjobStatusLog\fP 
+.br
+\fBsbdJobStatusLog\fP 
+.br
+\fBsbdUnreportedStatusLog\fP 
+.br
+\fBjobSwitchLog\fP 
+.br
+\fBjobMoveLog\fP 
+.br
+\fBchkpntLog\fP 
+.br
+\fBjobRequeueLog\fP 
+.br
+\fBjobCleanLog\fP 
+.br
+\fBjobExceptionLog\fP 
+.br
+\fBsigactLog\fP 
+.br
+\fBmigLog\fP 
+.br
+\fBsignalLog\fP 
+.br
+\fBqueueCtrlLog\fP 
+.br
+\fBhostCtrlLog\fP 
+.br
+\fBhgCtrlLog\fP 
+.br
+\fBmbdStartLog\fP 
+.br
+\fBmbdDieLog\fP 
+.br
+\fBunfulfillLog\fP 
+.br
+\fBjobFinishLog\fP 
+.br
+\fBloadIndexLog\fP 
+.br
+\fBcalendarLog\fP 
+.br
+\fBjobForwardLog\fP 
+.br
+\fBjobAcceptLog\fP 
+.br
+\fBstatusAckLog\fP 
+.br
+\fBjobMsgLog\fP 
+.br
+\fBjobMsgAckLog\fP 
+.br
+\fBjobOccupyReqLog\fP 
+.br
+\fBjobVacatedLog\fP 
+.br
+\fBjobForceRequestLog\fP 
+.br
+\fBjobChunkLog\fP 
+.br
+\fBjobExternalMsgLog\fP 
+.br
+\fBrsvRes\fP 
+.br
+\fBrsvFinishLog\fP 
+.br
+\fBcpuProfileLog\fP 
+.br
+\fBjobRunRusageLog\fP 
+.br
+\fBslaLog\fP 
+.br
+\fBperfmonLogInfo\fP 
+.br
+\fBperfmonLog\fP 
+.br
+\fBtaskFinishLog\fP 
+.br
+\fBeventEOSLog\fP 
+.br
+\fBjobResizeNotifyStartLog\fP 
+.br
+\fBjobResizeNotifyAcceptLog\fP 
+.br
+\fBjobResizeNotifyDoneLog\fP 
+.br
+\fBjobResizeReleaseLog\fP 
+.br
+\fBjobResizeCancelLog\fP 
+.br
+\fBjobResizeLog\fP 
+.br
+\fBjRusage\fP
+.PP
+.SH "Define Statements:" 
+.PP
+\fBevent_types\fP 
+.br
+\fBdefs_lsb_XF_OP\fP 
+.br
+\fBjobgroup_controltypes\fP 
+.br
+\fBsignal_action\fP
+.PP
+.SH "Returns:"
+int:0 
+.br
+ The function was successful. 
+.PP
+int:-1 
+.br
+ The function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lsberrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+$LSB_CONFDIR/cluster_name/configdir/lsb.params
+.PP
+.SH "See also:"
+\fBlsb_closestatus\fP 
+.PP
+\fBlsb_geteventrec\fP 
+.PP
+\fBlsb_openstatus\fP 
+.PP
+\fBlsb_puteventrec\fP 
+.PP
+\fBlsb_readstatusline\fP 
+.PP
+\fBlsb_readstatus\fP 
+.PP
+
+.ad l
+.nh
+.SH NAME
+eventRec \- event records.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char \fBversion\fP [MAX_VERSION_LEN]"
+.br
+.ti -1c
+.RI "int \fBtype\fP"
+.br
+.ti -1c
+.RI "time_t \fBeventTime\fP"
+.br
+.ti -1c
+.RI "union \fBeventLog\fP \fBeventLog\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+event records. 
+.SH "Field Documentation"
+.PP 
+.SS "char \fBeventRec::version\fP[MAX_VERSION_LEN]"
+.PP
+The mbatchd version number. 
+.PP
+.SS "int \fBeventRec::type\fP"
+.PP
+Event type in \fBevent_types\fP. 
+.PP
+.SS "time_t \fBeventRec::eventTime\fP"
+.PP
+The time the event occurred. 
+.PP
+.SS "union \fBeventLog\fP \fBeventRec::eventLog\fP"
+.PP
+The information for this type of event, contained in a structure corresponding to type. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+eventLog \- Log event types.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "struct \fBjobNewLog\fP \fBjobNewLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobStartLog\fP \fBjobStartLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobStatusLog\fP \fBjobStatusLog\fP"
+.br
+.ti -1c
+.RI "struct \fBsbdJobStatusLog\fP \fBsbdJobStatusLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobSwitchLog\fP \fBjobSwitchLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobSwitchLog2\fP \fBjobSwitchLog2\fP"
+.br
+.ti -1c
+.RI "struct \fBjobMoveLog\fP \fBjobMoveLog\fP"
+.br
+.ti -1c
+.RI "struct \fBqueueCtrlLog\fP \fBqueueCtrlLog\fP"
+.br
+.ti -1c
+.RI "struct \fBhostCtrlLog\fP \fBhostCtrlLog\fP"
+.br
+.ti -1c
+.RI "struct \fBmbdStartLog\fP \fBmbdStartLog\fP"
+.br
+.ti -1c
+.RI "struct \fBmbdDieLog\fP \fBmbdDieLog\fP"
+.br
+.ti -1c
+.RI "struct \fBunfulfillLog\fP \fBunfulfillLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobFinishLog\fP \fBjobFinishLog\fP"
+.br
+.ti -1c
+.RI "struct \fBloadIndexLog\fP \fBloadIndexLog\fP"
+.br
+.ti -1c
+.RI "struct \fBmigLog\fP \fBmigLog\fP"
+.br
+.ti -1c
+.RI "struct \fBcalendarLog\fP \fBcalendarLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobForwardLog\fP \fBjobForwardLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobAcceptLog\fP \fBjobAcceptLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobAcceptAckLog\fP \fBjobAcceptAckLog\fP"
+.br
+.ti -1c
+.RI "struct \fBstatusAckLog\fP \fBstatusAckLog\fP"
+.br
+.ti -1c
+.RI "struct \fBsignalLog\fP \fBsignalLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobExecuteLog\fP \fBjobExecuteLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobMsgLog\fP \fBjobMsgLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobMsgAckLog\fP \fBjobMsgAckLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobRequeueLog\fP \fBjobRequeueLog\fP"
+.br
+.ti -1c
+.RI "struct \fBchkpntLog\fP \fBchkpntLog\fP"
+.br
+.ti -1c
+.RI "struct \fBsigactLog\fP \fBsigactLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobOccupyReqLog\fP \fBjobOccupyReqLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobVacatedLog\fP \fBjobVacatedLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobStartAcceptLog\fP \fBjobStartAcceptLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobCleanLog\fP \fBjobCleanLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobExceptionLog\fP \fBjobExceptionLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjgrpNewLog\fP \fBjgrpNewLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjgrpCtrlLog\fP \fBjgrpCtrlLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobForceRequestLog\fP \fBjobForceRequestLog\fP"
+.br
+.ti -1c
+.RI "struct \fBlogSwitchLog\fP \fBlogSwitchLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobModLog\fP \fBjobModLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjgrpStatusLog\fP \fBjgrpStatusLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobAttrSetLog\fP \fBjobAttrSetLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobExternalMsgLog\fP \fBjobExternalMsgLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobChunkLog\fP \fBjobChunkLog\fP"
+.br
+.ti -1c
+.RI "struct \fBsbdUnreportedStatusLog\fP \fBsbdUnreportedStatusLog\fP"
+.br
+.ti -1c
+.RI "struct \fBrsvFinishLog\fP \fBrsvFinishLog\fP"
+.br
+.ti -1c
+.RI "struct \fBhgCtrlLog\fP \fBhgCtrlLog\fP"
+.br
+.ti -1c
+.RI "struct \fBcpuProfileLog\fP \fBcpuProfileLog\fP"
+.br
+.ti -1c
+.RI "struct \fBdataLoggingLog\fP \fBdataLoggingLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobRunRusageLog\fP \fBjobRunRusageLog\fP"
+.br
+.ti -1c
+.RI "struct \fBeventEOSLog\fP \fBeventEOSLog\fP"
+.br
+.ti -1c
+.RI "struct \fBslaLog\fP \fBslaLog\fP"
+.br
+.ti -1c
+.RI "struct \fBperfmonLog\fP \fBperfmonLog\fP"
+.br
+.ti -1c
+.RI "struct \fBtaskFinishLog\fP \fBtaskFinishLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobResizeNotifyStartLog\fP \fBjobResizeNotifyStartLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobResizeNotifyAcceptLog\fP \fBjobResizeNotifyAcceptLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobResizeNotifyDoneLog\fP \fBjobResizeNotifyDoneLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobResizeReleaseLog\fP \fBjobResizeReleaseLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobResizeCancelLog\fP \fBjobResizeCancelLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobResizeLog\fP \fBjobResizeLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobFinish2Log\fP \fBjobFinish2Log\fP"
+.br
+.ti -1c
+.RI "struct \fBjobStartLimitLog\fP \fBjobStartLimitLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobStatus2Log\fP \fBjobStatus2Log\fP"
+.br
+.ti -1c
+.RI "struct \fBjobPendingReasonsLog\fP \fBjobPendingReasonsLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobProvisionStartLog\fP \fBjobProvisionStartLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobFanoutInfoLog\fP \fBjobFanoutInfoLog\fP"
+.br
+.ti -1c
+.RI "struct \fBhostPowerStatusLog\fP \fBhostPowerStatusLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobProvHostLog\fP \fBjobProvHostLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobMigTimeoutLog\fP \fBjobMigTimeoutLog\fP"
+.br
+.ti -1c
+.RI "struct \fBjobDataStageLog\fP \fBjobDataStageLog\fP"
+.br
+.ti -1c
+.RI "\fBattrCreateLog_T\fP \fBattrCreateLog\fP"
+.br
+.ti -1c
+.RI "\fBattrDeleteLog_T\fP \fBattrDeleteLog\fP"
+.br
+.ti -1c
+.RI "\fBattrInfoLog_T\fP \fBattrInfoLog\fP"
+.br
+.ti -1c
+.RI "struct \fBhclosureLockIdLog\fP \fBhclosureLockIdLog\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Log event types. 
+.SH "Field Documentation"
+.PP 
+.SS "struct \fBjobNewLog\fP \fBeventLog::jobNewLog\fP"
+.PP
+Job new event. 
+.PP
+.SS "struct \fBjobStartLog\fP \fBeventLog::jobStartLog\fP"
+.PP
+Job start event. 
+.PP
+.SS "struct \fBjobStatusLog\fP \fBeventLog::jobStatusLog\fP"
+.PP
+Job status event. 
+.PP
+.SS "struct \fBsbdJobStatusLog\fP \fBeventLog::sbdJobStatusLog\fP"
+.PP
+sbatchd job status event 
+.PP
+.SS "struct \fBjobSwitchLog\fP \fBeventLog::jobSwitchLog\fP"
+.PP
+Job switch event. 
+.PP
+.SS "struct \fBjobSwitchLog2\fP \fBeventLog::jobSwitchLog2\fP"
+.PP
+Job array switch event. 
+.PP
+.SS "struct \fBjobMoveLog\fP \fBeventLog::jobMoveLog\fP"
+.PP
+Job move event. 
+.PP
+.SS "struct \fBqueueCtrlLog\fP \fBeventLog::queueCtrlLog\fP"
+.PP
+Queue control event. 
+.PP
+.SS "struct \fBhostCtrlLog\fP \fBeventLog::hostCtrlLog\fP"
+.PP
+Host control event. 
+.PP
+.SS "struct \fBmbdStartLog\fP \fBeventLog::mbdStartLog\fP"
+.PP
+mbatchd start event 
+.PP
+.SS "struct \fBmbdDieLog\fP \fBeventLog::mbdDieLog\fP"
+.PP
+mbatchd die event 
+.PP
+.SS "struct \fBunfulfillLog\fP \fBeventLog::unfulfillLog\fP"
+.PP
+Unfulfill event. 
+.PP
+.SS "struct \fBjobFinishLog\fP \fBeventLog::jobFinishLog\fP"
+.PP
+Job finish event. 
+.PP
+.SS "struct \fBloadIndexLog\fP \fBeventLog::loadIndexLog\fP"
+.PP
+Load index event. 
+.PP
+.SS "struct \fBmigLog\fP \fBeventLog::migLog\fP"
+.PP
+Migration initiated event. 
+.PP
+.SS "struct \fBcalendarLog\fP \fBeventLog::calendarLog\fP"
+.PP
+Calendar event. 
+.PP
+.SS "struct \fBjobForwardLog\fP \fBeventLog::jobForwardLog\fP"
+.PP
+Job forward event. 
+.PP
+.SS "struct \fBjobAcceptLog\fP \fBeventLog::jobAcceptLog\fP"
+.PP
+Job accept event. 
+.PP
+.SS "struct \fBjobAcceptAckLog\fP \fBeventLog::jobAcceptAckLog\fP"
+.PP
+Job accept ack event. 
+.PP
+.SS "struct \fBstatusAckLog\fP \fBeventLog::statusAckLog\fP"
+.PP
+Job accepted from another cluster event. 
+.PP
+.SS "struct \fBsignalLog\fP \fBeventLog::signalLog\fP"
+.PP
+Job signal event. 
+.PP
+.SS "struct \fBjobExecuteLog\fP \fBeventLog::jobExecuteLog\fP"
+.PP
+Job execution event. 
+.PP
+.SS "struct \fBjobMsgLog\fP \fBeventLog::jobMsgLog\fP"
+.PP
+Job message event. 
+.PP
+.SS "struct \fBjobMsgAckLog\fP \fBeventLog::jobMsgAckLog\fP"
+.PP
+Job message ackknowledge event. 
+.PP
+.SS "struct \fBjobRequeueLog\fP \fBeventLog::jobRequeueLog\fP"
+.PP
+Job requeue event. 
+.PP
+.SS "struct \fBchkpntLog\fP \fBeventLog::chkpntLog\fP"
+.PP
+Checkpoint event. 
+.PP
+.SS "struct \fBsigactLog\fP \fBeventLog::sigactLog\fP"
+.PP
+Signal with action event. 
+.PP
+.SS "struct \fBjobOccupyReqLog\fP \fBeventLog::jobOccupyReqLog\fP"
+.PP
+Job occupy request event. 
+.PP
+.SS "struct \fBjobVacatedLog\fP \fBeventLog::jobVacatedLog\fP"
+.PP
+Job vacate event. 
+.PP
+.SS "struct \fBjobStartAcceptLog\fP \fBeventLog::jobStartAcceptLog\fP"
+.PP
+Job start accept event. 
+.PP
+.SS "struct \fBjobCleanLog\fP \fBeventLog::jobCleanLog\fP"
+.PP
+Job clean event. 
+.PP
+.SS "struct \fBjobExceptionLog\fP \fBeventLog::jobExceptionLog\fP"
+.PP
+Job exception event. 
+.PP
+.SS "struct \fBjgrpNewLog\fP \fBeventLog::jgrpNewLog\fP"
+.PP
+Job group new event. 
+.PP
+.SS "struct \fBjgrpCtrlLog\fP \fBeventLog::jgrpCtrlLog\fP"
+.PP
+Job group Ctrl event. 
+.PP
+.SS "struct \fBjobForceRequestLog\fP \fBeventLog::jobForceRequestLog\fP"
+.PP
+Job Force Request event. 
+.PP
+.SS "struct \fBlogSwitchLog\fP \fBeventLog::logSwitchLog\fP"
+.PP
+Event switch event. 
+.PP
+.SS "struct \fBjobModLog\fP \fBeventLog::jobModLog\fP"
+.PP
+Job modify event. 
+.PP
+.SS "struct \fBjgrpStatusLog\fP \fBeventLog::jgrpStatusLog\fP"
+.PP
+Job group stratus event. 
+.PP
+.SS "struct \fBjobAttrSetLog\fP \fBeventLog::jobAttrSetLog\fP"
+.PP
+Job attribute setting event. 
+.PP
+.SS "struct \fBjobExternalMsgLog\fP \fBeventLog::jobExternalMsgLog\fP"
+.PP
+Job external message event. 
+.PP
+.SS "struct \fBjobChunkLog\fP \fBeventLog::jobChunkLog\fP"
+.PP
+Job chunk event. 
+.PP
+.SS "struct \fBsbdUnreportedStatusLog\fP \fBeventLog::sbdUnreportedStatusLog\fP"
+.PP
+sbatchd unreported status event 
+.PP
+.SS "struct \fBrsvFinishLog\fP \fBeventLog::rsvFinishLog\fP"
+.PP
+Reservation finish event. 
+.PP
+.SS "struct \fBhgCtrlLog\fP \fBeventLog::hgCtrlLog\fP"
+.PP
+Host group control Log. 
+.PP
+.SS "struct \fBcpuProfileLog\fP \fBeventLog::cpuProfileLog\fP"
+.PP
+cpu profile event 
+.PP
+.SS "struct \fBdataLoggingLog\fP \fBeventLog::dataLoggingLog\fP"
+.PP
+Data logging event. 
+.PP
+.SS "struct \fBjobRunRusageLog\fP \fBeventLog::jobRunRusageLog\fP"
+.PP
+Job run rusage event. 
+.PP
+.SS "struct \fBeventEOSLog\fP \fBeventLog::eventEOSLog\fP"
+.PP
+Event EOS event. 
+.PP
+.SS "struct \fBslaLog\fP \fBeventLog::slaLog\fP"
+.PP
+SLA event. 
+.PP
+.SS "struct \fBperfmonLog\fP \fBeventLog::perfmonLog\fP"
+.PP
+Performance event. 
+.PP
+.SS "struct \fBtaskFinishLog\fP \fBeventLog::taskFinishLog\fP"
+.PP
+Task finish event. 
+.PP
+.SS "struct \fBjobResizeNotifyStartLog\fP \fBeventLog::jobResizeNotifyStartLog\fP"
+.PP
+Job resize notify start event. 
+.PP
+.SS "struct \fBjobResizeNotifyAcceptLog\fP \fBeventLog::jobResizeNotifyAcceptLog\fP"
+.PP
+Job resize notify accept event. 
+.PP
+.SS "struct \fBjobResizeNotifyDoneLog\fP \fBeventLog::jobResizeNotifyDoneLog\fP"
+.PP
+Job resize notify done event. 
+.PP
+.SS "struct \fBjobResizeReleaseLog\fP \fBeventLog::jobResizeReleaseLog\fP"
+.PP
+Job resize request event. 
+.PP
+Job resize release event 
+.SS "struct \fBjobResizeCancelLog\fP \fBeventLog::jobResizeCancelLog\fP"
+.PP
+Job resize cancel event. 
+.PP
+.SS "struct \fBjobResizeLog\fP \fBeventLog::jobResizeLog\fP"
+.PP
+Job resize event. 
+.PP
+.SS "struct \fBjobFinish2Log\fP \fBeventLog::jobFinish2Log\fP"
+.PP
+JOB_FINISH2 stream event. 
+.PP
+.SS "struct \fBjobStartLimitLog\fP \fBeventLog::jobStartLimitLog\fP"
+.PP
+JOB_STATRTLIMIT stream event. 
+.PP
+.SS "struct \fBjobStatus2Log\fP \fBeventLog::jobStatus2Log\fP"
+.PP
+JOB_STATUS2 status event. 
+.PP
+.SS "struct \fBjobPendingReasonsLog\fP \fBeventLog::jobPendingReasonsLog\fP"
+.PP
+JOB_PENDINGREASONS event. 
+.PP
+.SS "struct \fBjobProvisionStartLog\fP \fBeventLog::jobProvisionStartLog\fP"
+.PP
+Job provisioning start event. 
+.PP
+.SS "struct \fBjobFanoutInfoLog\fP \fBeventLog::jobFanoutInfoLog\fP"
+.PP
+< Job provisioning end event 
+.PP
+Job fan-out Information event 
+.SS "struct \fBhostPowerStatusLog\fP \fBeventLog::hostPowerStatusLog\fP"
+.PP
+host power status event 
+.PP
+.SS "struct \fBjobProvHostLog\fP \fBeventLog::jobProvHostLog\fP"
+.PP
+job prov host info event 
+.PP
+.SS "struct \fBjobMigTimeoutLog\fP \fBeventLog::jobMigTimeoutLog\fP"
+.PP
+Job migration timeout event. 
+.PP
+.SS "struct \fBjobDataStageLog\fP \fBeventLog::jobDataStageLog\fP"
+.PP
+Job Data Allocation event. 
+.PP
+.SS "\fBattrCreateLog_T\fP \fBeventLog::attrCreateLog\fP"
+.PP
+Attribute creation log. 
+.PP
+.SS "\fBattrDeleteLog_T\fP \fBeventLog::attrDeleteLog\fP"
+.PP
+Attribute deletion log. 
+.PP
+.SS "\fBattrInfoLog_T\fP \fBeventLog::attrInfoLog\fP"
+.PP
+Attribute information log. 
+.PP
+.SS "struct \fBhclosureLockIdLog\fP \fBeventLog::hclosureLockIdLog\fP"
+.PP
+Host closure lock ID operation event. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+xFile \- \fBxFile\fP  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBsubFn\fP"
+.br
+.ti -1c
+.RI "char * \fBexecFn\fP"
+.br
+.ti -1c
+.RI "int \fBoptions\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+\fBxFile\fP 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fBxFile::subFn\fP"
+.PP
+Pathname at submission host. 
+.PP
+.SS "char* \fBxFile::execFn\fP"
+.PP
+Pathname at execution host. 
+.PP
+.SS "int \fBxFile::options\fP"
+.PP
+Defined in \fBdefs_lsb_XF_OP\fP. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jobAttrSetLog \- job attribute setting log.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBjobId\fP"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.ti -1c
+.RI "int \fBuid\fP"
+.br
+.ti -1c
+.RI "int \fBport\fP"
+.br
+.ti -1c
+.RI "char * \fBhostname\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+job attribute setting log. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBjobAttrSetLog::jobId\fP"
+.PP
+The unique ID for the job. 
+.PP
+.SS "int \fBjobAttrSetLog::idx\fP"
+.PP
+Job array index; must be 0 in JOB_NEW. 
+.PP
+.SS "int \fBjobAttrSetLog::uid\fP"
+.PP
+The user who requested the action. 
+.PP
+.SS "int \fBjobAttrSetLog::port\fP"
+.PP
+Job attributes. 
+.PP
+.SS "char* \fBjobAttrSetLog::hostname\fP"
+.PP
+Name of the host. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+logSwitchLog \- Records of logged events.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBlastJobId\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Records of logged events. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBlogSwitchLog::lastJobId\fP"
+.PP
+The last jobId so far. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+dataLoggingLog \- Records of job CPU data logged event.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "time_t \fBloggingTime\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Records of job CPU data logged event. 
+.SH "Field Documentation"
+.PP 
+.SS "time_t \fBdataLoggingLog::loggingTime\fP"
+.PP
+The time of last job cpu data logging. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jgrpNewLog \- new job group log.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBuserId\fP"
+.br
+.ti -1c
+.RI "time_t \fBsubmitTime\fP"
+.br
+.ti -1c
+.RI "char \fBuserName\fP [MAX_LSB_NAME_LEN]"
+.br
+.ti -1c
+.RI "char * \fBdepCond\fP"
+.br
+.ti -1c
+.RI "char * \fBtimeEvent\fP"
+.br
+.ti -1c
+.RI "char * \fBgroupSpec\fP"
+.br
+.ti -1c
+.RI "char * \fBdestSpec\fP"
+.br
+.ti -1c
+.RI "int \fBdelOptions\fP"
+.br
+.ti -1c
+.RI "int \fBdelOptions2\fP"
+.br
+.ti -1c
+.RI "int \fBfromPlatform\fP"
+.br
+.ti -1c
+.RI "char * \fBsla\fP"
+.br
+.ti -1c
+.RI "int \fBmaxJLimit\fP"
+.br
+.ti -1c
+.RI "int \fBoptions\fP"
+.br
+.ti -1c
+.RI "int \fBnew_owner_id\fP"
+.br
+.ti -1c
+.RI "char \fBnew_owner_name\fP [MAX_LSB_NAME_LEN]"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+new job group log. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBjgrpNewLog::userId\fP"
+.PP
+The user ID of the submitter. 
+.PP
+.SS "time_t \fBjgrpNewLog::submitTime\fP"
+.PP
+The job submission time. 
+.PP
+.SS "char \fBjgrpNewLog::userName\fP[MAX_LSB_NAME_LEN]"
+.PP
+The name of the submitter. 
+.PP
+.SS "char* \fBjgrpNewLog::depCond\fP"
+.PP
+The job dependency condition. 
+.PP
+.SS "char* \fBjgrpNewLog::timeEvent\fP"
+.PP
+Time event string. 
+.PP
+.SS "char* \fBjgrpNewLog::groupSpec\fP"
+.PP
+Job group name. 
+.PP
+.SS "char* \fBjgrpNewLog::destSpec\fP"
+.PP
+New job group name. 
+.PP
+.SS "int \fBjgrpNewLog::delOptions\fP"
+.PP
+Delete options in options field. 
+.PP
+.SS "int \fBjgrpNewLog::delOptions2\fP"
+.PP
+Extended Delete options in options2 field. 
+.PP
+.SS "int \fBjgrpNewLog::fromPlatform\fP"
+.PP
+Platform type: such as Unix, Windows. 
+.PP
+.SS "char* \fBjgrpNewLog::sla\fP"
+.PP
+SLA service class name under which the job runs. 
+.PP
+.SS "int \fBjgrpNewLog::maxJLimit\fP"
+.PP
+Max job group slots limit. 
+.PP
+.SS "int \fBjgrpNewLog::options\fP"
+.PP
+Job group creation method: implicit or explicit. 
+.PP
+.SS "int \fBjgrpNewLog::new_owner_id\fP"
+.PP
+The user ID of the new job group owner. 
+.PP
+.SS "char \fBjgrpNewLog::new_owner_name\fP[MAX_LSB_NAME_LEN]"
+.PP
+The name of the new job group owner. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jgrpCtrlLog \- job group control log.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBuserId\fP"
+.br
+.ti -1c
+.RI "char \fBuserName\fP [MAX_LSB_NAME_LEN]"
+.br
+.ti -1c
+.RI "char * \fBgroupSpec\fP"
+.br
+.ti -1c
+.RI "int \fBoptions\fP"
+.br
+.ti -1c
+.RI "int \fBctrlOp\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+job group control log. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBjgrpCtrlLog::userId\fP"
+.PP
+The user ID of the submitter. 
+.PP
+.SS "char \fBjgrpCtrlLog::userName\fP[MAX_LSB_NAME_LEN]"
+.PP
+The name of the submitter. 
+.PP
+.SS "char* \fBjgrpCtrlLog::groupSpec\fP"
+.PP
+Job group name. 
+.PP
+.SS "int \fBjgrpCtrlLog::options\fP"
+.PP
+Options. 
+.PP
+.SS "int \fBjgrpCtrlLog::ctrlOp\fP"
+.PP
+Job control JGRP_RELEASE, JGRP_HOLD, JGRP_DEL. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jgrpStatusLog \- job group status log.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBgroupSpec\fP"
+.br
+.ti -1c
+.RI "int \fBstatus\fP"
+.br
+.ti -1c
+.RI "int \fBoldStatus\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+job group status log. 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fBjgrpStatusLog::groupSpec\fP"
+.PP
+The full group path name for the job group. 
+.PP
+.SS "int \fBjgrpStatusLog::status\fP"
+.PP
+Job group status. 
+.PP
+.SS "int \fBjgrpStatusLog::oldStatus\fP"
+.PP
+Prior status. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jobNewLog \- \fBjobNewLog\fP logged in lsb.events when a job is submitted.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBjobId\fP"
+.br
+.ti -1c
+.RI "int \fBuserId\fP"
+.br
+.ti -1c
+.RI "char \fBuserName\fP [MAX_LSB_NAME_LEN]"
+.br
+.ti -1c
+.RI "int \fBoptions\fP"
+.br
+.ti -1c
+.RI "int \fBoptions2\fP"
+.br
+.ti -1c
+.RI "int \fBnumProcessors\fP"
+.br
+.ti -1c
+.RI "time_t \fBsubmitTime\fP"
+.br
+.ti -1c
+.RI "time_t \fBbeginTime\fP"
+.br
+.ti -1c
+.RI "time_t \fBtermTime\fP"
+.br
+.ti -1c
+.RI "int \fBsigValue\fP"
+.br
+.ti -1c
+.RI "int \fBchkpntPeriod\fP"
+.br
+.ti -1c
+.RI "int \fBrestartPid\fP"
+.br
+.ti -1c
+.RI "int \fBrLimits\fP [LSF_RLIM_NLIMITS]"
+.br
+.ti -1c
+.RI "char \fBhostSpec\fP [MAXHOSTNAMELEN]"
+.br
+.ti -1c
+.RI "float \fBhostFactor\fP"
+.br
+.ti -1c
+.RI "int \fBumask\fP"
+.br
+.ti -1c
+.RI "char \fBqueue\fP [MAX_LSB_NAME_LEN]"
+.br
+.ti -1c
+.RI "char * \fBresReq\fP"
+.br
+.ti -1c
+.RI "char \fBfromHost\fP [MAXHOSTNAMELEN]"
+.br
+.ti -1c
+.RI "char * \fBcwd\fP"
+.br
+.ti -1c
+.RI "char * \fBchkpntDir\fP"
+.br
+.ti -1c
+.RI "char * \fBinFile\fP"
+.br
+.ti -1c
+.RI "char * \fBoutFile\fP"
+.br
+.ti -1c
+.RI "char * \fBerrFile\fP"
+.br
+.ti -1c
+.RI "char * \fBinFileSpool\fP"
+.br
+.ti -1c
+.RI "char * \fBcommandSpool\fP"
+.br
+.ti -1c
+.RI "char * \fBjobSpoolDir\fP"
+.br
+.ti -1c
+.RI "char * \fBsubHomeDir\fP"
+.br
+.ti -1c
+.RI "char * \fBjobFile\fP"
+.br
+.ti -1c
+.RI "int \fBnumAskedHosts\fP"
+.br
+.ti -1c
+.RI "char ** \fBaskedHosts\fP"
+.br
+.ti -1c
+.RI "char * \fBdependCond\fP"
+.br
+.ti -1c
+.RI "char * \fBtimeEvent\fP"
+.br
+.ti -1c
+.RI "char * \fBjobName\fP"
+.br
+.ti -1c
+.RI "char * \fBcommand\fP"
+.br
+.ti -1c
+.RI "int \fBnxf\fP"
+.br
+.ti -1c
+.RI "struct \fBxFile\fP * \fBxf\fP"
+.br
+.ti -1c
+.RI "char * \fBpreExecCmd\fP"
+.br
+.ti -1c
+.RI "char * \fBmailUser\fP"
+.br
+.ti -1c
+.RI "char * \fBprojectName\fP"
+.br
+.ti -1c
+.RI "int \fBniosPort\fP"
+.br
+.ti -1c
+.RI "int \fBmaxNumProcessors\fP"
+.br
+.ti -1c
+.RI "char * \fBschedHostType\fP"
+.br
+.ti -1c
+.RI "char * \fBloginShell\fP"
+.br
+.ti -1c
+.RI "char * \fBuserGroup\fP"
+.br
+.ti -1c
+.RI "char * \fBexceptList\fP"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.ti -1c
+.RI "int \fBuserPriority\fP"
+.br
+.ti -1c
+.RI "char * \fBrsvId\fP"
+.br
+.ti -1c
+.RI "char * \fBjobGroup\fP"
+.br
+.ti -1c
+.RI "char * \fBextsched\fP"
+.br
+.ti -1c
+.RI "int \fBwarningTimePeriod\fP"
+.br
+.ti -1c
+.RI "char * \fBwarningAction\fP"
+.br
+.ti -1c
+.RI "char * \fBsla\fP"
+.br
+.ti -1c
+.RI "int \fBSLArunLimit\fP"
+.br
+.ti -1c
+.RI "char * \fBlicenseProject\fP"
+.br
+.ti -1c
+.RI "int \fBoptions3\fP"
+.br
+.ti -1c
+.RI "char * \fBapp\fP"
+.br
+.ti -1c
+.RI "char * \fBpostExecCmd\fP"
+.br
+.ti -1c
+.RI "int \fBruntimeEstimation\fP"
+.br
+.ti -1c
+.RI "char * \fBrequeueEValues\fP"
+.br
+.ti -1c
+.RI "int \fBinitChkpntPeriod\fP"
+.br
+.ti -1c
+.RI "int \fBmigThreshold\fP"
+.br
+.ti -1c
+.RI "char * \fBnotifyCmd\fP"
+.br
+.ti -1c
+.RI "char * \fBjobDescription\fP"
+.br
+.ti -1c
+.RI "struct \fBsubmit_ext\fP * \fBsubmitExt\fP"
+.br
+.ti -1c
+.RI "char * \fBsrcCluster\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT \fBsrcJobId\fP"
+.br
+.ti -1c
+.RI "char * \fBdstCluster\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT \fBdstJobId\fP"
+.br
+.ti -1c
+.RI "int \fBoptions4\fP"
+.br
+.ti -1c
+.RI "int \fBnumAskedClusters\fP"
+.br
+.ti -1c
+.RI "char ** \fBaskedClusters\fP"
+.br
+.ti -1c
+.RI "char * \fBsubcwd\fP"
+.br
+.ti -1c
+.RI "char * \fBoutdir\fP"
+.br
+.ti -1c
+.RI "char * \fBdcTmpls\fP"
+.br
+.ti -1c
+.RI "char * \fBdcVmActions\fP"
+.br
+.ti -1c
+.RI "struct \fBnetworkReq\fP \fBnetwork\fP"
+.br
+.ti -1c
+.RI "char * \fBallocHostfilePath\fP"
+.br
+.ti -1c
+.RI "allocHostInfo_t * \fBallocHostsList\fP"
+.br
+.ti -1c
+.RI "int \fBnStinFile\fP"
+.br
+.ti -1c
+.RI "struct \fBstinfile\fP * \fBstinFile\fP"
+.br
+.ti -1c
+.RI "char * \fBdataGrp\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT \fBrLimits64\fP [LSF_RLIM_NLIMITS]"
+.br
+.ti -1c
+.RI "int \fBnumExcludeUsrGroups\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+\fBjobNewLog\fP logged in lsb.events when a job is submitted. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBjobNewLog::jobId\fP"
+.PP
+The job ID that the LSF assigned to the job. 
+.PP
+.SS "int \fBjobNewLog::userId\fP"
+.PP
+The user ID of the submitter. 
+.PP
+.SS "char \fBjobNewLog::userName\fP[MAX_LSB_NAME_LEN]"
+.PP
+The name of the submitter. 
+.PP
+.SS "int \fBjobNewLog::options\fP"
+.PP
+Job submission options. 
+.PP
+see \fBlsb_submit\fP. 
+.SS "int \fBjobNewLog::options2\fP"
+.PP
+Job submission options. 
+.PP
+see \fBlsb_submit\fP. 
+.SS "int \fBjobNewLog::numProcessors\fP"
+.PP
+The number of processors requested for execution. 
+.PP
+.SS "time_t \fBjobNewLog::submitTime\fP"
+.PP
+The job submission time. 
+.PP
+.SS "time_t \fBjobNewLog::beginTime\fP"
+.PP
+The job should be started on or after this time. 
+.PP
+.SS "time_t \fBjobNewLog::termTime\fP"
+.PP
+If the job has not finished by this time, it will be killed. 
+.PP
+.SS "int \fBjobNewLog::sigValue\fP"
+.PP
+The signal value sent to the job 10 minutes before its run window closes. 
+.PP
+.SS "int \fBjobNewLog::chkpntPeriod\fP"
+.PP
+The checkpointing period. 
+.PP
+.SS "int \fBjobNewLog::restartPid\fP"
+.PP
+The process ID assigned to the job when it was restarted. 
+.PP
+.SS "int \fBjobNewLog::rLimits\fP[LSF_RLIM_NLIMITS]"
+.PP
+The user's resource limits. 
+.PP
+.SS "char \fBjobNewLog::hostSpec\fP[MAXHOSTNAMELEN]"
+.PP
+The model, host name or host type for scaling CPULIMIT and RUNLIMIT. 
+.PP
+.SS "float \fBjobNewLog::hostFactor\fP"
+.PP
+The CPU factor for the above model, host name or host type. 
+.PP
+.SS "int \fBjobNewLog::umask\fP"
+.PP
+The file creation mask for this job. 
+.PP
+.SS "char \fBjobNewLog::queue\fP[MAX_LSB_NAME_LEN]"
+.PP
+The name of the queue to which this job was submitted. 
+.PP
+.SS "char* \fBjobNewLog::resReq\fP"
+.PP
+The resource requirements of the job. 
+.PP
+.SS "char \fBjobNewLog::fromHost\fP[MAXHOSTNAMELEN]"
+.PP
+The submission host name. 
+.PP
+.SS "char* \fBjobNewLog::cwd\fP"
+.PP
+The current working directory. 
+.PP
+.SS "char* \fBjobNewLog::chkpntDir\fP"
+.PP
+The checkpoint directory. 
+.PP
+.SS "char* \fBjobNewLog::inFile\fP"
+.PP
+The input file name. 
+.PP
+.SS "char* \fBjobNewLog::outFile\fP"
+.PP
+The output file name. 
+.PP
+.SS "char* \fBjobNewLog::errFile\fP"
+.PP
+The error output file name. 
+.PP
+.SS "char* \fBjobNewLog::inFileSpool\fP"
+.PP
+Job spool input file. 
+.PP
+.SS "char* \fBjobNewLog::commandSpool\fP"
+.PP
+Job spool command file. 
+.PP
+.SS "char* \fBjobNewLog::jobSpoolDir\fP"
+.PP
+Job spool directory. 
+.PP
+.SS "char* \fBjobNewLog::subHomeDir\fP"
+.PP
+The home directory of the submitter. 
+.PP
+.SS "char* \fBjobNewLog::jobFile\fP"
+.PP
+The job file name. 
+.PP
+.SS "int \fBjobNewLog::numAskedHosts\fP"
+.PP
+The number of hosts considered for dispatching this job. 
+.PP
+.SS "char** \fBjobNewLog::askedHosts\fP"
+.PP
+The array of names of hosts considered for dispatching this job. 
+.PP
+.SS "char* \fBjobNewLog::dependCond\fP"
+.PP
+The job dependency condition. 
+.PP
+.SS "char* \fBjobNewLog::timeEvent\fP"
+.PP
+Time event string. 
+.PP
+.SS "char* \fBjobNewLog::jobName\fP"
+.PP
+The job name. 
+.PP
+.SS "char* \fBjobNewLog::command\fP"
+.PP
+The job command. 
+.PP
+.SS "int \fBjobNewLog::nxf\fP"
+.PP
+The number of files to transfer. 
+.PP
+.SS "struct \fBxFile\fP* \fBjobNewLog::xf\fP"
+.PP
+The array of file transfer specifications. 
+.PP
+(The \fBxFile\fP structure is defined in <lsf/lsbatch.h>) 
+.SS "char* \fBjobNewLog::preExecCmd\fP"
+.PP
+The command string to be pre_executed. 
+.PP
+.SS "char* \fBjobNewLog::mailUser\fP"
+.PP
+User option mail string. 
+.PP
+.SS "char* \fBjobNewLog::projectName\fP"
+.PP
+The project name for this job, used for accounting purposes. 
+.PP
+.SS "int \fBjobNewLog::niosPort\fP"
+.PP
+Port to be used for interactive jobs. 
+.PP
+.SS "int \fBjobNewLog::maxNumProcessors\fP"
+.PP
+Maximum number of processors. 
+.PP
+.SS "char* \fBjobNewLog::schedHostType\fP"
+.PP
+Execution host type. 
+.PP
+.SS "char* \fBjobNewLog::loginShell\fP"
+.PP
+Login shell specified by user. 
+.PP
+.SS "char* \fBjobNewLog::userGroup\fP"
+.PP
+The user group name for this job. 
+.PP
+.SS "char* \fBjobNewLog::exceptList\fP"
+.PP
+List of alarm conditions for job. 
+.PP
+.SS "int \fBjobNewLog::idx\fP"
+.PP
+Array idx, must be 0 in JOB_NEW. 
+.PP
+.SS "int \fBjobNewLog::userPriority\fP"
+.PP
+User priority. 
+.PP
+.SS "char* \fBjobNewLog::rsvId\fP"
+.PP
+Advance reservation ID. 
+.PP
+.SS "char* \fBjobNewLog::jobGroup\fP"
+.PP
+The job group under which the job runs. 
+.PP
+
+.SS "char* \fBjobNewLog::extsched\fP"
+.PP
+External scheduling options. 
+.PP
+.SS "int \fBjobNewLog::warningTimePeriod\fP"
+.PP
+Warning time period in seconds, -1 if unspecified. 
+.PP
+.SS "char* \fBjobNewLog::warningAction\fP"
+.PP
+Warning action, SIGNAL | CHKPNT | command, NULL if unspecified. 
+.PP
+.SS "char* \fBjobNewLog::sla\fP"
+.PP
+The service class under which the job runs. 
+.PP
+
+.SS "int \fBjobNewLog::SLArunLimit\fP"
+.PP
+The absolute run limit of the job. 
+.PP
+.SS "char* \fBjobNewLog::licenseProject\fP"
+.PP
+License Project. 
+.PP
+.SS "int \fBjobNewLog::options3\fP"
+.PP
+Extended bitwise inclusive OR of options flags. 
+.PP
+See \fBlsb_submit\fP. 
+.SS "char* \fBjobNewLog::app\fP"
+.PP
+Application profile under which the job runs. 
+.PP
+
+.SS "char* \fBjobNewLog::postExecCmd\fP"
+.PP
+Post-execution commands. 
+.PP
+
+.SS "int \fBjobNewLog::runtimeEstimation\fP"
+.PP
+Runtime estimate specified. 
+.PP
+
+.SS "char* \fBjobNewLog::requeueEValues\fP"
+.PP
+Job-level requeue exit values. 
+.PP
+
+.SS "int \fBjobNewLog::initChkpntPeriod\fP"
+.PP
+Initial checkpoint period. 
+.PP
+.SS "int \fBjobNewLog::migThreshold\fP"
+.PP
+Job migration threshold. 
+.PP
+
+.SS "char* \fBjobNewLog::notifyCmd\fP"
+.PP
+Resize notify command. 
+.PP
+.SS "char* \fBjobNewLog::jobDescription\fP"
+.PP
+Job description. 
+.PP
+
+.SS "struct \fBsubmit_ext\fP* \fBjobNewLog::submitExt\fP"
+.PP
+For new options in future. 
+.PP
+.SS "char* \fBjobNewLog::srcCluster\fP"
+.PP
+source cluster name 
+.PP
+.SS "LS_LONG_INT \fBjobNewLog::srcJobId\fP"
+.PP
+source job ID 
+.PP
+.SS "char* \fBjobNewLog::dstCluster\fP"
+.PP
+target cluster name 
+.PP
+.SS "LS_LONG_INT \fBjobNewLog::dstJobId\fP"
+.PP
+target job ID 
+.PP
+.SS "int \fBjobNewLog::options4\fP"
+.PP
+Job submission options. 
+.PP
+see \fBlsb_submit\fP. 
+.SS "int \fBjobNewLog::numAskedClusters\fP"
+.PP
+The number of clusters considered for dispatching this job. 
+.PP
+.SS "char** \fBjobNewLog::askedClusters\fP"
+.PP
+List of asked clusters. 
+.PP
+.SS "char* \fBjobNewLog::subcwd\fP"
+.PP
+< Internal option, indicate the process manager flow id. 
+.PP
+no usage. The submission current working directory 
+.SS "char* \fBjobNewLog::outdir\fP"
+.PP
+The output directory. 
+.PP
+.SS "char* \fBjobNewLog::dcTmpls\fP"
+.PP
+Dynamic Cluster templates. 
+.PP
+.SS "char* \fBjobNewLog::dcVmActions\fP"
+.PP
+Dynamic Cluster VM actions. 
+.PP
+.SS "struct \fBnetworkReq\fP \fBjobNewLog::network\fP"
+.PP
+PE network requirement, specified by -network. 
+.PP
+
+.SS "char* \fBjobNewLog::allocHostfilePath\fP"
+.PP
+user specified allocation hostfile path 
+.PP
+.SS "allocHostInfo_t* \fBjobNewLog::allocHostsList\fP"
+.PP
+user specified allocation hosts 
+.PP
+.SS "int \fBjobNewLog::nStinFile\fP"
+.PP
+Number of files requested for stage in. 
+.PP
+.SS "struct \fBstinfile\fP* \fBjobNewLog::stinFile\fP"
+.PP
+Array of files requested for stage in. 
+.PP
+.SS "char* \fBjobNewLog::dataGrp\fP"
+.PP
+Data group name to be used when cache permissions is set to group. 
+.PP
+.SS "LS_LONG_INT \fBjobNewLog::rLimits64\fP[LSF_RLIM_NLIMITS]"
+.PP
+The limits over INT_MAX (2^31-1) are stored here. 
+.PP
+The -1 means there is no limit over INT_MAX for the resource. 
+.SS "int \fBjobNewLog::numExcludeUsrGroups\fP"
+.PP
+The number of excluded fairshare user groups specified in bsub -G. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jobModLog \- job modified log.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBjobIdStr\fP"
+.br
+.ti -1c
+.RI "int \fBoptions\fP"
+.br
+.ti -1c
+.RI "int \fBoptions2\fP"
+.br
+.ti -1c
+.RI "int \fBdelOptions\fP"
+.br
+.ti -1c
+.RI "int \fBdelOptions2\fP"
+.br
+.ti -1c
+.RI "int \fBuserId\fP"
+.br
+.ti -1c
+.RI "char * \fBuserName\fP"
+.br
+.ti -1c
+.RI "int \fBsubmitTime\fP"
+.br
+.ti -1c
+.RI "int \fBumask\fP"
+.br
+.ti -1c
+.RI "int \fBnumProcessors\fP"
+.br
+.ti -1c
+.RI "int \fBbeginTime\fP"
+.br
+.ti -1c
+.RI "int \fBtermTime\fP"
+.br
+.ti -1c
+.RI "int \fBsigValue\fP"
+.br
+.ti -1c
+.RI "int \fBrestartPid\fP"
+.br
+.ti -1c
+.RI "char * \fBjobName\fP"
+.br
+.ti -1c
+.RI "char * \fBqueue\fP"
+.br
+.ti -1c
+.RI "int \fBnumAskedHosts\fP"
+.br
+.ti -1c
+.RI "char ** \fBaskedHosts\fP"
+.br
+.ti -1c
+.RI "char * \fBresReq\fP"
+.br
+.ti -1c
+.RI "int \fBrLimits\fP [LSF_RLIM_NLIMITS]"
+.br
+.ti -1c
+.RI "char * \fBhostSpec\fP"
+.br
+.ti -1c
+.RI "char * \fBdependCond\fP"
+.br
+.ti -1c
+.RI "char * \fBtimeEvent\fP"
+.br
+.ti -1c
+.RI "char * \fBsubHomeDir\fP"
+.br
+.ti -1c
+.RI "char * \fBinFile\fP"
+.br
+.ti -1c
+.RI "char * \fBoutFile\fP"
+.br
+.ti -1c
+.RI "char * \fBerrFile\fP"
+.br
+.ti -1c
+.RI "char * \fBcommand\fP"
+.br
+.ti -1c
+.RI "char * \fBinFileSpool\fP"
+.br
+.ti -1c
+.RI "char * \fBcommandSpool\fP"
+.br
+.ti -1c
+.RI "int \fBchkpntPeriod\fP"
+.br
+.ti -1c
+.RI "char * \fBchkpntDir\fP"
+.br
+.ti -1c
+.RI "int \fBnxf\fP"
+.br
+.ti -1c
+.RI "struct \fBxFile\fP * \fBxf\fP"
+.br
+.ti -1c
+.RI "char * \fBjobFile\fP"
+.br
+.ti -1c
+.RI "char * \fBfromHost\fP"
+.br
+.ti -1c
+.RI "char * \fBcwd\fP"
+.br
+.ti -1c
+.RI "char * \fBpreExecCmd\fP"
+.br
+.ti -1c
+.RI "char * \fBmailUser\fP"
+.br
+.ti -1c
+.RI "char * \fBprojectName\fP"
+.br
+.ti -1c
+.RI "int \fBniosPort\fP"
+.br
+.ti -1c
+.RI "int \fBmaxNumProcessors\fP"
+.br
+.ti -1c
+.RI "char * \fBloginShell\fP"
+.br
+.ti -1c
+.RI "char * \fBschedHostType\fP"
+.br
+.ti -1c
+.RI "char * \fBuserGroup\fP"
+.br
+.ti -1c
+.RI "char * \fBexceptList\fP"
+.br
+.ti -1c
+.RI "int \fBuserPriority\fP"
+.br
+.ti -1c
+.RI "char * \fBrsvId\fP"
+.br
+.ti -1c
+.RI "char * \fBextsched\fP"
+.br
+.ti -1c
+.RI "int \fBwarningTimePeriod\fP"
+.br
+.ti -1c
+.RI "char * \fBwarningAction\fP"
+.br
+.ti -1c
+.RI "char * \fBjobGroup\fP"
+.br
+.ti -1c
+.RI "char * \fBsla\fP"
+.br
+.ti -1c
+.RI "char * \fBlicenseProject\fP"
+.br
+.ti -1c
+.RI "int \fBoptions3\fP"
+.br
+.ti -1c
+.RI "int \fBdelOptions3\fP"
+.br
+.ti -1c
+.RI "char * \fBapp\fP"
+.br
+.ti -1c
+.RI "char * \fBapsString\fP"
+.br
+.ti -1c
+.RI "char * \fBpostExecCmd\fP"
+.br
+.ti -1c
+.RI "int \fBruntimeEstimation\fP"
+.br
+.ti -1c
+.RI "char * \fBrequeueEValues\fP"
+.br
+.ti -1c
+.RI "int \fBinitChkpntPeriod\fP"
+.br
+.ti -1c
+.RI "int \fBmigThreshold\fP"
+.br
+.ti -1c
+.RI "char * \fBnotifyCmd\fP"
+.br
+.ti -1c
+.RI "char * \fBjobDescription\fP"
+.br
+.ti -1c
+.RI "struct \fBsubmit_ext\fP * \fBsubmitExt\fP"
+.br
+.ti -1c
+.RI "char * \fBsrcCluster\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT \fBsrcJobId\fP"
+.br
+.ti -1c
+.RI "char * \fBdstCluster\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT \fBdstJobId\fP"
+.br
+.ti -1c
+.RI "int \fBoptions4\fP"
+.br
+.ti -1c
+.RI "int \fBdelOptions4\fP"
+.br
+.ti -1c
+.RI "int \fBnumAskedClusters\fP"
+.br
+.ti -1c
+.RI "char ** \fBaskedClusters\fP"
+.br
+.ti -1c
+.RI "int \fBrmtJobCtrlStage\fP"
+.br
+.ti -1c
+.RI "int \fBnumRmtCtrlResult\fP"
+.br
+.ti -1c
+.RI "struct rmtJobCtrlRecord * \fBrmtCtrlResult\fP"
+.br
+.ti -1c
+.RI "char * \fBoutdir\fP"
+.br
+.ti -1c
+.RI "char * \fBdcTmpls\fP"
+.br
+.ti -1c
+.RI "char * \fBdcVmActions\fP"
+.br
+.ti -1c
+.RI "char * \fBallocHostfilePath\fP"
+.br
+.ti -1c
+.RI "int \fBnStinFile\fP"
+.br
+.ti -1c
+.RI "struct \fBstinfile\fP * \fBstinFile\fP"
+.br
+.ti -1c
+.RI "char * \fBdataGrp\fP"
+.br
+.ti -1c
+.RI "int \fBnumRmtCtrlResult2\fP"
+.br
+.ti -1c
+.RI "struct rmtJobCtrlRecord2 * \fBrmtCtrlResult2\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT \fBrLimits64\fP [LSF_RLIM_NLIMITS]"
+.br
+.ti -1c
+.RI "int \fBnumExcludeUsrGroups\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+job modified log. 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fBjobModLog::jobIdStr\fP"
+.PP
+JobId or jobName in char. 
+.PP
+.SS "int \fBjobModLog::options\fP"
+.PP
+Job submission options(See \fBlsb_submit\fP). 
+.PP
+.SS "int \fBjobModLog::options2\fP"
+.PP
+Job submission options(See \fBlsb_submit\fP). 
+.PP
+.SS "int \fBjobModLog::delOptions\fP"
+.PP
+Delete options in options field. 
+.PP
+.SS "int \fBjobModLog::delOptions2\fP"
+.PP
+Extended delete options in options2 field . 
+.PP
+
+.SS "int \fBjobModLog::userId\fP"
+.PP
+The user ID of the submitter. 
+.PP
+.SS "char* \fBjobModLog::userName\fP"
+.PP
+The name of the submitter. 
+.PP
+.SS "int \fBjobModLog::submitTime\fP"
+.PP
+The job submission time. 
+.PP
+.SS "int \fBjobModLog::umask\fP"
+.PP
+The file creation mask for this job. 
+.PP
+.SS "int \fBjobModLog::numProcessors\fP"
+.PP
+The number of processors requested for execution. 
+.PP
+.SS "int \fBjobModLog::beginTime\fP"
+.PP
+The job should be started on or after this time. 
+.PP
+.SS "int \fBjobModLog::termTime\fP"
+.PP
+If the job has not finished by this time, it will be killed. 
+.PP
+.SS "int \fBjobModLog::sigValue\fP"
+.PP
+The signal value sent to the job 10 minutes before its run window closes. 
+.PP
+.SS "int \fBjobModLog::restartPid\fP"
+.PP
+The process ID assigned to the job when it was restarted. 
+.PP
+.SS "char* \fBjobModLog::jobName\fP"
+.PP
+The job name. 
+.PP
+.SS "char* \fBjobModLog::queue\fP"
+.PP
+The name of the queue to which this job was submitted. 
+.PP
+.SS "int \fBjobModLog::numAskedHosts\fP"
+.PP
+The number of hosts considered for dispatching this job. 
+.PP
+.SS "char** \fBjobModLog::askedHosts\fP"
+.PP
+List of asked hosts. 
+.PP
+.SS "char* \fBjobModLog::resReq\fP"
+.PP
+The resource requirements of the job. 
+.PP
+.SS "int \fBjobModLog::rLimits\fP[LSF_RLIM_NLIMITS]"
+.PP
+User's resource limits (soft). 
+.PP
+.SS "char* \fBjobModLog::hostSpec\fP"
+.PP
+The model, host name or host type for scaling CPULIMIT and RUNLIMIT. 
+.PP
+.SS "char* \fBjobModLog::dependCond\fP"
+.PP
+The job dependency condition. 
+.PP
+.SS "char* \fBjobModLog::timeEvent\fP"
+.PP
+Time event string. 
+.PP
+
+.SS "char* \fBjobModLog::subHomeDir\fP"
+.PP
+The home directory of the submitter. 
+.PP
+.SS "char* \fBjobModLog::inFile\fP"
+.PP
+The input file name. 
+.PP
+.SS "char* \fBjobModLog::outFile\fP"
+.PP
+The output file name. 
+.PP
+.SS "char* \fBjobModLog::errFile\fP"
+.PP
+The error output file name. 
+.PP
+.SS "char* \fBjobModLog::command\fP"
+.PP
+Command description - this is really a job description field. 
+.PP
+.SS "char* \fBjobModLog::inFileSpool\fP"
+.PP
+Job spool input file. 
+.PP
+.SS "char* \fBjobModLog::commandSpool\fP"
+.PP
+Job spool command file. 
+.PP
+.SS "int \fBjobModLog::chkpntPeriod\fP"
+.PP
+The checkpointing period. 
+.PP
+.SS "char* \fBjobModLog::chkpntDir\fP"
+.PP
+The checkpoint directory. 
+.PP
+.SS "int \fBjobModLog::nxf\fP"
+.PP
+The number of files to transfer. 
+.PP
+.SS "struct \fBxFile\fP* \fBjobModLog::xf\fP"
+.PP
+The array of file transfer specifications. 
+.PP
+(The \fBxFile\fP structure is defined in <lsf/lsbatch.h>) 
+.SS "char* \fBjobModLog::jobFile\fP"
+.PP
+The job file name: If == '\\0', indicate let mbatchd make up name, otherwise, mbatchd will use given name. 
+.PP
+It is '\\0' if it is a regular job,non-nil means it is a restart job. 
+.SS "char* \fBjobModLog::fromHost\fP"
+.PP
+The submission host name. 
+.PP
+.SS "char* \fBjobModLog::cwd\fP"
+.PP
+The current working directory. 
+.PP
+.SS "char* \fBjobModLog::preExecCmd\fP"
+.PP
+The pre-execution command. 
+.PP
+.SS "char* \fBjobModLog::mailUser\fP"
+.PP
+User option mail string. 
+.PP
+.SS "char* \fBjobModLog::projectName\fP"
+.PP
+Project name for the job; used for accounting purposes. 
+.PP
+.SS "int \fBjobModLog::niosPort\fP"
+.PP
+NIOS callback port to be used for interactive jobs. 
+.PP
+.SS "int \fBjobModLog::maxNumProcessors\fP"
+.PP
+Maximum number of processors. 
+.PP
+.SS "char* \fBjobModLog::loginShell\fP"
+.PP
+The login shell specified by user. 
+.PP
+.SS "char* \fBjobModLog::schedHostType\fP"
+.PP
+Restart job's submission host type. 
+.PP
+.SS "char* \fBjobModLog::userGroup\fP"
+.PP
+The user group name for this job. 
+.PP
+.SS "char* \fBjobModLog::exceptList\fP"
+.PP
+List of job exception conditions. 
+.PP
+.SS "int \fBjobModLog::userPriority\fP"
+.PP
+User priority. 
+.PP
+.SS "char* \fBjobModLog::rsvId\fP"
+.PP
+Advance reservation ID. 
+.PP
+.SS "char* \fBjobModLog::extsched\fP"
+.PP
+External scheduling options. 
+.PP
+.SS "int \fBjobModLog::warningTimePeriod\fP"
+.PP
+Job warning time period in seconds; -1 if unspecified. 
+.PP
+.SS "char* \fBjobModLog::warningAction\fP"
+.PP
+Job warning action: SIGNAL | CHKPNT | command; NULL if unspecified. 
+.PP
+.SS "char* \fBjobModLog::jobGroup\fP"
+.PP
+The job group under which the job runs. 
+.PP
+.SS "char* \fBjobModLog::sla\fP"
+.PP
+SLA service class name under which the job runs. 
+.PP
+.SS "char* \fBjobModLog::licenseProject\fP"
+.PP
+LSF License Scheduler project name. 
+.PP
+.SS "int \fBjobModLog::options3\fP"
+.PP
+Extended bitwise inclusive OR of options flags. 
+.PP
+see \fBlsb_submit\fP. 
+.SS "int \fBjobModLog::delOptions3\fP"
+.PP
+Extended delete options in options3 field. 
+.PP
+
+.SS "char* \fBjobModLog::app\fP"
+.PP
+Application profile under which the job runs. 
+.PP
+
+.SS "char* \fBjobModLog::apsString\fP"
+.PP
+Absolute priority scheduling string set by administrators to denote static system APS value or ADMIN factor APS value. 
+.PP
+.SS "char* \fBjobModLog::postExecCmd\fP"
+.PP
+Post-execution commands. 
+.PP
+
+.SS "int \fBjobModLog::runtimeEstimation\fP"
+.PP
+Runtime estimate. 
+.PP
+
+.SS "char* \fBjobModLog::requeueEValues\fP"
+.PP
+Job-level requeue exit values. 
+.PP
+
+.SS "int \fBjobModLog::initChkpntPeriod\fP"
+.PP
+Initial checkpoint period. 
+.PP
+.SS "int \fBjobModLog::migThreshold\fP"
+.PP
+Job migration threshold. 
+.PP
+
+.SS "char* \fBjobModLog::notifyCmd\fP"
+.PP
+Resize notify command. 
+.PP
+.SS "char* \fBjobModLog::jobDescription\fP"
+.PP
+Job description. 
+.PP
+
+.SS "struct \fBsubmit_ext\fP* \fBjobModLog::submitExt\fP"
+.PP
+For new options in future. 
+.PP
+.SS "char* \fBjobModLog::srcCluster\fP"
+.PP
+source cluster name 
+.PP
+.SS "LS_LONG_INT \fBjobModLog::srcJobId\fP"
+.PP
+source job ID 
+.PP
+.SS "char* \fBjobModLog::dstCluster\fP"
+.PP
+target cluster name 
+.PP
+.SS "LS_LONG_INT \fBjobModLog::dstJobId\fP"
+.PP
+target job ID 
+.PP
+.SS "int \fBjobModLog::options4\fP"
+.PP
+Extended bitwise inclusive OR of options flags. 
+.PP
+see \fBlsb_submit\fP. 
+.SS "int \fBjobModLog::delOptions4\fP"
+.PP
+Extended delete options in options4 field. 
+.PP
+
+.SS "int \fBjobModLog::numAskedClusters\fP"
+.PP
+The number of clusters considered for dispatching this job. 
+.PP
+.SS "char** \fBjobModLog::askedClusters\fP"
+.PP
+List of asked clusters. 
+.PP
+.SS "int \fBjobModLog::rmtJobCtrlStage\fP"
+.PP
+Remote job modification stage. 
+.PP
+.SS "int \fBjobModLog::numRmtCtrlResult\fP"
+.PP
+The number of remote job modification session which is generated by this modify request. 
+.PP
+0 means no remote control session 
+.SS "struct rmtJobCtrlRecord* \fBjobModLog::rmtCtrlResult\fP"
+.PP
+remote job modifcation records 
+.PP
+.SS "char* \fBjobModLog::outdir\fP"
+.PP
+Job output directory. 
+.PP
+
+.SS "char* \fBjobModLog::dcTmpls\fP"
+.PP
+Dynamic Cluster templates. 
+.PP
+.SS "char* \fBjobModLog::dcVmActions\fP"
+.PP
+Dynamic Cluster VM actions. 
+.PP
+.SS "char* \fBjobModLog::allocHostfilePath\fP"
+.PP
+user specified allocation hostfile path 
+.PP
+.SS "int \fBjobModLog::nStinFile\fP"
+.PP
+< user specified allocation hosts 
+.PP
+Number of files requested for stage in 
+.SS "struct \fBstinfile\fP* \fBjobModLog::stinFile\fP"
+.PP
+Array of files requested for stage in. 
+.PP
+.SS "char* \fBjobModLog::dataGrp\fP"
+.PP
+Data group name to be used when cache permissions is set to group. 
+.PP
+.SS "int \fBjobModLog::numRmtCtrlResult2\fP"
+.PP
+The number of remote job modification session which is generated by this modify request. 
+.PP
+0 means no remote control session 
+.SS "struct rmtJobCtrlRecord2* \fBjobModLog::rmtCtrlResult2\fP"
+.PP
+remote job modifcation records 
+.PP
+.SS "LS_LONG_INT \fBjobModLog::rLimits64\fP[LSF_RLIM_NLIMITS]"
+.PP
+The limits over INT_MAX (2^31-1) are stored here. 
+.PP
+The -1 means there is no limit over INT_MAX for the resource. 
+.SS "int \fBjobModLog::numExcludeUsrGroups\fP"
+.PP
+The number of excluded fairshare user groups specified in bsub -G. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jobStartLog \- logged in lsb.events when a job is started.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBjobId\fP"
+.br
+.ti -1c
+.RI "int \fBjStatus\fP"
+.br
+.ti -1c
+.RI "int \fBjobPid\fP"
+.br
+.ti -1c
+.RI "int \fBjobPGid\fP"
+.br
+.ti -1c
+.RI "float \fBhostFactor\fP"
+.br
+.ti -1c
+.RI "int \fBnumExHosts\fP"
+.br
+.ti -1c
+.RI "char ** \fBexecHosts\fP"
+.br
+.ti -1c
+.RI "char * \fBqueuePreCmd\fP"
+.br
+.ti -1c
+.RI "char * \fBqueuePostCmd\fP"
+.br
+.ti -1c
+.RI "int \fBjFlags\fP"
+.br
+.ti -1c
+.RI "char * \fBuserGroup\fP"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.ti -1c
+.RI "char * \fBadditionalInfo\fP"
+.br
+.ti -1c
+.RI "int \fBduration4PreemptBackfill\fP"
+.br
+.ti -1c
+.RI "int \fBjFlags2\fP"
+.br
+.ti -1c
+.RI "char * \fBeffectiveResReq\fP"
+.br
+.ti -1c
+.RI "char * \fBsrcCluster\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT \fBsrcJobId\fP"
+.br
+.ti -1c
+.RI "char * \fBdstCluster\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT \fBdstJobId\fP"
+.br
+.ti -1c
+.RI "int \fBnum_network\fP"
+.br
+.ti -1c
+.RI "struct \fBnetworkAlloc\fP * \fBnetworkAlloc\fP"
+.br
+.ti -1c
+.RI "struct affinityJobData * \fBaffinity\fP"
+.br
+.ti -1c
+.RI "int \fBnextStatusNo\fP"
+.br
+.ti -1c
+.RI "int \fBcombinedCpuFrequency\fP"
+.br
+.ti -1c
+.RI "int \fBnumAllocSlots\fP"
+.br
+.ti -1c
+.RI "char ** \fBallocSlots\fP"
+.br
+.ti -1c
+.RI "int \fBineligiblePendTime\fP"
+.br
+.ti -1c
+.RI "int \fBfirstEstJobStartTime\fP"
+.br
+.ti -1c
+.RI "int \fBdispatchSeq\fP"
+.br
+.ti -1c
+.RI "time_t \fBdispatchTimeStamp\fP"
+.br
+.ti -1c
+.RI "time_t \fBeffectiveRunTime\fP"
+.br
+.ti -1c
+.RI "time_t \fBeffectiveRunLimit\fP"
+.br
+.ti -1c
+.RI "char ** \fBstorageInfoV\fP"
+.br
+.ti -1c
+.RI "struct \fBkeyVal\fP * \fBkvs\fP"
+.br
+.ti -1c
+.RI "char ** \fBexcludeUsrGroups\fP"
+.br
+.ti -1c
+.RI "int \fBnumExcludeUsrGroups\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+logged in lsb.events when a job is started. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBjobStartLog::jobId\fP"
+.PP
+The unique ID for the job. 
+.PP
+.SS "int \fBjobStartLog::jStatus\fP"
+.PP
+The status of the job (see \fBlsb_readjobinfo\fP ). 
+.PP
+.SS "int \fBjobStartLog::jobPid\fP"
+.PP
+The job process ID. 
+.PP
+.SS "int \fBjobStartLog::jobPGid\fP"
+.PP
+The job process group ID. 
+.PP
+.SS "float \fBjobStartLog::hostFactor\fP"
+.PP
+The CPU factor of the first execution host. 
+.PP
+.SS "int \fBjobStartLog::numExHosts\fP"
+.PP
+The number of processors used for execution. 
+.PP
+.SS "char** \fBjobStartLog::execHosts\fP"
+.PP
+The array of execution host names. 
+.PP
+.SS "char* \fBjobStartLog::queuePreCmd\fP"
+.PP
+Pre-execution command defined in the queue. 
+.PP
+.SS "char* \fBjobStartLog::queuePostCmd\fP"
+.PP
+Post-execution command defined in the queue. 
+.PP
+.SS "int \fBjobStartLog::jFlags\fP"
+.PP
+Job processing flags. 
+.PP
+.SS "char* \fBjobStartLog::userGroup\fP"
+.PP
+The user group name for this job. 
+.PP
+.SS "int \fBjobStartLog::idx\fP"
+.PP
+Job array index; must be 0 in JOB_NEW. 
+.PP
+.SS "char* \fBjobStartLog::additionalInfo\fP"
+.PP
+Placement information of LSF jobs. 
+.PP
+.SS "int \fBjobStartLog::duration4PreemptBackfill\fP"
+.PP
+How long a backfilled job can run; used for preemption backfill jobs. 
+.PP
+.SS "int \fBjobStartLog::jFlags2\fP"
+.PP
+Job Flags2. 
+.PP
+.SS "char* \fBjobStartLog::effectiveResReq\fP"
+.PP
+Effective resreq which scheduler used to dispatch job. 
+.PP
+.SS "char* \fBjobStartLog::srcCluster\fP"
+.PP
+source cluster name 
+.PP
+.SS "LS_LONG_INT \fBjobStartLog::srcJobId\fP"
+.PP
+source job ID 
+.PP
+.SS "char* \fBjobStartLog::dstCluster\fP"
+.PP
+target cluster name 
+.PP
+.SS "LS_LONG_INT \fBjobStartLog::dstJobId\fP"
+.PP
+target job ID 
+.PP
+.SS "int \fBjobStartLog::num_network\fP"
+.PP
+allocated PE network number 
+.PP
+.SS "struct \fBnetworkAlloc\fP* \fBjobStartLog::networkAlloc\fP"
+.PP
+PE network allocation. 
+.PP
+
+.SS "struct affinityJobData* \fBjobStartLog::affinity\fP"
+.PP
+affinity allocation information 
+.PP
+.SS "int \fBjobStartLog::nextStatusNo\fP"
+.PP
+next status number for statusUpd in MC/XL 
+.PP
+.SS "int \fBjobStartLog::combinedCpuFrequency\fP"
+.PP
+combined cpu frequency 
+.PP
+.SS "int \fBjobStartLog::numAllocSlots\fP"
+.PP
+The number of slots allocated to job. 
+.PP
+
+.SS "char** \fBjobStartLog::allocSlots\fP"
+.PP
+The array of names of hosts representing allocated slots to job. 
+.PP
+
+.SS "int \fBjobStartLog::ineligiblePendTime\fP"
+.PP
+total ineligible pend time for a job 
+.PP
+.SS "int \fBjobStartLog::firstEstJobStartTime\fP"
+.PP
+The first estimate job start time after mbatchd started. 
+.PP
+.SS "int \fBjobStartLog::dispatchSeq\fP"
+.PP
+The sequence number for dispatching the job. 
+.PP
+.SS "time_t \fBjobStartLog::dispatchTimeStamp\fP"
+.PP
+The time stamp for dispatching the job. 
+.PP
+.SS "time_t \fBjobStartLog::effectiveRunTime\fP"
+.PP
+effective estimated job run time 
+.PP
+.SS "time_t \fBjobStartLog::effectiveRunLimit\fP"
+.PP
+effective job run limit 
+.PP
+.SS "char** \fBjobStartLog::storageInfoV\fP"
+.PP
+storage staging information 
+.PP
+.SS "struct \fBkeyVal\fP* \fBjobStartLog::kvs\fP"
+.PP
+< The number of key-value pair 
+.PP
+.SS "char** \fBjobStartLog::excludeUsrGroups\fP"
+.PP
+< The key-value pair 
+.PP
+.SS "int \fBjobStartLog::numExcludeUsrGroups\fP"
+.PP
+The number of excluded fairshare user groups specified in bsub -G. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jobStartAcceptLog \- logged in lsb.events when a job start request is accepted.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBjobId\fP"
+.br
+.ti -1c
+.RI "int \fBjobPid\fP"
+.br
+.ti -1c
+.RI "int \fBjobPGid\fP"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.ti -1c
+.RI "char * \fBsrcCluster\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT \fBsrcJobId\fP"
+.br
+.ti -1c
+.RI "char * \fBdstCluster\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT \fBdstJobId\fP"
+.br
+.ti -1c
+.RI "int \fBnextStatusNo\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+logged in lsb.events when a job start request is accepted. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBjobStartAcceptLog::jobId\fP"
+.PP
+The unique ID for the job. 
+.PP
+.SS "int \fBjobStartAcceptLog::jobPid\fP"
+.PP
+The job process ID. 
+.PP
+.SS "int \fBjobStartAcceptLog::jobPGid\fP"
+.PP
+The job process group ID. 
+.PP
+.SS "int \fBjobStartAcceptLog::idx\fP"
+.PP
+Job array index; must be 0 in JOB_NEW. 
+.PP
+.SS "char* \fBjobStartAcceptLog::srcCluster\fP"
+.PP
+source cluster name 
+.PP
+.SS "LS_LONG_INT \fBjobStartAcceptLog::srcJobId\fP"
+.PP
+source job ID 
+.PP
+.SS "char* \fBjobStartAcceptLog::dstCluster\fP"
+.PP
+target cluster name 
+.PP
+.SS "LS_LONG_INT \fBjobStartAcceptLog::dstJobId\fP"
+.PP
+target job ID 
+.PP
+.SS "int \fBjobStartAcceptLog::nextStatusNo\fP"
+.PP
+next status number for statusUpd in MC/XL 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jobExecuteLog \- logged in lsb.events when a job is executed.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBjobId\fP"
+.br
+.ti -1c
+.RI "int \fBexecUid\fP"
+.br
+.ti -1c
+.RI "char * \fBexecHome\fP"
+.br
+.ti -1c
+.RI "char * \fBexecCwd\fP"
+.br
+.ti -1c
+.RI "int \fBjobPGid\fP"
+.br
+.ti -1c
+.RI "char * \fBexecUsername\fP"
+.br
+.ti -1c
+.RI "int \fBjobPid\fP"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.ti -1c
+.RI "char * \fBadditionalInfo\fP"
+.br
+.ti -1c
+.RI "int \fBSLAscaledRunLimit\fP"
+.br
+.ti -1c
+.RI "int \fBposition\fP"
+.br
+.ti -1c
+.RI "char * \fBexecRusage\fP"
+.br
+.ti -1c
+.RI "int \fBduration4PreemptBackfill\fP"
+.br
+.ti -1c
+.RI "char * \fBsrcCluster\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT \fBsrcJobId\fP"
+.br
+.ti -1c
+.RI "char * \fBdstCluster\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT \fBdstJobId\fP"
+.br
+.ti -1c
+.RI "char * \fBoutdir\fP"
+.br
+.ti -1c
+.RI "int \fBnextStatusNo\fP"
+.br
+.ti -1c
+.RI "char ** \fBstorageInfoV\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+logged in lsb.events when a job is executed. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBjobExecuteLog::jobId\fP"
+.PP
+The unique ID for the job. 
+.PP
+.SS "int \fBjobExecuteLog::execUid\fP"
+.PP
+User ID under which the job is running. 
+.PP
+.SS "char* \fBjobExecuteLog::execHome\fP"
+.PP
+Home directory of the user denoted by execUid. 
+.PP
+.SS "char* \fBjobExecuteLog::execCwd\fP"
+.PP
+Current working directory where job is running. 
+.PP
+.SS "int \fBjobExecuteLog::jobPGid\fP"
+.PP
+The job process group ID. 
+.PP
+.SS "char* \fBjobExecuteLog::execUsername\fP"
+.PP
+User name under which the job is running. 
+.PP
+.SS "int \fBjobExecuteLog::jobPid\fP"
+.PP
+The job process ID. 
+.PP
+.SS "int \fBjobExecuteLog::idx\fP"
+.PP
+Job array index; must be 0 in JOB_NEW. 
+.PP
+.SS "char* \fBjobExecuteLog::additionalInfo\fP"
+.PP
+Placement information of LSF jobs. 
+.PP
+.SS "int \fBjobExecuteLog::SLAscaledRunLimit\fP"
+.PP
+The run limit scaled by the exec host. 
+.PP
+.SS "int \fBjobExecuteLog::position\fP"
+.PP
+The position of the job. 
+.PP
+.SS "char* \fBjobExecuteLog::execRusage\fP"
+.PP
+The rusage satisfied at job runtime. 
+.PP
+.SS "int \fBjobExecuteLog::duration4PreemptBackfill\fP"
+.PP
+The duration for preemptive backfill class in seconds. 
+.PP
+.SS "char* \fBjobExecuteLog::srcCluster\fP"
+.PP
+source cluster name 
+.PP
+.SS "LS_LONG_INT \fBjobExecuteLog::srcJobId\fP"
+.PP
+source job ID 
+.PP
+.SS "char* \fBjobExecuteLog::dstCluster\fP"
+.PP
+target cluster name 
+.PP
+.SS "LS_LONG_INT \fBjobExecuteLog::dstJobId\fP"
+.PP
+target job ID 
+.PP
+.SS "char* \fBjobExecuteLog::outdir\fP"
+.PP
+output directory 
+.PP
+.SS "int \fBjobExecuteLog::nextStatusNo\fP"
+.PP
+next status number for statusUpd in MC/XL 
+.PP
+.SS "char** \fBjobExecuteLog::storageInfoV\fP"
+.PP
+storage staging information 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jobStatusLog \- Logged when a job's status is changed.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBjobId\fP"
+.br
+.ti -1c
+.RI "int \fBjStatus\fP"
+.br
+.ti -1c
+.RI "int \fBreason\fP"
+.br
+.ti -1c
+.RI "int \fBsubreasons\fP"
+.br
+.ti -1c
+.RI "float \fBcpuTime\fP"
+.br
+.ti -1c
+.RI "time_t \fBendTime\fP"
+.br
+.ti -1c
+.RI "int \fBru\fP"
+.br
+.ti -1c
+.RI "struct \fBlsfRusage\fP \fBlsfRusage\fP"
+.br
+.ti -1c
+.RI "int \fBjFlags\fP"
+.br
+.ti -1c
+.RI "int \fBexitStatus\fP"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.ti -1c
+.RI "int \fBexitInfo\fP"
+.br
+.ti -1c
+.RI "int \fBnumhRusages\fP"
+.br
+.ti -1c
+.RI "struct \fBhRusage\fP * \fBhostRusage\fP"
+.br
+.ti -1c
+.RI "long \fBmaxMem\fP"
+.br
+.ti -1c
+.RI "long \fBavgMem\fP"
+.br
+.ti -1c
+.RI "char * \fBsrcCluster\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT \fBsrcJobId\fP"
+.br
+.ti -1c
+.RI "char * \fBdstCluster\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT \fBdstJobId\fP"
+.br
+.ti -1c
+.RI "int \fBmaskedJStatus\fP"
+.br
+.ti -1c
+.RI "int \fBnextStatusNo\fP"
+.br
+.ti -1c
+.RI "int \fBineligiblePendingTime\fP"
+.br
+.ti -1c
+.RI "struct \fBjobArrayIndex\fP \fBarrayIndex\fP"
+.br
+.ti -1c
+.RI "int \fBnumGPURusages\fP"
+.br
+.ti -1c
+.RI "struct \fBgpuRusage\fP * \fBgRusage\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Logged when a job's status is changed. 
+
+Use this new data structure to parse job status log from LSF8.0 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBjobStatusLog::jobId\fP"
+.PP
+The unique ID for the job. 
+.PP
+.SS "int \fBjobStatusLog::jStatus\fP"
+.PP
+The job status (see \fBlsb_readjobinfo\fP ). 
+.PP
+.SS "int \fBjobStatusLog::reason\fP"
+.PP
+The reason the job is pending or suspended (see \fBlsb_pendreason\fP and \fBlsb_suspreason\fP ). 
+.PP
+.SS "int \fBjobStatusLog::subreasons\fP"
+.PP
+The load indices that have overloaded the host (see \fBlsb_pendreason\fP and \fBlsb_suspreason\fP ). 
+.PP
+.SS "float \fBjobStatusLog::cpuTime\fP"
+.PP
+The CPU time consumed before this event occurred. 
+.PP
+.SS "time_t \fBjobStatusLog::endTime\fP"
+.PP
+The job completion time. 
+.PP
+.SS "int \fBjobStatusLog::ru\fP"
+.PP
+Boolean indicating \fBlsfRusage\fP is logged. 
+.PP
+.SS "struct \fBlsfRusage\fP \fBjobStatusLog::lsfRusage\fP"
+.PP
+Resource usage statistics The \fBlsfRusage\fP structure is defined in <lsf/lsf.h>. 
+.PP
+Note that the availability of certain fields depends on the platform on which the sbatchd runs. The fields that do not make sense on the platform will be logged as -1.0. 
+.SS "int \fBjobStatusLog::jFlags\fP"
+.PP
+Job exit status. 
+.PP
+.SS "int \fBjobStatusLog::exitStatus\fP"
+.PP
+Job's exit status. 
+.PP
+.SS "int \fBjobStatusLog::idx\fP"
+.PP
+Job array index; must be 0 in JOB_NEW. 
+.PP
+.SS "int \fBjobStatusLog::exitInfo\fP"
+.PP
+Job termination reason, see <lsf/lsbatch.h>. 
+.PP
+.SS "int \fBjobStatusLog::numhRusages\fP"
+.PP
+The number of host based rusage entries, only logged in case of JOB_STAT_DONE/JOB_STAT_EXIT. 
+.PP
+.SS "struct \fBhRusage\fP* \fBjobStatusLog::hostRusage\fP"
+.PP
+Host based rusage list, one item per host, only logged in case of JOB_STAT_DONE/JOB_STAT_EXIT. 
+.PP
+.SS "long \fBjobStatusLog::maxMem\fP"
+.PP
+job maximum memory usage 
+.PP
+.SS "long \fBjobStatusLog::avgMem\fP"
+.PP
+job average memory usage 
+.PP
+.SS "char* \fBjobStatusLog::srcCluster\fP"
+.PP
+source cluster name 
+.PP
+.SS "LS_LONG_INT \fBjobStatusLog::srcJobId\fP"
+.PP
+source job ID 
+.PP
+.SS "char* \fBjobStatusLog::dstCluster\fP"
+.PP
+target cluster name 
+.PP
+.SS "LS_LONG_INT \fBjobStatusLog::dstJobId\fP"
+.PP
+target job ID 
+.PP
+.SS "int \fBjobStatusLog::maskedJStatus\fP"
+.PP
+masked jStatus by MASK_INT_JOB_STAT 
+.PP
+.SS "int \fBjobStatusLog::nextStatusNo\fP"
+.PP
+next status number for statusUpd in MC/XL 
+.PP
+.SS "int \fBjobStatusLog::ineligiblePendingTime\fP"
+.PP
+ineligible pending for a done/exit job 
+.PP
+.SS "struct \fBjobArrayIndex\fP \fBjobStatusLog::arrayIndex\fP"
+.PP
+Array index ranges. 
+.PP
+.SS "int \fBjobStatusLog::numGPURusages\fP"
+.PP
+The number of host based GPU rusage record. 
+.PP
+.SS "struct \fBgpuRusage\fP* \fBjobStatusLog::gRusage\fP"
+.PP
+Array of host based GPU rusage record. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+sbdJobStatusLog \- logged when a job's status is changed  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBjobId\fP"
+.br
+.ti -1c
+.RI "int \fBjStatus\fP"
+.br
+.ti -1c
+.RI "int \fBreasons\fP"
+.br
+.ti -1c
+.RI "int \fBsubreasons\fP"
+.br
+.ti -1c
+.RI "int \fBactPid\fP"
+.br
+.ti -1c
+.RI "int \fBactValue\fP"
+.br
+.ti -1c
+.RI "time_t \fBactPeriod\fP"
+.br
+.ti -1c
+.RI "int \fBactFlags\fP"
+.br
+.ti -1c
+.RI "int \fBactStatus\fP"
+.br
+.ti -1c
+.RI "int \fBactReasons\fP"
+.br
+.ti -1c
+.RI "int \fBactSubReasons\fP"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.ti -1c
+.RI "int \fBsigValue\fP"
+.br
+.ti -1c
+.RI "int \fBexitInfo\fP"
+.br
+.ti -1c
+.RI "int \fBnumhRusages\fP"
+.br
+.ti -1c
+.RI "struct \fBhRusage\fP * \fBhostRusage\fP"
+.br
+.ti -1c
+.RI "int \fBpreExecTime\fP"
+.br
+.ti -1c
+.RI "int \fBjobPid\fP"
+.br
+.ti -1c
+.RI "time_t \fBsubmitTime\fP"
+.br
+.ti -1c
+.RI "time_t \fBdispTimeStamp\fP"
+.br
+.ti -1c
+.RI "int \fBcommonFlags\fP"
+.br
+.ti -1c
+.RI "int \fBlastCnrCmdPid\fP"
+.br
+.ti -1c
+.RI "int \fBjobExtraInfo\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+logged when a job's status is changed 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBsbdJobStatusLog::jobId\fP"
+.PP
+The unique ID for the job. 
+.PP
+.SS "int \fBsbdJobStatusLog::jStatus\fP"
+.PP
+The status of the job (see \fBlsb_readjobinfo\fP). 
+.PP
+.SS "int \fBsbdJobStatusLog::reasons\fP"
+.PP
+The reason the job is pending or suspended (See \fBlsb_pendreason\fP and \fBlsb_suspreason\fP). 
+.PP
+.SS "int \fBsbdJobStatusLog::subreasons\fP"
+.PP
+The load indices that have overloaded the host (See \fBlsb_pendreason\fP and \fBlsb_suspreason\fP). 
+.PP
+.SS "int \fBsbdJobStatusLog::actPid\fP"
+.PP
+Action process ID. 
+.PP
+.SS "int \fBsbdJobStatusLog::actValue\fP"
+.PP
+Action Value SIG_CHKPNT | SIG_CHKPNT_COPY | SIG_WARNING. 
+.PP
+.SS "time_t \fBsbdJobStatusLog::actPeriod\fP"
+.PP
+Action period. 
+.PP
+.SS "int \fBsbdJobStatusLog::actFlags\fP"
+.PP
+Action flag. 
+.PP
+.SS "int \fBsbdJobStatusLog::actStatus\fP"
+.PP
+Action logging status. 
+.PP
+.SS "int \fBsbdJobStatusLog::actReasons\fP"
+.PP
+Action Reason SUSP_MBD_LOCK | SUSP_USER_STOP | SUSP_USER_RESUME | SUSP_SBD_STARTUP. 
+.PP
+.SS "int \fBsbdJobStatusLog::actSubReasons\fP"
+.PP
+Sub Reason SUB_REASON_RUNLIMIT | SUB_REASON_DEADLINE |SUB_REASON_PROCESSLIMIT | SUB_REASON_MEMLIMIT |SUB_REASON_CPULIMIT. 
+.PP
+.SS "int \fBsbdJobStatusLog::idx\fP"
+.PP
+Job array index; must be 0 in JOB_NEW. 
+.PP
+.SS "int \fBsbdJobStatusLog::sigValue\fP"
+.PP
+The signal value. 
+.PP
+.SS "int \fBsbdJobStatusLog::exitInfo\fP"
+.PP
+The termination reason of a job. 
+.PP
+.SS "int \fBsbdJobStatusLog::numhRusages\fP"
+.PP
+The number of host based rusage entries, only logged in case of JOB_STAT_DONE/JOB_STAT_EXIT. 
+.PP
+.SS "struct \fBhRusage\fP* \fBsbdJobStatusLog::hostRusage\fP"
+.PP
+Host based rusage list, one per host, only logged in case of JOB_STAT_DONE/JOB_STAT_EXIT. 
+.PP
+.SS "int \fBsbdJobStatusLog::preExecTime\fP"
+.PP
+Job's pre-execution time>. 
+.PP
+.SS "int \fBsbdJobStatusLog::jobPid\fP"
+.PP
+Save pid, pgid for killing process. 
+.PP
+.SS "time_t \fBsbdJobStatusLog::submitTime\fP"
+.PP
+Build jobFile string to check the argument of process. 
+.PP
+.SS "time_t \fBsbdJobStatusLog::dispTimeStamp\fP"
+.PP
+For killing CGroup stuffs. 
+.PP
+.SS "int \fBsbdJobStatusLog::commonFlags\fP"
+.PP
+The common flag. 
+.PP
+.SS "int \fBsbdJobStatusLog::lastCnrCmdPid\fP"
+.PP
+The pid of the last process who execute the container command. 
+.PP
+.SS "int \fBsbdJobStatusLog::jobExtraInfo\fP"
+.PP
+Job's extra information. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+sbdUnreportedStatusLog \- job status that we could send to MBD  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBjobId\fP"
+.br
+.ti -1c
+.RI "int \fBactPid\fP"
+.br
+.ti -1c
+.RI "int \fBjobPid\fP"
+.br
+.ti -1c
+.RI "int \fBjobPGid\fP"
+.br
+.ti -1c
+.RI "int \fBnewStatus\fP"
+.br
+.ti -1c
+.RI "int \fBreason\fP"
+.br
+.ti -1c
+.RI "int \fBsubreasons\fP"
+.br
+.ti -1c
+.RI "struct \fBlsfRusage\fP \fBlsfRusage\fP"
+.br
+.ti -1c
+.RI "int \fBexecUid\fP"
+.br
+.ti -1c
+.RI "int \fBexitStatus\fP"
+.br
+.ti -1c
+.RI "char * \fBexecCwd\fP"
+.br
+.ti -1c
+.RI "char * \fBexecHome\fP"
+.br
+.ti -1c
+.RI "char * \fBexecUsername\fP"
+.br
+.ti -1c
+.RI "int \fBmsgId\fP"
+.br
+.ti -1c
+.RI "struct \fBjRusage\fP \fBrunRusage\fP"
+.br
+.ti -1c
+.RI "int \fBsigValue\fP"
+.br
+.ti -1c
+.RI "int \fBactStatus\fP"
+.br
+.ti -1c
+.RI "int \fBseq\fP"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.ti -1c
+.RI "int \fBexitInfo\fP"
+.br
+.ti -1c
+.RI "int \fBnumhRusages\fP"
+.br
+.ti -1c
+.RI "struct \fBhRusage\fP * \fBhostRusage\fP"
+.br
+.ti -1c
+.RI "long \fBmaxMem\fP"
+.br
+.ti -1c
+.RI "long \fBavgMem\fP"
+.br
+.ti -1c
+.RI "char * \fBoutdir\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+job status that we could send to MBD 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBsbdUnreportedStatusLog::jobId\fP"
+.PP
+The unique ID for the job. 
+.PP
+.SS "int \fBsbdUnreportedStatusLog::actPid\fP"
+.PP
+Action process ID. 
+.PP
+.SS "int \fBsbdUnreportedStatusLog::jobPid\fP"
+.PP
+The job process ID. 
+.PP
+.SS "int \fBsbdUnreportedStatusLog::jobPGid\fP"
+.PP
+The job process group ID. 
+.PP
+.SS "int \fBsbdUnreportedStatusLog::newStatus\fP"
+.PP
+New status of the job. 
+.PP
+.SS "int \fBsbdUnreportedStatusLog::reason\fP"
+.PP
+Pending or suspending reason code. 
+.PP
+.SS "int \fBsbdUnreportedStatusLog::subreasons\fP"
+.PP
+Pending or suspending subreason code. 
+.PP
+.SS "struct \fBlsfRusage\fP \fBsbdUnreportedStatusLog::lsfRusage\fP"
+.PP
+Resource usage information for the job (see \fBjobFinishLog\fP). 
+.PP
+.SS "int \fBsbdUnreportedStatusLog::execUid\fP"
+.PP
+User ID under which the job is running. 
+.PP
+.SS "int \fBsbdUnreportedStatusLog::exitStatus\fP"
+.PP
+Job exit status. 
+.PP
+.SS "char* \fBsbdUnreportedStatusLog::execCwd\fP"
+.PP
+Current working directory where job is running. 
+.PP
+.SS "char* \fBsbdUnreportedStatusLog::execHome\fP"
+.PP
+Home directory of the user denoted by execUid. 
+.PP
+.SS "char* \fBsbdUnreportedStatusLog::execUsername\fP"
+.PP
+User name under which the job is running. 
+.PP
+.SS "int \fBsbdUnreportedStatusLog::msgId\fP"
+.PP
+Message index. 
+.PP
+.SS "struct \fBjRusage\fP \fBsbdUnreportedStatusLog::runRusage\fP"
+.PP
+Job's resource usage. 
+.PP
+.SS "int \fBsbdUnreportedStatusLog::sigValue\fP"
+.PP
+Signal value. 
+.PP
+.SS "int \fBsbdUnreportedStatusLog::actStatus\fP"
+.PP
+Action logging status. 
+.PP
+.SS "int \fBsbdUnreportedStatusLog::seq\fP"
+.PP
+Sequence status of the job. 
+.PP
+.SS "int \fBsbdUnreportedStatusLog::idx\fP"
+.PP
+Job array index. 
+.PP
+.SS "int \fBsbdUnreportedStatusLog::exitInfo\fP"
+.PP
+The termination reason of a job. 
+.PP
+.SS "int \fBsbdUnreportedStatusLog::numhRusages\fP"
+.PP
+The number of host based rusage entries, only logged in case of JOB_STAT_DONE/JOB_STAT_EXIT. 
+.PP
+.SS "struct \fBhRusage\fP* \fBsbdUnreportedStatusLog::hostRusage\fP"
+.PP
+Host based rusage list, one per host, only logged in case of JOB_STAT_DONE/JOB_STAT_EXIT. 
+.PP
+.SS "long \fBsbdUnreportedStatusLog::maxMem\fP"
+.PP
+job maximum memory usage 
+.PP
+.SS "long \fBsbdUnreportedStatusLog::avgMem\fP"
+.PP
+job average memory usage 
+.PP
+.SS "char* \fBsbdUnreportedStatusLog::outdir\fP"
+.PP
+output directory 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jobSwitchLog \- logged when a job is switched to another queue  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBuserId\fP"
+.br
+.ti -1c
+.RI "int \fBjobId\fP"
+.br
+.ti -1c
+.RI "char \fBqueue\fP [MAX_LSB_NAME_LEN]"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.ti -1c
+.RI "char \fBuserName\fP [MAX_LSB_NAME_LEN]"
+.br
+.ti -1c
+.RI "char * \fBsrcCluster\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT \fBsrcJobId\fP"
+.br
+.ti -1c
+.RI "char * \fBdstCluster\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT \fBdstJobId\fP"
+.br
+.ti -1c
+.RI "int \fBrmtJobCtrlStage\fP"
+.br
+.ti -1c
+.RI "int \fBnumRmtCtrlResult\fP"
+.br
+.ti -1c
+.RI "struct rmtJobCtrlRecord * \fBrmtCtrlResult\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+logged when a job is switched to another queue 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBjobSwitchLog::userId\fP"
+.PP
+The user ID of the submitter. 
+.PP
+.SS "int \fBjobSwitchLog::jobId\fP"
+.PP
+The unique ID of the job. 
+.PP
+.SS "char \fBjobSwitchLog::queue\fP[MAX_LSB_NAME_LEN]"
+.PP
+The name of the queue the job has been switched to. 
+.PP
+.SS "int \fBjobSwitchLog::idx\fP"
+.PP
+Job array index; must be 0 in JOB_NEW. 
+.PP
+.SS "char \fBjobSwitchLog::userName\fP[MAX_LSB_NAME_LEN]"
+.PP
+The name of the submitter. 
+.PP
+.SS "char* \fBjobSwitchLog::srcCluster\fP"
+.PP
+source cluster name 
+.PP
+.SS "LS_LONG_INT \fBjobSwitchLog::srcJobId\fP"
+.PP
+source job ID 
+.PP
+.SS "char* \fBjobSwitchLog::dstCluster\fP"
+.PP
+target cluster name 
+.PP
+.SS "LS_LONG_INT \fBjobSwitchLog::dstJobId\fP"
+.PP
+target job ID 
+.PP
+.SS "int \fBjobSwitchLog::rmtJobCtrlStage\fP"
+.PP
+The stage of remote job switch. 
+.PP
+.SS "int \fBjobSwitchLog::numRmtCtrlResult\fP"
+.PP
+The number of remote job switch record. 
+.PP
+.SS "struct rmtJobCtrlRecord* \fBjobSwitchLog::rmtCtrlResult\fP"
+.PP
+The record of each remote job switch session. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jobMoveLog \- logged when a job is moved to another position  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBuserId\fP"
+.br
+.ti -1c
+.RI "int \fBjobId\fP"
+.br
+.ti -1c
+.RI "int \fBposition\fP"
+.br
+.ti -1c
+.RI "int \fBbase\fP"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.ti -1c
+.RI "char \fBuserName\fP [MAX_LSB_NAME_LEN]"
+.br
+.ti -1c
+.RI "int \fBrmtJobCtrlStage\fP"
+.br
+.ti -1c
+.RI "int \fBnumRmtCtrlResult\fP"
+.br
+.ti -1c
+.RI "struct rmtJobCtrlRecord * \fBrmtCtrlResult\fP"
+.br
+.ti -1c
+.RI "struct \fBjobArrayIndex\fP \fBarrayIndex\fP"
+.br
+.ti -1c
+.RI "int \fBnumRmtCtrlResult2\fP"
+.br
+.ti -1c
+.RI "struct rmtJobCtrlRecord2 * \fBrmtCtrlResult2\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+logged when a job is moved to another position 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBjobMoveLog::userId\fP"
+.PP
+The user ID of the submitter. 
+.PP
+.SS "int \fBjobMoveLog::jobId\fP"
+.PP
+The unique ID of the job. 
+.PP
+.SS "int \fBjobMoveLog::position\fP"
+.PP
+The new position of the job. 
+.PP
+.SS "int \fBjobMoveLog::base\fP"
+.PP
+The operation code for the move (see \fBlsb_movejob\fP). 
+.PP
+.SS "int \fBjobMoveLog::idx\fP"
+.PP
+Job array index; must be 0 in JOB_NEW. 
+.PP
+.SS "char \fBjobMoveLog::userName\fP[MAX_LSB_NAME_LEN]"
+.PP
+The name of the submitter. 
+.PP
+.SS "int \fBjobMoveLog::rmtJobCtrlStage\fP"
+.PP
+The stage of remote job move handling process. 
+.PP
+.SS "int \fBjobMoveLog::numRmtCtrlResult\fP"
+.PP
+The number of records for remote job move handling. 
+.PP
+.SS "struct rmtJobCtrlRecord* \fBjobMoveLog::rmtCtrlResult\fP"
+.PP
+Remote job move result. 
+.PP
+.SS "struct \fBjobArrayIndex\fP \fBjobMoveLog::arrayIndex\fP"
+.PP
+job array index 
+.PP
+.SS "int \fBjobMoveLog::numRmtCtrlResult2\fP"
+.PP
+The number of records for remote job move handling. 
+.PP
+.SS "struct rmtJobCtrlRecord2* \fBjobMoveLog::rmtCtrlResult2\fP"
+.PP
+Remote job move result. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+chkpntLog \- check point log.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBjobId\fP"
+.br
+.ti -1c
+.RI "time_t \fBperiod\fP"
+.br
+.ti -1c
+.RI "int \fBpid\fP"
+.br
+.ti -1c
+.RI "int \fBok\fP"
+.br
+.ti -1c
+.RI "int \fBflags\fP"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.ti -1c
+.RI "char * \fBsrcCluster\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT \fBsrcJobId\fP"
+.br
+.ti -1c
+.RI "char * \fBdstCluster\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT \fBdstJobId\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+check point log. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBchkpntLog::jobId\fP"
+.PP
+The unique ID of the job. 
+.PP
+.SS "time_t \fBchkpntLog::period\fP"
+.PP
+The new checkpointing period. 
+.PP
+.SS "int \fBchkpntLog::pid\fP"
+.PP
+The process ID of the checkpointing process (a child sbatchd). 
+.PP
+.SS "int \fBchkpntLog::ok\fP"
+.PP
+0: checkpoint started; 1: checkpoint succeeded 
+.PP
+.SS "int \fBchkpntLog::flags\fP"
+.PP
+One of the following: 
+.br
+ LSB_CHKPNT_KILL : Kill process if checkpoint successful 
+.br
+ LSB_CHKPNT_FORCE : Force checkpoint even if non-checkpointable conditions exist 
+.br
+ LSB_CHKPNT_MIG : Checkpoint for the purpose of migration. 
+.PP
+.SS "int \fBchkpntLog::idx\fP"
+.PP
+Job array index; must be 0 in JOB_NEW. 
+.PP
+.SS "char* \fBchkpntLog::srcCluster\fP"
+.PP
+source cluster name 
+.PP
+.SS "LS_LONG_INT \fBchkpntLog::srcJobId\fP"
+.PP
+source job ID 
+.PP
+.SS "char* \fBchkpntLog::dstCluster\fP"
+.PP
+target cluster name 
+.PP
+.SS "LS_LONG_INT \fBchkpntLog::dstJobId\fP"
+.PP
+target job ID 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jobRequeueLog \- job requeue log.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBjobId\fP"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.ti -1c
+.RI "int \fBjobStatus\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+job requeue log. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBjobRequeueLog::jobId\fP"
+.PP
+The unique ID of the job. 
+.PP
+.SS "int \fBjobRequeueLog::idx\fP"
+.PP
+Job array index; must be 0 in JOB_NEW. 
+.PP
+.SS "int \fBjobRequeueLog::jobStatus\fP"
+.PP
+The status of the job. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jobCleanLog \- job clean log.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBjobId\fP"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.ti -1c
+.RI "struct \fBjobArrayIndex\fP \fBarrayIndex\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+job clean log. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBjobCleanLog::jobId\fP"
+.PP
+The unique ID for the job. 
+.PP
+.SS "int \fBjobCleanLog::idx\fP"
+.PP
+Job array index; must be 0 in JOB_NEW. 
+.PP
+.SS "struct \fBjobArrayIndex\fP \fBjobCleanLog::arrayIndex\fP"
+.PP
+Array index ranges. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jobExceptionLog \- job exception log.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBjobId\fP"
+.br
+.ti -1c
+.RI "int \fBexceptMask\fP"
+.br
+.ti -1c
+.RI "int \fBactMask\fP"
+.br
+.ti -1c
+.RI "time_t \fBtimeEvent\fP"
+.br
+.ti -1c
+.RI "int \fBexceptInfo\fP"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+job exception log. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBjobExceptionLog::jobId\fP"
+.PP
+The unique ID for the job. 
+.PP
+.SS "int \fBjobExceptionLog::exceptMask\fP"
+.PP
+Job exception handling mask. 
+.PP
+.SS "int \fBjobExceptionLog::actMask\fP"
+.PP
+Action Id (kill | alarm | rerun | setexcept). 
+.PP
+.SS "time_t \fBjobExceptionLog::timeEvent\fP"
+.PP
+Time event string. 
+.PP
+.SS "int \fBjobExceptionLog::exceptInfo\fP"
+.PP
+Except Info, pending reason for missched or cantrun exception, the exit code of the job for the abend exception, otherwise 0. 
+.PP
+
+.SS "int \fBjobExceptionLog::idx\fP"
+.PP
+Job array index; must be 0 in JOB_NEW. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+sigactLog \- signal action log.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBjobId\fP"
+.br
+.ti -1c
+.RI "time_t \fBperiod\fP"
+.br
+.ti -1c
+.RI "int \fBpid\fP"
+.br
+.ti -1c
+.RI "int \fBjStatus\fP"
+.br
+.ti -1c
+.RI "int \fBreasons\fP"
+.br
+.ti -1c
+.RI "int \fBflags\fP"
+.br
+.ti -1c
+.RI "char * \fBsignalSymbol\fP"
+.br
+.ti -1c
+.RI "int \fBactStatus\fP"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.ti -1c
+.RI "int \fBrmtJobCtrlStage\fP"
+.br
+.ti -1c
+.RI "int \fBnumRmtCtrlResult\fP"
+.br
+.ti -1c
+.RI "struct rmtJobCtrlRecord * \fBrmtCtrlResult\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+signal action log. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBsigactLog::jobId\fP"
+.PP
+The unique ID of the job. 
+.PP
+.SS "time_t \fBsigactLog::period\fP"
+.PP
+Action period. 
+.PP
+.SS "int \fBsigactLog::pid\fP"
+.PP
+Action process ID. 
+.PP
+.SS "int \fBsigactLog::jStatus\fP"
+.PP
+Job status. 
+.PP
+.SS "int \fBsigactLog::reasons\fP"
+.PP
+Pending reasons. 
+.PP
+.SS "int \fBsigactLog::flags\fP"
+.PP
+Action flag. 
+.PP
+.SS "char* \fBsigactLog::signalSymbol\fP"
+.PP
+Signal symbol from the set: DELETEJOB | KILL | KILLREQUEUE |REQUEUE_DONE | REQUEUE_EXIT | REQUEUE_PEND |REQUEUE_PSUSP_ADMIN | REQUEUE_PSUSP_USER | SIG_CHKPNT | SIG_CHKPNT_COPY. 
+.PP
+.SS "int \fBsigactLog::actStatus\fP"
+.PP
+Action logging status (ACT_NO | ACT_START | ACT_PREEMPT | ACT_DONE | ACT_FAIL) .Shown in signal_action. 
+.PP
+.SS "int \fBsigactLog::idx\fP"
+.PP
+Job array index; must be 0 in JOB_NEW. 
+.PP
+.SS "int \fBsigactLog::rmtJobCtrlStage\fP"
+.PP
+Remote job control stage. 
+.PP
+.SS "int \fBsigactLog::numRmtCtrlResult\fP"
+.PP
+The number of remote control session info in this record. 
+.PP
+
+.SS "struct rmtJobCtrlRecord* \fBsigactLog::rmtCtrlResult\fP"
+.PP
+Remote job control result. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+migLog \- migration log.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBjobId\fP"
+.br
+.ti -1c
+.RI "int \fBnumAskedHosts\fP"
+.br
+.ti -1c
+.RI "char ** \fBaskedHosts\fP"
+.br
+.ti -1c
+.RI "int \fBuserId\fP"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.ti -1c
+.RI "char \fBuserName\fP [MAX_LSB_NAME_LEN]"
+.br
+.ti -1c
+.RI "char * \fBsrcCluster\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT \fBsrcJobId\fP"
+.br
+.ti -1c
+.RI "char * \fBdstCluster\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT \fBdstJobId\fP"
+.br
+.ti -1c
+.RI "int \fBsigFlag\fP"
+.br
+.ti -1c
+.RI "int \fBacAction\fP"
+.br
+.ti -1c
+.RI "char * \fBacActionStr\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+migration log. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBmigLog::jobId\fP"
+.PP
+The job to be migrated. 
+.PP
+.SS "int \fBmigLog::numAskedHosts\fP"
+.PP
+The number of candidate hosts for migration. 
+.PP
+.SS "char** \fBmigLog::askedHosts\fP"
+.PP
+The array of candidate host names. 
+.PP
+.SS "int \fBmigLog::userId\fP"
+.PP
+The user ID of the submitter. 
+.PP
+.SS "int \fBmigLog::idx\fP"
+.PP
+Job array index; must be 0 in JOB_NEW. 
+.PP
+.SS "char \fBmigLog::userName\fP[MAX_LSB_NAME_LEN]"
+.PP
+The user name of the submitter. 
+.PP
+.SS "char* \fBmigLog::srcCluster\fP"
+.PP
+source cluster name 
+.PP
+.SS "LS_LONG_INT \fBmigLog::srcJobId\fP"
+.PP
+source job ID 
+.PP
+.SS "char* \fBmigLog::dstCluster\fP"
+.PP
+target cluster name 
+.PP
+.SS "LS_LONG_INT \fBmigLog::dstJobId\fP"
+.PP
+target job ID 
+.PP
+.SS "int \fBmigLog::sigFlag\fP"
+.PP
+Signal flags. 
+.PP
+.SS "int \fBmigLog::acAction\fP"
+.PP
+Dynamic Cluster provision action. 
+.PP
+.SS "char* \fBmigLog::acActionStr\fP"
+.PP
+Dynamic Cluster migration action string. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+signalLog \- signal log.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBuserId\fP"
+.br
+.ti -1c
+.RI "int \fBjobId\fP"
+.br
+.ti -1c
+.RI "char * \fBsignalSymbol\fP"
+.br
+.ti -1c
+.RI "int \fBrunCount\fP"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.ti -1c
+.RI "char \fBuserName\fP [MAX_LSB_NAME_LEN]"
+.br
+.ti -1c
+.RI "char * \fBsrcCluster\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT \fBsrcJobId\fP"
+.br
+.ti -1c
+.RI "char * \fBdstCluster\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT \fBdstJobId\fP"
+.br
+.ti -1c
+.RI "struct \fBjobArrayIndex\fP \fBarrayIndex\fP"
+.br
+.ti -1c
+.RI "int \fBjStatus\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+signal log. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBsignalLog::userId\fP"
+.PP
+The user ID of the submitter. 
+.PP
+.SS "int \fBsignalLog::jobId\fP"
+.PP
+The unique ID of the job. 
+.PP
+.SS "char* \fBsignalLog::signalSymbol\fP"
+.PP
+Signal symbol from the set: DELETEJOB | KILL | KILLREQUEUE |REQUEUE_DONE | REQUEUE_EXIT | REQUEUE_PEND |REQUEUE_PSUSP_ADMIN | REQUEUE_PSUSP_USER | SIG_CHKPNT | SIG_CHKPNT_COPY. 
+.PP
+.SS "int \fBsignalLog::runCount\fP"
+.PP
+The number of running times. 
+.PP
+.SS "int \fBsignalLog::idx\fP"
+.PP
+Job array index; must be 0 in JOB_NEW. 
+.PP
+.SS "char \fBsignalLog::userName\fP[MAX_LSB_NAME_LEN]"
+.PP
+The name of the submitter. 
+.PP
+.SS "char* \fBsignalLog::srcCluster\fP"
+.PP
+source cluster name 
+.PP
+.SS "LS_LONG_INT \fBsignalLog::srcJobId\fP"
+.PP
+source job ID 
+.PP
+.SS "char* \fBsignalLog::dstCluster\fP"
+.PP
+target cluster name 
+.PP
+.SS "LS_LONG_INT \fBsignalLog::dstJobId\fP"
+.PP
+target job ID 
+.PP
+.SS "struct \fBjobArrayIndex\fP \fBsignalLog::arrayIndex\fP"
+.PP
+Array index ranges. 
+.PP
+.SS "int \fBsignalLog::jStatus\fP"
+.PP
+Job status. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+queueCtrlLog \- logged when bqc command is invoked.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBopCode\fP"
+.br
+.ti -1c
+.RI "char \fBqueue\fP [MAX_LSB_NAME_LEN]"
+.br
+.ti -1c
+.RI "int \fBuserId\fP"
+.br
+.ti -1c
+.RI "char \fBuserName\fP [MAX_LSB_NAME_LEN]"
+.br
+.ti -1c
+.RI "char \fBmessage\fP [MAXLINELEN]"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+logged when bqc command is invoked. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBqueueCtrlLog::opCode\fP"
+.PP
+The queue control operation (see \fBlsb_queuecontrol\fP). 
+.PP
+.SS "char \fBqueueCtrlLog::queue\fP[MAX_LSB_NAME_LEN]"
+.PP
+The name of the queue. 
+.PP
+.SS "int \fBqueueCtrlLog::userId\fP"
+.PP
+The user ID of the submitter. 
+.PP
+.SS "char \fBqueueCtrlLog::userName\fP[MAX_LSB_NAME_LEN]"
+.PP
+The name of the submitter. 
+.PP
+.SS "char \fBqueueCtrlLog::message\fP[MAXLINELEN]"
+.PP
+Queue control message. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+hostCtrlLog \- log the host control information.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBopCode\fP"
+.br
+.ti -1c
+.RI "char \fBhost\fP [MAXHOSTNAMELEN]"
+.br
+.ti -1c
+.RI "int \fBuserId\fP"
+.br
+.ti -1c
+.RI "char \fBuserName\fP [MAX_LSB_NAME_LEN]"
+.br
+.ti -1c
+.RI "char \fBmessage\fP [MAXLINELEN]"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+log the host control information. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBhostCtrlLog::opCode\fP"
+.PP
+The host control operation (See \fBlsb_hostcontrol\fP). 
+.PP
+.SS "char \fBhostCtrlLog::host\fP[MAXHOSTNAMELEN]"
+.PP
+The name of the host. 
+.PP
+.SS "int \fBhostCtrlLog::userId\fP"
+.PP
+The user ID of the submitter. 
+.PP
+.SS "char \fBhostCtrlLog::userName\fP[MAX_LSB_NAME_LEN]"
+.PP
+The name of the submitter. 
+.PP
+.SS "char \fBhostCtrlLog::message\fP[MAXLINELEN]"
+.PP
+Host control message. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+hgCtrlLog \- logged when dynamic hosts are added to group.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBopCode\fP"
+.br
+.ti -1c
+.RI "char \fBhost\fP [MAXHOSTNAMELEN]"
+.br
+.ti -1c
+.RI "char \fBgrpname\fP [MAXHOSTNAMELEN]"
+.br
+.ti -1c
+.RI "int \fBuserId\fP"
+.br
+.ti -1c
+.RI "char \fBuserName\fP [MAX_LSB_NAME_LEN]"
+.br
+.ti -1c
+.RI "char \fBmessage\fP [MAXLINELEN]"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+logged when dynamic hosts are added to group. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBhgCtrlLog::opCode\fP"
+.PP
+The host control operation (see \fBlsb_hostcontrol\fP). 
+.PP
+.SS "char \fBhgCtrlLog::host\fP[MAXHOSTNAMELEN]"
+.PP
+The name of the host. 
+.PP
+.SS "char \fBhgCtrlLog::grpname\fP[MAXHOSTNAMELEN]"
+.PP
+The name of the host group. 
+.PP
+.SS "int \fBhgCtrlLog::userId\fP"
+.PP
+The user ID of the submitter. 
+.PP
+.SS "char \fBhgCtrlLog::userName\fP[MAX_LSB_NAME_LEN]"
+.PP
+The name of the submitter. 
+.PP
+.SS "char \fBhgCtrlLog::message\fP[MAXLINELEN]"
+.PP
+Host group control message. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+mbdStartLog \- mbatchd start log.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char \fBmaster\fP [MAXHOSTNAMELEN]"
+.br
+.ti -1c
+.RI "char \fBcluster\fP [MAXLSFNAMELEN]"
+.br
+.ti -1c
+.RI "int \fBnumHosts\fP"
+.br
+.ti -1c
+.RI "int \fBnumQueues\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+mbatchd start log. 
+.SH "Field Documentation"
+.PP 
+.SS "char \fBmbdStartLog::master\fP[MAXHOSTNAMELEN]"
+.PP
+The master host name. 
+.PP
+.SS "char \fBmbdStartLog::cluster\fP[MAXLSFNAMELEN]"
+.PP
+The cluster name. 
+.PP
+.SS "int \fBmbdStartLog::numHosts\fP"
+.PP
+The number of hosts in the cluster. 
+.PP
+.SS "int \fBmbdStartLog::numQueues\fP"
+.PP
+The number of queues in the cluster. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+mbdDieLog \- mbatchd die log.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char \fBmaster\fP [MAXHOSTNAMELEN]"
+.br
+.ti -1c
+.RI "int \fBnumRemoveJobs\fP"
+.br
+.ti -1c
+.RI "int \fBexitCode\fP"
+.br
+.ti -1c
+.RI "char \fBmessage\fP [MAXLINELEN]"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+mbatchd die log. 
+.SH "Field Documentation"
+.PP 
+.SS "char \fBmbdDieLog::master\fP[MAXHOSTNAMELEN]"
+.PP
+The master host name. 
+.PP
+.SS "int \fBmbdDieLog::numRemoveJobs\fP"
+.PP
+The number of finished jobs that have been removed from the system and logged in the current event file. 
+.PP
+.SS "int \fBmbdDieLog::exitCode\fP"
+.PP
+The exit code from the master batch daemon. 
+.PP
+.SS "char \fBmbdDieLog::message\fP[MAXLINELEN]"
+.PP
+mbatchd administrator control message 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+unfulfillLog \- logged before mbatchd dies.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBjobId\fP"
+.br
+.ti -1c
+.RI "int \fBnotSwitched\fP"
+.br
+.ti -1c
+.RI "int \fBsig\fP"
+.br
+.ti -1c
+.RI "int \fBsig1\fP"
+.br
+.ti -1c
+.RI "int \fBsig1Flags\fP"
+.br
+.ti -1c
+.RI "time_t \fBchkPeriod\fP"
+.br
+.ti -1c
+.RI "int \fBnotModified\fP"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.ti -1c
+.RI "int \fBmiscOpts4PendSig\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+logged before mbatchd dies. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBunfulfillLog::jobId\fP"
+.PP
+The job ID. 
+.PP
+
+.SS "int \fBunfulfillLog::notSwitched\fP"
+.PP
+The mbatchd has switched the job to a new queue but the sbatchd has not been informed of the switch. 
+.PP
+.SS "int \fBunfulfillLog::sig\fP"
+.PP
+This signal was not sent to the job. 
+.PP
+.SS "int \fBunfulfillLog::sig1\fP"
+.PP
+The job was not signaled to checkpoint itself. 
+.PP
+.SS "int \fBunfulfillLog::sig1Flags\fP"
+.PP
+Checkpoint flags. 
+.PP
+see the \fBchkpntLog\fP structure below. 
+.SS "time_t \fBunfulfillLog::chkPeriod\fP"
+.PP
+The new checkpoint period for the job. 
+.PP
+.SS "int \fBunfulfillLog::notModified\fP"
+.PP
+Flag for bmod running job's parameters. 
+.PP
+.SS "int \fBunfulfillLog::idx\fP"
+.PP
+Job array index. 
+.PP
+.SS "int \fBunfulfillLog::miscOpts4PendSig\fP"
+.PP
+Option flags for pending job signals. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jobFinishLog \- logged in lsb.acct when a job finished.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBjobId\fP"
+.br
+.ti -1c
+.RI "int \fBuserId\fP"
+.br
+.ti -1c
+.RI "char \fBuserName\fP [MAX_LSB_NAME_LEN]"
+.br
+.ti -1c
+.RI "int \fBoptions\fP"
+.br
+.ti -1c
+.RI "int \fBnumProcessors\fP"
+.br
+.ti -1c
+.RI "int \fBjStatus\fP"
+.br
+.ti -1c
+.RI "time_t \fBsubmitTime\fP"
+.br
+.ti -1c
+.RI "time_t \fBbeginTime\fP"
+.br
+.ti -1c
+.RI "time_t \fBtermTime\fP"
+.br
+.ti -1c
+.RI "time_t \fBstartTime\fP"
+.br
+.ti -1c
+.RI "time_t \fBendTime\fP"
+.br
+.ti -1c
+.RI "char \fBqueue\fP [MAX_LSB_NAME_LEN]"
+.br
+.ti -1c
+.RI "char * \fBresReq\fP"
+.br
+.ti -1c
+.RI "char \fBfromHost\fP [MAXHOSTNAMELEN]"
+.br
+.ti -1c
+.RI "char * \fBcwd\fP"
+.br
+.ti -1c
+.RI "char * \fBinFile\fP"
+.br
+.ti -1c
+.RI "char * \fBoutFile\fP"
+.br
+.ti -1c
+.RI "char * \fBerrFile\fP"
+.br
+.ti -1c
+.RI "char * \fBinFileSpool\fP"
+.br
+.ti -1c
+.RI "char * \fBcommandSpool\fP"
+.br
+.ti -1c
+.RI "char * \fBjobFile\fP"
+.br
+.ti -1c
+.RI "int \fBnumAskedHosts\fP"
+.br
+.ti -1c
+.RI "char ** \fBaskedHosts\fP"
+.br
+.ti -1c
+.RI "float \fBhostFactor\fP"
+.br
+.ti -1c
+.RI "int \fBnumExHosts\fP"
+.br
+.ti -1c
+.RI "char ** \fBexecHosts\fP"
+.br
+.ti -1c
+.RI "float \fBcpuTime\fP"
+.br
+.ti -1c
+.RI "char * \fBjobName\fP"
+.br
+.ti -1c
+.RI "char * \fBcommand\fP"
+.br
+.ti -1c
+.RI "struct \fBlsfRusage\fP \fBlsfRusage\fP"
+.br
+.ti -1c
+.RI "char * \fBdependCond\fP"
+.br
+.ti -1c
+.RI "char * \fBtimeEvent\fP"
+.br
+.ti -1c
+.RI "char * \fBpreExecCmd\fP"
+.br
+.ti -1c
+.RI "char * \fBmailUser\fP"
+.br
+.ti -1c
+.RI "char * \fBprojectName\fP"
+.br
+.ti -1c
+.RI "int \fBexitStatus\fP"
+.br
+.ti -1c
+.RI "int \fBmaxNumProcessors\fP"
+.br
+.ti -1c
+.RI "char * \fBloginShell\fP"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.ti -1c
+.RI "long \fBmaxRMem\fP"
+.br
+.ti -1c
+.RI "long \fBmaxRSwap\fP"
+.br
+.ti -1c
+.RI "char * \fBrsvId\fP"
+.br
+.ti -1c
+.RI "char * \fBsla\fP"
+.br
+.ti -1c
+.RI "int \fBexceptMask\fP"
+.br
+.ti -1c
+.RI "char * \fBadditionalInfo\fP"
+.br
+.ti -1c
+.RI "int \fBexitInfo\fP"
+.br
+.ti -1c
+.RI "int \fBwarningTimePeriod\fP"
+.br
+.ti -1c
+.RI "char * \fBwarningAction\fP"
+.br
+.ti -1c
+.RI "char * \fBchargedSAAP\fP"
+.br
+.ti -1c
+.RI "char * \fBlicenseProject\fP"
+.br
+.ti -1c
+.RI "char * \fBapp\fP"
+.br
+.ti -1c
+.RI "char * \fBpostExecCmd\fP"
+.br
+.ti -1c
+.RI "int \fBruntimeEstimation\fP"
+.br
+.ti -1c
+.RI "char * \fBjgroup\fP"
+.br
+.ti -1c
+.RI "int \fBoptions2\fP"
+.br
+.ti -1c
+.RI "char * \fBrequeueEValues\fP"
+.br
+.ti -1c
+.RI "char * \fBnotifyCmd\fP"
+.br
+.ti -1c
+.RI "time_t \fBlastResizeTime\fP"
+.br
+.ti -1c
+.RI "char * \fBjobDescription\fP"
+.br
+.ti -1c
+.RI "struct \fBsubmit_ext\fP * \fBsubmitExt\fP"
+.br
+.ti -1c
+.RI "int \fBnumhRusages\fP"
+.br
+.ti -1c
+.RI "struct \fBhRusage\fP * \fBhostRusage\fP"
+.br
+.ti -1c
+.RI "long \fBavgMem\fP"
+.br
+.ti -1c
+.RI "char * \fBeffectiveResReq\fP"
+.br
+.ti -1c
+.RI "char * \fBsrcCluster\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT \fBsrcJobId\fP"
+.br
+.ti -1c
+.RI "char * \fBdstCluster\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT \fBdstJobId\fP"
+.br
+.ti -1c
+.RI "time_t \fBforwardTime\fP"
+.br
+.ti -1c
+.RI "int \fBrunLimit\fP"
+.br
+.ti -1c
+.RI "int \fBoptions3\fP"
+.br
+.ti -1c
+.RI "int \fBacJobWaitTime\fP"
+.br
+.ti -1c
+.RI "int \fBtotalProvisionTime\fP"
+.br
+.ti -1c
+.RI "char * \fBoutdir\fP"
+.br
+.ti -1c
+.RI "int \fBrunTime\fP"
+.br
+.ti -1c
+.RI "char * \fBsubcwd\fP"
+.br
+.ti -1c
+.RI "int \fBnum_network\fP"
+.br
+.ti -1c
+.RI "struct \fBnetworkAlloc\fP * \fBnetworkAlloc\fP"
+.br
+.ti -1c
+.RI "struct affinityJobData * \fBaffinity\fP"
+.br
+.ti -1c
+.RI "double \fBserial_job_energy\fP"
+.br
+.ti -1c
+.RI "double \fBcpi\fP"
+.br
+.ti -1c
+.RI "double \fBgips\fP"
+.br
+.ti -1c
+.RI "double \fBgbs\fP"
+.br
+.ti -1c
+.RI "double \fBgflops\fP"
+.br
+.ti -1c
+.RI "char ** \fBallocSlots\fP"
+.br
+.ti -1c
+.RI "int \fBnumAllocSlots\fP"
+.br
+.ti -1c
+.RI "int \fBineligiblePendingTime\fP"
+.br
+.ti -1c
+.RI "struct \fBjobArrayIndex\fP \fBindex\fP"
+.br
+.ti -1c
+.RI "time_t \fBrequeueTime\fP"
+.br
+.ti -1c
+.RI "int \fBnumGPURusages\fP"
+.br
+.ti -1c
+.RI "struct \fBgpuRusage\fP * \fBgRusage\fP"
+.br
+.ti -1c
+.RI "char ** \fBstorageInfoV\fP"
+.br
+.ti -1c
+.RI "struct KVPair \fBfinishKVP\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+logged in lsb.acct when a job finished. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBjobFinishLog::jobId\fP"
+.PP
+The unique ID for the job. 
+.PP
+.SS "int \fBjobFinishLog::userId\fP"
+.PP
+The user ID of the submitter. 
+.PP
+.SS "char \fBjobFinishLog::userName\fP[MAX_LSB_NAME_LEN]"
+.PP
+The user name of the submitter. 
+.PP
+.SS "int \fBjobFinishLog::options\fP"
+.PP
+Job submission options (see \fBlsb_submit\fP). 
+.PP
+.SS "int \fBjobFinishLog::numProcessors\fP"
+.PP
+The number of processors requested for execution. 
+.PP
+.SS "int \fBjobFinishLog::jStatus\fP"
+.PP
+The status of the job (See \fBlsb_readjobinfo\fP). 
+.PP
+.SS "time_t \fBjobFinishLog::submitTime\fP"
+.PP
+Job submission time. 
+.PP
+.SS "time_t \fBjobFinishLog::beginTime\fP"
+.PP
+The job started at or after this time. 
+.PP
+.SS "time_t \fBjobFinishLog::termTime\fP"
+.PP
+If the job was not finished by this time, it was killed. 
+.PP
+.SS "time_t \fBjobFinishLog::startTime\fP"
+.PP
+Job dispatch time. 
+.PP
+.SS "time_t \fBjobFinishLog::endTime\fP"
+.PP
+The time the job finished. 
+.PP
+.SS "char \fBjobFinishLog::queue\fP[MAX_LSB_NAME_LEN]"
+.PP
+The name of the queue to which this job was submitted. 
+.PP
+.SS "char* \fBjobFinishLog::resReq\fP"
+.PP
+Resource requirements. 
+.PP
+.SS "char \fBjobFinishLog::fromHost\fP[MAXHOSTNAMELEN]"
+.PP
+Submission host name. 
+.PP
+.SS "char* \fBjobFinishLog::cwd\fP"
+.PP
+Current working directory. 
+.PP
+.SS "char* \fBjobFinishLog::inFile\fP"
+.PP
+Input file name. 
+.PP
+.SS "char* \fBjobFinishLog::outFile\fP"
+.PP
+Output file name. 
+.PP
+.SS "char* \fBjobFinishLog::errFile\fP"
+.PP
+Error output file name. 
+.PP
+.SS "char* \fBjobFinishLog::inFileSpool\fP"
+.PP
+Job spool input file. 
+.PP
+.SS "char* \fBjobFinishLog::commandSpool\fP"
+.PP
+Job spool command file. 
+.PP
+.SS "char* \fBjobFinishLog::jobFile\fP"
+.PP
+Job file name. 
+.PP
+.SS "int \fBjobFinishLog::numAskedHosts\fP"
+.PP
+The number of hosts considered for dispatching this job. 
+.PP
+.SS "char** \fBjobFinishLog::askedHosts\fP"
+.PP
+The array of names of hosts considered for dispatching this job. 
+.PP
+.SS "float \fBjobFinishLog::hostFactor\fP"
+.PP
+The CPU factor of the first execution host. 
+.PP
+.SS "int \fBjobFinishLog::numExHosts\fP"
+.PP
+The number of processors used for execution. 
+.PP
+.SS "char** \fBjobFinishLog::execHosts\fP"
+.PP
+The array of names of execution hosts. 
+.PP
+.SS "float \fBjobFinishLog::cpuTime\fP"
+.PP
+The total CPU time consumed by the job. 
+.PP
+.SS "char* \fBjobFinishLog::jobName\fP"
+.PP
+Job name. 
+.PP
+.SS "char* \fBjobFinishLog::command\fP"
+.PP
+Job command. 
+.PP
+.SS "struct \fBlsfRusage\fP \fBjobFinishLog::lsfRusage\fP"
+.PP
+Resource usage statistics. 
+.PP
+The \fBlsfRusage\fP structure is defined in <lsf/lsf.h>. Note that the availability of certain fields depends on the platform on which the sbatchd runs. The fields that do not make sense on this platform will be logged as -1.0. 
+.SS "char* \fBjobFinishLog::dependCond\fP"
+.PP
+The job dependency condition. 
+.PP
+.SS "char* \fBjobFinishLog::timeEvent\fP"
+.PP
+Time event string. 
+.PP
+.SS "char* \fBjobFinishLog::preExecCmd\fP"
+.PP
+The pre-execution command. 
+.PP
+.SS "char* \fBjobFinishLog::mailUser\fP"
+.PP
+Name of the user to whom job related mail was sent. 
+.PP
+.SS "char* \fBjobFinishLog::projectName\fP"
+.PP
+The project name, used for accounting purposes. 
+.PP
+
+.SS "int \fBjobFinishLog::exitStatus\fP"
+.PP
+Job's exit status. 
+.PP
+.SS "int \fBjobFinishLog::maxNumProcessors\fP"
+.PP
+Maximum number of processors specified for the job. 
+.PP
+.SS "char* \fBjobFinishLog::loginShell\fP"
+.PP
+Login shell specified by user. 
+.PP
+.SS "int \fBjobFinishLog::idx\fP"
+.PP
+Job array index. 
+.PP
+.SS "long \fBjobFinishLog::maxRMem\fP"
+.PP
+Maximum memory used by job. 
+.PP
+.SS "long \fBjobFinishLog::maxRSwap\fP"
+.PP
+Maximum swap used by job. 
+.PP
+.SS "char* \fBjobFinishLog::rsvId\fP"
+.PP
+Advanced reservation ID. 
+.PP
+.SS "char* \fBjobFinishLog::sla\fP"
+.PP
+Service class of the job. 
+.PP
+.SS "int \fBjobFinishLog::exceptMask\fP"
+.PP
+Job exception handling mask. 
+.PP
+.SS "char* \fBjobFinishLog::additionalInfo\fP"
+.PP
+Placement information of LSF jobs. 
+.PP
+.SS "int \fBjobFinishLog::exitInfo\fP"
+.PP
+Job termination reason, see <lsf/lsbatch.h>. 
+.PP
+.SS "int \fBjobFinishLog::warningTimePeriod\fP"
+.PP
+Job warning time period in seconds; -1 if unspecified. 
+.PP
+.SS "char* \fBjobFinishLog::warningAction\fP"
+.PP
+Warning action, SIGNAL | CHKPNT | command, NULL if unspecified. 
+.PP
+.SS "char* \fBjobFinishLog::chargedSAAP\fP"
+.PP
+SAAP charged for job. 
+.PP
+.SS "char* \fBjobFinishLog::licenseProject\fP"
+.PP
+LSF License Scheduler project name. 
+.PP
+.SS "char* \fBjobFinishLog::app\fP"
+.PP
+Application profile under which the job runs. 
+.PP
+
+.SS "char* \fBjobFinishLog::postExecCmd\fP"
+.PP
+Post-execution commands. 
+.PP
+
+.SS "int \fBjobFinishLog::runtimeEstimation\fP"
+.PP
+Runtime estimate specified. 
+.PP
+
+.SS "char* \fBjobFinishLog::jgroup\fP"
+.PP
+Job group name. 
+.PP
+.SS "int \fBjobFinishLog::options2\fP"
+.PP
+Option2. 
+.PP
+.SS "char* \fBjobFinishLog::requeueEValues\fP"
+.PP
+Job requeue exit values. 
+.PP
+.SS "char* \fBjobFinishLog::notifyCmd\fP"
+.PP
+Resize notify command. 
+.PP
+.SS "time_t \fBjobFinishLog::lastResizeTime\fP"
+.PP
+Last resize start time. 
+.PP
+.SS "char* \fBjobFinishLog::jobDescription\fP"
+.PP
+Job description. 
+.PP
+
+.SS "struct \fBsubmit_ext\fP* \fBjobFinishLog::submitExt\fP"
+.PP
+For new options in future. 
+.PP
+.SS "int \fBjobFinishLog::numhRusages\fP"
+.PP
+The number of host based rusages. 
+.PP
+.SS "struct \fBhRusage\fP* \fBjobFinishLog::hostRusage\fP"
+.PP
+The list of host based rusages. 
+.PP
+.SS "long \fBjobFinishLog::avgMem\fP"
+.PP
+job average memory usage 
+.PP
+.SS "char* \fBjobFinishLog::effectiveResReq\fP"
+.PP
+Effective resreq which scheduler used to dispatch job. 
+.PP
+.SS "char* \fBjobFinishLog::srcCluster\fP"
+.PP
+source cluster name 
+.PP
+.SS "LS_LONG_INT \fBjobFinishLog::srcJobId\fP"
+.PP
+source job ID 
+.PP
+.SS "char* \fBjobFinishLog::dstCluster\fP"
+.PP
+target cluster name 
+.PP
+.SS "LS_LONG_INT \fBjobFinishLog::dstJobId\fP"
+.PP
+target job ID 
+.PP
+.SS "time_t \fBjobFinishLog::forwardTime\fP"
+.PP
+Job forward time. 
+.PP
+.SS "int \fBjobFinishLog::runLimit\fP"
+.PP
+Wall clock run time limit bsub -W. 
+.PP
+.SS "int \fBjobFinishLog::options3\fP"
+.PP
+Extended bitwise inclusive OR of options flags lsb_submit_options3. 
+.PP
+
+.SS "int \fBjobFinishLog::acJobWaitTime\fP"
+.PP
+< Internal option, indicate the process manager flow id. 
+.PP
+no usage. Dynamic Cluster job total wait time for bacct summary WAIT 
+.SS "int \fBjobFinishLog::totalProvisionTime\fP"
+.PP
+Dynamic Cluster job total provision time for bacct summary. 
+.PP
+.SS "char* \fBjobFinishLog::outdir\fP"
+.PP
+The output directory. 
+.PP
+.SS "int \fBjobFinishLog::runTime\fP"
+.PP
+jData->runTime 
+.PP
+.SS "char* \fBjobFinishLog::subcwd\fP"
+.PP
+The submission current working directory. 
+.PP
+.SS "int \fBjobFinishLog::num_network\fP"
+.PP
+The number of allocated network. 
+.PP
+.SS "struct \fBnetworkAlloc\fP* \fBjobFinishLog::networkAlloc\fP"
+.PP
+Network allocation info. 
+.PP
+.SS "struct affinityJobData* \fBjobFinishLog::affinity\fP"
+.PP
+Affinity allocation info. 
+.PP
+.SS "double \fBjobFinishLog::serial_job_energy\fP"
+.PP
+Serial job energy data. 
+.PP
+.SS "double \fBjobFinishLog::cpi\fP"
+.PP
+Cycles Per Instruction. 
+.PP
+.SS "double \fBjobFinishLog::gips\fP"
+.PP
+Giga Instructions Per Second. 
+.PP
+.SS "double \fBjobFinishLog::gbs\fP"
+.PP
+Gigabytes per Second. 
+.PP
+.SS "double \fBjobFinishLog::gflops\fP"
+.PP
+Giga FLoating-point Operations Per Second. 
+.PP
+.SS "char** \fBjobFinishLog::allocSlots\fP"
+.PP
+The array of names of hosts representing allocated slots to job. 
+.PP
+
+.SS "int \fBjobFinishLog::numAllocSlots\fP"
+.PP
+The number of slots allocated to job. 
+.PP
+
+.SS "int \fBjobFinishLog::ineligiblePendingTime\fP"
+.PP
+ineligible pending for a done/exit job 
+.PP
+.SS "struct \fBjobArrayIndex\fP \fBjobFinishLog::index\fP"
+.PP
+Job array range index. 
+.PP
+.SS "time_t \fBjobFinishLog::requeueTime\fP"
+.PP
+The job's requeue time. 
+.PP
+.SS "int \fBjobFinishLog::numGPURusages\fP"
+.PP
+The number of host based GPU rusage record. 
+.PP
+.SS "struct \fBgpuRusage\fP* \fBjobFinishLog::gRusage\fP"
+.PP
+Array of host based GPU rusage record. 
+.PP
+.SS "char** \fBjobFinishLog::storageInfoV\fP"
+.PP
+storage staging information 
+.PP
+.SS "struct KVPair \fBjobFinishLog::finishKVP\fP"
+.PP
+10_1_0_8 AND LATER!!! Use this struct to handle all new entries 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+loadIndexLog \- load index log.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBnIdx\fP"
+.br
+.ti -1c
+.RI "char ** \fBname\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+load index log. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBloadIndexLog::nIdx\fP"
+.PP
+The number of load indices. 
+.PP
+.SS "char** \fBloadIndexLog::name\fP"
+.PP
+The array of load index names. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+calendarLog \- calendar log.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBoptions\fP"
+.br
+.ti -1c
+.RI "int \fBuserId\fP"
+.br
+.ti -1c
+.RI "char * \fBname\fP"
+.br
+.ti -1c
+.RI "char * \fBdesc\fP"
+.br
+.ti -1c
+.RI "char * \fBcalExpr\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+calendar log. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBcalendarLog::options\fP"
+.PP
+Reserved for future use. 
+.PP
+.SS "int \fBcalendarLog::userId\fP"
+.PP
+The user ID of the submitter. 
+.PP
+.SS "char* \fBcalendarLog::name\fP"
+.PP
+The name of the calendar. 
+.PP
+.SS "char* \fBcalendarLog::desc\fP"
+.PP
+Description. 
+.PP
+.SS "char* \fBcalendarLog::calExpr\fP"
+.PP
+Calendar expression. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jobForwardLog \- job forward log.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBjobId\fP"
+.br
+.ti -1c
+.RI "char * \fBcluster\fP"
+.br
+.ti -1c
+.RI "int \fBnumReserHosts\fP"
+.br
+.ti -1c
+.RI "char ** \fBreserHosts\fP"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.ti -1c
+.RI "int \fBjobRmtAttr\fP"
+.br
+.ti -1c
+.RI "char * \fBsrcCluster\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT \fBsrcJobId\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT \fBdstJobId\fP"
+.br
+.ti -1c
+.RI "char * \fBeffectiveResReq\fP"
+.br
+.ti -1c
+.RI "int \fBineligiblePendingTime\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+job forward log. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBjobForwardLog::jobId\fP"
+.PP
+The unique ID of the job. 
+.PP
+.SS "char* \fBjobForwardLog::cluster\fP"
+.PP
+The cluster name. 
+.PP
+.SS "int \fBjobForwardLog::numReserHosts\fP"
+.PP
+Number of Reserved Hosts. 
+.PP
+.SS "char** \fBjobForwardLog::reserHosts\fP"
+.PP
+Reserved Host Names. 
+.PP
+.SS "int \fBjobForwardLog::idx\fP"
+.PP
+Job array index; must be 0 in JOB_NEW. 
+.PP
+.SS "int \fBjobForwardLog::jobRmtAttr\fP"
+.PP
+Remote job attributes from: 
+.br
+ JOB_FORWARD Remote batch job on submission side 
+.br
+ JOB_LEASE Lease job on submission side 
+.br
+ JOB_REMOTE_BATCH Remote batch job on execution side 
+.br
+ JOB_REMOTE_LEASE Lease job on execution side 
+.br
+ JOB_LEASE_RESYNC Lease job resync during restart 
+.br
+ JOB_REMOTE_RERUNNABLE Remote batch job rerunnable on execution cluster. 
+.PP
+.SS "char* \fBjobForwardLog::srcCluster\fP"
+.PP
+source cluster name 
+.PP
+.SS "LS_LONG_INT \fBjobForwardLog::srcJobId\fP"
+.PP
+source job ID 
+.PP
+.SS "LS_LONG_INT \fBjobForwardLog::dstJobId\fP"
+.PP
+target job ID 
+.PP
+.SS "char* \fBjobForwardLog::effectiveResReq\fP"
+.PP
+Effective resreq which scheduler used to forward job. 
+.PP
+.SS "int \fBjobForwardLog::ineligiblePendingTime\fP"
+.PP
+ineligible pending time for a forwarded job 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jobAcceptLog \- job accept log.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBjobId\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT \fBremoteJid\fP"
+.br
+.ti -1c
+.RI "char * \fBcluster\fP"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.ti -1c
+.RI "int \fBjobRmtAttr\fP"
+.br
+.ti -1c
+.RI "char * \fBdstCluster\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT \fBdstJobId\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+job accept log. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBjobAcceptLog::jobId\fP"
+.PP
+The unique ID of the job. 
+.PP
+.SS "LS_LONG_INT \fBjobAcceptLog::remoteJid\fP"
+.PP
+The unique ID of the remote job. 
+.PP
+.SS "char* \fBjobAcceptLog::cluster\fP"
+.PP
+The cluster name. 
+.PP
+.SS "int \fBjobAcceptLog::idx\fP"
+.PP
+Job array index; must be 0 in JOB_NEW. 
+.PP
+.SS "int \fBjobAcceptLog::jobRmtAttr\fP"
+.PP
+Remote job attributes from: 
+.br
+ JOB_FORWARD Remote batch job on submission side 
+.br
+ JOB_LEASE Lease job on submission side 
+.br
+ JOB_REMOTE_BATCH Remote batch job on execution side 
+.br
+ JOB_REMOTE_LEASE Lease job on execution side 
+.br
+ JOB_LEASE_RESYNC Lease job resync during restart 
+.br
+ JOB_REMOTE_RERUNNABLE Remote batch job rerunnable on execution cluster. 
+.PP
+.SS "char* \fBjobAcceptLog::dstCluster\fP"
+.PP
+target cluster name 
+.PP
+.SS "LS_LONG_INT \fBjobAcceptLog::dstJobId\fP"
+.PP
+target job ID 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+statusAckLog \- status Ack log.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBjobId\fP"
+.br
+.ti -1c
+.RI "int \fBstatusNum\fP"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.ti -1c
+.RI "char * \fBsrcCluster\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT \fBsrcJobId\fP"
+.br
+.ti -1c
+.RI "char * \fBdstCluster\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT \fBdstJobId\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+status Ack log. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBstatusAckLog::jobId\fP"
+.PP
+The unique ID of the job. 
+.PP
+.SS "int \fBstatusAckLog::statusNum\fP"
+.PP
+Line number of Status. 
+.PP
+.SS "int \fBstatusAckLog::idx\fP"
+.PP
+Job array index; must be 0 in JOB_NEW. 
+.PP
+.SS "char* \fBstatusAckLog::srcCluster\fP"
+.PP
+source cluster name 
+.PP
+.SS "LS_LONG_INT \fBstatusAckLog::srcJobId\fP"
+.PP
+source job ID 
+.PP
+.SS "char* \fBstatusAckLog::dstCluster\fP"
+.PP
+target cluster name 
+.PP
+.SS "LS_LONG_INT \fBstatusAckLog::dstJobId\fP"
+.PP
+target job ID 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jobMsgLog \- job message log.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBusrId\fP"
+.br
+.ti -1c
+.RI "int \fBjobId\fP"
+.br
+.ti -1c
+.RI "int \fBmsgId\fP"
+.br
+.ti -1c
+.RI "int \fBtype\fP"
+.br
+.ti -1c
+.RI "char * \fBsrc\fP"
+.br
+.ti -1c
+.RI "char * \fBdest\fP"
+.br
+.ti -1c
+.RI "char * \fBmsg\fP"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+job message log. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBjobMsgLog::usrId\fP"
+.PP
+The user ID of the submitter. 
+.PP
+.SS "int \fBjobMsgLog::jobId\fP"
+.PP
+The unique ID for the job. 
+.PP
+.SS "int \fBjobMsgLog::msgId\fP"
+.PP
+Message index. 
+.PP
+.SS "int \fBjobMsgLog::type\fP"
+.PP
+Message type. 
+.PP
+.SS "char* \fBjobMsgLog::src\fP"
+.PP
+Message source. 
+.PP
+.SS "char* \fBjobMsgLog::dest\fP"
+.PP
+Message destination. 
+.PP
+.SS "char* \fBjobMsgLog::msg\fP"
+.PP
+Message. 
+.PP
+.SS "int \fBjobMsgLog::idx\fP"
+.PP
+Job array index; must be 0 in JOB_NEW. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jobMsgAckLog \- job message ack log.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBusrId\fP"
+.br
+.ti -1c
+.RI "int \fBjobId\fP"
+.br
+.ti -1c
+.RI "int \fBmsgId\fP"
+.br
+.ti -1c
+.RI "int \fBtype\fP"
+.br
+.ti -1c
+.RI "char * \fBsrc\fP"
+.br
+.ti -1c
+.RI "char * \fBdest\fP"
+.br
+.ti -1c
+.RI "char * \fBmsg\fP"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+job message ack log. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBjobMsgAckLog::usrId\fP"
+.PP
+The user ID of the submitter. 
+.PP
+.SS "int \fBjobMsgAckLog::jobId\fP"
+.PP
+The unique ID for the job. 
+.PP
+.SS "int \fBjobMsgAckLog::msgId\fP"
+.PP
+Message index. 
+.PP
+.SS "int \fBjobMsgAckLog::type\fP"
+.PP
+Message type. 
+.PP
+.SS "char* \fBjobMsgAckLog::src\fP"
+.PP
+Message source. 
+.PP
+.SS "char* \fBjobMsgAckLog::dest\fP"
+.PP
+Message destination. 
+.PP
+.SS "char* \fBjobMsgAckLog::msg\fP"
+.PP
+Message. 
+.PP
+.SS "int \fBjobMsgAckLog::idx\fP"
+.PP
+Job array index; must be 0 in JOB_NEW. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jobOccupyReqLog \- job occupy request log.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBuserId\fP"
+.br
+.ti -1c
+.RI "int \fBjobId\fP"
+.br
+.ti -1c
+.RI "int \fBnumOccupyRequests\fP"
+.br
+.ti -1c
+.RI "void * \fBoccupyReqList\fP"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.ti -1c
+.RI "char \fBuserName\fP [MAX_LSB_NAME_LEN]"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+job occupy request log. 
+
+\fBjobOccupyReqLog\fP is for future use. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBjobOccupyReqLog::userId\fP"
+.PP
+The user ID of the submitter. 
+.PP
+.SS "int \fBjobOccupyReqLog::jobId\fP"
+.PP
+The unique ID for the job. 
+.PP
+.SS "int \fBjobOccupyReqLog::numOccupyRequests\fP"
+.PP
+Number of Jobs Slots desired. 
+.PP
+.SS "void* \fBjobOccupyReqLog::occupyReqList\fP"
+.PP
+List of slots occupied. 
+.PP
+.SS "int \fBjobOccupyReqLog::idx\fP"
+.PP
+Job array index; must be 0 in JOB_NEW. 
+.PP
+.SS "char \fBjobOccupyReqLog::userName\fP[MAX_LSB_NAME_LEN]"
+.PP
+The name of the submitter. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jobVacatedLog \- job vacate log.jobVacatedLog is for future use.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBuserId\fP"
+.br
+.ti -1c
+.RI "int \fBjobId\fP"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.ti -1c
+.RI "char \fBuserName\fP [MAX_LSB_NAME_LEN]"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+job vacate log.jobVacatedLog is for future use. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBjobVacatedLog::userId\fP"
+.PP
+The user ID of the submitter. 
+.PP
+.SS "int \fBjobVacatedLog::jobId\fP"
+.PP
+The unique ID for the job. 
+.PP
+.SS "int \fBjobVacatedLog::idx\fP"
+.PP
+Job array index; must be 0 in JOB_NEW. 
+.PP
+.SS "char \fBjobVacatedLog::userName\fP[MAX_LSB_NAME_LEN]"
+.PP
+The name of the submitter. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jobForceRequestLog \- job force request log.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBuserId\fP"
+.br
+.ti -1c
+.RI "int \fBnumExecHosts\fP"
+.br
+.ti -1c
+.RI "char ** \fBexecHosts\fP"
+.br
+.ti -1c
+.RI "int \fBjobId\fP"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.ti -1c
+.RI "int \fBoptions\fP"
+.br
+.ti -1c
+.RI "char \fBuserName\fP [MAX_LSB_NAME_LEN]"
+.br
+.ti -1c
+.RI "char * \fBqueue\fP"
+.br
+.ti -1c
+.RI "int \fBrmtJobCtrlStage\fP"
+.br
+.ti -1c
+.RI "int \fBnumRmtCtrlResult\fP"
+.br
+.ti -1c
+.RI "struct rmtJobCtrlRecord * \fBrmtCtrlResult\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+job force request log. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBjobForceRequestLog::userId\fP"
+.PP
+The user ID of the submitter. 
+.PP
+.SS "int \fBjobForceRequestLog::numExecHosts\fP"
+.PP
+>1 for local/lease jobs; 0 for remote batch model 
+.PP
+.SS "char** \fBjobForceRequestLog::execHosts\fP"
+.PP
+The array of execution host names. 
+.PP
+.SS "int \fBjobForceRequestLog::jobId\fP"
+.PP
+The unique ID for the job. 
+.PP
+.SS "int \fBjobForceRequestLog::idx\fP"
+.PP
+Job array index; must be 0 in JOB_NEW. 
+.PP
+.SS "int \fBjobForceRequestLog::options\fP"
+.PP
+Job run options (RUNJOB_OPT_NOSTOP | JFLAG_URGENT_NOSTOP |JFLAG_URGENT). 
+.PP
+.SS "char \fBjobForceRequestLog::userName\fP[MAX_LSB_NAME_LEN]"
+.PP
+The name of the submitter. 
+.PP
+.SS "char* \fBjobForceRequestLog::queue\fP"
+.PP
+The name of the queue to which this job was submitted. 
+.PP
+.SS "int \fBjobForceRequestLog::rmtJobCtrlStage\fP"
+.PP
+Remote job control stage. 
+.PP
+.SS "int \fBjobForceRequestLog::numRmtCtrlResult\fP"
+.PP
+the number of remote control results 
+.PP
+.SS "struct rmtJobCtrlRecord* \fBjobForceRequestLog::rmtCtrlResult\fP"
+.PP
+remote control result 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jobChunkLog \- job chunck log.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "long \fBmembSize\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT * \fBmembJobId\fP"
+.br
+.ti -1c
+.RI "long \fBnumExHosts\fP"
+.br
+.ti -1c
+.RI "char ** \fBexecHosts\fP"
+.br
+.ti -1c
+.RI "int \fBnextStatusNo\fP"
+.br
+.ti -1c
+.RI "long \fBnumAllocSlots\fP"
+.br
+.ti -1c
+.RI "char ** \fBallocSlots\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+job chunck log. 
+.SH "Field Documentation"
+.PP 
+.SS "long \fBjobChunkLog::membSize\fP"
+.PP
+Size of array membJobId. 
+.PP
+.SS "LS_LONG_INT* \fBjobChunkLog::membJobId\fP"
+.PP
+Job ids of jobs in the chunk. 
+.PP
+.SS "long \fBjobChunkLog::numExHosts\fP"
+.PP
+The number of processors used for execution. 
+.PP
+.SS "char** \fBjobChunkLog::execHosts\fP"
+.PP
+The array of names of execution hosts. 
+.PP
+.SS "int \fBjobChunkLog::nextStatusNo\fP"
+.PP
+next status number for statusUpd in MC/XL 
+.PP
+.SS "long \fBjobChunkLog::numAllocSlots\fP"
+.PP
+The number of slots allocated to job. 
+.PP
+
+.SS "char** \fBjobChunkLog::allocSlots\fP"
+.PP
+The array of names of hosts representing allocated slots to job. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jobExternalMsgLog \- job external message log.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBjobId\fP"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.ti -1c
+.RI "int \fBmsgIdx\fP"
+.br
+.ti -1c
+.RI "char * \fBdesc\fP"
+.br
+.ti -1c
+.RI "int \fBuserId\fP"
+.br
+.ti -1c
+.RI "long \fBdataSize\fP"
+.br
+.ti -1c
+.RI "time_t \fBpostTime\fP"
+.br
+.ti -1c
+.RI "int \fBdataStatus\fP"
+.br
+.ti -1c
+.RI "char * \fBfileName\fP"
+.br
+.ti -1c
+.RI "char \fBuserName\fP [MAX_LSB_NAME_LEN]"
+.br
+.ti -1c
+.RI "int \fBoptions\fP"
+.br
+.ti -1c
+.RI "int \fBnextStatusNo\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+job external message log. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBjobExternalMsgLog::jobId\fP"
+.PP
+The unique ID for the job. 
+.PP
+.SS "int \fBjobExternalMsgLog::idx\fP"
+.PP
+Job array index; must be 0 in JOB_NEW. 
+.PP
+.SS "int \fBjobExternalMsgLog::msgIdx\fP"
+.PP
+The message index. 
+.PP
+.SS "char* \fBjobExternalMsgLog::desc\fP"
+.PP
+Message description. 
+.PP
+.SS "int \fBjobExternalMsgLog::userId\fP"
+.PP
+The user ID of the submitter. 
+.PP
+.SS "long \fBjobExternalMsgLog::dataSize\fP"
+.PP
+Size of the message. 
+.PP
+.SS "time_t \fBjobExternalMsgLog::postTime\fP"
+.PP
+The time the author posted the message. 
+.PP
+
+.SS "int \fBjobExternalMsgLog::dataStatus\fP"
+.PP
+The status of the message. 
+.PP
+.SS "char* \fBjobExternalMsgLog::fileName\fP"
+.PP
+Name of attached data file. 
+.PP
+If no file is attached, use NULL. 
+.SS "char \fBjobExternalMsgLog::userName\fP[MAX_LSB_NAME_LEN]"
+.PP
+The author of the message. 
+.PP
+.SS "int \fBjobExternalMsgLog::options\fP"
+.PP
+The options of \fBjobExternalMsgLog\fP The setted LSB means this external message is from local client. 
+.PP
+.SS "int \fBjobExternalMsgLog::nextStatusNo\fP"
+.PP
+next status number for statusUpd in MC/XL 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+rsvRes \- reservation request.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBresName\fP"
+.br
+.ti -1c
+.RI "int \fBcount\fP"
+.br
+.ti -1c
+.RI "int \fBusedAmt\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+reservation request. 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fBrsvRes::resName\fP"
+.PP
+Name of the resource (currently: host). 
+.PP
+.SS "int \fBrsvRes::count\fP"
+.PP
+Reserved counter (currently: cpu number). 
+.PP
+.SS "int \fBrsvRes::usedAmt\fP"
+.PP
+Used of the reserved counter (not used). 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+rsvFinishLog \- for advanced reservation.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "time_t \fBrsvReqTime\fP"
+.br
+.ti -1c
+.RI "int \fBoptions\fP"
+.br
+.ti -1c
+.RI "int \fBuid\fP"
+.br
+.ti -1c
+.RI "char * \fBrsvId\fP"
+.br
+.ti -1c
+.RI "char * \fBname\fP"
+.br
+.ti -1c
+.RI "int \fBnumReses\fP"
+.br
+.ti -1c
+.RI "struct \fBrsvRes\fP * \fBalloc\fP"
+.br
+.ti -1c
+.RI "char * \fBtimeWindow\fP"
+.br
+.ti -1c
+.RI "time_t \fBduration\fP"
+.br
+.ti -1c
+.RI "char * \fBcreator\fP"
+.br
+.ti -1c
+.RI "char * \fBrsvUnit\fP"
+.br
+.ti -1c
+.RI "char * \fBusers\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+for advanced reservation. 
+.SH "Field Documentation"
+.PP 
+.SS "time_t \fBrsvFinishLog::rsvReqTime\fP"
+.PP
+Time when the reservation is required. 
+.PP
+.SS "int \fBrsvFinishLog::options\fP"
+.PP
+Same as the options field in the struct \fBaddRsvRequest\fP(lsbatch.h). 
+.PP
+.SS "int \fBrsvFinishLog::uid\fP"
+.PP
+The user who creat the reservation. 
+.PP
+.SS "char* \fBrsvFinishLog::rsvId\fP"
+.PP
+Reservation ID. 
+.PP
+.SS "char* \fBrsvFinishLog::name\fP"
+.PP
+Client of the reservation. 
+.PP
+.SS "int \fBrsvFinishLog::numReses\fP"
+.PP
+Number of resources reserved. 
+.PP
+.SS "struct \fBrsvRes\fP* \fBrsvFinishLog::alloc\fP"
+.PP
+Allocation vector. 
+.PP
+.SS "char* \fBrsvFinishLog::timeWindow\fP"
+.PP
+Time window within which the reservation is active 
+.br
+ Two forms: time_t1-time_t2 or [day1]:hour1:0-[day2]:hour2:0. 
+.PP
+.SS "time_t \fBrsvFinishLog::duration\fP"
+.PP
+Duration in seconds. 
+.PP
+duration = to - from : when the reservation expired 
+.SS "char* \fBrsvFinishLog::creator\fP"
+.PP
+Creator of the reservation. 
+.PP
+.SS "char* \fBrsvFinishLog::rsvUnit\fP"
+.PP
+Reservation resource unit. 
+.PP
+.SS "char* \fBrsvFinishLog::users\fP"
+.PP
+Users of the reservation. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+cpuProfileLog \- CPU Profile Log.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char \fBservicePartition\fP [MAX_LSB_NAME_LEN]"
+.br
+.ti -1c
+.RI "int \fBslotsRequired\fP"
+.br
+.ti -1c
+.RI "int \fBslotsAllocated\fP"
+.br
+.ti -1c
+.RI "int \fBslotsBorrowed\fP"
+.br
+.ti -1c
+.RI "int \fBslotsLent\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+CPU Profile Log. 
+.SH "Field Documentation"
+.PP 
+.SS "char \fBcpuProfileLog::servicePartition\fP[MAX_LSB_NAME_LEN]"
+.PP
+Queue name. 
+.PP
+.SS "int \fBcpuProfileLog::slotsRequired\fP"
+.PP
+The number of CPU required. 
+.PP
+.SS "int \fBcpuProfileLog::slotsAllocated\fP"
+.PP
+The number of CPU actually allocated. 
+.PP
+.SS "int \fBcpuProfileLog::slotsBorrowed\fP"
+.PP
+The number of CPU borrowed. 
+.PP
+.SS "int \fBcpuProfileLog::slotsLent\fP"
+.PP
+The number of CPU lent. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jobRunRusageLog \- log the running rusage of a job in the lsb.stream file  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBjobid\fP"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.ti -1c
+.RI "struct \fBjRusage\fP \fBjrusage\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+log the running rusage of a job in the lsb.stream file 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBjobRunRusageLog::jobid\fP"
+.PP
+The unique ID of the job. 
+.PP
+.SS "int \fBjobRunRusageLog::idx\fP"
+.PP
+Job array index; must be 0 in JOB_NEW. 
+.PP
+.SS "struct \fBjRusage\fP \fBjobRunRusageLog::jrusage\fP"
+.PP
+jrusage 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+slaLog \- SLA event log.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBname\fP"
+.br
+.ti -1c
+.RI "char * \fBconsumer\fP"
+.br
+.ti -1c
+.RI "int \fBgoaltype\fP"
+.br
+.ti -1c
+.RI "int \fBstate\fP"
+.br
+.ti -1c
+.RI "int \fBoptimum\fP"
+.br
+.ti -1c
+.RI "int \fBcounters\fP [NUM_JGRP_COUNTERS]"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+SLA event log. 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fBslaLog::name\fP"
+.PP
+Service class name. 
+.PP
+.SS "char* \fBslaLog::consumer\fP"
+.PP
+Consumer name associated with the service class. 
+.PP
+.SS "int \fBslaLog::goaltype\fP"
+.PP
+Objectives. 
+.PP
+.SS "int \fBslaLog::state\fP"
+.PP
+The service class state (ontime, delayed). 
+.PP
+.SS "int \fBslaLog::optimum\fP"
+.PP
+Optimum number of job slots (or concurrently running jobs) needed for the service class to meet its service-level goals. 
+.PP
+.SS "int \fBslaLog::counters\fP[NUM_JGRP_COUNTERS]"
+.PP
+Job counters for the service class. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+perfmonLogInfo \- a wrap of structure \fBperfmonLog\fP for performance metrics project  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBsamplePeriod\fP"
+.br
+.ti -1c
+.RI "int * \fBmetrics\fP"
+.br
+.ti -1c
+.RI "time_t \fBstartTime\fP"
+.br
+.ti -1c
+.RI "time_t \fBlogTime\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+a wrap of structure \fBperfmonLog\fP for performance metrics project 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBperfmonLogInfo::samplePeriod\fP"
+.PP
+Sample period. 
+.PP
+.SS "int* \fBperfmonLogInfo::metrics\fP"
+.PP
+Metrics. 
+.PP
+.SS "time_t \fBperfmonLogInfo::startTime\fP"
+.PP
+Start time. 
+.PP
+.SS "time_t \fBperfmonLogInfo::logTime\fP"
+.PP
+Log time. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+perfmonLog \- performance metrics log in lsb.stream  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBsamplePeriod\fP"
+.br
+.ti -1c
+.RI "int \fBtotalQueries\fP"
+.br
+.ti -1c
+.RI "int \fBjobQuries\fP"
+.br
+.ti -1c
+.RI "int \fBqueueQuries\fP"
+.br
+.ti -1c
+.RI "int \fBhostQuries\fP"
+.br
+.ti -1c
+.RI "int \fBsubmissionRequest\fP"
+.br
+.ti -1c
+.RI "int \fBjobSubmitted\fP"
+.br
+.ti -1c
+.RI "int \fBdispatchedjobs\fP"
+.br
+.ti -1c
+.RI "int \fBjobcompleted\fP"
+.br
+.ti -1c
+.RI "int \fBjobMCSend\fP"
+.br
+.ti -1c
+.RI "int \fBjobMCReceive\fP"
+.br
+.ti -1c
+.RI "time_t \fBstartTime\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT \fBmbdFreeHandle\fP"
+.br
+.ti -1c
+.RI "int \fBmbdUsedHandle\fP"
+.br
+.ti -1c
+.RI "int \fBscheduleInterval\fP"
+.br
+.ti -1c
+.RI "int \fBhostRequirements\fP"
+.br
+.ti -1c
+.RI "int \fBjobBuckets\fP"
+.br
+.ti -1c
+.RI "int \fBjobReordered\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+performance metrics log in lsb.stream 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBperfmonLog::samplePeriod\fP"
+.PP
+Sample rate. 
+.PP
+.SS "int \fBperfmonLog::totalQueries\fP"
+.PP
+Number of Queries. 
+.PP
+.SS "int \fBperfmonLog::jobQuries\fP"
+.PP
+Number of Job Query. 
+.PP
+.SS "int \fBperfmonLog::queueQuries\fP"
+.PP
+Number of Queue Query. 
+.PP
+.SS "int \fBperfmonLog::hostQuries\fP"
+.PP
+Number of Host Query. 
+.PP
+.SS "int \fBperfmonLog::submissionRequest\fP"
+.PP
+Number of Submission Requests. 
+.PP
+.SS "int \fBperfmonLog::jobSubmitted\fP"
+.PP
+Number of Jobs Submitted. 
+.PP
+.SS "int \fBperfmonLog::dispatchedjobs\fP"
+.PP
+Number of Dispatched Jobs. 
+.PP
+.SS "int \fBperfmonLog::jobcompleted\fP"
+.PP
+Number of Job Completed. 
+.PP
+.SS "int \fBperfmonLog::jobMCSend\fP"
+.PP
+Number of MultiCluster Jobs Sent. 
+.PP
+.SS "int \fBperfmonLog::jobMCReceive\fP"
+.PP
+Number of MultiCluster Jobs Received. 
+.PP
+.SS "time_t \fBperfmonLog::startTime\fP"
+.PP
+Start Time. 
+.PP
+.SS "LS_LONG_INT \fBperfmonLog::mbdFreeHandle\fP"
+.PP
+Free MBD file descriptors. 
+.PP
+.SS "int \fBperfmonLog::mbdUsedHandle\fP"
+.PP
+Used MBD file descriptors. 
+.PP
+.SS "int \fBperfmonLog::scheduleInterval\fP"
+.PP
+Scheduling interval. 
+.PP
+.SS "int \fBperfmonLog::hostRequirements\fP"
+.PP
+Matching host criteria, unique host selection. 
+.PP
+.SS "int \fBperfmonLog::jobBuckets\fP"
+.PP
+Job buckets. 
+.PP
+.SS "int \fBperfmonLog::jobReordered\fP"
+.PP
+Number of jobs dispatched by relaxing job dispatch order. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+taskFinishLog \- task finish log.Task accounting record in ssched.acct  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "struct \fBjobFinishLog\fP \fBjobFinishLog\fP"
+.br
+.ti -1c
+.RI "int \fBtaskId\fP"
+.br
+.ti -1c
+.RI "int \fBtaskIdx\fP"
+.br
+.ti -1c
+.RI "char * \fBtaskName\fP"
+.br
+.ti -1c
+.RI "int \fBtaskOptions\fP"
+.br
+.ti -1c
+.RI "int \fBtaskExitReason\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+task finish log.Task accounting record in ssched.acct 
+.SH "Field Documentation"
+.PP 
+.SS "struct \fBjobFinishLog\fP \fBtaskFinishLog::jobFinishLog\fP"
+.PP
+Job finish event. 
+.PP
+.SS "int \fBtaskFinishLog::taskId\fP"
+.PP
+Task ID. 
+.PP
+.SS "int \fBtaskFinishLog::taskIdx\fP"
+.PP
+Task index. 
+.PP
+.SS "char* \fBtaskFinishLog::taskName\fP"
+.PP
+Name of task. 
+.PP
+.SS "int \fBtaskFinishLog::taskOptions\fP"
+.PP
+Bit mask of task options: 
+.br
+ TASK_IN_FILE (0x01)-specify input file 
+.br
+ TASK_OUT_FILE (0x02)-specify output file 
+.br
+ TASK_ERR_FILE (0x04)-specify error file 
+.br
+ TASK_PRE_EXEC (0x08)-specify pre-exec command 
+.br
+ TASK_POST_EXEC (0x10)-specify post-exec command 
+.br
+ TASK_NAME (0x20)-specify task name. 
+.PP
+.SS "int \fBtaskFinishLog::taskExitReason\fP"
+.PP
+Task Exit Reason 
+.br
+ TASK_EXIT_NORMAL = 0- normal exit 
+.br
+ TASK_EXIT_INIT = 1-generic task initialization failure 
+.br
+ TASK_EXIT_PATH = 2-failed to initialize path 
+.br
+ TASK_EXIT_NO_FILE = 3-failed to create task file 
+.br
+ TASK_EXIT_PRE_EXEC = 4- task pre-exec failed 
+.br
+ TASK_EXIT_NO_PROCESS = 5-fork failed 
+.br
+ TASK_EXIT_XDR = 6-xdr communication error 
+.br
+ TASK_EXIT_NOMEM = 7- no memory 
+.br
+ TASK_EXIT_SYS = 8-system call failed 
+.br
+ TASK_EXIT_TSCHILD_EXEC = 9-failed to run sschild 
+.br
+ TASK_EXIT_RUNLIMIT = 10-task reaches run limit 
+.br
+ TASK_EXIT_IO = 11-I/O failure 
+.br
+ TASK_EXIT_RSRC_LIMIT = 12-set task resource limit failed. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+eventEOSLog \- End of stream event.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBeos\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+End of stream event. 
+
+The stream is moved to lsb.stream.0 and a new lsb.stream is opened. Readers of lsb.stream when encounter the event EVENT_END_OF_STREAM should close and reopen the lsb.stream file. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBeventEOSLog::eos\fP"
+.PP
+Event end of stream. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jobResizeNotifyStartLog \- job resize start notify log.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBjobId\fP"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.ti -1c
+.RI "int \fBnotifyId\fP"
+.br
+.ti -1c
+.RI "int \fBnumResizeHosts\fP"
+.br
+.ti -1c
+.RI "char ** \fBresizeHosts\fP"
+.br
+.ti -1c
+.RI "int \fBflags\fP"
+.br
+.ti -1c
+.RI "int \fBnextStatusNo\fP"
+.br
+.ti -1c
+.RI "int \fBnumResizeHosts4Slots\fP"
+.br
+.ti -1c
+.RI "char ** \fBresizeHosts4Slots\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+job resize start notify log. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBjobResizeNotifyStartLog::jobId\fP"
+.PP
+JobId. 
+.PP
+.SS "int \fBjobResizeNotifyStartLog::idx\fP"
+.PP
+Index. 
+.PP
+.SS "int \fBjobResizeNotifyStartLog::notifyId\fP"
+.PP
+Notify Id. 
+.PP
+.SS "int \fBjobResizeNotifyStartLog::numResizeHosts\fP"
+.PP
+Number of resized hosts. 
+.PP
+
+.SS "char** \fBjobResizeNotifyStartLog::resizeHosts\fP"
+.PP
+Resize Hosts. 
+.PP
+.SS "int \fBjobResizeNotifyStartLog::flags\fP"
+.PP
+Flags. 
+.PP
+.SS "int \fBjobResizeNotifyStartLog::nextStatusNo\fP"
+.PP
+next status number for statusUpd in MC/XL 
+.PP
+.SS "int \fBjobResizeNotifyStartLog::numResizeHosts4Slots\fP"
+.PP
+Number of resized hosts 4 slots. 
+.PP
+.SS "char** \fBjobResizeNotifyStartLog::resizeHosts4Slots\fP"
+.PP
+Resized hosts 4 slots. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jobResizeNotifyAcceptLog \- job resize accept notify log.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBjobId\fP"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.ti -1c
+.RI "int \fBnotifyId\fP"
+.br
+.ti -1c
+.RI "int \fBresizeNotifyCmdPid\fP"
+.br
+.ti -1c
+.RI "int \fBresizeNotifyCmdPGid\fP"
+.br
+.ti -1c
+.RI "int \fBstatus\fP"
+.br
+.ti -1c
+.RI "int \fBnextStatusNo\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+job resize accept notify log. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBjobResizeNotifyAcceptLog::jobId\fP"
+.PP
+JobId. 
+.PP
+.SS "int \fBjobResizeNotifyAcceptLog::idx\fP"
+.PP
+Index. 
+.PP
+.SS "int \fBjobResizeNotifyAcceptLog::notifyId\fP"
+.PP
+Notify Id. 
+.PP
+.SS "int \fBjobResizeNotifyAcceptLog::resizeNotifyCmdPid\fP"
+.PP
+Resize Notify command pid. 
+.PP
+.SS "int \fBjobResizeNotifyAcceptLog::resizeNotifyCmdPGid\fP"
+.PP
+Resize Notify command pgid. 
+.PP
+.SS "int \fBjobResizeNotifyAcceptLog::status\fP"
+.PP
+Status. 
+.PP
+.SS "int \fBjobResizeNotifyAcceptLog::nextStatusNo\fP"
+.PP
+next status number for statusUpd in MC/XL 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jobResizeNotifyDoneLog \- job resize done notify log.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBjobId\fP"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.ti -1c
+.RI "int \fBnotifyId\fP"
+.br
+.ti -1c
+.RI "int \fBstatus\fP"
+.br
+.ti -1c
+.RI "int \fBnextStatusNo\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+job resize done notify log. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBjobResizeNotifyDoneLog::jobId\fP"
+.PP
+JobId. 
+.PP
+.SS "int \fBjobResizeNotifyDoneLog::idx\fP"
+.PP
+Index. 
+.PP
+.SS "int \fBjobResizeNotifyDoneLog::notifyId\fP"
+.PP
+Notify Id. 
+.PP
+.SS "int \fBjobResizeNotifyDoneLog::status\fP"
+.PP
+Status. 
+.PP
+.SS "int \fBjobResizeNotifyDoneLog::nextStatusNo\fP"
+.PP
+next status number for statusUpd in MC/XL 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jobResizeReleaseLog \- job resize release log.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBjobId\fP"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.ti -1c
+.RI "int \fBreqId\fP"
+.br
+.ti -1c
+.RI "int \fBoptions\fP"
+.br
+.ti -1c
+.RI "int \fBuserId\fP"
+.br
+.ti -1c
+.RI "char * \fBuserName\fP"
+.br
+.ti -1c
+.RI "char * \fBresizeNotifyCmd\fP"
+.br
+.ti -1c
+.RI "int \fBnumResizeHosts\fP"
+.br
+.ti -1c
+.RI "char ** \fBresizeHosts\fP"
+.br
+.ti -1c
+.RI "struct affinityJobData * \fBaffinity\fP"
+.br
+.ti -1c
+.RI "int \fBnextStatusNo\fP"
+.br
+.ti -1c
+.RI "int \fBnumResizeHosts4Slots\fP"
+.br
+.ti -1c
+.RI "char ** \fBresizeHosts4Slots\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+job resize release log. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBjobResizeReleaseLog::jobId\fP"
+.PP
+JobId. 
+.PP
+.SS "int \fBjobResizeReleaseLog::idx\fP"
+.PP
+Index. 
+.PP
+.SS "int \fBjobResizeReleaseLog::reqId\fP"
+.PP
+Request Id. 
+.PP
+.SS "int \fBjobResizeReleaseLog::options\fP"
+.PP
+Options. 
+.PP
+.SS "int \fBjobResizeReleaseLog::userId\fP"
+.PP
+User Id. 
+.PP
+.SS "char* \fBjobResizeReleaseLog::userName\fP"
+.PP
+User Name. 
+.PP
+.SS "char* \fBjobResizeReleaseLog::resizeNotifyCmd\fP"
+.PP
+Resize Notify command. 
+.PP
+.SS "int \fBjobResizeReleaseLog::numResizeHosts\fP"
+.PP
+Number of resized hosts. 
+.PP
+.SS "char** \fBjobResizeReleaseLog::resizeHosts\fP"
+.PP
+Resized hosts. 
+.PP
+.SS "struct affinityJobData* \fBjobResizeReleaseLog::affinity\fP"
+.PP
+Affinity allocation info. 
+.PP
+.SS "int \fBjobResizeReleaseLog::nextStatusNo\fP"
+.PP
+next status number for statusUpd in MC/XL 
+.PP
+.SS "int \fBjobResizeReleaseLog::numResizeHosts4Slots\fP"
+.PP
+Number of resized hosts 4 slots. 
+.PP
+.SS "char** \fBjobResizeReleaseLog::resizeHosts4Slots\fP"
+.PP
+Resized hosts 4 slots. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jobResizeCancelLog \- job resize cancel log.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBjobId\fP"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.ti -1c
+.RI "int \fBuserId\fP"
+.br
+.ti -1c
+.RI "char * \fBuserName\fP"
+.br
+.ti -1c
+.RI "int \fBnextStatusNo\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+job resize cancel log. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBjobResizeCancelLog::jobId\fP"
+.PP
+JobId. 
+.PP
+.SS "int \fBjobResizeCancelLog::idx\fP"
+.PP
+Index. 
+.PP
+.SS "int \fBjobResizeCancelLog::userId\fP"
+.PP
+User Id. 
+.PP
+.SS "char* \fBjobResizeCancelLog::userName\fP"
+.PP
+User name. 
+.PP
+.SS "int \fBjobResizeCancelLog::nextStatusNo\fP"
+.PP
+next status number for statusUpd in MC/XL 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jobResizeLog \- job resize event: indicating a realized job allocation change  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBjobId\fP"
+.br
+.ti -1c
+.RI "int \fBidx\fP"
+.br
+.ti -1c
+.RI "time_t \fBstartTime\fP"
+.br
+.ti -1c
+.RI "int \fBuserId\fP"
+.br
+.ti -1c
+.RI "char \fBuserName\fP [MAX_LSB_NAME_LEN]"
+.br
+.ti -1c
+.RI "int \fBresizeType\fP"
+.br
+.ti -1c
+.RI "time_t \fBlastResizeStartTime\fP"
+.br
+.ti -1c
+.RI "time_t \fBlastResizeFinishTime\fP"
+.br
+.ti -1c
+.RI "int \fBnumExecHosts\fP"
+.br
+.ti -1c
+.RI "char ** \fBexecHosts\fP"
+.br
+.ti -1c
+.RI "int \fBnumResizeHosts\fP"
+.br
+.ti -1c
+.RI "char ** \fBresizeHosts\fP"
+.br
+.ti -1c
+.RI "struct affinityJobData * \fBaffinity\fP"
+.br
+.ti -1c
+.RI "char ** \fBallocSlots\fP"
+.br
+.ti -1c
+.RI "int \fBnumAllocSlots\fP"
+.br
+.ti -1c
+.RI "char ** \fBresizeSlots\fP"
+.br
+.ti -1c
+.RI "int \fBnumResizeSlots\fP"
+.br
+.ti -1c
+.RI "int \fBhasTrigger\fP"
+.br
+.ti -1c
+.RI "struct \fBjobResizeTrigger\fP * \fBtrigger\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+job resize event: indicating a realized job allocation change 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBjobResizeLog::jobId\fP"
+.PP
+JobId. 
+.PP
+.SS "int \fBjobResizeLog::idx\fP"
+.PP
+Index. 
+.PP
+.SS "time_t \fBjobResizeLog::startTime\fP"
+.PP
+Start time. 
+.PP
+.SS "int \fBjobResizeLog::userId\fP"
+.PP
+User Id. 
+.PP
+.SS "char \fBjobResizeLog::userName\fP[MAX_LSB_NAME_LEN]"
+.PP
+User name. 
+.PP
+.SS "int \fBjobResizeLog::resizeType\fP"
+.PP
+0 grow, 1 shrink 
+.PP
+.SS "time_t \fBjobResizeLog::lastResizeStartTime\fP"
+.PP
+The start time of last allocation. 
+.PP
+.SS "time_t \fBjobResizeLog::lastResizeFinishTime\fP"
+.PP
+The finish time of last allocation. 
+.PP
+.SS "int \fBjobResizeLog::numExecHosts\fP"
+.PP
+Allocation before the resize. 
+.PP
+.SS "char** \fBjobResizeLog::execHosts\fP"
+.PP
+Execute hosts. 
+.PP
+.SS "int \fBjobResizeLog::numResizeHosts\fP"
+.PP
+The delta of the allocation change. 
+.PP
+.SS "char** \fBjobResizeLog::resizeHosts\fP"
+.PP
+Resize hosts. 
+.PP
+.SS "struct affinityJobData* \fBjobResizeLog::affinity\fP"
+.PP
+Affinity allocation info. 
+.PP
+.SS "char** \fBjobResizeLog::allocSlots\fP"
+.PP
+The array of names of hosts representing allocated slots to job. 
+.PP
+
+.SS "int \fBjobResizeLog::numAllocSlots\fP"
+.PP
+The number of slots allocated to job. 
+.PP
+
+.SS "char** \fBjobResizeLog::resizeSlots\fP"
+.PP
+The array of names of hosts representing resized slots to job. 
+.PP
+
+.SS "int \fBjobResizeLog::numResizeSlots\fP"
+.PP
+The number of resized slots to job. 
+.PP
+
+.SS "int \fBjobResizeLog::hasTrigger\fP"
+.PP
+Indicates if the job resize event trigger exists. 
+.PP
+.SS "struct \fBjobResizeTrigger\fP* \fBjobResizeLog::trigger\fP"
+.PP
+Specifies the job resize event trigger. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jRusage \- Information about job using resource.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "long \fBmem\fP"
+.br
+.ti -1c
+.RI "long \fBswap\fP"
+.br
+.ti -1c
+.RI "long \fButime\fP"
+.br
+.ti -1c
+.RI "long \fBstime\fP"
+.br
+.ti -1c
+.RI "int \fBnpids\fP"
+.br
+.ti -1c
+.RI "struct \fBpidInfo\fP * \fBpidInfo\fP"
+.br
+.ti -1c
+.RI "int \fBnpgids\fP"
+.br
+.ti -1c
+.RI "int * \fBpgid\fP"
+.br
+.ti -1c
+.RI "int \fBnthreads\fP"
+.br
+.ti -1c
+.RI "float \fBunused_power\fP"
+.br
+.ti -1c
+.RI "double \fBpower\fP"
+.br
+.ti -1c
+.RI "HardwareCounters_T \fBhwCounters\fP"
+.br
+.ti -1c
+.RI "int \fBnHwCounters\fP"
+.br
+.ti -1c
+.RI "float \fBcpuUT\fP"
+.br
+.ti -1c
+.RI "long \fBio\fP"
+.br
+.ti -1c
+.RI "float \fBioRate\fP"
+.br
+.ti -1c
+.RI "long \fBdiskIO\fP"
+.br
+.ti -1c
+.RI "float \fBdiskIORate\fP"
+.br
+.ti -1c
+.RI "long \fBdeltaIO\fP"
+.br
+.ti -1c
+.RI "long \fBdeltaDiskIO\fP"
+.br
+.ti -1c
+.RI "struct KVPair \fBKVP\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Information about job using resource. 
+.SH "Field Documentation"
+.PP 
+.SS "long \fBjRusage::mem\fP"
+.PP
+Total resident memory usage in kbytes of all currently running processes in given process groups. 
+.PP
+
+.SS "long \fBjRusage::swap\fP"
+.PP
+Total virtual memory usage in kbytes of all currently running processes in given process groups. 
+.PP
+
+.SS "long \fBjRusage::utime\fP"
+.PP
+Cumulative total user time in seconds. 
+.PP
+.SS "long \fBjRusage::stime\fP"
+.PP
+Cumulative total system time in seconds. 
+.PP
+.SS "int \fBjRusage::npids\fP"
+.PP
+Number of currently active processes in given process groups. 
+.PP
+
+.SS "struct \fBpidInfo\fP* \fBjRusage::pidInfo\fP"
+.PP
+Array of currently active processes' information. 
+.PP
+.SS "int \fBjRusage::npgids\fP"
+.PP
+Number of currently active process groups. 
+.PP
+.SS "int* \fBjRusage::pgid\fP"
+.PP
+Array of currently active process group ids. 
+.PP
+.SS "int \fBjRusage::nthreads\fP"
+.PP
+Number of currently active threads in given process groups. 
+.PP
+
+.SS "float \fBjRusage::unused_power\fP"
+.PP
+unused job power which lack of precision 
+.PP
+.SS "double \fBjRusage::power\fP"
+.PP
+job power usage 
+.PP
+.SS "HardwareCounters_T \fBjRusage::hwCounters\fP"
+.PP
+job hardware counters 
+.PP
+.SS "int \fBjRusage::nHwCounters\fP"
+.PP
+Number of job hardware counters. 
+.PP
+.SS "float \fBjRusage::cpuUT\fP"
+.PP
+CPU usage, percentage>. 
+.PP
+.SS "long \fBjRusage::io\fP"
+.PP
+Total transferred IO data KB>. 
+.PP
+.SS "float \fBjRusage::ioRate\fP"
+.PP
+Instantaneous I/O rate, KB/s>. 
+.PP
+.SS "long \fBjRusage::diskIO\fP"
+.PP
+Total transferred Disk IO data KB>. 
+.PP
+.SS "float \fBjRusage::diskIORate\fP"
+.PP
+Instantaneous Disk I/O rate, KB/s>. 
+.PP
+.SS "long \fBjRusage::deltaIO\fP"
+.PP
+Delta IO data KB>. 
+.PP
+.SS "long \fBjRusage::deltaDiskIO\fP"
+.PP
+Delta Disk IO data KB>. 
+.PP
+.SS "struct KVPair \fBjRusage::KVP\fP"
+.PP
+Key-value pairs for extension>. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+event_types \- define statements used by \fBlsb_geteventrec\fP.  
+
+.PP
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBEVENT_JOB_NEW\fP   1"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_START\fP   2"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_STATUS\fP   3"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_SWITCH\fP   4"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_MOVE\fP   5"
+.br
+.ti -1c
+.RI "#define \fBEVENT_QUEUE_CTRL\fP   6"
+.br
+.ti -1c
+.RI "#define \fBEVENT_HOST_CTRL\fP   7"
+.br
+.ti -1c
+.RI "#define \fBEVENT_MBD_DIE\fP   8"
+.br
+.ti -1c
+.RI "#define \fBEVENT_MBD_UNFULFILL\fP   9"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_FINISH\fP   10"
+.br
+.ti -1c
+.RI "#define \fBEVENT_LOAD_INDEX\fP   11"
+.br
+.ti -1c
+.RI "#define \fBEVENT_CHKPNT\fP   12"
+.br
+.ti -1c
+.RI "#define \fBEVENT_MIG\fP   13"
+.br
+.ti -1c
+.RI "#define \fBEVENT_PRE_EXEC_START\fP   14"
+.br
+.ti -1c
+.RI "#define \fBEVENT_MBD_START\fP   15"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_ROUTE\fP   16"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_MODIFY\fP   17"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_SIGNAL\fP   18"
+.br
+.ti -1c
+.RI "#define \fBEVENT_CAL_NEW\fP   19"
+.br
+.ti -1c
+.RI "#define \fBEVENT_CAL_MODIFY\fP   20"
+.br
+.ti -1c
+.RI "#define \fBEVENT_CAL_DELETE\fP   21"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_FORWARD\fP   22"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_ACCEPT\fP   23"
+.br
+.ti -1c
+.RI "#define \fBEVENT_STATUS_ACK\fP   24"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_EXECUTE\fP   25"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_MSG\fP   26"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_MSG_ACK\fP   27"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_REQUEUE\fP   28"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_OCCUPY_REQ\fP   29"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_VACATED\fP   30"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_SIGACT\fP   32"
+.br
+.ti -1c
+.RI "#define \fBEVENT_SBD_JOB_STATUS\fP   34"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_START_ACCEPT\fP   35"
+.br
+.ti -1c
+.RI "#define \fBEVENT_CAL_UNDELETE\fP   36"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_CLEAN\fP   37"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_EXCEPTION\fP   38"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JGRP_ADD\fP   39"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JGRP_MOD\fP   40"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JGRP_CTRL\fP   41"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_FORCE\fP   42"
+.br
+.ti -1c
+.RI "#define \fBEVENT_LOG_SWITCH\fP   43"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_MODIFY2\fP   44"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JGRP_STATUS\fP   45"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_ATTR_SET\fP   46"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_EXT_MSG\fP   47"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_ATTA_DATA\fP   48"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_CHUNK\fP   49"
+.br
+.ti -1c
+.RI "#define \fBEVENT_SBD_UNREPORTED_STATUS\fP   50"
+.br
+.ti -1c
+.RI "#define \fBEVENT_ADRSV_FINISH\fP   51"
+.br
+.ti -1c
+.RI "#define \fBEVENT_HGHOST_CTRL\fP   52"
+.br
+.ti -1c
+.RI "#define \fBEVENT_CPUPROFILE_STATUS\fP   53"
+.br
+.ti -1c
+.RI "#define \fBEVENT_DATA_LOGGING\fP   54"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_RUN_RUSAGE\fP   55"
+.br
+.ti -1c
+.RI "#define \fBEVENT_END_OF_STREAM\fP   56"
+.br
+.ti -1c
+.RI "#define \fBEVENT_SLA_RECOMPUTE\fP   57"
+.br
+.ti -1c
+.RI "#define \fBEVENT_METRIC_LOG\fP   58"
+.br
+.ti -1c
+.RI "#define \fBEVENT_TASK_FINISH\fP   59"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_RESIZE_NOTIFY_START\fP   60"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_RESIZE_NOTIFY_ACCEPT\fP   61"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_RESIZE_NOTIFY_DONE\fP   62"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_RESIZE_RELEASE\fP   63"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_RESIZE_CANCEL\fP   64"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_RESIZE\fP   65"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_ARRAY_ELEMENT\fP   66"
+.br
+.ti -1c
+.RI "#define \fBEVENT_MBD_SIM_STATUS\fP   67"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_FINISH2\fP   68"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_STARTLIMIT\fP   69"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_STATUS2\fP   70"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_PENDING_REASONS\fP   71"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_SWITCH2\fP   72"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_PROVISION_START\fP   74"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_PROVISION_END\fP   75"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_FANOUT_INFO\fP   76"
+.br
+.ti -1c
+.RI "#define \fBEVENT_HOST_POWER_STATUS\fP   77"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_PROV_HOST\fP   78"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_MIG_TIMEOUT\fP   79"
+.br
+.ti -1c
+.RI "#define \fBEVENT_SBD_ASYNC_JOB_STATUS_REQ\fP   80"
+.br
+.ti -1c
+.RI "#define \fBEVENT_SBD_ASYNC_JOB_STATUS_REPLY\fP   81"
+.br
+.ti -1c
+.RI "#define \fBEVENT_SBD_JOB_START_ACCEPT\fP   82"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_RESIZE_REQUEST\fP   83"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_DATA_STAGE\fP   84"
+.br
+.ti -1c
+.RI "#define \fBEVENT_HOST_CTRL_LOCK_IDS\fP   85"
+.br
+.ti -1c
+.RI "#define \fBEVENT_ATTR_CREATE\fP   86"
+.br
+.ti -1c
+.RI "#define \fBEVENT_ATTR_DELETE\fP   87"
+.br
+.ti -1c
+.RI "#define \fBEVENT_ATTR_INFO\fP   88"
+.br
+.ti -1c
+.RI "#define \fBNUM_EVENT_TYPES\fP   89"
+.br
+.ti -1c
+.RI "#define \fBEVENT_JOB_RELATED\fP   1"
+.br
+.ti -1c
+.RI "#define \fBEVENT_NON_JOB_RELATED\fP   0"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+define statements used by \fBlsb_geteventrec\fP. 
+
+Events logged in lsb.events file 
+.SH "Define Documentation"
+.PP 
+.SS "#define EVENT_JOB_NEW   1"
+.PP
+Submit a new job. 
+.PP
+.SS "#define EVENT_JOB_START   2"
+.PP
+mbatchd is trying to start a job 
+.PP
+.SS "#define EVENT_JOB_STATUS   3"
+.PP
+Job's status change event. 
+.PP
+.SS "#define EVENT_JOB_SWITCH   4"
+.PP
+Job switched to another queue. 
+.PP
+.SS "#define EVENT_JOB_MOVE   5"
+.PP
+Move a pending job's position within a queue. 
+.PP
+.SS "#define EVENT_QUEUE_CTRL   6"
+.PP
+Queue's status changed by IBM Spectrum LSF administrator (bhc operation). 
+.PP
+.SS "#define EVENT_HOST_CTRL   7"
+.PP
+Host status changed by IBM Spectrum LSF administrator (bhc operation). 
+.PP
+.SS "#define EVENT_MBD_DIE   8"
+.PP
+Log parameters before mbatchd died. 
+.PP
+.SS "#define EVENT_MBD_UNFULFILL   9"
+.PP
+Action that was not taken because the mbatchd was unable to contact the sbatchd on the job's execution host. 
+.PP
+.SS "#define EVENT_JOB_FINISH   10"
+.PP
+Job finished (Logged in lsb.acct). 
+.PP
+.SS "#define EVENT_LOAD_INDEX   11"
+.PP
+The complete list of load indices, including external load indices. 
+.PP
+.SS "#define EVENT_CHKPNT   12"
+.PP
+Job checkpointed. 
+.PP
+
+.SS "#define EVENT_MIG   13"
+.PP
+Job migrated. 
+.PP
+.SS "#define EVENT_PRE_EXEC_START   14"
+.PP
+The pre-execution command started. 
+.PP
+.SS "#define EVENT_MBD_START   15"
+.PP
+New mbatchd start event. 
+.PP
+.SS "#define EVENT_JOB_ROUTE   16"
+.PP
+The job has been routed to NQS. 
+.PP
+.SS "#define EVENT_JOB_MODIFY   17"
+.PP
+Job modification request. 
+.PP
+.SS "#define EVENT_JOB_SIGNAL   18"
+.PP
+Signal/delete a job. 
+.PP
+.SS "#define EVENT_CAL_NEW   19"
+.PP
+Add new calendar to the system. 
+.PP
+.SS "#define EVENT_CAL_MODIFY   20"
+.PP
+Calendar modified. 
+.PP
+.SS "#define EVENT_CAL_DELETE   21"
+.PP
+Delete a calendar in the system. 
+.PP
+.SS "#define EVENT_JOB_FORWARD   22"
+.PP
+Job forwarded to another cluster. 
+.PP
+.SS "#define EVENT_JOB_ACCEPT   23"
+.PP
+Job from a remote cluster dispatched. 
+.PP
+.SS "#define EVENT_STATUS_ACK   24"
+.PP
+Job status successfully sent to submission cluster. 
+.PP
+.SS "#define EVENT_JOB_EXECUTE   25"
+.PP
+Job started successfully on the execution host. 
+.PP
+.SS "#define EVENT_JOB_MSG   26"
+.PP
+Send a message to a job. 
+.PP
+.SS "#define EVENT_JOB_MSG_ACK   27"
+.PP
+The message has been delivered. 
+.PP
+.SS "#define EVENT_JOB_REQUEUE   28"
+.PP
+Job is requeued. 
+.PP
+.SS "#define EVENT_JOB_OCCUPY_REQ   29"
+.PP
+Submission mbatchd logs this after sending an occupy request to execution mbatchd. 
+.PP
+.SS "#define EVENT_JOB_VACATED   30"
+.PP
+Submission mbatchd logs this event after all execution mbatchds have vacated the occupied hosts for the job. 
+.PP
+.SS "#define EVENT_JOB_SIGACT   32"
+.PP
+A signal action on a job has been initiated or finished. 
+.PP
+.SS "#define EVENT_SBD_JOB_STATUS   34"
+.PP
+sbatchd's new job status 
+.PP
+.SS "#define EVENT_JOB_START_ACCEPT   35"
+.PP
+sbatchd accepts job start 
+.PP
+.SS "#define EVENT_CAL_UNDELETE   36"
+.PP
+Undelete a calendar in the system. 
+.PP
+.SS "#define EVENT_JOB_CLEAN   37"
+.PP
+Job is cleaned out of the core. 
+.PP
+.SS "#define EVENT_JOB_EXCEPTION   38"
+.PP
+Job exception was detected. 
+.PP
+.SS "#define EVENT_JGRP_ADD   39"
+.PP
+Adding a new job group. 
+.PP
+.SS "#define EVENT_JGRP_MOD   40"
+.PP
+Modifying a job group. 
+.PP
+.SS "#define EVENT_JGRP_CTRL   41"
+.PP
+Controlling a job group. 
+.PP
+.SS "#define EVENT_JOB_FORCE   42"
+.PP
+Forcing a job to start on specified hosts (brun operation). 
+.PP
+.SS "#define EVENT_LOG_SWITCH   43"
+.PP
+Switching the event file lsb.events. 
+.PP
+.SS "#define EVENT_JOB_MODIFY2   44"
+.PP
+Job modification request. 
+.PP
+.SS "#define EVENT_JGRP_STATUS   45"
+.PP
+Log job group status. 
+.PP
+.SS "#define EVENT_JOB_ATTR_SET   46"
+.PP
+Job attributes have been set. 
+.PP
+.SS "#define EVENT_JOB_EXT_MSG   47"
+.PP
+Send an external message to a job. 
+.PP
+.SS "#define EVENT_JOB_ATTA_DATA   48"
+.PP
+Update data status of a message for a job. 
+.PP
+.SS "#define EVENT_JOB_CHUNK   49"
+.PP
+Insert one job to a chunk. 
+.PP
+.SS "#define EVENT_SBD_UNREPORTED_STATUS   50"
+.PP
+Save unreported sbatchd status. 
+.PP
+.SS "#define EVENT_ADRSV_FINISH   51"
+.PP
+Reservation finished. 
+.PP
+.SS "#define EVENT_HGHOST_CTRL   52"
+.PP
+Dynamic host group control. 
+.PP
+.SS "#define EVENT_CPUPROFILE_STATUS   53"
+.PP
+Saved current CPU allocation on service partition. 
+.PP
+.SS "#define EVENT_DATA_LOGGING   54"
+.PP
+Write out data logging file. 
+.PP
+.SS "#define EVENT_JOB_RUN_RUSAGE   55"
+.PP
+Write job rusage in lsb.stream. 
+.PP
+.SS "#define EVENT_END_OF_STREAM   56"
+.PP
+Stream closed and new stream opened. 
+.PP
+
+.SS "#define EVENT_SLA_RECOMPUTE   57"
+.PP
+SLA goal is reavaluated. 
+.PP
+.SS "#define EVENT_METRIC_LOG   58"
+.PP
+Write performance metrics to lsb.stream. 
+.PP
+.SS "#define EVENT_TASK_FINISH   59"
+.PP
+Write task finish log to ssched.acct. 
+.PP
+.SS "#define EVENT_JOB_RESIZE_NOTIFY_START   60"
+.PP
+Resize allocation is made. 
+.PP
+.SS "#define EVENT_JOB_RESIZE_NOTIFY_ACCEPT   61"
+.PP
+Resize notification action initialized. 
+.PP
+.SS "#define EVENT_JOB_RESIZE_NOTIFY_DONE   62"
+.PP
+Resize notification action completed. 
+.PP
+.SS "#define EVENT_JOB_RESIZE_RELEASE   63"
+.PP
+Job resize release request is received. 
+.PP
+.SS "#define EVENT_JOB_RESIZE_CANCEL   64"
+.PP
+Job resize cancel request is received. 
+.PP
+.SS "#define EVENT_JOB_RESIZE   65"
+.PP
+Job resize event for lsb.acct. 
+.PP
+.SS "#define EVENT_JOB_ARRAY_ELEMENT   66"
+.PP
+Saved array element's resource consumption for LSF simulator. 
+.PP
+.SS "#define EVENT_MBD_SIM_STATUS   67"
+.PP
+Saved LSF simulator status. 
+.PP
+.SS "#define EVENT_JOB_FINISH2   68"
+.PP
+Extended stream event than JOB_FINISH. 
+.PP
+.SS "#define EVENT_JOB_STARTLIMIT   69"
+.PP
+Stream event for job start limits. 
+.PP
+.SS "#define EVENT_JOB_STATUS2   70"
+.PP
+Job status log to lsb.status file. 
+.PP
+.SS "#define EVENT_JOB_PENDING_REASONS   71"
+.PP
+Pending reasons in pendingreason.dump file. 
+.PP
+.SS "#define EVENT_JOB_SWITCH2   72"
+.PP
+Job array switched to another queue. 
+.PP
+.SS "#define EVENT_JOB_PROVISION_START   74"
+.PP
+Dynamic Cluster provisioning requested. 
+.PP
+.SS "#define EVENT_JOB_PROVISION_END   75"
+.PP
+Dynamic Cluster provisioning finished. 
+.PP
+.SS "#define EVENT_JOB_FANOUT_INFO   76"
+.PP
+Job fan-out information is received. 
+.PP
+.SS "#define EVENT_HOST_POWER_STATUS   77"
+.PP
+Host status changed by IBM Spectrum LSF. 
+.PP
+.SS "#define EVENT_JOB_PROV_HOST   78"
+.PP
+Job prov host info. 
+.PP
+.SS "#define EVENT_JOB_MIG_TIMEOUT   79"
+.PP
+Job migration timeout. 
+.PP
+.SS "#define EVENT_SBD_ASYNC_JOB_STATUS_REQ   80"
+.PP
+sbd async job status request 
+.PP
+.SS "#define EVENT_SBD_ASYNC_JOB_STATUS_REPLY   81"
+.PP
+sbd async job status reply 
+.PP
+.SS "#define EVENT_SBD_JOB_START_ACCEPT   82"
+.PP
+Job start accept in sbd. 
+.PP
+.SS "#define EVENT_JOB_RESIZE_REQUEST   83"
+.PP
+Job resize request is received. 
+.PP
+.SS "#define EVENT_JOB_DATA_STAGE   84"
+.PP
+Data staging action for the job. 
+.PP
+.SS "#define EVENT_HOST_CTRL_LOCK_IDS   85"
+.PP
+Host lock IDs controled by IBM Spectrum LSF administrator (bhc operation). 
+.PP
+.SS "#define EVENT_ATTR_CREATE   86"
+.PP
+Attribute creation request is received. 
+.PP
+.SS "#define EVENT_ATTR_DELETE   87"
+.PP
+Attribute deletion request is received. 
+.PP
+.SS "#define EVENT_ATTR_INFO   88"
+.PP
+Attribute info. 
+.PP
+.SS "#define NUM_EVENT_TYPES   89"
+.PP
+Number of different event types. 
+.PP
+
+.SS "#define EVENT_JOB_RELATED   1"
+.PP
+it is a job related event 
+.PP
+.SS "#define EVENT_NON_JOB_RELATED   0"
+.PP
+it is a non job related event 
+.PP
+.ad l
+.nh
+.SH NAME
+defs_lsb_XF_OP \- options \fBxFile\fP operation  
+
+.PP
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBXF_OP_SUB2EXEC\fP   0x1"
+.br
+.ti -1c
+.RI "#define \fBXF_OP_EXEC2SUB\fP   0x2"
+.br
+.ti -1c
+.RI "#define \fBXF_OP_SUB2EXEC_APPEND\fP   0x4"
+.br
+.ti -1c
+.RI "#define \fBXF_OP_EXEC2SUB_APPEND\fP   0x8"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+options \fBxFile\fP operation 
+.SH "Define Documentation"
+.PP 
+.SS "#define XF_OP_SUB2EXEC   0x1"
+.PP
+Transfer files from \fBsubmit\fP peer to execution peer. 
+.PP
+.SS "#define XF_OP_EXEC2SUB   0x2"
+.PP
+Transfer files from execution peer to \fBsubmit\fP peer. 
+.PP
+.SS "#define XF_OP_SUB2EXEC_APPEND   0x4"
+.PP
+Transfer files from \fBsubmit\fP peer to execution peer with appending mode. 
+.PP
+.SS "#define XF_OP_EXEC2SUB_APPEND   0x8"
+.PP
+Transfer files from execution peer to \fBsubmit\fP peer with appending mode. 
+.PP
+.ad l
+.nh
+.SH NAME
+jobgroup_controltypes \- define statements job group control types.  
+
+.PP
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBJGRP_RELEASE\fP   1"
+.br
+.ti -1c
+.RI "#define \fBJGRP_HOLD\fP   2"
+.br
+.ti -1c
+.RI "#define \fBJGRP_HOLD\fP   2"
+.br
+.ti -1c
+.RI "#define \fBJGRP_DEL\fP   3"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+define statements job group control types. 
+.SH "Define Documentation"
+.PP 
+.SS "#define JGRP_RELEASE   1"
+.PP
+bgrelease 
+.PP
+.SS "#define JGRP_HOLD   2"
+.PP
+bghold 
+.PP
+.SS "#define JGRP_HOLD   2"
+.PP
+bghold 
+.PP
+.SS "#define JGRP_DEL   3"
+.PP
+bgdel 
+.PP
+.ad l
+.nh
+.SH NAME
+signal_action \- define status for signal action  
+
+.PP
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBACT_NO\fP   0"
+.br
+.ti -1c
+.RI "#define \fBACT_START\fP   1"
+.br
+.ti -1c
+.RI "#define \fBACT_PREEMPT\fP   2"
+.br
+.ti -1c
+.RI "#define \fBACT_DONE\fP   3"
+.br
+.ti -1c
+.RI "#define \fBACT_FAIL\fP   4"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+define status for signal action 
+.SH "Define Documentation"
+.PP 
+.SS "#define ACT_NO   0"
+.PP
+No action. 
+.PP
+.SS "#define ACT_START   1"
+.PP
+Start. 
+.PP
+.SS "#define ACT_PREEMPT   2"
+.PP
+Preempt. 
+.PP
+.SS "#define ACT_DONE   3"
+.PP
+Done. 
+.PP
+.SS "#define ACT_FAIL   4"
+.PP
+Fail. 
+.PP
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

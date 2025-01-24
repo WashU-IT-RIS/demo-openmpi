@@ -1,0 +1,201 @@
+
+.ad l
+
+.TH bltasks 1 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBbltasks\fR
+.ce 0
+
+.sp 2
+Displays LSF License Scheduler interactive task information.
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBbltasks\fR [\fB-l\fR] [task_ID]
+.sp 2
+\fBbltasks\fR [\fB-l\fR] [\fB-p\fR | \fB-r\fR | \fB-w\fR] [\fB-Lp
+"\fRls_project_name...\fB"\fR] [\fB-m "\fRhost_name...\fB"\fR]
+[\fB-t "\fRterminal_name...\fB"\fR] [\fB-u
+"\fRuser_name...\fB"\fR]
+.sp 2
+\fBbltasks\fR [ | \fB-h\fR | \fB-V\fR]
+.SH Description
+
+.sp 2
+Displays current information about interactive tasks that were
+submitted by using taskman.
+.sp 2
+By default, displays information about all tasks that are managed
+by LSF License Scheduler.
+.SH Options
+
+.sp 2
+\fB\fItask_ID\fB\fR
+.br
+         Displays information only about the specified task.
+.sp 2
+\fB-l \fR
+.br
+         Long format. Displays detailed information for each task
+         in a multiline format.
+.sp 2
+\fB-p \fR
+.br
+         Displays information only about tasks with
+         \fRPREEMPTED\fR status.
+.sp 2
+         Cannot be used with the -r or -w option.
+.sp 2
+\fB-r \fR
+.br
+         Displays information only about tasks with RUN status.
+.br
+         Cannot be used with the -p or -w option.
+.sp 2
+\fB-w \fR
+.br
+         Displays information only about tasks with \fRWAIT\fR
+         status.
+.br
+         Cannot be used with the -p or -r option.
+.sp 2
+\fB-Lp "\fIls_project_name\fB..."\fR
+.br
+         Displays information only about tasks that are
+         associated with the specified projects.
+.sp 2
+         If project group paths are enabled (the
+         \fRPROJECT_GROUP_PATH=Y\fR parameter in the
+         lsf.licensescheduler file) and a task has multiple
+         effective license projects, displays only the first task
+         that is associated with the specified effective license
+         project.
+.sp 2
+\fB-m "\fIhost_name\fB..."\fR
+.br
+         Displays information only about tasks that are submitted
+         from the specified hosts.
+.sp 2
+\fB-t "\fIterminal_name\fB..."\fR
+.br
+         Displays information only about tasks that are submitted
+         from the specified terminals.
+.sp 2
+\fB-u "\fIuser_name\fB..."\fR
+.br
+         Displays information only about tasks that are submitted
+         by the specified users.
+.sp 2
+\fB-h\fR
+.br
+         Prints command usage to stderr and exits.
+.sp 2
+\fB-V\fR
+.br
+         Prints LSF License Scheduler release version to stderr
+         and exits.
+.SH Default Output
+
+.sp 2
+Displays the short format with the following information:
+.sp 2
+\fBTID\fR
+.br
+         Task ID that LSF License Scheduler assigned to the task.
+.sp 2
+\fBUSER\fR
+.br
+         The user who submitted the task.
+.sp 2
+\fBSTAT\fR
+.br
+         The status of the task.
+.sp 2
+         \fB\fRRUN\fB\fR
+.br
+                  Task is running.
+.sp 2
+         \fB\fRWAIT\fB\fR
+.br
+                  Task is not yet started.
+.sp 2
+         \fB\fRPREEMPT\fB\fR
+.br
+                  Task was preempted and currently has no license
+                  token.
+.sp 2
+\fBHOST\fR
+.br
+         The name of host from which the task was submitted.
+.sp 2
+\fBPROJECT\fR
+.br
+         The name of the project to which the task belongs.
+.sp 2
+\fBFEATURES\fR
+.br
+         Name of the LSF License Scheduler token.
+.sp 2
+\fBCONNECT TIME\fR
+.br
+         The submission time of the task.
+.sp 2
+\fBEFFECTIVE_PROJECT\fR
+.br
+         The actual project that the job used. If group project
+         paths are enabled with the PROJECT_GROUP_PATH=Y
+         parameter in the \fRParameters\fR section of the
+         lsf.licensescheduler file, LSF License Scheduler
+         attempts to calculate a proper project according to the
+         configuration if the license project does not exist or
+         is not authorized for the features. Otherwise, the
+         submission license project is the effective license
+         project.
+.SH Output for -l Option
+
+.sp 2
+Displays detailed information for each task in multi-line format.
+If the task is in \fRWAIT\fR status, the bltasks command displays
+\fRThe application manager is waiting for a token to start\fR and
+the resource requirement. Otherwise, the following current
+resource usage of task is displayed:
+.sp 2
+\fBTERMINAL\fR
+.br
+         The terminal the task is using.
+.sp 2
+\fBPGID\fR
+.br
+         UNIX process group ID.
+.sp 2
+\fBCPU\fR
+.br
+         The total accumulated CPU time of all processes in a
+         task, in seconds.
+.sp 2
+\fBMEM\fR
+.br
+         Total resident memory usage of all processes in a task,
+         in KB.
+.sp 2
+\fBSWAP\fR
+.br
+         Total virtual memory usage of all processes in a task,
+         in KB.
+.sp 2
+\fBKeyboard idle since\fR
+.br
+         Time at which the task became idle.
+.sp 2
+\fBRES_REQ\fR
+.br
+         The resource requirement of the task.
+.sp 2
+\fBCommand line\fR
+.br
+         The command the LSF License Scheduler task manager is
+         running.

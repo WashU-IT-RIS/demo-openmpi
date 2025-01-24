@@ -1,0 +1,38 @@
+.TH "extsched_resetJob" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+extsched_resetJob \- extsched_resetJob 
+Routine allowing an external scheduling plugin to request a modification of a job's resource requirement expression to its original value at submission, or the latest bmod value.
+.PP
+Modification is not done immediately when this function is called. Instead, modification requests are stored in the mbschd memory, and published at the end of a scheduling session to mbatchd.
+.PP
+It is possible that a modification request will fail if the request violates mbatchd job modification policies.
+.PP
+If the modification succeeds, it will take effect prior to the next scheduling session.
+.PP
+If the modification fails, mbatchd will log a message at the LOG_WARNING level.
+.PP
+It is possible that the ‘job’ pointer may represent more than one element from the same job array. When this occurs only the first element is acted upon by the mbatchd.
+.PP
+\fB#include <lssched.h>\fP
+.PP
+\fB int extsched_resetJob(INT_Job *job)\fP
+.PP
+.SH "Parameters:"
+\fIjob\fP [IN] : internal representation of a job
+.PP
+.SH "Returns:"
+int:0 . 
+.PP
+int:-1 .
+.PP
+.SH "See also:"
+\fBextsched_getSchedJobModError\fP 
+.PP
+\fBextsched_modifyJob\fP 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

@@ -1,0 +1,1095 @@
+
+.ad l
+
+.TH bhist 1 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBbhist\fR
+.ce 0
+
+.sp 2
+Displays historical information about jobs
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBbhist\fR [\fB-l\fR [\fB-aff\fR] [\fB-gpu\fR]
+[\fB-hostfile\fR]] [\fB-a\fR] [\fB-b\fR] [\fB-d\fR] [\fB-data\fR]
+[\fB-e\fR] [\fB-p\fR] [\fB-r\fR] [\fB-s\fR] [\fB-w\fR]
+[\fB-UF\fR] [\fB-cname\fR] [\fB-app\fR application_profile_name]
+[\fB-C\fR start_time,end_time] [\fB-D\fR start_time,end_time]
+[\fB-f\fR logfile_name | \fB-f -\fR | \fB-n\fR number_logfiles |
+\fB-n\fR number_blocks | \fB-n\fR min_logfile, max_logfile |
+\fB-n 0\fR] [\fB-S\fR start_time,end_time] [\fB-J\fR job_name]
+[\fB-Jd\fR "job_description"] [\fB-Lp\fR ls_project_name] [\fB-m
+\fR"host_name ..."] [\fB-N\fR host_name | \fB-N\fR host_model |
+\fB-N\fR CPU_factor] [\fB-P\fR project_name] [\fB-q\fR
+queue_name] [\fB-u\fR user_name | \fB-u\fR \fBall\fR | \fB-G\fR
+user_group] [job_ID ... | "job_ID[index]" ...]
+.sp 2
+\fBbhist\fR \fB-t\fR [\fB-cname\fR] [\fB-f\fR logfile_name]
+[\fB-T\fR start_time,end_time]
+.sp 2
+\fBbhist\fR [\fB-h\fR | \fB-V\fR]
+.SH Description
+
+.sp 2
+By default, displays information about your own pending, running,
+and suspended jobs. Groups information by job. CPU time is not
+normalized. The bhist command searches the event log file that is
+used by the LSF system:
+$LSB_SHAREDIR/\fIcluster_name\fR/logdir/lsb.events. The bhist
+command also displays events that occurred in the past week. Set
+the environment variable LSB_BHIST_HOURS to an alternative number
+of hours (works only with the -t option.)
+.SH Options
+
+.sp 2
+\fB-a\fR
+.br
+         Displays information about both finished and unfinished
+         jobs.
+.sp 2
+         This option overrides -d, -p, -s, and -r.
+.sp 2
+\fB-aff\fR
+.br
+         Displays historical job information about jobs with CPU
+         and memory affinity resource requirement for each task
+         in the job. If the job is pending, the requested
+         affinity resources are displayed. For running jobs, the
+         effective and combined affinity resource allocation is
+         also displayed, along with a table headed
+         \fRAFFINITY\fR. The table shows detailed memory and CPU
+         binding information for each task, one line for each
+         allocated processor unit. For finished jobs (\fREXIT\fR
+         or \fRDONE\fR state), the affinity requirements for the
+         job, and the effective and combined affinity resource
+         requirement details are displayed.
+.sp 2
+         Use this option only with the -l option.
+.sp 2
+\fB-b\fR
+.br
+         Brief format.
+.sp 2
+\fB-cname\fR
+.br
+         In IBM Spectrum LSF Advanced Edition, includes the
+         cluster name for execution cluster hosts and host groups
+         in output.
+.sp 2
+\fB-d\fR
+.br
+         Displays information about finished jobs.
+.sp 2
+\fB-data\fR
+.br
+         Displays historical information for jobs with data
+         requirements (for example, jobs that are submitted with
+         -data). The bhist -data option acts as a filter to show
+         only jobs with data requirements.
+.sp 2
+\fB-e\fR
+.br
+         Displays information about exited jobs.
+.sp 2
+\fB-hostfile\fR
+.br
+         If a job was submitted with the bsub -hostfile option or
+         modified with the bmod -hostfile option to point to a
+         user-specified host file, the bhist -l -hostfile option,
+         shows the user-specified host file path. The -hostfile
+         option also shows the contents of the host file.
+.sp 2
+\fB-gpu\fR
+.br
+         bhist -l -gpu shows the following information on GPU job
+         allocation after the job finishes:
+.sp 2
+         Use this option only with the -l option.
+.sp 2
+         \fBHost Name\fR
+.br
+                  The name of the host.
+.sp 2
+         \fBGPU IDs on the host\fR
+.br
+                  Each GPU is shown as a separate line.
+.sp 2
+         \fBTASK and ID\fR
+.br
+                  List of job tasks and IDs using the GPU
+                  (separated by comma if used by multiple tasks)
+.sp 2
+         \fBMODEL\fR
+.br
+                  Contains the GPU brand name and model type
+                  name.
+.sp 2
+         \fBMTOTAL\fR
+.br
+                  The total GPU memory size.
+.sp 2
+         \fBGPU Compute Capability\fR
+.br
+
+.sp 2
+         \fBMRSV\fR
+.br
+                  GPU memory reserved by the job
+.sp 2
+         \fBSOCKET\fR
+.br
+                  socket ID of the GPU located at
+.sp 2
+         \fBNVLINK\fR
+.br
+                  Indicates if the GPU has NVLink connections
+                  with other GPUs allocated for the job (ranked
+                  by GPU ID and including itself). The connection
+                  flag of each GPU is a character separated by
+                  “/” with the next GPU:
+.br
+                  A “Y” indicates there is a direct NVLINK
+                  connection between two GPUs.
+.br
+                  An “N” shows there is no direct NVLINK
+                  connection with that GPU.
+.br
+                  A “-” shows the GPU is itself.
+.sp 2
+         If the job exited abnormally due to a GPU-related error
+         or warning, the error or warning message displays. If
+         LSF could not get GPU usage information from DCGM, a
+         hyphen (\fR-\fR) displays.
+.sp 2
+\fB-l \fR
+.br
+         Long format.
+.sp 2
+         If the job was submitted with the bsub -K option, the -l
+         option displays \fRSynchronous execution\fR.
+.sp 2
+         If you submitted a job by using the \fROR\fR (\fR||\fR)
+         expression to specify alternative resources, this option
+         displays the successful \fRExecution rusage\fR string
+         with which the job ran.
+.sp 2
+         If you submitted a job with multiple resource
+         requirement strings by using the bsub -R option for the
+         \fRorder\fR, \fRsame\fR, \fRrusage\fR, and \fRselect\fR
+         sections, the bhist -l command displays a single, merged
+         resource requirement string for those sections, as if
+         they were submitted by using a single -R option.
+.sp 2
+         Jobs submitted with an esub (or epsub) using bsub -a (or
+         modified using bmod -a), will show the latest esubs used
+         for execution in bhist -l output, first with the default
+         and then user esubs. If a user-specified esub script is
+         the same as the default esub script, the duplicate esubs
+         will show as one entry. If a job is submitted with an
+         esub containing parameters, the esub and its parameters
+         will be shown in bhist -l as well, and the format of the
+         esub is the same as that specified in the job
+         submission.
+.sp 2
+         The long format includes the following information:
+.sp 2
+         *  Job exit codes
+.sp 2
+         *  Exit reasons for terminated jobs
+.sp 2
+         *  Job exceptions (for example, if job run time exceeds
+            the runtime estimate, a job exception of
+            \fRruntime_est_exceeded\fR is displayed).
+.sp 2
+         *  Resizable job information
+.sp 2
+         *  SSH X11 forwarding information (-XF)
+.sp 2
+         *  Specified and execution current working directory
+            (CWD). The full path is shown, including directory
+            pattern values.
+.sp 2
+         *  Detailed information about jobs with data
+            requirements. The heading \fRDATA REQUIREMENTS\fR is
+            displayed followed by a list of the files or tags
+            that are requested by the job, and any modifications
+            made to the data requirements.
+.sp 2
+         *  User-specified reason for killing, stopping, or
+            resuming the job.
+.sp 2
+         *  The host that issued the request to kill, stop, or
+            resume the job.
+.sp 2
+         *  Job-level pending time limits and eligible pending
+            time limits.
+.sp 2
+         *  The amount of time that the job spent in an eligible
+            and ineligible pending state after the job started,
+            if the \fBTRACK_ELIGIBLE_PENDINFO\fR parameter in the
+            lsb.params file is set to \fRY\fR or \fRy\fR.
+.sp 2
+         *  Applicable loaning information. This information
+            shows whether the job uses resources that are
+            borrowed from the GSLA resource pool, and from which
+            pool the resources are borrowed.
+.sp 2
+         *  Account name for LSF resource connector
+.sp 2
+         *  Changes to pending jobs as a result of the following
+            bmod command options:
+.sp 2
+            *  Absolute priority scheduling (-aps | -apsn)
+.sp 2
+            *  Autoresizable job attribute (-ar | -arn)
+.sp 2
+            *  Current working directory (-cwd)
+.sp 2
+            *  Data requirements (-data | -datan)
+.sp 2
+            *  Post-execution command (-Ep | -Epn)
+.sp 2
+            *  Job description (-Jd | -Jdn)
+.sp 2
+            *  Checkpoint options (-k | -kn)
+.sp 2
+            *  Migration threshold (-mig | -mign)
+.sp 2
+            *  Job resize notification command (-rnc | -rncn)
+.sp 2
+            *  User limits (-ul | -uln)
+.sp 2
+            *  Runtime estimate (-We | -Wen)
+.sp 2
+         The bhist -l command displays the effective GPU
+         requirements string for a GPU allocation.
+.sp 2
+\fB-p \fR
+.br
+         Displays information about pending jobs.
+.sp 2
+\fB-r \fR
+.br
+         Displays information about running jobs.
+.sp 2
+\fB-s\fR
+.br
+         Displays information about suspended jobs.
+.sp 2
+\fB-t \fR
+.br
+         Displays job events chronologically, including energy
+         aware scheduling events \fRJOB_PROV_HOST\fR and
+         \fRHOST_POWER_STATUS\fR.
+.sp 2
+         By default, displays only records from the last week.
+         For different time periods, use the -t option with the
+         -T option.
+.sp 2
+         Use \fBLSB_BHIST_HOURS\fR with -t to display job events
+         before the current time for a longer or shorter period
+         than the default one week.
+.sp 2
+\fB-w\fR
+.br
+         Wide format. Displays the information in a wide format.
+.sp 2
+\fB-UF\fR
+.br
+         Displays unformatted job detail information.
+.sp 2
+         This option makes it easy to write scripts for parsing
+         keywords on bhist. The results of this option have no
+         wide control for the output. Each line starts from the
+         beginning of the line. The resource usage message lines
+         that end without any separator have a semicolon added to
+         separate their different parts. The first line and all
+         lines that start with the time stamp are displayed
+         unformatted in a single line. The output has no line
+         length and format control.
+.sp 2
+\fB-app \fIapplication_profile_name\fB \fR
+.br
+         Displays information about jobs that are submitted to
+         the specified application profile.
+.sp 2
+\fB-C \fIstart_time\fB,\fIend_time\fB \fR
+.br
+         Displays jobs that completed or exited during the
+         specified time interval. Specify the times in the format
+         \fRyyyy/mm/dd/HH:MM\fR. Do not specify spaces in the
+         time interval string. This option overrides the -r, -s,
+         -p, and -a options.
+.sp 2
+         For more information about the time syntax, see Time
+         interval format.
+.sp 2
+\fB-D \fIstart_time\fB,\fIend_time\fB \fR
+.br
+         Displays jobs that are dispatched during the specified
+         time interval. Specify the times in the format
+         \fRyyyy/mm/dd/HH:MM\fR. Do not specify spaces in the
+         time interval string.
+.sp 2
+         Must be used with the -a option since it finds results
+         only in running jobs.
+.sp 2
+         For more information about the time syntax, see Time
+         interval format.
+.sp 2
+\fB-f \fIlogfile_name\fB | -f -\fR
+.br
+         Searches the specified event log, which is useful for
+         offline analysis. Specify either an absolute or a
+         relative path.
+.sp 2
+         The specified file path can contain up to 4094
+         characters for UNIX, or up to 255 characters for
+         Windows.
+.sp 2
+         Specify the -f - option to force the bhist command to
+         use the lsb.events log file. If you are using IBM
+         Spectrum LSF Explorer (LSF Explorer) to load event log
+         records, the -f - option (or any -f argument that
+         specifies a log file) forces the bhist command to bypass
+         LSF Explorer.
+.sp 2
+         \fBNote: \fRThe bhist -cname, -t, and -T options always
+         bypass LSF Explorer and instead get the information from
+         the lsb.events file.
+.sp 2
+         For more details, refer to \fBLSF_QUERY_ES_SERVERS\fR
+         and \fBLSF_QUERY_ES_FUNCTIONS\fR in the IBM Spectrum LSF
+         Configuration Reference.
+.sp 2
+\fB-G \fIuser_group\fB \fR
+.br
+         Displays jobs that are associated with a user group that
+         is submitted with the bsub -G command for the specified
+         user group. The -G option does not display jobs from
+         subgroups within the specified user group.
+.sp 2
+         The -G option cannot be used together with the -u
+         option. You can specify only a user group name. The
+         keyword all is not supported for the -G option.
+.sp 2
+\fB-J \fIjob_name\fB\fR
+.br
+         Displays the jobs that have the specified job name.
+.sp 2
+         The job name can be up to 4094 characters long. Job
+         names are not unique.
+.sp 2
+         The wildcard character (\fR*\fR) can be used anywhere
+         within a job name, but it cannot appear within an array
+         index. For example, the pattern \fRjob*\fR returns
+         \fRjobA\fR and \fRjobarray[1]\fR. The \fR*AAA*[1]\fR
+         pattern returns the first element in job arrays with
+         names that contain \fRAAA\fR. However, the pattern
+         \fRjob1[*]\fR does not return anything since the
+         wildcard is within the array index.
+.sp 2
+\fB-Jd "\fIjob_description\fB"\fR
+.br
+         Displays the jobs that have the specified job
+         description.
+.sp 2
+         The job description can be up to 4094 characters long.
+         Job descriptions are not unique.
+.sp 2
+         The wildcard character (\fR*\fR) can be used anywhere
+         within a job description.
+.sp 2
+\fB-Lp \fIls_project_name\fB \fR
+.br
+         Displays information about jobs that belong to the
+         specified LSF License Scheduler project.
+.sp 2
+\fB-m "\fIhost_name\fB..."\fR
+.br
+         Displays jobs that are dispatched to the specified host.
+.sp 2
+\fB-n \fInumber_logfiles\fB | -n \fImin_logfile\fB,
+\fImax_logfile\fB | -n 0\fR
+.br
+         Searches the specified number of event logs, starting
+         with the current event log and working through the most
+         recent logs in consecutive order. Specify 0 to specify
+         all the event log files in
+         $(LSB_SHAREDIR)/\fIcluster_name\fR/logdir, up to a
+         maximum of 100 files.
+.sp 2
+         If you delete a file, you break the consecutive
+         numbering, and older files are inaccessible to the bhist
+         command. For example, if you specify 3, LSF searches the
+         lsb.events, lsb.events.1, and lsb.events.2 files. If you
+         specify 4, LSF searches the lsb.events, lsb.events.1,
+         lsb.events.2, and lsb.events.3 files. However, if the
+         lsb.events.2file is missing, both searches include only
+         the lsb.events and lsb.events.1 files.
+.sp 2
+\fB-n \fInumber_blocks\fB (LSF Explorer only)\fR
+.br
+         If you are using LSF Explorer to load event log records,
+         use the -n option to control how many job records
+         (number of block records) that LSF Explorer returns. The
+         block size is configured in LSF Explorer. For more
+         details, refer to \fBLSF_QUERY_ES_SERVERS\fR and
+         \fBLSF_QUERY_ES_FUNCTIONS\fR in the IBM Spectrum LSF
+         Configuration Reference.
+.sp 2
+\fB-N \fIhost_name\fB | -N \fIhost_model\fB | -N
+\fIcpu_factor\fB\fR
+.br
+         Normalizes CPU time by the specified CPU factor, or by
+         the CPU factor of the specified host or host model.
+.sp 2
+         If you use the bhist command directly on an event log,
+         you must specify a CPU factor.
+.sp 2
+         Use the lsinfo command to get host model and CPU factor
+         information.
+.sp 2
+\fB-P \fIproject_name\fB \fR
+.br
+         Displays information about jobs that belong to the
+         specified project.
+.sp 2
+\fB-q \fIqueue_name\fB \fR
+.br
+         Displays information about jobs that are submitted to
+         the specified queue.
+.sp 2
+\fB-S \fIstart_time\fB,\fIend_time\fB\fR
+.br
+         Displays information about jobs that are submitted
+         during the specified time interval. Specify the times in
+         the format \fRyyyy/mm/dd/HH:MM\fR. Do not specify spaces
+         in the time interval string.
+.sp 2
+         Must be used with the -a option since it finds results
+         only in running jobs.
+.sp 2
+         For more information about the time syntax, see Time
+         interval format.
+.sp 2
+\fB-T \fIstart_time\fB,\fIend_time\fB\fR
+.br
+         Used together with the -t option.
+.sp 2
+         Displays information about job events within the
+         specified time interval. Specify the times in the format
+         \fRyyyy/mm/dd/HH:MM\fR. Do not specify spaces in the
+         time interval string.
+.sp 2
+         For more information about the time syntax, see Time
+         interval format.
+.sp 2
+\fB-u \fIuser_name\fB | -u all \fR
+.br
+         Displays information about jobs that are submitted by
+         the specified user, or by all users if the keyword all
+         is specified. To specify a Windows user account, include
+         the domain name in uppercase letters and use a single
+         backslash in a Windows command
+         (\fR\fIDOMAIN_NAME\fR\\fIuser_name\fR\fR), or a double
+         backslash in a UNIX command
+         (\fR\fIDOMAIN_NAME\fR\\\fIuser_name\fR\fR).
+.sp 2
+\fB\fIjob_ID\fB | "\fIjob_ID\fB[\fIindex\fB]" ...\fR
+.br
+         Searches all event log files and displays only
+         information about the specified jobs. If you specify a
+         job array, displays all elements chronologically.
+.sp 2
+         You specify job ID when you know exactly which jobs you
+         want, so do not specify any other options that control
+         job selection (-a, -d, -e, -p, -r, -s, -D, -S, -T, -app,
+         -G, -J, -Jd, -Lp, -M, -q, -u). If you specify an
+         illogical combination of selection criteria, the system
+         does not return any matching jobs.
+.sp 2
+         In LSF multicluster capability job forwarding mode, you
+         can use the local job ID and cluster name to retrieve
+         the job details from the remote cluster. Use the
+         following query syntax:
+.sp 2
+         bhist submission_job_id@submission_cluster_name
+.sp 2
+         For job arrays, use the following query syntax:
+.sp 2
+         bhist "submission_job_id[index]"@submission_cluster_name
+.sp 2
+         The advantage of using src_job_id@src_cluster_name
+         instead of bhist -l job_id is that you can use
+         src_job_id@src_cluster_name as an alias to query a local
+         job in the execution cluster without knowing the local
+         job ID in the execution cluster. The bhist command
+         output is identical no matter which job ID you use
+         (local job ID or \fRsrc_job_id@src_cluster_name\fR).
+.sp 2
+         You can use the bhist 0 option to find all historical
+         jobs in your local cluster, but the bhist
+         0@submission_cluster_name option is not supported.
+.sp 2
+\fB-h\fR
+.br
+         Prints command usage to stderr and exits.
+.sp 2
+\fB-V \fR
+.br
+         Prints release version to stderr and exits.
+.SH Output: Default format
+
+.sp 2
+\fBMemory Usage\fR
+.br
+         Displays peak memory usage and average memory usage.
+.sp 2
+          MEMORY USAGE:
+.br
+          MAX MEM: 11 Mbytes; AVG MEM:6 Mbytes
+.br
+
+.sp 2
+         If consumed memory is larger or smaller than current
+         rusage, you can adjust resource requirements next time
+         for the same job submission.
+.sp 2
+\fBTime Summary\fR
+.br
+         Statistics of the amount of time that a job spent in
+         various states.
+.sp 2
+\fBPEND\fR
+.br
+         The total waiting time, excluding user suspended time
+         before the job is dispatched.
+.sp 2
+\fBPSUSP\fR
+.br
+         The total user suspended time of a pending job.
+.sp 2
+\fBRUN\fR
+.br
+         The total run time of the job.
+.sp 2
+\fBUSUSP\fR
+.br
+         The total user suspended time after the job is
+         dispatched.
+.sp 2
+\fBSSUSP \fR
+.br
+         The total system suspended time after the job is
+         dispatched.
+.sp 2
+\fBUNKWN \fR
+.br
+         The total unknown time of the job (job status becomes
+         unknown if the sbatchd daemon on the execution host is
+         temporarily unreachable).
+.sp 2
+\fBTOTAL\fR
+.br
+         The total time that the job spent in all states. For a
+         finished job, it is the turnaround time, which is the
+         time interval from job submission to job completion.
+.SH Output: Long format (-l)
+
+.sp 2
+The \fR-l\fR option displays a long format listing with the
+following extra fields:
+.sp 2
+\fBProject\fR
+.br
+         The project the job was submitted from.
+.sp 2
+\fBApplication Profile\fR
+.br
+         The application profile the job was submitted to.
+.sp 2
+\fBCommand \fR
+.br
+         The job command.
+.sp 2
+         Detailed history includes job group modification, the
+         date, and time the job was forwarded and the name of the
+         cluster to which the job was forwarded.
+.sp 2
+         The displayed job command can contain up to 4094
+         characters for UNIX, or up to 255 characters for
+         Windows.
+.sp 2
+\fBInitial checkpoint period\fR
+.br
+         The initial checkpoint period that is specified at the
+         job level with the bsub -k option, or in an application
+         profile with the \fBCHKPNT_INITPERIOD\fR parameter in
+         the lsb.applications file.
+.sp 2
+\fBCheckpoint period\fR
+.br
+         The checkpoint period that is specified at the job level
+         with the bsub -k option, in the queue with the
+         \fBCHKPNT\fR parameter in the lsb.queues file, or in an
+         application profile with the \fBCHKPNT_PERIOD\fR
+         parameter in the lsb.applications file.
+.sp 2
+\fBCheckpoint directory\fR
+.br
+         The checkpoint directory that is specified at the job
+         level with the bsub -k option, in the queue with the
+         \fBCHKPNT\fR parameter in the lsb.queues file, or in an
+         application profile with the \fBCHKPNT_DIR\fR parameter
+         in the lsb.applications file.
+.sp 2
+\fBMigration threshold\fR
+.br
+         The migration threshold that is specified at the job
+         level, with the bsub -mig option.
+.sp 2
+\fBRequested Resources \fR
+.br
+         Shows all the resource requirement strings that you
+         specified in the bsub command.
+.sp 2
+\fBExecution CWD \fR
+.br
+         The actual current working directory (CWD) that is used
+         when job runs.
+.sp 2
+\fBHost file\fR
+.br
+         The path to a user-specified host file that is used when
+         you submitted or modified the job.
+.sp 2
+\fBExecution Rusage \fR
+.br
+         Shown if the combined \fRRES_REQ\fR has an \fRrusage\fR
+         OR || construct. The chosen alternative is denoted here.
+.sp 2
+\fBEffective RES_REQ \fR
+.br
+         Displays a job\(aqs resource requirement as seen by the
+         scheduler after it resolves any OR constructs.
+.sp 2
+\fBResizable job information\fR
+.br
+         *  For \fRJOB_NEW\fR events, the bhist command displays
+            the autoresizable attribute and resize notification
+            command in the submission line.
+.sp 2
+         *  For \fRJOB_MODIFY2\fR events from the bmod command,
+            the bhist command displays the autoresizable
+            attribute and resize notification command in the
+            submission line.
+.sp 2
+            *  \fRbmod -arn \fIjobID\fR\fR
+.sp 2
+               Parameters of Job are changed: Autoresizable attribute is removed;
+.br
+
+.sp 2
+            *  \fRbmod -ar \fIjobID\fR\fR
+.sp 2
+               Parameters of Job are changed: Job changes to autoresizable;
+.br
+
+.sp 2
+            *  \fRbmod -rnc \fIresize_notification_cmd\fR
+               \fIjobID\fR\fR
+.sp 2
+               Parameters of Job are changed: Resize notification command changes to:
+.br
+               <resize_notification_cmd>;
+.br
+
+.sp 2
+            *  \fRbmod -rncn \fIjobID\fR\fR
+.sp 2
+               Parameters of Job are changed: Resize notification command is removed;
+.br
+
+.sp 2
+         *  For the \fRJOB_RESIZE_NOTIFY_START\fR event, the
+            bhist command displays the following message:
+.sp 2
+            Added <num_tasks> tasks on host <host_list>, <num_slots> additional slots allocated on <host_list>
+.sp 2
+         *  For the \fRJOB_RESIZE_NOTIFY_ACCEPT\fR event, the
+            bhist command displays the following messages:
+.sp 2
+            *  If the notification command is configured and the
+               sbatchd daemon successfully initializes the
+               notification command, the bhist command displays
+               the following message:
+.sp 2
+               Resize notification accepted. Notification command initialized (Command 
+.br
+               PID: 123456)
+.br
+
+.sp 2
+            *  If a notification command is not defined, the
+               bhist displays the following message:
+.sp 2
+               Resize notification accepted
+.br
+
+.sp 2
+            *  If the sbatchd daemon reports failure for whatever
+               reason, the bhist displays the following message:
+.sp 2
+               Resize notification failed
+.br
+
+.sp 2
+         *  For the \fRJOB_RESIZE_NOTIFY_DONE\fR event, the bhist
+            command displays the following messages:
+.sp 2
+            *  If status is 0, \fRResize notification command
+               completed\fR
+.sp 2
+            *  If status is 1, \fRResize notification command
+               failed\fR
+.sp 2
+         *  For \fRJOB_RESIZE_RELEASE\fR event, the bhist command
+            displays the following information:
+.sp 2
+            Release allocation on <num_hosts> Hosts/Processors <host_list> by user or
+.br
+            administrator <user_name>
+.br
+            Resize notification accepted;
+.br
+
+.sp 2
+            For the bmod -rncn option, the bhist command displays
+            the following message:
+.sp 2
+            Resize notification command disabled 
+.br
+
+.sp 2
+         *  For \fRJOB_RESIZE_CANCEL\fR event, the bhist command
+            displays the following message:
+.sp 2
+            Cancel pending allocation request
+.br
+
+.sp 2
+\fBSynchronous execution\fR
+.br
+         Job was submitted with the -K option. LSF submits the
+         job and waits for the job to complete.
+.sp 2
+\fBTerminated jobs: exit reasons\fR
+.br
+         For terminated jobs, displays exit reasons.
+.sp 2
+\fBInteractive jobs\fR
+.br
+         For interactive jobs, the bhist -l command does not
+         display information about the execution home directory,
+         current working directory, or running PID for the job.
+.sp 2
+\fBDispatched <number> Task(s) on Host(s)\fR
+.br
+         The number of tasks in the job and the hosts to which
+         those tasks were sent for processing. Displayed if the
+         \fBLSB_ENABLE_HPC_ALLOCATION=Y\fR parameter is set in
+         the lsf.conf file.
+.sp 2
+\fBAllocated <number> Slot(s) on Host(s)\fR
+.br
+         The number of slots that were allocated to the job based
+         on the number of tasks, and the hosts on which the slots
+         are allocated. Displayed if the
+         \fBLSB_ENABLE_HPC_ALLOCATION=Y\fR parameter is set in
+         the lsf.conf file.
+.sp 2
+\fBRequested Network and PE Network ID\fR
+.br
+         Network resource requirements for IBM Parallel Edition
+         (PE) jobs that are submitted with the bsub -network
+         option, or if the \fBNETWORK_REQ\fR parameter is
+         specified in a queue (defined in the lsb.queues file) or
+         an application profile (defined in the lsb.applications
+         file).
+.sp 2
+\fBDATA REQUIREMENTS\fR
+.br
+         The -l -data option displays a list of requested files
+         or tags for jobs with data requirements and any
+         modifications to data requirements.
+.SH Output: Affinity resource requirements information (-l -aff)
+
+.sp 2
+Use the -l -aff option to display historical job information
+about CPU and memory affinity resource requirements for job
+tasks. A table with the heading \fRAFFINITY\fR is displayed
+containing the detailed affinity information for each task, one
+line for each allocated processor unit. CPU binding and memory
+binding information are shown in separate columns in the display.
+.sp 2
+\fBHOST\fR
+.br
+         The host the task is running on.
+.sp 2
+\fBTYPE\fR
+.br
+         Requested processor unit type for CPU binding. One of
+         \fRnuma\fR, \fRsocket\fR, \fRcore\fR, or \fRthread\fR.
+.sp 2
+\fBLEVEL\fR
+.br
+         Requested processor unit binding level for CPU binding.
+         One of \fRnuma\fR, \fRsocket\fR, \fRcore\fR, or
+         \fRthread\fR. If no CPU binding level is requested, a
+         dash (\fR-\fR) is displayed.
+.sp 2
+\fBEXCL\fR
+.br
+         Requested processor unit binding level for exclusive CPU
+         binding. One of \fRnuma\fR, \fRsocket\fR, or \fRcore\fR.
+         If no exclusive binding level is requested, a dash
+         (\fR-\fR) is displayed.
+.sp 2
+\fBIDS\fR
+.br
+         List of physical or logical IDs of the CPU allocation
+         for the task.
+.sp 2
+         The list consists of a set of paths, represented as a
+         sequence of integers separated by slash characters
+         (\fR/\fR), through the topology tree of the host. Each
+         path identifies a unique processing unit that is
+         allocated to the task. For example, a string of the form
+         \fR3/0/5/12\fR represents an allocation to thread 12 in
+         core 5 of socket 0 in NUMA node 3. A string of the form
+         \fR2/1/4\fRrepresents an allocation to core 4 of socket
+         1 in NUMA node 2. The integers correspond to the node ID
+         numbers displayed in the topology tree from the bhosts
+         -aff command.
+.sp 2
+\fBPOL\fR
+.br
+         Requested memory binding policy. Either \fRlocal\fR or
+         \fRpref\fR. If no memory binding is requested, a dash
+         (\fR-\fR) is displayed.
+.sp 2
+\fBNUMA\fR
+.br
+         ID of the NUMA node that the task memory is bound to. If
+         no memory binding is requested, a dash (\fR-\fR) is
+         displayed.
+.sp 2
+\fBSIZE\fR
+.br
+         Amount of memory that is allocated for the task on the
+         NUMA node.
+.SH Output: Data requirements information (-l -data)
+
+.sp 2
+Use the -l -data option to display detailed information about
+jobs with data requirements. The heading \fRDATA REQUIREMENTS\fR
+is displayed followed by a list of the files or tags that are
+requested by the job, and any modifications made to the data
+requirements.
+.sp 2
+bhist -data -l 84046
+.br
+Job <84046>, User <user1>, Project <default>, Command <bstage out -src /home/
+.br
+                     user1/data2; bstage out -src /home/user1/data2 -dst /tmp; 
+.br
+                     datajob1.sh>
+.br
+Mon Aug 18 15:06:57: Submitted from host <hostA>, to Queue <normal>, CWD </sc
+.br
+                     ratch/user1/workspace/simulation/data/>, Data Require
+.br
+                     ment Requested;
+.br
+
+.br
+DATA REQUIREMENTS:
+.br
+
+.br
+ FILE: hostA:/home/user1/data2
+.br
+ SIZE: 40 MB
+.br
+ MODIFIED: Thu Aug 14 17:01:57
+.br
+
+.br
+ FILE: hostA:/home/user1/data3
+.br
+ SIZE: 45 MB
+.br
+ MODIFIED: Fri Aug 15 16:32:45
+.br
+Mon Aug 18 15:07:07: Dispatched to <hostB>, Effective RES_REQ <select[type == 
+.br
+                     local] order[r15s:pg] >;
+.br
+Mon Aug 18 15:07:07: Starting (Pid 16128);
+.br
+Mon Aug 18 15:07:07: Running with execution home </home/user1>, Execution CWD <
+.br
+                     /scratch/user1/workspace/simulation/data/>, Execution
+.br
+                     Pid <16128>;
+.br
+Mon Aug 18 15:08:47: Done successfully. The CPU time used is 0.4 seconds;
+.br
+Mon Aug 18 15:08:47: Post job process done successfully;
+.br
+
+.br
+MEMORY USAGE:
+.br
+MAX MEM: 3 Mbytes;  AVG MEM: 2 Mbytes
+.br
+
+.br
+Summary of time in seconds spent in various states by  Mon Aug 18 15:08:47
+.br
+  PEND     PSUSP    RUN      USUSP    SSUSP    UNKWN    TOTAL
+.br
+  10       0        100      0        0        0        110
+.br
+
+.SH Output: User-specifed host file (-l -hostfile)
+
+.sp 2
+Use the -l -hostfile option to display a user-specified host file
+that was submitted with a job or added to a job with the bmod
+command.
+.SH Files
+
+.sp 2
+Reads the \fRlsb.events\fR file.
+.SH See also
+
+.sp 2
+lsb.events file, bgadd, bgdel, bjgroup, bsub, bjobs, lsinfo
+commands
+.SH Time interval format
+
+.sp 2
+You use the time interval to define a start and end time for
+collecting the data to be retrieved and displayed. While you can
+specify both a start and an end time, you can also let one of the
+values default. You can specify either of the times as an
+absolute time, by specifying the date or time, or you can specify
+them relative to the current time.
+.sp 2
+Specify the time interval:
+.sp 2
+\fR\fIstart_time\fR,\fIend_time\fR|\fIstart_time\fR,|,\fIend_time\fR|\fIstart_time\fR\fR
+.sp 2
+Specify \fIstart_time\fR or \fIend_time\fR in the following
+format:
+.sp 2
+\fR[\fIyear\fR/][\fImonth\fR/][\fIday\fR][/\fIhour\fR:\fIminute\fR|/\fIhour\fR:]|.|.-\fIrelative_int\fR\fR
+.sp 2
+\fB\fIyear\fB\fR
+.br
+         Four-digit number that represents the calendar year.
+.sp 2
+\fB\fImonth\fB\fR
+.br
+         Number 1 - 12, where 1 is January and 12 is December.
+.sp 2
+\fB\fIday\fB\fR
+.br
+         Number 1 - 31, representing the day of the month.
+.sp 2
+\fB\fIhour\fB\fR
+.br
+         Integer 0 - 23, representing the hour of the day on a
+         24-hour clock.
+.sp 2
+\fB\fIminute\fB\fR
+.br
+         Integer 0 - 59, representing the minute of the hour.
+.sp 2
+\fB\fR.\fB (period)\fR
+.br
+         Represents the current \fRmonth/day/hour:minute\fR.
+.sp 2
+\fB\fR.-\fIrelative_int\fR\fB\fR
+.br
+         Number, 1 - 31, specifying a relative start or end time
+         before now.
+.sp 2
+         \fBstart_time,end_time\fR
+.br
+                  Specifies both the start and end times of the
+                  interval.
+.sp 2
+         \fBstart_time,\fR
+.br
+                  Specifies a start time, and lets the end time
+                  default to now.
+.sp 2
+         \fB,end_time\fR
+.br
+                  Specifies to start with the first logged
+                  occurrence, and end at the time specified.
+.sp 2
+         \fBstart_time\fR
+.br
+                  Starts at the beginning of the most specific
+                  time period that is specified, and ends at the
+                  maximum value of the time period specified. For
+                  example, \fR2/\fR specifies the month of
+                  February — start February 1 at 00:00 AM and end
+                  at the last possible minute in February (28
+                  February at midnight).
+.SH Absolute time examples
+
+.sp 2
+Assume that the current time is \fRMay 9 17:06 2008\fR:
+.sp 2
+\fR1,8\fR = \fRMay 1 00:00 2008\fR to \fRMay 8 23:59 2008\fR
+.sp 2
+\fR,4\fR = the time of the first occurrence to \fRMay 4 23:59
+2008\fR
+.sp 2
+\fR6\fR = \fRMay 6 00:00 2008\fR to \fRMay 6 23:59 2008\fR
+.sp 2
+\fR2/\fR = \fRFeb 1 00:00 2008\fR to \fRFeb 28 23:59 2008\fR
+.sp 2
+\fR/12:\fR = \fRMay 9 12:00 2008\fR to \fRMay 9 12:59 2008\fR
+.sp 2
+\fR2/1\fR = \fRFeb 1 00:00 2008\fR to \fRFeb 1 23:59 2008\fR
+.sp 2
+\fR2/1,\fR = \fRFeb 1 00:00\fR to the current time
+.sp 2
+\fR,.\fR = the time of the first occurrence to the current time
+.sp 2
+\fR,2/10:\fR = the time of the first occurrence to \fRMay 2 10:59
+2008\fR
+.sp 2
+\fR2001/12/31,2008/5/1\fR = from \fRDec 31 2001 00:00:00\fR to
+\fRMay 1 2008 23:59:59\fR
+.SH Relative time examples
+
+.sp 2
+\fR.-9,\fR = \fRApril 30 17:06 2008\fR to the current time
+.sp 2
+\fR,.-2/\fR = the time of the first occurrence to \fRMar 7 17:06
+2008\fR
+.sp 2
+\fR.-9,.-2\fR = nine days ago to two days ago (\fRApril 30 17:06
+2008\fR to \fRMay 7 17:06 2008\fR)

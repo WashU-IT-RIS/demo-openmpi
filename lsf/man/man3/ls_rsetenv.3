@@ -1,0 +1,60 @@
+.TH "ls_rsetenv" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ls_rsetenv \- ls_rsetenv 
+Sets up environment variables on a remote host.
+.PP
+\fBls_rsetenv\fP sets up the environment variables given in envp on the specified remote host. envp is a pointer to an array of strings of the form variable=value. When the environment variables are set, all remote tasks on the remote host acquire the environment setting until another call to this routine overrides it. A default set of environment variables is set up for the remote host if this routine is never called (see \fBls_rtask\fP). This call is typically used to propagate changes in the local environment to the remote hosts to which the application has connections.
+.PP
+Any program using this routine must call \fBls_initrex\fP first.
+.PP
+Any program using this API must be setuid to root if LSF_AUTH is not defined in the lsf.conf file.
+.PP
+\fB #include <lsf/lsf.h>\fP
+.PP
+\fB int ls_rsetenv(char *host, char **envp) \fP
+.PP
+.SH "Parameters:"
+\fI*host\fP The remote host upon which the environment is being set. 
+.br
+\fI**envp\fP A pointer to an array of strings of the form variable=value.
+.PP
+.SH "Data Structures:" 
+.PP
+none
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+int: 0 
+.br
+ The function was successful. 
+.PP
+int:-1 
+.br
+ Function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lserrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+${LSF_ENVDIR:-/etc}/lsf.conf
+.PP
+.SH "See also:"
+\fBls_rtask\fP 
+.PP
+\fBls_initrex\fP 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

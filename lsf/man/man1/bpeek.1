@@ -1,0 +1,89 @@
+
+.ad l
+
+.TH bpeek 1 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBbpeek\fR
+.ce 0
+
+.sp 2
+Displays the stdout and stderr output of an unfinished job.
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBbpeek\fR [\fB-f\fR] [\fB-q\fR queue_name | \fB-m\fR host_name
+| \fB-J\fR job_name | job_ID |
+\fB"\fRjob_ID\fB[\fRindex_list\fB]"\fR]
+.sp 2
+\fBbpeek\fR [\fB-h\fR | \fB-V\fR]
+.SH Description
+
+.sp 2
+Displays the standard output and standard error output that is
+produced by one of your unfinished jobs, up to the time that you
+run the command.
+.sp 2
+By default, displays the output by using the command cat.
+.sp 2
+This command is useful for monitoring the progress of a job and
+identifying errors. If errors are observed, valuable user time
+and system resources can be saved by stopping an erroneous job.
+.SH Options
+
+.sp 2
+\fB-f\fR
+.br
+         Displays the output of the job by using the command tail
+         -f. When the job is completed, the bpeek -f command
+         exits.
+.sp 2
+         If the peeked job is requeued or migrated, abort any
+         previous bpeek -f command and rerun the bpeek -f
+         command.
+.sp 2
+\fB-q \fIqueue_name\fB \fR
+.br
+         Operates on your most recently submitted job in the
+         specified queue.
+.sp 2
+\fB-m \fIhost_name\fB\fR
+.br
+         Operates on your most recently submitted job that was
+         dispatched to the specified host.
+.sp 2
+\fB-J \fIjob_name\fB\fR
+.br
+         Operates on your most recently submitted job that has
+         the specified job name.
+.sp 2
+         The job name can be up to 4094 characters long. Job
+         names are not unique.
+.sp 2
+         The wildcard character (\fR*\fR) can be used anywhere
+         within a job name, but it cannot appear within an array
+         index. For example, the pattern \fRjob*\fR returns
+         \fRjobA\fR and \fRjobarray[1]\fR. The \fR*AAA*[1]\fR
+         pattern returns the first element in job arrays with
+         names that contain \fRAAA\fR. However, the pattern
+         \fRjob1[*]\fR does not return anything since the
+         wildcard is within the array index.
+.sp 2
+\fB\fIjob_ID\fB | "\fIjob_ID[index_list]\fB" \fR
+.br
+         Operates on the specified job.
+.sp 2
+\fB-h \fR
+.br
+         Prints command usage to stderr and exits.
+.sp 2
+\fB-V \fR
+.br
+         Prints LSF release version to stderr and exits.
+.SH See also
+
+.sp 2
+cat, tail, bsub, bjobs, bhist, bhosts, bqueues

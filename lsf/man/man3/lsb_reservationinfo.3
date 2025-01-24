@@ -1,0 +1,273 @@
+.TH "lsb_reservationinfo" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_reservationinfo \- lsb_reservationinfo 
+Retrieve reservation information to display active advance reservations.
+.PP
+Use \fBlsb_reservationinfo\fP to retrieve reservation information from mbatchd. This function allocates memory that the caller should free.
+.PP
+If the \fBlsb_reservationinfo\fP function succeeds, it returns the reservation records pertaining to a particular reservation ID (rsvId) as an array of \fBrsvInfoEnt\fP structs.
+.PP
+If rsvId is NULL, all reservation information will be returned. If a particular rsvId is specified: 
+.PD 0
+
+.IP "\(bu" 2
+If found, the reservation record pertaining to a particular rsvId is returned 
+.IP "\(bu" 2
+If not found, the number of reservation records is set to zero and the lsberrno is set appropiately
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB struct \fBrsvInfoEnt\fP *lsb_reservationinfo(char *rsvId, int *numEnts, int options)\fP
+.PP
+.SH "Parameters:"
+\fI*rsvId\fP Reservation ID of the requested reservation. 
+.br
+\fI*numEnts\fP Number of reservation entries that mbatchd returns. 
+.br
+\fIoptions\fP The parameter options is currently ignored.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBrsvInfoEnt\fP 
+.br
+\fBhostRsvInfoEnt\fP
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+struct \fBrsvInfoEnt\fP *:A pointer to reservation infomation entry. 
+.br
+ Function was successful. 
+.PP
+NULL 
+.br
+ Function failed.
+.PP
+.SH "Errors:" 
+.PP
+On failure, lsberrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+brsvs
+.PP
+.SH "Files:" 
+.PP
+none
+.PP
+.SH "See also:"
+\fBlsb_addreservation\fP 
+.PP
+\fBlsb_modreservation\fP 
+.PP
+\fBlsb_removereservation\fP 
+.PP
+
+.ad l
+.nh
+.SH NAME
+rsvInfoEnt \- reservation information entry.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBoptions\fP"
+.br
+.ti -1c
+.RI "char * \fBrsvId\fP"
+.br
+.ti -1c
+.RI "char * \fBname\fP"
+.br
+.ti -1c
+.RI "int \fBnumRsvHosts\fP"
+.br
+.ti -1c
+.RI "struct \fBhostRsvInfoEnt\fP * \fBrsvHosts\fP"
+.br
+.ti -1c
+.RI "char * \fBtimeWindow\fP"
+.br
+.ti -1c
+.RI "int \fBnumRsvJobs\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT * \fBjobIds\fP"
+.br
+.ti -1c
+.RI "int * \fBjobStatus\fP"
+.br
+.ti -1c
+.RI "char * \fBdesc\fP"
+.br
+.ti -1c
+.RI "char ** \fBdisabledDurations\fP"
+.br
+.ti -1c
+.RI "int \fBstate\fP"
+.br
+.ti -1c
+.RI "char * \fBnextInstance\fP"
+.br
+.ti -1c
+.RI "char * \fBcreator\fP"
+.br
+.ti -1c
+.RI "char * \fBrsvUnit\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+reservation information entry. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBrsvInfoEnt::options\fP"
+.PP
+Reservation options, see \fBreservation_option\fP. 
+.PP
+.SS "char* \fBrsvInfoEnt::rsvId\fP"
+.PP
+Reservation ID returned from mbatchd. 
+.PP
+If the reservation fails, this is NULL. The memory for rsvid is allocated by the caller. 
+.SS "char* \fBrsvInfoEnt::name\fP"
+.PP
+LSF user group name for the reservation. 
+.PP
+See the -g option of brsvadd. 
+.SS "int \fBrsvInfoEnt::numRsvHosts\fP"
+.PP
+Number of hosts reserved. 
+.PP
+.SS "struct \fBhostRsvInfoEnt\fP* \fBrsvInfoEnt::rsvHosts\fP"
+.PP
+Info about the reserved hosts. 
+.PP
+.SS "char* \fBrsvInfoEnt::timeWindow\fP"
+.PP
+Active time window for a recurring reservation. 
+.PP
+See the -t option of brsvadd. 
+.SS "int \fBrsvInfoEnt::numRsvJobs\fP"
+.PP
+Number of jobs running in the reservation. 
+.PP
+
+.SS "LS_LONG_INT* \fBrsvInfoEnt::jobIds\fP"
+.PP
+Job IDs of jobs running in the reservation. 
+.PP
+
+.SS "int* \fBrsvInfoEnt::jobStatus\fP"
+.PP
+Status of jobs running in the reservation. 
+.PP
+
+.SS "char* \fBrsvInfoEnt::desc\fP"
+.PP
+Description for the reservation to be created. 
+.PP
+The description must be provided as a double quoted text string. The maximum length is 512 chars. Equivalent to the value of brsvadd -d. 
+.SS "char** \fBrsvInfoEnt::disabledDurations\fP"
+.PP
+Null-terminated list of disabled durations. 
+.PP
+.SS "int \fBrsvInfoEnt::state\fP"
+.PP
+The current state of the reservation - active or inactive. 
+.PP
+
+.SS "char* \fBrsvInfoEnt::nextInstance\fP"
+.PP
+The time of the next instance of a recurring reservation. 
+.PP
+
+.SS "char* \fBrsvInfoEnt::creator\fP"
+.PP
+Creator of the reservation. 
+.PP
+
+.SS "char* \fBrsvInfoEnt::rsvUnit\fP"
+.PP
+Reservation resource unit. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+hostRsvInfoEnt \- host reservation infromation entry.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBhost\fP"
+.br
+.ti -1c
+.RI "int \fBnumCPUs\fP"
+.br
+.ti -1c
+.RI "int \fBnumSlots\fP"
+.br
+.ti -1c
+.RI "int \fBnumRsvProcs\fP"
+.br
+.ti -1c
+.RI "int \fBnumusedRsvProcs\fP"
+.br
+.ti -1c
+.RI "int \fBnumUsedProcs\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+host reservation infromation entry. 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fBhostRsvInfoEnt::host\fP"
+.PP
+Host name. 
+.PP
+
+.SS "int \fBhostRsvInfoEnt::numCPUs\fP"
+.PP
+Number of CPUs reserved on the host. 
+.PP
+
+.SS "int \fBhostRsvInfoEnt::numSlots\fP"
+.PP
+Number of job slots reserved on the host. 
+.PP
+
+.SS "int \fBhostRsvInfoEnt::numRsvProcs\fP"
+.PP
+Number of processors reserved on the host. 
+.PP
+
+.SS "int \fBhostRsvInfoEnt::numusedRsvProcs\fP"
+.PP
+Count for used + suspended from reserved slots. 
+.PP
+.SS "int \fBhostRsvInfoEnt::numUsedProcs\fP"
+.PP
+Number of processors in use on the host. 
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

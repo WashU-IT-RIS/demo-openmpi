@@ -1,0 +1,352 @@
+
+.ad l
+
+.TH lim 8 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBlim\fR
+.ce 0
+
+.sp 2
+Load information manager (LIM) daemon or service, monitoring host
+load.
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBlim\fR [\fB-C\fR] [\fB-t\fR] [\fB-T\fR] [\fB-vm\fR] [\fB-d\fR
+conf_dir] [\fB-\fRdebug_level]
+.sp 2
+\fBlim -h\fR
+.sp 2
+\fBlim -V\fR
+.SH Description
+
+.sp 2
+There is one lim daemon or service on every host in the cluster.
+Of these, one lim from the management host list is elected
+management host LIM for the cluster. The management host LIM
+receives load information from the other lim daemons, and
+provides services to all host.
+.sp 2
+The lim does the following for the host on which it runs:
+.sp 2
+*  Starts pem on that host
+.sp 2
+*  Provides system configuration information to vemkd
+.sp 2
+*  Monitors load and provides load information statistics to
+   vemkd and users
+.sp 2
+The management host LIM starts vemkd and pem on the management
+host.
+.sp 2
+The non-management host LIM daemons monitor the status of the
+management host LIM and elect a new management host (from the
+management host list) if the current management host LIM becomes
+unavailable.
+.sp 2
+Collectively, the LIMs in the cluster coordinate the collection
+and transmission of load information. Load information is
+collected in the form of load indices.
+.sp 2
+\fBCAUTION: \fRNever start the daemon manually without options:
+specify the -V option to check the version, the -d option to
+start the daemon in debug mode, or the -C option to validate its
+configuration files.
+.SH Options
+
+.sp 2
+\fB-d conf_dir\fR
+.br
+         Starts the daemon, reading from the LSF configuration
+         file ego.conf in the specified directory, rather than
+         from the directory set via the EGO_CONFDIR environment
+         variable.
+.sp 2
+         Use this option when starting the daemon in debug mode.
+.sp 2
+         \fBCAUTION: \fRNever start the daemon manually unless
+         directed to do so by Product Support.
+.sp 2
+\fB-\fIdebug_level\fB\fR
+.br
+         Starts the lim in debug mode. When running in debug
+         mode, the lim uses a hard-coded port number rather than
+         the one registered in system services.
+.sp 2
+         Specify one of the following values:
+.sp 2
+         \fB-1\fR
+.br
+                  Starts the lim in the background, with no
+                  associated control terminal.
+.sp 2
+         \fB-2\fR
+.br
+                  Starts the lim in the foreground, displaying
+                  the log messages to the terminal.
+.sp 2
+         \fBCAUTION: \fRNever start the daemon manually unless
+         directed to do so by Product Support.
+.sp 2
+\fB-t\fR
+.br
+         Displays host information, such as host type, host
+         architecture, number of physical processors, number of
+         cores per physical processor, number of threads per
+         core, and license requirements.
+.sp 2
+         \fBNote: \fRWhen running Linux kernel version 2.4, you
+         must run lim -t as root to ensure consistent output with
+         other clustered application management commands (for
+         example, output from running theLSF command lshosts).
+.sp 2
+\fB-T \fR
+.br
+         Displays host topology information for each host or
+         cluster. Topology is displayed by \fIprocessor unit\fR
+         level: NUMA node, if present, socket, core, and thread,
+.sp 2
+         A socket is a collection of cores with a direct pipe to
+         memory. Each socket contains 1 or more cores. This does
+         not necessarily refer to a physical socket, but rather
+         to the memory architecture of the machine.
+.sp 2
+         A core is a single entity capable of performing
+         computations.
+.sp 2
+         A node contains sockets, a socket contains cores, and a
+         core can contain threads if the core is enabled for
+         multithreading.
+.sp 2
+         The following fields are displayed:
+.sp 2
+         \fBHost[\fImemory\fB] \fIhost_name\fB\fR
+.br
+                  Maximum memory available on the host followed
+                  by the host name. If memory availability cannot
+                  be determined, a dash (\fR-\fR) is displayed
+                  for the host.
+.sp 2
+                  For hosts that do not support affinity
+                  scheduling, a dash (\fR-\fR) is displayed for
+                  host memory and no host topology is displayed.
+.sp 2
+         \fBNUMA[\fInuma_node\fB: \fImax_mem\fB]\fR
+.br
+                  Maximum NUMA node memory. It is possible for
+                  requested memory for the NUMA node to be
+                  greater than the maximum available memory
+                  displayed.
+.sp 2
+                  If no NUMA nodes are present, then the NUMA
+                  layer in the output is not shown. Other
+                  relevant items such as host, socket, core and
+                  thread are still shown.
+.sp 2
+                  If the host is not available, only the host
+                  name is displayed. A dash (\fR-\fR) is shown
+                  where available host memory would normally be
+                  displayed.
+.sp 2
+         In the following example, full topology (NUMA, socket,
+         and core) information is shown for \fRhostA\fR:
+.sp 2
+         lim -T
+.br
+         Host[24G] hostA
+.br
+             NUMA[0: 24G]
+.br
+                 Socket
+.br
+                     core(0)
+.br
+                     core(1)
+.br
+                     core(2)
+.br
+                     core(3)
+.br
+                 Socket
+.br
+                     core(4)
+.br
+                     core(5)
+.br
+                     core(6)
+.br
+                     core(7)
+.sp 2
+         Host \fRhostB\fR has a different architecture:
+.sp 2
+         lim -T
+.br
+         Host[63G] hostB
+.br
+             Socket
+.br
+                 NUMA[0: 16G]
+.br
+                     core(0)
+.br
+                     core(2)
+.br
+                     core(4)
+.br
+                     core(6)
+.br
+                 NUMA[1: 16G]
+.br
+                     core(8)
+.br
+                     core(10)
+.br
+                     core(12)
+.br
+                     core(14)
+.br
+             Socket
+.br
+                 NUMA[2: 16G]
+.br
+                     core(1)
+.br
+                     core(3)
+.br
+                     core(5)
+.br
+                     core(7)
+.br
+                 NUMA[3: 16G]
+.br
+                     core(9)
+.br
+                     core(11)
+.br
+                     core(13)
+.br
+                     core(15)
+.sp 2
+         When LSF cannot detect processor unit topology, it
+         displays processor units to the closest level. For
+         example:
+.sp 2
+         lim -T
+.br
+              Host[1009M] hostA 
+.br
+                     Socket (0 1)
+.br
+         
+.br
+
+.sp 2
+         On \fRhostA\fR there are two processor units: 0 and 1.
+         LSF cannot detect core information, so the processor
+         unit is attached to the socket level.
+.sp 2
+\fB-vm \fR
+.br
+
+.sp 2
+\fB-h\fR
+.br
+         Outputs command usage and exits.
+.sp 2
+\fB-V\fR
+.br
+         Outputs product version and exits.
+.SH Files
+
+.sp 2
+\fBego.conf\fR
+.br
+         The lim reads the configuration file ego.conf to
+         retrieve configuration information. ego.conf is a
+         generic configuration file shared by all
+         daemons/services and clients. It contains configuration
+         information and other information that dictates the
+         behavior of the software.
+.sp 2
+         Some of the parameters lim retrieves from ego.conf are
+         as follows:
+.sp 2
+         \fBEGO_LIM_PORT\fR
+.br
+                  The TCP port the lim uses to serve all
+                  applications.
+.sp 2
+         \fBEGO_SERVERDIR\fR
+.br
+                  The directory used for reconfiguring the
+                  LIM—where the lim binary is stored.
+.sp 2
+         \fBEGO_LOGDIR\fR
+.br
+                  The directory used for message logs.
+.sp 2
+         \fBEGO_LOG_MASK\fR
+.br
+                  The log level used to determine the amount of
+                  detail logged.
+.sp 2
+         \fBEGO_DEBUG_LIM\fR
+.br
+                  The log class setting for lim.
+.sp 2
+         \fBEGO_ENTITLEMENT_FILE\fR
+.br
+                  The full path to and name of the entitlement
+                  file.
+.sp 2
+         \fBEGO_DEFINE_NCPUS\fR
+.br
+                  Defines whether ncpus is to be defined as
+                  procs, cores, or threads. This parameter
+                  overrides LSF_ENABLE_DUALCORE. If
+                  EGO_ENABLE_DUALCORE is set, EGO_DEFINE_NCPUS
+                  settings take precedent.
+.sp 2
+                  *  procs (if ncpus defined as procs, then ncpus
+                     = nprocs)cores (if ncpus defined as cores,
+                     then ncpus = nprocs x ncores)
+.sp 2
+                  *  threads (if ncpus defined as threads, then
+                     ncpus = nprocs x ncores x nthreads)
+.sp 2
+                  \fBNote: \fR
+.sp 2
+                  When EGO_DEFINE_NCPUS is set, run queue-length
+                  values (r1* values returned by lsload) are
+                  automatically normalized based on the set
+                  value.
+.sp 2
+                  If EGO_DEFINE_NCPUS is not defined, but
+                  EGO_ENABLE_DUALCORE is set, the lim reports the
+                  number of cores. If both EGO_DEFINE_NCPUS and
+                  LSF_ENABLE_DUALCORE are set, then the EGO
+                  parameter takes precedence.
+.sp 2
+         \fBEGO_ENABLE_DUALCORE\fR
+.br
+                  Defines if the hosts have dual cores or not. Is
+                  overridden by EGO_DEFINE_NCPUS, if set.
+.sp 2
+                  \fBNote: \fRIf EGO_DEFINE_NCPUS is not defined,
+                  but EGO_ENABLE_DUALCORE is set, the lim reports
+                  the number of cores. If both EGO_DEFINE_NCPUS
+                  and LSF_ENABLE_DUALCORE are set, then the EGO
+                  parameter takes precedence.
+.SH Customization
+
+.sp 2
+You can customize the lim by changing configuration files in
+EGO_CONFDIR directory. Configure ego.cluster.<\fIcluster_name\fR>
+to define various cluster properties such as the resources on
+individual hosts, the load threshold values for a host, and so
+on. Configure ego.shared to define host models read by the lim,
+or the CPU factor of individual hosts.

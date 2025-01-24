@@ -1,0 +1,33 @@
+.TH "extsched_getPreemptableJobs" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+extsched_getPreemptableJobs \- extsched_getPreemptableJobs 
+Function to get the list of jobs that are preemptable by the given job on the given host.
+.PP
+The list includes both SUSP and PEND jobs that are on the host.
+.PP
+Caller should call free() on preemptableJob when done with this.
+.PP
+\fB#include <lssched.h>\fP
+.PP
+\fB extsched_getPreemptableJobs(INT_Job *job, char *host, int *nPreemptableJob, INT_Job ***preemptableJob)\fP
+.PP
+.SH "Parameters:"
+\fIjob\fP [IN] : a job 
+.br
+\fIhost\fP [IN] : a host 
+.br
+\fInPreemptableJob\fP [OUT] : number of preemptable jobs 
+.br
+\fIpreemptableJob\fP [OUT] : list of preemptable jobs
+.PP
+.SH "Returns:"
+int:0 . 
+.PP
+int:-1 . 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

@@ -1,0 +1,54 @@
+.TH "lsb_getalloc" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_getalloc \- lsb_getalloc 
+Allocates memory for a host list to be used for launching parallel tasks through blaunch and the \fBlsb_launch\fP API.
+.PP
+It is the responsibility of the caller to free the host list when it is no longer needed.On success, the host list will be a list of strings. Before freeing host list, the individual elements must be freed.
+.PP
+An application using the \fBlsb_getalloc\fP API is assumed to be part of an LSF job, and that LSB_MCPU_HOSTS is set in the environment.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB int lsb_getalloc(char ***hostlist)\fP
+.PP
+.SH "Parameters:"
+\fI***hostlist\fP [OUT] A null-terminated list of host names
+.PP
+.SH "Data Structures:" 
+.PP
+none
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+> 0 
+.br
+ Function was successful. Returns length of hostlist, not including the null last element. 
+.PP
+< 0 
+.br
+ Function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lsberrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+none
+.PP
+.SH "See also:"
+none 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

@@ -1,0 +1,527 @@
+.TH "glb_info" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+glb_info \- glb_info 
+Returns an array of license features information.
+.PP
+\fBglb_info\fP returns an array of \fBglbInfo\fP structures, which contains the license features information as configured in the Feature section of glb.conf.
+.PP
+\fB #include <glb/glb.h>\fP
+.PP
+\fB struct \fBglbInfo\fP *glb_info(struct \fBglbHandle\fP *h2, int *num) \fP
+.PP
+.SH "Parameters:"
+\fI*h2\fP The License Scheduler daemon containing the desired license features information.
+.br
+\fI*num\fP The number of desired \fBglbInfo\fP structures returned in the array.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBglbHandle\fP 
+.br
+\fBglbInfo\fP 
+.br
+\fBglbSrvDomain\fP 
+.br
+\fBglbProject\fP 
+.br
+\fBrealServer\fP
+.PP
+.SH "Define Statements:" 
+.PP
+none
+.PP
+.SH "Returns:"
+*glbInfo 
+.br
+ A list of parameters associated with the License Scheduler daemon.
+.PP
+.SH "Errors:" 
+.PP
+On failure, glberrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+none
+.PP
+.SH "See also:"
+\fBglb_jobinfo\fP 
+.PP
+\fBglb_param\fP 
+.PP
+\fBglb_perror\fP 
+.PP
+\fBglb_userinfo\fP 
+.PP
+\fBglb_workloadinfo\fP 
+.PP
+
+.ad l
+.nh
+.SH NAME
+glbHandle \- This handle represent a live connection to globd.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBname\fP"
+.br
+.ti -1c
+.RI "int \fBhandle\fP"
+.br
+.ti -1c
+.RI "struct sockaddr_storage \fBglobd\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+This handle represent a live connection to globd. 
+
+The API and the globd communicate over a TCP/IP connection. The handle member name holds the authentication informations needed by globd to authorise token withdraw from a project by a connected client, LSF mbatchd or taskman. Only the API that requests tokens, glb_gettokens() and the administrative API glb_admin() need to set the name member because they require authentication. Other API do not need to manage the handle explicitly. 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fBglbHandle::name\fP"
+.PP
+client name 
+.PP
+.SS "int \fBglbHandle::handle\fP"
+.PP
+channel handle 
+.PP
+.SS "struct sockaddr_storage \fBglbHandle::globd\fP"
+.PP
+details socket information 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+glbInfo \- This data structure represent the license features information as configured in the Begin/End Feature section of the glb.conf file.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBfeatureName\fP"
+.br
+.ti -1c
+.RI "int \fBnumdomains\fP"
+.br
+.ti -1c
+.RI "struct \fBglbSrvDomain\fP * \fBdomains\fP"
+.br
+.ti -1c
+.RI "bool_t \fBuseGroup\fP"
+.br
+.ti -1c
+.RI "int \fBusePercent\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+This data structure represent the license features information as configured in the Begin/End Feature section of the glb.conf file. 
+
+An array of these data structures is returned by the \fBglb_info\fP API. 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fBglbInfo::featureName\fP"
+.PP
+Feature name. 
+.PP
+.SS "int \fBglbInfo::numdomains\fP"
+.PP
+Number of domains. 
+.PP
+.SS "struct \fBglbSrvDomain\fP* \fBglbInfo::domains\fP"
+.PP
+Informations of domains. 
+.PP
+.SS "bool_t \fBglbInfo::useGroup\fP"
+.PP
+If it used group. 
+.PP
+.SS "int \fBglbInfo::usePercent\fP"
+.PP
+Use percentage. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+glbSrvDomain \- This data structure represent the Service Domain that groups the license servers as defined in the Begin/End section of the glb.conf file.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBdomainName\fP"
+.br
+.ti -1c
+.RI "int \fBtotal\fP"
+.br
+.ti -1c
+.RI "int \fBfree\fP"
+.br
+.ti -1c
+.RI "int \fBunalloc\fP"
+.br
+.ti -1c
+.RI "int \fBnumprojects\fP"
+.br
+.ti -1c
+.RI "char * \fBservers\fP"
+.br
+.ti -1c
+.RI "struct \fBglbProject\fP * \fBprojects\fP"
+.br
+.ti -1c
+.RI "int \fBnumServers\fP"
+.br
+.ti -1c
+.RI "struct \fBrealServer\fP * \fBrealServers\fP"
+.br
+.ti -1c
+.RI "double \fBlsf_load\fP"
+.br
+.ti -1c
+.RI "double \fBnlsf_load\fP"
+.br
+.ti -1c
+.RI "int \fBdeltaType\fP"
+.br
+.ti -1c
+.RI "union {"
+.br
+.ti -1c
+.RI "   float \fBmult\fP"
+.br
+.ti -1c
+.RI "   int \fBabs\fP"
+.br
+.ti -1c
+.RI "} \fBdelta\fP"
+.br
+.ti -1c
+.RI "unsigned int \fBflags\fP"
+.br
+.ti -1c
+.RI "int \fBothers\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+This data structure represent the Service Domain that groups the license servers as defined in the Begin/End section of the glb.conf file. 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fBglbSrvDomain::domainName\fP"
+.PP
+domain name 
+.PP
+.SS "int \fBglbSrvDomain::total\fP"
+.PP
+total number 
+.PP
+.SS "int \fBglbSrvDomain::free\fP"
+.PP
+free number 
+.PP
+.SS "int \fBglbSrvDomain::unalloc\fP"
+.PP
+un-allocate number 
+.PP
+.SS "int \fBglbSrvDomain::numprojects\fP"
+.PP
+projects number 
+.PP
+.SS "char* \fBglbSrvDomain::servers\fP"
+.PP
+servers 
+.PP
+.SS "struct \fBglbProject\fP* \fBglbSrvDomain::projects\fP"
+.PP
+projects 
+.PP
+.SS "int \fBglbSrvDomain::numServers\fP"
+.PP
+number of servers 
+.PP
+.SS "struct \fBrealServer\fP* \fBglbSrvDomain::realServers\fP"
+.PP
+real servers 
+.PP
+.SS "double \fBglbSrvDomain::lsf_load\fP"
+.PP
+LSF load information. 
+.PP
+.SS "double \fBglbSrvDomain::nlsf_load\fP"
+.PP
+NON-LSF load information. 
+.PP
+.SS "int \fBglbSrvDomain::deltaType\fP"
+.PP
+feature delta Type 
+.PP
+.SS "float \fBglbSrvDomain::mult\fP"
+.PP
+mult 
+.PP
+.SS "int \fBglbSrvDomain::abs\fP"
+.PP
+abs 
+.PP
+.SS "union { ... }  \fBglbSrvDomain::delta\fP"
+.PP
+feature delta 
+.PP
+.SS "unsigned int \fBglbSrvDomain::flags\fP"
+.PP
+cluster mode flags 
+.PP
+.SS "int \fBglbSrvDomain::others\fP"
+.PP
+use outside LSF (cluster mode) 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+glbProject \- This is the representation of the Project that is assigned a share of license under a specific feature.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBprojectName\fP"
+.br
+.ti -1c
+.RI "int \fBideal\fP"
+.br
+.ti -1c
+.RI "int \fBinuse\fP"
+.br
+.ti -1c
+.RI "int \fBfree\fP"
+.br
+.ti -1c
+.RI "int \fBreserve\fP"
+.br
+.ti -1c
+.RI "int \fBneed\fP"
+.br
+.ti -1c
+.RI "double \fBthreshold\fP"
+.br
+.ti -1c
+.RI "double \fBaccuinuse\fP"
+.br
+.ti -1c
+.RI "int \fBowned\fP"
+.br
+.ti -1c
+.RI "int \fBownedPer\fP"
+.br
+.ti -1c
+.RI "int \fBpriority\fP"
+.br
+.ti -1c
+.RI "int \fBnonShared\fP"
+.br
+.ti -1c
+.RI "int \fBnonSharedPer\fP"
+.br
+.ti -1c
+.RI "char \fBpD\fP [MAXDESCRIPTION]"
+.br
+.ti -1c
+.RI "int \fBallocated\fP"
+.br
+.ti -1c
+.RI "int \fBpeakInuse\fP"
+.br
+.ti -1c
+.RI "int \fBbuffer\fP"
+.br
+.ti -1c
+.RI "int \fBpeakInusePeriod\fP"
+.br
+.ti -1c
+.RI "unsigned int \fBflags\fP"
+.br
+.ti -1c
+.RI "int \fBoveruse\fP"
+.br
+.ti -1c
+.RI "char * \fBsubname\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+This is the representation of the Project that is assigned a share of license under a specific feature. 
+
+GLB manages tokens and assign them to Projects. 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fBglbProject::projectName\fP"
+.PP
+project (or cluster) name 
+.PP
+.SS "int \fBglbProject::ideal\fP"
+.PP
+ideal 
+.PP
+.SS "int \fBglbProject::inuse\fP"
+.PP
+inuse number 
+.PP
+.SS "int \fBglbProject::free\fP"
+.PP
+free number 
+.PP
+.SS "int \fBglbProject::reserve\fP"
+.PP
+reserve number 
+.PP
+.SS "int \fBglbProject::need\fP"
+.PP
+need number 
+.PP
+.SS "double \fBglbProject::threshold\fP"
+.PP
+threshold 
+.PP
+.SS "double \fBglbProject::accuinuse\fP"
+.PP
+accuinuse 
+.PP
+.SS "int \fBglbProject::owned\fP"
+.PP
+owned 
+.PP
+.SS "int \fBglbProject::ownedPer\fP"
+.PP
+owned percentage 
+.PP
+.SS "int \fBglbProject::priority\fP"
+.PP
+priority 
+.PP
+.SS "int \fBglbProject::nonShared\fP"
+.PP
+non-shared number 
+.PP
+.SS "int \fBglbProject::nonSharedPer\fP"
+.PP
+non-shared percentage 
+.PP
+.SS "char \fBglbProject::pD\fP[MAXDESCRIPTION]"
+.PP
+project description 
+.PP
+.SS "int \fBglbProject::allocated\fP"
+.PP
+cluster allocation 
+.PP
+.SS "int \fBglbProject::peakInuse\fP"
+.PP
+peak inuse 
+.PP
+.SS "int \fBglbProject::buffer\fP"
+.PP
+allocation buffer 
+.PP
+.SS "int \fBglbProject::peakInusePeriod\fP"
+.PP
+PEAK_INUSE_PERIOD defined in Feature section. 
+.PP
+.SS "unsigned int \fBglbProject::flags\fP"
+.PP
+flags used to support cluster mode 
+.PP
+.SS "int \fBglbProject::overuse\fP"
+.PP
+how much to adjust the allocation for overuse 
+.PP
+.SS "char* \fBglbProject::subname\fP"
+.PP
+Name of XL submission cluster name. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+realServer \- The real server is a physical server named as port@host.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char * \fBname\fP"
+.br
+.ti -1c
+.RI "int \fBtotal\fP"
+.br
+.ti -1c
+.RI "int \fBfree\fP"
+.br
+.ti -1c
+.RI "int \fBreserve\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+The real server is a physical server named as port@host. 
+
+The featureRealServerInfo contains curent license usage for each real server. 
+.SH "Field Documentation"
+.PP 
+.SS "char* \fBrealServer::name\fP"
+.PP
+server name 
+.PP
+.SS "int \fBrealServer::total\fP"
+.PP
+total number 
+.PP
+.SS "int \fBrealServer::free\fP"
+.PP
+free number 
+.PP
+.SS "int \fBrealServer::reserve\fP"
+.PP
+reserve number 
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

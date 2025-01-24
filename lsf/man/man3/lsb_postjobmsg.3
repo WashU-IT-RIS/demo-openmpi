@@ -1,0 +1,221 @@
+.TH "lsb_postjobmsg" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_postjobmsg \- lsb_postjobmsg 
+Sends messages and data posted to a job.
+.PP
+Use \fBlsb_postjobmsg\fP to post a message and data to a job, open a TCP connection, and transfer attached message and data from the mbatchd. Use \fBlsb_readjobmsg\fP to display messages and copy data files posted by \fBlsb_postjobmsg\fP.
+.PP
+While you can post multiple messages and attached data files to a job, you must call \fBlsb_postjobmsg\fP for each message and attached data file you want to post. By default, \fBlsb_postjobmsg\fP posts a message to position 0 of the message index (msgId) (see PARAMETERS) of the specified job. To post additional messages to a job, call \fBlsb_postjobmsg\fP and increment the message index.
+.PP
+\fBlsb_readjobmsg\fP reads posted job messages by their position in the message index.
+.PP
+If a data file is attached to a message and the flag EXT_ATTA_POST is set, use the JOB_ATTA_DIR parameter in lsb.params(5) to specify the directory where attachment data fies are saved. The directory must have at least 1MB of free space.The mbatchd checks for available space in the job attachment directory before transferring the file.
+.PP
+Use the MAX_JOB_ATTA_SIZE parameter in lsb.params(5) to set a maximum size for job message attachments.
+.PP
+Users can only send messages and data from their own jobs. Root and LSF administrators can also send messages of jobs submtted by other users, but they cannot attach data files to jobs owned by other users.
+.PP
+You can post messages and data to a job until it is cleaned from the system. You cannot send messages and data to finished or exited jobs.
+.PP
+\fB#include <lsf/lsbatch.h> 
+.br
+ #include <time.h>\fP
+.PP
+\fB int lsb_postjobmsg(struct \fBjobExternalMsgReq\fP *jobExternalMsg, char *filename)\fP
+.PP
+.SH "Parameters:"
+\fI*jobExternalMsg\fP This structure contains the information required to define an external message of a job. 
+.br
+\fI*filename\fP Name of attached data file. If no file is attached, use NULL.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBjobExternalMsgReq\fP
+.PP
+.SH "Define Statements:" 
+.PP
+\fBexternal_msg_post\fP
+.PP
+.SH "Returns:"
+int:value 
+.br
+ The successful function returns a socket number. 
+.PP
+int:0 
+.br
+ The EXT_ATTA_POST bit of options is not set or there is no attached data. 
+.PP
+int:-1 
+.br
+ The function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lserrno is set to indicate the error.
+.PP
+.SH "Equivalent line command:" 
+.PP
+bpost
+.PP
+.SH "Files:" 
+.PP
+$LSB_CONFDIR/cluster_name/configdir/lsb.params 
+.br
+ $JOB_ATTA_DIR 
+.br
+ $LSB_SHAREDIR/info/
+.PP
+.SH "See also:"
+\fBlsb_readjobmsg\fP 
+.PP
+
+.ad l
+.nh
+.SH NAME
+jobExternalMsgReq \- structure \fBjobExternalMsgReq\fP contains the information required to define an external message of a job.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBoptions\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT \fBjobId\fP"
+.br
+.ti -1c
+.RI "char * \fBjobName\fP"
+.br
+.ti -1c
+.RI "int \fBmsgIdx\fP"
+.br
+.ti -1c
+.RI "char * \fBdesc\fP"
+.br
+.ti -1c
+.RI "int \fBuserId\fP"
+.br
+.ti -1c
+.RI "long \fBdataSize\fP"
+.br
+.ti -1c
+.RI "time_t \fBpostTime\fP"
+.br
+.ti -1c
+.RI "char * \fBuserName\fP"
+.br
+.ti -1c
+.RI "int \fBnotify_level\fP"
+.br
+.ti -1c
+.RI "int \fBdesc_len\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+structure \fBjobExternalMsgReq\fP contains the information required to define an external message of a job. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBjobExternalMsgReq::options\fP"
+.PP
+Specifies if the message has an attachment to be read. 
+.PP
+<lsf/lsbatch.h> defines the following flags constructed from bits. These flags correspond to options. 
+.br
+ EXT_MSG_READ 
+.br
+ Read the external job message. There is no attached data file. 
+.br
+ EXT_ATTA_READ 
+.br
+ Read the external job message and data file posted to the job. 
+.br
+ If there is no data file attached, the error message 'The attached data of the message is not available' is displayed, and the external job message is displayed. 
+.SS "LS_LONG_INT \fBjobExternalMsgReq::jobId\fP"
+.PP
+The system generated job Id of the job. 
+.PP
+
+.SS "char* \fBjobExternalMsgReq::jobName\fP"
+.PP
+The name of the job if jobId is undefined (<=0). 
+.PP
+.SS "int \fBjobExternalMsgReq::msgIdx\fP"
+.PP
+The message index. 
+.PP
+A job can have more than one message. Use msgIdx in an array to index messages. 
+.SS "char* \fBjobExternalMsgReq::desc\fP"
+.PP
+Text description of the msg. 
+.PP
+.SS "int \fBjobExternalMsgReq::userId\fP"
+.PP
+The userId of the author of the message. 
+.PP
+
+.SS "long \fBjobExternalMsgReq::dataSize\fP"
+.PP
+The size of the data file. 
+.PP
+If no data file is attached, the size is 0. 
+.SS "time_t \fBjobExternalMsgReq::postTime\fP"
+.PP
+The time the author posted the message. 
+.PP
+
+.SS "char* \fBjobExternalMsgReq::userName\fP"
+.PP
+The author of the message. 
+.PP
+
+.SS "int \fBjobExternalMsgReq::notify_level\fP"
+.PP
+The AC/PNC notification level. 
+.PP
+.SS "int \fBjobExternalMsgReq::desc_len\fP"
+.PP
+The length of description. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+external_msg_post \- options specifying if the message has an attachment to be posted  
+
+.PP
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBEXT_MSG_POST\fP   0x01"
+.br
+.ti -1c
+.RI "#define \fBEXT_ATTA_POST\fP   0x02"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+options specifying if the message has an attachment to be posted 
+.SH "Define Documentation"
+.PP 
+.SS "#define EXT_MSG_POST   0x01"
+.PP
+Post the external job message. 
+.PP
+There is no attached data file. 
+.SS "#define EXT_ATTA_POST   0x02"
+.PP
+Post the external job message and data file posted to the job. 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

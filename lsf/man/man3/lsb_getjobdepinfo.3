@@ -1,0 +1,407 @@
+.TH "lsb_getjobdepinfo" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_getjobdepinfo \- lsb_getjobdepinfo 
+Returns the job dependency information.
+.PP
+\fBlsb_getjobdepinfo\fP returns information about jobs (including job arrays) when a job has one or more dependencies on it.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB struct \fBjobDependInfo\fP * lsb_getjobdepinfo(struct jobDepRequest *jobdepReq)\fP
+.PP
+.SH "Parameters:"
+\fI*jobdepReq\fP Job dependent Request.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBdependJobs\fP 
+.br
+\fBqueriedJobs\fP 
+.br
+\fBjobDependInfo\fP 
+.br
+\fBjobDepRequest\fP
+.PP
+.SH "Define Statements:" 
+.PP
+\fBjob_has_depend\fP 
+.br
+\fBquery_depend\fP
+.PP
+.SH "Returns:"
+struct \fBjobDependInfo\fP *:A pointer to job dependency information. 
+.br
+ Function was successful. 
+.PP
+NULL 
+.br
+ Function failed.
+.PP
+.SH "Errors:" 
+.PP
+none
+.PP
+.SH "Equivalent line commands:" 
+.PP
+none
+.PP
+.SH "Files:" 
+.PP
+none
+.PP
+.SH "See also:"
+none 
+.PP
+
+.ad l
+.nh
+.SH NAME
+dependJobs \- dependency jobs.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "LS_LONG_INT \fBjobId\fP"
+.br
+.ti -1c
+.RI "char * \fBjobname\fP"
+.br
+.ti -1c
+.RI "int \fBlevel\fP"
+.br
+.ti -1c
+.RI "int \fBjobstatus\fP"
+.br
+.ti -1c
+.RI "int \fBhasDependency\fP"
+.br
+.ti -1c
+.RI "char * \fBcondition\fP"
+.br
+.ti -1c
+.RI "int \fBsatisfied\fP"
+.br
+.ti -1c
+.RI "LS_LONG_INT \fBdepJobId\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+dependency jobs. 
+.SH "Field Documentation"
+.PP 
+.SS "LS_LONG_INT \fBdependJobs::jobId\fP"
+.PP
+Job ID. 
+.PP
+By default, it is the parent job of the queried job. Modify to child job by setting QUERY_DEPEND_CHILD in options of JobDepRequest. 
+.SS "char* \fBdependJobs::jobname\fP"
+.PP
+The job name associated with the job ID. 
+.PP
+
+.SS "int \fBdependJobs::level\fP"
+.PP
+The number of degrees of separation from the original job. 
+.PP
+
+.SS "int \fBdependJobs::jobstatus\fP"
+.PP
+Job status of the job. 
+.PP
+
+.SS "int \fBdependJobs::hasDependency\fP"
+.PP
+Whether the job ID has a dependency or not. 
+.PP
+When you set QUERY_DEPEND_RECURSIVELY in options of JobDepRequest, 0 indicates job ID does not have a dependency. Otherwise, one or more of the following bits displays:
+.IP "\(bu" 2
+JOB_HAS_DEPENDENCY: Job has a dependency.
+.IP "\(bu" 2
+JOB_HAS_INDIVIDUAL_CONDITION: Job has an individual dependency condition when it is an element of job array. 
+.PP
+
+.SS "char* \fBdependJobs::condition\fP"
+.PP
+When you set 'QUERY_DEPEND_DETAIL' into options, it is dependency condition of jobId. 
+.PP
+It is '' when you do not set 'QUERY_DEPEND_DETAIL'. 
+.SS "int \fBdependJobs::satisfied\fP"
+.PP
+Whether the condition is satisfied. 
+.PP
+If it is satisfied, the value is 1. If it is not satisfied, the value is 0. If it is invalid or never satisfied, the value is -1. 
+.SS "LS_LONG_INT \fBdependJobs::depJobId\fP"
+.PP
+Job ID. 
+.PP
+By default, it is the child job. Modify to parent job by setting QUERY_DEPEND_CHILD in options of JobDepRequest 
+
+.ad l
+.nh
+.SH NAME
+queriedJobs \- queried jobs.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "LS_LONG_INT \fBjobId\fP"
+.br
+.ti -1c
+.RI "char * \fBdependcondition\fP"
+.br
+.ti -1c
+.RI "int \fBsatisfied\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+queried jobs. 
+.SH "Field Documentation"
+.PP 
+.SS "LS_LONG_INT \fBqueriedJobs::jobId\fP"
+.PP
+Job ID of the queried job or job array. 
+.PP
+
+.SS "char* \fBqueriedJobs::dependcondition\fP"
+.PP
+The whole dependency condition of the job. 
+.PP
+
+.SS "int \fBqueriedJobs::satisfied\fP"
+.PP
+Whether the condition is satisfied. 
+.PP
+If it is satisfied, the value is 1. If it is not satisfied, the value is 0. If it is invalid or never satisfied, the value is -1. 
+
+.ad l
+.nh
+.SH NAME
+jobDependInfo \- job dependent information.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBoptions\fP"
+.br
+.ti -1c
+.RI "int \fBnumQueriedJobs\fP"
+.br
+.ti -1c
+.RI "struct \fBqueriedJobs\fP * \fBqueriedJobs\fP"
+.br
+.ti -1c
+.RI "int \fBlevel\fP"
+.br
+.ti -1c
+.RI "int \fBnumJobs\fP"
+.br
+.ti -1c
+.RI "struct \fBdependJobs\fP * \fBdepJobs\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+job dependent information. 
+.SH "Field Documentation"
+.PP 
+.SS "int \fBjobDependInfo::options\fP"
+.PP
+You can set the following bits into this field: 
+.br
+ QUERY_DEPEND_RECURSIVELY 
+.br
+ Query the dependency information recursively. 
+.PP
+
+.br
+ QUERY_DEPEND_DETAIL 
+.br
+ Query the detailed dependency information. 
+.br
+ QUERY_DEPEND_UNSATISFIED 
+.br
+ Query the jobs that cause this job pend. 
+.br
+ QUERY_DEPEND_CHILD 
+.br
+ Query child jobs. 
+.SS "int \fBjobDependInfo::numQueriedJobs\fP"
+.PP
+The number of jobs you queried. 
+.PP
+By default, the value is 1. However, when you set QUERY_DEPEND_DETAIL in the options and you query a job array where some elements have a dependency condition that has changed, the value is the number of the changed element + 1. 
+.SS "struct \fBqueriedJobs\fP* \fBjobDependInfo::queriedJobs\fP"
+.PP
+The jobs you queried. 
+.PP
+
+.SS "int \fBjobDependInfo::level\fP"
+.PP
+The number of levels returned. 
+.PP
+
+.SS "int \fBjobDependInfo::numJobs\fP"
+.PP
+The number of jobs returned. 
+.PP
+
+.SS "struct \fBdependJobs\fP* \fBjobDependInfo::depJobs\fP"
+.PP
+The returned dependency jobs. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+jobDepRequest \- job dependent request.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "LS_LONG_INT \fBjobId\fP"
+.br
+.ti -1c
+.RI "int \fBoptions\fP"
+.br
+.ti -1c
+.RI "int \fBlevel\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+job dependent request. 
+.SH "Field Documentation"
+.PP 
+.SS "LS_LONG_INT \fBjobDepRequest::jobId\fP"
+.PP
+Job ID of the queried job or job array. 
+.PP
+
+.SS "int \fBjobDepRequest::options\fP"
+.PP
+You can set the following bits into this field: 
+.br
+ QUERY_DEPEND_RECURSIVELY 
+.br
+ Query the dependency information recursively. 
+.PP
+
+.br
+ QUERY_DEPEND_DETAIL 
+.br
+ Query the detailed dependency information. 
+.br
+ QUERY_DEPEND_UNSATISFIED 
+.br
+ Query the jobs that cause this job pend. 
+.br
+ QUERY_DEPEND_CHILD 
+.br
+ Query child jobs. 
+.SS "int \fBjobDepRequest::level\fP"
+.PP
+The level when you set QUERY_DEPEND_RECURSIVELY. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+job_has_depend \- options for hasDependency  
+
+.PP
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBJOB_HAS_DEPENDENCY\fP   0x1"
+.br
+.ti -1c
+.RI "#define \fBJOB_HAS_INDIVIDUAL_CONDITION\fP   0x2"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+options for hasDependency 
+.SH "Define Documentation"
+.PP 
+.SS "#define JOB_HAS_DEPENDENCY   0x1"
+.PP
+Job has dependency. 
+.PP
+.SS "#define JOB_HAS_INDIVIDUAL_CONDITION   0x2"
+.PP
+Job has individual condition. 
+.PP
+
+.ad l
+.nh
+.SH NAME
+query_depend \- Job Dependency Display for options.  
+
+.PP
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBQUERY_DEPEND_RECURSIVELY\fP   0x1"
+.br
+.ti -1c
+.RI "#define \fBQUERY_DEPEND_DETAIL\fP   0x2"
+.br
+.ti -1c
+.RI "#define \fBQUERY_DEPEND_UNSATISFIED\fP   0x4"
+.br
+.ti -1c
+.RI "#define \fBQUERY_DEPEND_CHILD\fP   0x8"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Job Dependency Display for options. 
+.SH "Define Documentation"
+.PP 
+.SS "#define QUERY_DEPEND_RECURSIVELY   0x1"
+.PP
+Recursively. 
+.PP
+.SS "#define QUERY_DEPEND_DETAIL   0x2"
+.PP
+Detail. 
+.PP
+.SS "#define QUERY_DEPEND_UNSATISFIED   0x4"
+.PP
+Unsatisfied. 
+.PP
+.SS "#define QUERY_DEPEND_CHILD   0x8"
+.PP
+Child. 
+.PP
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

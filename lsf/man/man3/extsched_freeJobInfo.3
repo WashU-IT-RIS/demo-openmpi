@@ -1,0 +1,23 @@
+.TH "extsched_freeJobInfo" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+extsched_freeJobInfo \- extsched_freeJobInfo 
+Frees data in the info structure, allocated by extsched_getJobInfo().
+.PP
+Does not call free() on info itself.
+.PP
+\fB#include <lssched.h>\fP
+.PP
+\fB void extsched_freeJobInfo(struct jobInfo *info)\fP
+.PP
+.SH "Parameters:"
+\fIinfo\fP [IN/OUT] : info on a job
+.PP
+.SH "Returns:"
+void  is no return value. 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

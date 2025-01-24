@@ -1,0 +1,35 @@
+.TH "extsched_determineEvent" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+extsched_determineEvent \- extsched_determineEvent 
+This is a helper function to be used from within a notifyAlloc callback function to determine what is happening with the job.
+.PP
+The possible events are:
+.PP
+SCH_FM_EVE_ALLOCATE SCH_FM_EVE_DEALLOCATE SCH_FM_EVE_RESERVE SCH_FM_EVE_CANCEL SCH_FM_EVE_SUSPEND SCH_FM_EVE_RESUME SCH_FM_EVE_REPLAY SCH_FM_EVE_ALLOCATE_BRUN SCH_FM_EVE_ADDALLOC SCH_FM_EVE_RMALLOC
+.PP
+The returned value should be tested as a bitfield.
+.PP
+\fB#include <lssched.h>\fP
+.PP
+\fB int extsched_determineEvent(INT_Job *job, INT_Alloc *alloc, INT_AllocLimitList *allocLimitList, int flag)\fP
+.PP
+.SH "Parameters:"
+\fIjob\fP [IN] : job pointer passed into notifyAlloc callback function 
+.br
+\fIalloc\fP [IN] : alloc pointer passed into notifyAlloc callback function 
+.br
+\fIallocLimitList\fP [IN] : allocLimitList pointer passed into notifyAlloc callback function 
+.br
+\fIflag\fP [IN] : flag passed into notifyAlloc callback function
+.PP
+.SH "Returns:"
+int:>0  positive interger describing the event (SCH_FM_EVE_*). 
+.PP
+int:0 . 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

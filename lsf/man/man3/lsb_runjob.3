@@ -1,0 +1,166 @@
+.TH "lsb_runjob" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_runjob \- lsb_runjob 
+Starts a batch job immediately on a set of specified host().
+.PP
+\fBlsb_runjob\fP starts a batch job immediately on a set of specified host(). The job must have been submitted and is in PEND or FINISHED status. Only the LSF administrator or the owner of the job can start the job. If the options is set to RUNJOB_OPT_NOSTOP, then the job will not be suspended by the queue's RUNWINDOW,loadStop and STOP_COND and the hosts' RUNWINDOW and loadStop conditions. By default, these conditions apply to the job as do to other normal jobs.
+.PP
+Any program using this API must be setuid to root if LSF_AUTH is not defined in the lsf.conf file.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB int lsb_runjob(struct runJobRequest* runJobRequest)\fP
+.PP
+.SH "Parameters:"
+\fI\fBrunJobRequest\fP\fP The job-starting request.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBrunJobRequest\fP
+.PP
+.SH "Define Statements:" 
+.PP
+\fBrunjob_option\fP
+.PP
+.SH "Returns:"
+int:0 
+.br
+ Function was successful. 
+.PP
+int:-1 
+.br
+ Function failed.
+.PP
+.SH "Errors:" 
+.PP
+If the function fails, lsberrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+brun
+.PP
+.SH "Files:" 
+.PP
+${LSF_ENVDIR:-/etc}/lsf.conf
+.PP
+.SH "See also:"
+none 
+.PP
+
+.ad l
+.nh
+.SH NAME
+runJobRequest \- run job request.  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "LS_LONG_INT \fBjobId\fP"
+.br
+.ti -1c
+.RI "int \fBnumHosts\fP"
+.br
+.ti -1c
+.RI "char ** \fBhostname\fP"
+.br
+.ti -1c
+.RI "int \fBoptions\fP"
+.br
+.ti -1c
+.RI "int * \fBslots\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+run job request. 
+.SH "Field Documentation"
+.PP 
+.SS "LS_LONG_INT \fBrunJobRequest::jobId\fP"
+.PP
+Jobid of the requested job. 
+.PP
+.SS "int \fBrunJobRequest::numHosts\fP"
+.PP
+The number of hosts. 
+.PP
+.SS "char** \fBrunJobRequest::hostname\fP"
+.PP
+Vector of hostnames. 
+.PP
+.SS "int \fBrunJobRequest::options\fP"
+.PP
+Run job request options, see \fBrunjob_option\fP. 
+.PP
+.SS "int* \fBrunJobRequest::slots\fP"
+.PP
+Vector of number of slots per host. 
+.PP
+
+
+.ad l
+.nh
+.SH NAME
+runjob_option \- Options used for lsb_runjob:.  
+
+.PP
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBRUNJOB_OPT_NORMAL\fP   0x01"
+.br
+.ti -1c
+.RI "#define \fBRUNJOB_OPT_NOSTOP\fP   0x02"
+.br
+.ti -1c
+.RI "#define \fBRUNJOB_OPT_PENDONLY\fP   0x04"
+.br
+.ti -1c
+.RI "#define \fBRUNJOB_OPT_FROM_BEGIN\fP   0x08"
+.br
+.ti -1c
+.RI "#define \fBRUNJOB_OPT_FREE\fP   0x10"
+.br
+.ti -1c
+.RI "#define \fBRUNJOB_OPT_IGNORE_RUSAGE\fP   0x20"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Options used for lsb_runjob:. 
+.SH "Define Documentation"
+.PP 
+.SS "#define RUNJOB_OPT_NORMAL   0x01"
+.PP
+Normal jobs. 
+.PP
+.SS "#define RUNJOB_OPT_NOSTOP   0x02"
+.PP
+Nostop jobs. 
+.PP
+.SS "#define RUNJOB_OPT_PENDONLY   0x04"
+.PP
+Pending jobs only, no finished jobs. 
+.PP
+.SS "#define RUNJOB_OPT_FROM_BEGIN   0x08"
+.PP
+Check point job only, from beginning. 
+.PP
+.SS "#define RUNJOB_OPT_FREE   0x10"
+.PP
+brun to use free CPUs only 
+.PP
+.SS "#define RUNJOB_OPT_IGNORE_RUSAGE   0x20"
+.PP
+brun ignoring rusage 
+.PP
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

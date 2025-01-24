@@ -1,0 +1,355 @@
+
+.ad l
+
+.TH lsmake 1 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBlsmake\fR
+.ce 0
+
+.sp 2
+Runs LSF make tasks in parallel.
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+lsmake [-m "host_name [num_cores] [host_name [num_cores]] ...]"]
+[-a seconds] [-c num_tasks] [-E] [-G debug_level] [-T] [-u] [-V]
+[-x num_retries] [-y] [make_option ...] [--no-block-shell-mode]
+[target ...]
+.sp 2
+lsmake [-R res_req] [-j max_cores] [-a seconds] [-c num_tasks]
+[-E] [-G debug_level] [-T] [-u] [-V] [-x num_retries] [-y]
+[make_option ...] [--no-block-shell-mode] [target ...]
+.sp 2
+lsmake [-h]
+.SH Description
+
+.sp 2
+Runs make tasks in parallel on LSF hosts. Sets the environment
+variables on the remote hosts when the lsmake command starts.
+.sp 2
+By default, uses the local host, uses only one core, starts only
+one task in each core, processes submakes sequentially, allows
+1-second buffer time to compensate for file system latency, and
+does not retry if the job fails. The lsmake command is a modified
+version of the GNU make command.
+.SH Options
+
+.sp 2
+\fB-a \fIseconds\fB\fR
+.br
+         When commands in a target finish, commands in a
+         dependent target wait the specified time before they
+         start on a different host. This delay allows time for
+         the shared file system to synchronize client and server,
+         and compensates for file system latency. By default, the
+         delay is 1 second. Slower file systems require a longer
+         delay.
+.sp 2
+         If the dependent target\(aqs commands start on the same
+         execution host, there is no delay.
+.sp 2
+         If retries are enabled with -x, the interval between
+         retries also depends on the delay time.
+.sp 2
+\fB-c \fInum_tasks\fB\fR
+.br
+         Starts the specified number of tasks concurrently on
+         each core. If you specify too many tasks, you might
+         overload a host.
+.sp 2
+\fB-E\fR
+.br
+         Sets the environment variables for every task sent
+         remotely.
+.sp 2
+         Setting environment variables is necessary when
+         makefiles change or override the environment variables
+         that they inherit at startup.
+.sp 2
+\fB-G \fIdebug_level\fB\fR
+.br
+         Enables debugging, specify the debug level.
+.sp 2
+\fB-j \fImax_cores\fB\fR
+.br
+         Uses multiple cores, selecting the best available.
+         Specify the maximum number of cores to use.
+.sp 2
+         Not compatible with \fR-m "\fIhost_name\fR
+         [\fInum_cores\fR] [\fIhost_name\fR [\fInum_cores\fR]]
+         ..."\fR option.
+.sp 2
+         Ignored if you use the bsub command to run the lsmake
+         command.
+.sp 2
+\fB-m \fI"host_name\fB [\fInum_cores\fB] [\fIhost_name\fB
+[\fInum_cores\fB]] ..."\fR
+.br
+         Uses the specified hosts. To use multiple cores on a
+         host, specify the number of cores after the host name.
+.sp 2
+         Not compatible with -R \fIres_req\fR and -j
+         \fImax_cores\fR.
+.sp 2
+         Ignored if you use bsub to run lsmake.
+.sp 2
+\fB-R \fIres_req\fB\fR
+.br
+         Uses only hosts that satisfy the specified resource
+         requirements.
+.sp 2
+         When you specify -R but not -j, uses one core on one
+         host that satisfies the resource requirements.
+.sp 2
+         If the group of hosts that match the \fRselection\fR
+         string includes the submission host, the submission host
+         is always selected. The policies that are defined by the
+         \fRorder\fR string affect only the other hosts.
+.sp 2
+         Not compatible with the \fR-m "\fIhost_name\fR
+         [\fInum_cores\fR] [\fIhost_name\fR [\fInum_cores\fR]]
+         ..."\fR option.
+.sp 2
+         Ignored if you use bsub to run lsmake.
+.sp 2
+\fB-T \fR
+.br
+         Enables output tagging to prefix the task ID of the
+         sender to the parallel task output data.
+.sp 2
+\fB-u \fR
+.br
+         Creates the data file lsmake.dat and updates it each
+         second, tracking the number of running tasks over time.
+.sp 2
+         The lsmake.dat file is useful if you want to export the
+         data to third-party charting applications.
+.sp 2
+\fB-V\fR
+.br
+         Verbose mode. Prints the names of the hosts used.
+.sp 2
+\fB-x \fInum_retries \fB\fR
+.br
+         If the command fails, retries the command the specified
+         number of times. For example, if the number of retries
+         is 1, the command is attempted twice before it exits.
+         Setting retries is useful to compensate for file system
+         latency and minor errors.
+.sp 2
+         The interval between retries increases exponentially
+         with each retry attempt. The time between the initial,
+         failed attempt, and the first retry is equal to 1 second
+         by default, or equal to the buffer time specified by -a.
+         For subsequent attempts, the interval between attempts
+         is doubled each time.
+.sp 2
+\fB-y \fR
+.br
+         Displays summary information after the job is done.
+.sp 2
+\fB\fImake_option\fB ...\fR
+.br
+         Specifies standard GNU Make options.
+.sp 2
+         \fBNote: \fRThe -j and -R options are not supported as a
+         GNU make options, see the lsmake options \fR-j
+         \fImax_cores\fR\fR and \fR-R \fIres_req\fR\fR. See GNU
+         documentation for detailed descriptions of other
+         options.
+.sp 2
+         The current version of the lsmake command supports GNU
+         Make version 3.81, which includes the following options:
+.sp 2
+         \fB-b, -m\fR
+.br
+                  Ignored for compatibility.
+.sp 2
+         \fB-B, --always-make\fR
+.br
+                  Unconditionally make all targets.
+.sp 2
+         \fB\fR-C \fIdir\fR\fB , \fR--directory=\fIdir\fR\fB\fR
+.br
+                  Change directory before reading the makefile.
+.sp 2
+         \fB-d\fR
+.br
+                  Print all debugging information.
+.sp 2
+         \fB--debug[=\fIoptions\fB]\fR
+.br
+                  Print basic debugging information, or specify
+                  what types of information to print (all, basic,
+                  verbose, implicit, jobs, makefile).
+.sp 2
+         \fB-e, --environment-overrides\fR
+.br
+                  Environment variables override makefiles.
+.sp 2
+         \fB-f \fIfile\fB, --file=\fIfile\fB,
+         --makefile=\fIfile\fB\fR
+.br
+                  Specify the makefile.
+.sp 2
+         \fB-h, --help\fR
+.br
+                  Print usage and exit.
+.sp 2
+         \fB-i, --ignore-errors\fR
+.br
+                  Ignore errors.
+.sp 2
+         \fB-I \fIdir\fB, \fR--include-dir\fB=\fIdir\fB\fR
+.br
+                  Search a directory for included makefiles.
+.sp 2
+         \fB-k, --keep-going\fR
+.br
+                  Keep going when some targets cannot be made.
+.sp 2
+         \fB-l [\fIn\fB], --load-average[=\fIn\fB],
+         --max-load[=\fIn\fB]\fR
+.br
+                  Obsolete. Load limit.
+.sp 2
+         \fB-L , --check-symlink-times\fR
+.br
+                  Target file modification time considers the
+                  time stamp of symbolic links also.
+.sp 2
+         \fB-n, --just-print, --dry-run, --recon\fR
+.br
+                  Print instead of running.
+.sp 2
+         \fB-o \fIfile\fB, --old-file=\fIfile\fB,
+         --assume-old=\fIfile\fB\fR
+.br
+                  Do not remake the old file.
+.sp 2
+         \fB-p, --print-data-base\fR
+.br
+                  Print make\(aqs internal database.
+.sp 2
+         \fB-q, --question\fR
+.br
+                  Question mode, return exit status.
+.sp 2
+         \fB-r, --no-builtin-rules\fR
+.br
+                  Disable the built-in implicit rules.
+.sp 2
+         \fB--no-builtin-variables\fR
+.br
+                  Disable the built-in variable settings. The
+                  make command option -R is not supported, it
+                  conflicts with the lsmake command option -R
+                  \fIres_req\fR.
+.sp 2
+         \fB-s, --silent, --quiet\fR
+.br
+                  Silent mode, do not echo commands.
+.sp 2
+         \fB-S, --no-keep-going, --stop\fR
+.br
+                  Turns off the -k option.
+.sp 2
+         \fB-t, --touch\fR
+.br
+                  Touch targets (change modification time)
+                  instead of remaking them.
+.sp 2
+         \fB-v, --version\fR
+.br
+                  Print the version number of make and exit.
+.sp 2
+         \fB-w, --print-directory\fR
+.br
+                  Print the current directory.
+.sp 2
+         \fB--no-print-directory\fR
+.br
+                  Turn off -w, even if it was turned on
+                  implicitly.
+.sp 2
+         \fB-W \fIfile\fB, --what-if=\fIfile\fB,
+         --new-file=\fIfile\fB, --assume-new=\fIfile\fB\fR
+.br
+                  Always consider the file to be new. Do not
+                  change modification time.
+.sp 2
+         \fB--warn-undefined-variables\fR
+.br
+                  Warn when an undefined variable is referenced.
+.sp 2
+\fB--no-block-shell-mode\fR
+.br
+         Run child shell tasks without blocking mode. Without
+         this parameter, blocking mode is used. Allows the lsmake
+         command to build customized Android 4.3 code.
+.sp 2
+\fB\fItarget\fB ...\fR
+.br
+         Specifies targets to make.
+.SH Output with the -y option
+
+.sp 2
+\fBTotal Run Time\fR
+.br
+         Total lsmake job run time, in the format
+         \fR\fIhh\fR:\fImm\fR:\fIss\fR\fR.
+.sp 2
+\fBMost Concurrent Tasks\fR
+.br
+         Maximum number of tasks that ran simultaneously. Compare
+         to \fRTotal Slots Allocated\fR and \fRTasks Allocated
+         per Slot\fR to determine whether parallel execution
+         might be limited by resource availability.
+.sp 2
+\fBRetries Allowed\fR
+.br
+         Maximum number of retries allowed. Set by the lsmake -x
+         option.
+.sp 2
+\fBHosts and Number of Slots Allocated\fR
+.br
+         The output is a single line that shows each name and
+         number pair that is separated by spaces, in the format:
+         \fR\fIhost_name\fR \fInumber_slots\fR [\fIhost_name\fR
+         \fInumber_slots\fR] ...\fR
+.sp 2
+\fBTasks Allowed per Slot\fR
+.br
+         Maximum number of tasks that are allowed per slot. Set
+         by the lsmake -c option.
+.sp 2
+\fBTotal Slots Allocated\fR
+.br
+         Total number of slots allocated. Might be limited by the
+         lsmake -j or lsmake -m option.
+.SH Output with the -u option
+
+.sp 2
+The lsmake.dat file is a simple text file, consisting of two
+values separated by a comma. The first value is the time in the
+format \fR\fIhh:mm:s\fR\fR. The second value is the number of
+running tasks. For example:
+.sp 2
+23:13:39,2
+.sp 2
+The file is updated with a new line of information every second.
+.SH Limitations
+
+.sp 2
+If a submake in a makefile specifies options that are specific to
+the lsmake command, they are ignored. Only the command-line
+options are used. The resource requirements of tasks in the
+remote task list are not considered when lsmake dispatches tasks.
+.SH See also
+
+.sp 2
+gmake

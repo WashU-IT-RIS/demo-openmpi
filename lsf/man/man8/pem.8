@@ -1,0 +1,140 @@
+.ds ]W %
+.ds ]L
+.hy 0
+.nh
+.na
+.TH pem 8 "Mar 2014   EGO 3.4.0"
+.br
+
+.SH NAME
+\fBpem\fR - Process execution daemon, monitoring execution.
+
+.SH Synopsis
+.BR
+.PP
+ pem [-d conf_dir] [-1 | -2]  pem -h  pem -V 
+.SH Description
+.BR
+.PP
+
+.PP
+There is at least one pem daemon on every host in the cluster: on Windows, there is 
+one per host; on Linux, there is one pem daemon per host, plus one for every activity 
+running on that host--the number varies with the number of activities running at 
+any given time.
+
+.PP
+The pem daemon starts all activities and monitors the activity life cycle.
+ pem is started automatically by the lim daemon, and exits when lim exits. 
+.PP
+caution:  
+
+.PP
+Never start pem manually except with the -V option to check the version 
+configuration.
+
+.SH Options
+.BR
+.PP
+
+.SS -d conf_dir
+.BR
+.PP
+
+.PP
+Starts the daemon, reading from the EGO configuration file ego.conf in the 
+specified directory, rather than from the directory set via the EGO_CONFDIR 
+environment variable.
+
+.PP
+Use this option when starting the daemon in debug mode.
+
+.PP
+caution:  
+
+.PP
+Never start the daemon manually unless directed to do so by IBM Technical 
+Support.
+
+.SS -1
+.BR
+.PP
+
+.PP
+Starts the daemon in the background, with no associated control terminal. Outputs 
+log messages into log file.
+
+.SS -2
+.BR
+.PP
+
+.PP
+Starts the daemon in debug mode. When running in debug mode, the daemon runs 
+in the foreground, displaying the log messages. Outputs log messages to stderr.
+
+.PP
+caution:  
+
+.PP
+Never start the daemon manually unless directed to do so by IBM Technical 
+Support.
+
+.SS -h
+.BR
+.PP
+
+.PP
+Outputs command usage and exits.
+
+.SS -V
+.BR
+.PP
+
+.PP
+Outputs product version and exits.
+
+.SH Files
+.BR
+.PP
+
+.SS ego.conf
+.BR
+.PP
+
+.PP
+pem reads the configuration file ego.conf to retrieve the location of its 
+configuration information. ego.conf is a generic configuration file shared by all 
+daemons and clients. It contains configuration information and other information 
+that dictates the behavior of the software.
+
+.PP
+pem reads ego.conf to retrieve the following information:
+
+.SS EGO_PEM_PORT
+.BR
+.PP
+
+.PP
+The TCP port pem uses to serve all requests.
+
+.SS EGO_LOGDIR
+.BR
+.PP
+
+.PP
+The directory used for message logs.
+
+.SS EGO_LOG_MASK
+.BR
+.PP
+
+.PP
+The log level used to determine the amount of detail logged.
+
+.SS EGO_DEBUG_PEM
+.BR
+.PP
+
+.PP
+The log class setting for pem.
+

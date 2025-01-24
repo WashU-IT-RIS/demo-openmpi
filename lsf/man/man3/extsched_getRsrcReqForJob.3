@@ -1,0 +1,23 @@
+.TH "extsched_getRsrcReqForJob" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+extsched_getRsrcReqForJob \- extsched_getRsrcReqForJob 
+Routine to get the address of the (internal) resource requirement structure associated with the given job.
+.PP
+The caller should not free this data.
+.PP
+\fB#include <lssched.h>\fP
+.PP
+\fB INT_RsrcReq *extsched_getRsrcReqForJob(INT_Job *job)\fP
+.PP
+.SH "Parameters:"
+\fIjob\fP [IN] : internal representation of a job
+.PP
+.SH "Returns:"
+INT_RsrcReq *  of the internal resource requirement structure. 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

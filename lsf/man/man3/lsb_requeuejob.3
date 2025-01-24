@@ -1,0 +1,171 @@
+.TH "lsb_requeuejob" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsb_requeuejob \- lsb_requeuejob 
+Requeues job arrays, jobs in job arrays, and individual jobs.
+.PP
+Use \fBlsb_requeuejob\fP to requeue job arrays, jobs in job arrays, and individual jobs that are running, pending, done, or exited. In a job array, you can requeue all the jobs or requeue individual jobs of the array.
+.PP
+\fBlsb_requeuejob\fP requeues jobs as if the jobs were in an array. A job not in an array is considered to be a job array composed of one job.
+.PP
+Jobs in a job array can be requeued independently of each other regardless of any job's status (running, pending, exited, done). A requeued job is requeued to the same queue it was originally submitted from or switched to. The job submission time does not change so a requeued job is placed at the top of the queue. Use \fBlsb_movejob\fP to place a job at the bottom or any other position in a queue.
+.PP
+If a clean period is reached before \fBlsb_requeuejob\fP is called, the cleaned jobs cannot be requeued. Set the variable CLEAN_PERIOD in your lsb.params file to determine the amount of time that job records are kept in MBD core memory after jobs have finished or terminated.
+.PP
+To requeue a job assign values to the data members of the \fBjobrequeue\fP data structure, process command line options in case the user has specified a different job, and call \fBlsb_requeuejob\fP to requeue the job array.
+.PP
+Assign values to the jobID, status, and options data members of the \fBjobrequeue\fP data structure. Assign the job identification number to jobID. Assign JOB_STAT_PEND or JOB_STAT_PSUSP to status. Assign REQUEUE_DONE, REQUEUE_EXIT, and or REQUEUE_RUN to requeue running jobs.
+.PP
+\fB#include <lsf/lsbatch.h>\fP
+.PP
+\fB int lsb_requeuejob(struct jobrequeue * reqPtr)\fP
+.PP
+.SH "Parameters:"
+\fI*reqPtr\fP This structure contains the information required to requeue a job.
+.PP
+.SH "Data Structures:" 
+.PP
+\fBjobrequeue\fP
+.PP
+.SH "Define Statements:" 
+.PP
+\fBrequeuejob_options\fP
+.PP
+.SH "Returns:"
+int:0 
+.br
+ The function is successful. 
+.PP
+int:-1 
+.br
+ The function failed.
+.PP
+.SH "Errors:" 
+.PP
+On failure, lsberrno is set to indicate the error.
+.PP
+.SH "Equivalent line commands:" 
+.PP
+brequeue -d 
+.br
+brequeue -e 
+.br
+brequeue -a 
+.br
+brequeue -r 
+.br
+brequeue -H
+.PP
+.SH "Files:" 
+.PP
+$LSB_CONFDIR/cluster_name/configdir/lsb.params 
+.br
+$LSB_SHAREDIR
+.PP
+.SH "See also:"
+\fBlsb_movejob\fP 
+.PP
+\fBlsb_pendreason\fP 
+.PP
+
+.ad l
+.nh
+.SH NAME
+jobrequeue \- requeued job  
+
+.PP
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "LS_LONG_INT \fBjobId\fP"
+.br
+.ti -1c
+.RI "int \fBstatus\fP"
+.br
+.ti -1c
+.RI "int \fBoptions\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+requeued job 
+.SH "Field Documentation"
+.PP 
+.SS "LS_LONG_INT \fBjobrequeue::jobId\fP"
+.PP
+Specifies the jobid of a single job or an array of jobs. 
+.PP
+
+.SS "int \fBjobrequeue::status\fP"
+.PP
+Specifies the lsbatch status of the requeued job after it has been requeued. 
+.PP
+The job status can be JOB_STAT_PEND or JOB_STATE_PSUSP. The default status is JOB_STAT_PEND. 
+.SS "int \fBjobrequeue::options\fP"
+.PP
+Specifies the array elements to be requeued. 
+.PP
+see \fBrequeuejob_options\fP 
+
+.ad l
+.nh
+.SH NAME
+requeuejob_options \- define statements used by \fBlsb_requeuejob\fP.  
+
+.PP
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBREQUEUE_DONE\fP   0x1"
+.br
+.ti -1c
+.RI "#define \fBREQUEUE_EXIT\fP   0x2"
+.br
+.ti -1c
+.RI "#define \fBREQUEUE_RUN\fP   0x4"
+.br
+.ti -1c
+.RI "#define \fBREQUEUE_RMT_PEND\fP   0x8"
+.br
+.ti -1c
+.RI "#define \fBREQUEUE_RMT_PEND_RISEPRIORITY\fP   0x10"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+define statements used by \fBlsb_requeuejob\fP. 
+.SH "Define Documentation"
+.PP 
+.SS "#define REQUEUE_DONE   0x1"
+.PP
+Requeues jobs that have finished running. 
+.PP
+Jobs that have exited are not re-run. Equivalent to brequeue -d command line option. 
+.SS "#define REQUEUE_EXIT   0x2"
+.PP
+Requeues jobs that have exited. 
+.PP
+Finished jobs are not re-run. Equivalent to brequeue -e command line option. 
+.SS "#define REQUEUE_RUN   0x4"
+.PP
+Requeues running jobs and puts them in PEND state. 
+.PP
+Equivalent to brequeue -r command line option. 
+.SS "#define REQUEUE_RMT_PEND   0x8"
+.PP
+Requeues remote pending jobs in mc submission cluster, Equivalent to brequeue -a command line option to requeue remote pending job. 
+.PP
+.SS "#define REQUEUE_RMT_PEND_RISEPRIORITY   0x10"
+.PP
+Requeues remote pending jobs in mc submission cluster, Equivalent to brequeue -p command line option. 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

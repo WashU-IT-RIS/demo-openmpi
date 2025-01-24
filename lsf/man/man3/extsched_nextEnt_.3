@@ -1,0 +1,30 @@
+.TH "extsched_nextEnt_" 3 "10 Jun 2021" "Version 10.1" "IBM Spectrum LSF 10.1 C API Reference" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+extsched_nextEnt_ \- extsched_nextEnt_ 
+This function returns successive entries in the hash table.
+.PP
+\fB#include <lssched.h>\fP
+.PP
+\fB INT_hEnt *extsched_nextEnt_(INT_sTab *s)\fP
+.PP
+.SH "Parameters:"
+\fIs\fP [IN|OUT] pointer to search object
+.PP
+.SH "Returns:"
+INT_hEnt *  a pointer to the next entry in the table. 
+.PP
+NULL  the end of the table is reached.
+.PP
+.SH "See also:"
+\fBextsched_firstEnt_\fP 
+.PP
+\fBextsched_create_sTab\fP 
+.PP
+\fBextsched_destroy_sTab\fP 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for IBM Spectrum LSF 10.1 C API Reference from the source code.

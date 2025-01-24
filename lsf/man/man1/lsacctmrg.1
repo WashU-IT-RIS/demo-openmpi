@@ -1,0 +1,60 @@
+
+.ad l
+
+.TH lsacctmrg 1 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBlsacctmrg\fR
+.ce 0
+
+.sp 2
+Merges LSF RES task log files.
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBlsacctmrg\fR [\fB-f\fR] logfile_name ... target_logfile_name
+.sp 2
+\fBlsacctmrg\fR [\fB-h\fR | \fB-V\fR]
+.SH Description
+
+.sp 2
+Merges specified task log files into the specified target file in
+chronological order according to completion time.
+.sp 2
+All files must be in the format that is specified in the lsf.acct
+file.
+.SH Options
+
+.sp 2
+\fB-f \fR
+.br
+         Overwrites the target file without prompting for
+         confirmation.
+.sp 2
+\fB\fIlogfile_name\fB ...\fR
+.br
+         Specify log files to be merged into the target file,
+         separated by spaces. Specify either an absolute or a
+         relative path.
+.sp 2
+\fB\fItarget_logfile_name\fB \fR
+.br
+         Specify the file into which all log files are to be
+         merged. Specify either an absolute or a relative path.
+         The target file cannot be part of the files to be
+         merged.
+.sp 2
+\fB-h\fR
+.br
+         Prints command usage to stderr and exits.
+.sp 2
+\fB-V\fR
+.br
+         Prints LSF release version to stderr and exits.
+.SH See also
+
+.sp 2
+lsf.acct, res

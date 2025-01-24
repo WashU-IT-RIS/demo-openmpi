@@ -1,0 +1,112 @@
+
+.ad l
+
+.TH lsb.threshold 5 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBlsb.threshold\fR
+.ce 0
+
+.sp 2
+The lsb.threshold configuration file defines energy-saving and
+CPU frequency policies. This file is optional.
+.sp 2
+
+.sp 2
+The threshold file (lsb.threshold) is available at the location
+specified by the parameter \fBPERFORMANCE_THRESHOLD_FILE\fR in
+the lsb.params file. The default location is
+$LSF_ENVDIR/lsbatch/cluster_name/configdir/lsb.threshold.
+.sp 2
+The threshold file has the following parts:
+.sp 2
+\fBMinimize energy policy\fR
+.br
+         The purpose of this policy is to save energy. With this
+         policy, LSF will select a frequency that is equal to or
+         less than the default CPU frequency and the time
+         variation is equal to or less than the threshold value,
+         which can save the most energy. The value should be a
+         positive value or 0. The default threshold value is 0.
+.sp 2
+\fBMinimize time policy\fR
+.br
+         The purpose of this policy is to improve performance.
+         The value must be a negative value. This policy allows
+         the job to run at a frequency that is higher than the
+         default frequency. The policy is only available when the
+         default frequency is less than the nominal frequency.
+.sp 2
+         LSF only considers the frequency range that is higher
+         than the default frequency. When a job runs with this
+         policy, LSF checks the time variation from the nominal
+         to the default frequency. The frequency is used for the
+         job when the time variation is less than or equal to the
+         corresponding threshold value (the absolute value of
+         time variation is large than or equal to corresponding
+         threshold’s absolute value); otherwise, LSF checks the
+         next frequency.
+.sp 2
+         The job will run in the default frequency when there is
+         no frequency that matches the specified threshold value.
+         You must specify at least one frequency value that is
+         larger than the default CPU frequency and less than or
+         equal to the maximum available frequency. The available
+         frequency list is available at
+         /sys/devices/system/cpu/cpu*/cpufreq/scaling_available_frequencies.
+         If it is not in the available frequency list, the
+         frequency will be ignored. For other frequencies larger
+         than the default CPU frequency, LSF automatically
+         calculates the value based on the difference of default
+         frequency and defined frequency. LSF will calculate the
+         increase between each frequency and use that to get all
+         frequencies that are larger than the default CPU
+         frequency.
+.sp 2
+The following is an example lsb.threshold file:
+.sp 2
+# Copyright International Business Machines Corp,1993-2006, 2013
+.br
+#....
+.br
+# Minimize energy policy
+.br
+#.....
+.br
+Begin Min_Energy
+.br
+THRESHOLD_RUNTIME_VAR = 10
+.br
+End  Min_Energy
+.br
+#
+.br
+# Minimize run time policy
+.br
+#...
+.br
+Begin Min_Time
+.br
+CPU_FREQ       RUNTIME_VAR
+.br
+2100000KHz     -2      
+.br
+2200000KHz     -4
+.br
+2300000KHz     -9
+.br
+2400000KHz     -12
+.br
+2500000KHz     -15
+.br
+2700000KHz     -20
+.br
+End Min_Time
+.sp 2
+Example definitions are commented with a pound sign (\fR#\fR) in
+the sample lsb.threshold file. Remove the \fR#\fR to enter your
+own values for the example definitions. If no lines are
+uncommented, default values will be used for all definitions.
+.sp 2
+Parent topic: Configuration files

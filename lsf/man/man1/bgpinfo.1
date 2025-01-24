@@ -1,0 +1,294 @@
+
+.ad l
+
+.TH bgpinfo 1 "July 2021" "" ""
+.ll 72
+
+.ce 1000
+\fBbgpinfo\fR
+.ce 0
+
+.sp 2
+Displays information about global fairshare.
+.sp 2
+
+.SH Synopsis
+
+.sp 2
+\fBbgpinfo \fRsubcommand
+.sp 2
+\fBbgpinfo\fR [\fB-h\fR | \fB-V\fR]
+.SH Description
+
+.sp 2
+The bgpinfo command provides a set of subcommands to get
+information about global fairshare.
+.sp 2
+This command can also display remote fairshare load. The remote
+fairshare load impacts your dynamic priority for job scheduling.
+.sp 2
+Information about each subcommand is available through the help
+command.
+.SH Subcommand synopsis
+
+.sp 2
+\fBconf \fR [\fB-l\fR] [global_policy_name...]
+.sp 2
+\fBfsload\fR [\fB-l\fR [-c cluster_name]] [global_policy_name...]
+.sp 2
+\fBstatus\fR [\fB-l \fR[global_policy_name ...]]
+.sp 2
+\fB-h\fR
+.sp 2
+\fB-V\fR
+.SH Options
+
+.sp 2
+\fB\fIsubcommand\fB\fR
+.br
+         Runs the specified subcommand. See Usage section.
+.sp 2
+\fB-h\fR
+.br
+         Prints command usage to stderr and exits.
+.sp 2
+\fB-V\fR
+.br
+         Prints LSF release version to stderr and exits.
+.SH Usage
+
+.sp 2
+\fBconf [-l] [global_policy_name ...]\fR
+.br
+         Shows summary of global fairshare policy configurations.
+.sp 2
+         \fB\fRPOLICY_NAME\fB\fR
+.br
+                  The name of the global policy.
+.sp 2
+         \fB\fRTYPE\fB\fR
+.br
+                  Type of global policy.
+.sp 2
+         If \fIglobal_policy_name\fR is specified, shows only the
+         information for the specified global policies.
+.sp 2
+         \fB-l\fR
+.br
+                  Long format. Shows the following additional
+                  information:
+.sp 2
+                  \fB\fRSYNC_INTERVAL\fB\fR
+.br
+                           Fairshare load synchronization
+                           interval.
+.sp 2
+                  \fB\fRSYNC_MODE\fB\fR
+.br
+                           Synchronization mode (all or partial).
+.sp 2
+                  \fB\fRPARTICIPANTS\fB\fR
+.br
+                           Participants in the global fairshare
+                           policy.
+.sp 2
+\fBfsload [-l [-c cluster_name]] [global_policy_name ...]\fR
+.br
+         Shows the aggregated fairshare load for global fairshare
+         policies.
+.sp 2
+         By default, displays recursively the summed fairshare
+         load information for the global share account tree for
+         all global fairshare policies. Use the fsload -l option
+         to display fairshare load information for each
+         participating queue. Only share accounts whose fairshare
+         load entries are not all zero are shown.
+.sp 2
+         The \fRPOLICY_NAME\fR is the name of the global
+         fairshare policy. The following information is displayed
+         for fairshare load:
+.sp 2
+         \fB\fRSHARE_INFO_FOR\fB\fR
+.br
+                  The sum of the fairshare load information from
+                  all participating queues, users, or user groups
+                  in the global fairshare policy.
+.sp 2
+         \fB\fRUSER/GROUP\fB\fR
+.br
+                  Names of users or user groups who have access
+                  to the global fairshare policy.
+.sp 2
+         \fB\fRSTARTED\fB\fR
+.br
+                  Number of job slots that are used by running or
+                  suspended jobs from users or user groups that
+                  participate in the global fairshare policy.
+.sp 2
+         \fB\fRRESERVED\fB\fR
+.br
+                  Number of job slots that are reserved by jobs
+                  from users or user groups that participate in
+                  the global fairshare policy.
+.sp 2
+         \fB\fRCPU_TIME\fB\fR
+.br
+                  Cumulative CPU time that is used by jobs from
+                  users or user groups that participate in the
+                  global fairshare policy.
+.sp 2
+         \fB\fRRUN_TIME\fB\fR
+.br
+                  Total run time of all participants in the
+                  global fairshare policy.
+.sp 2
+         \fB\fRHIST_RUN_TIME\fB\fR
+.br
+                  Total historical run time of all participants
+                  in the global fairshare policy.
+.sp 2
+         \fB\fR\fBADJUST\fR\fB\fR
+.br
+                  Total dynamic priority calculation adjustment
+                  for all participants in the global fairshare
+                  policy.
+.sp 2
+         \fB-l\fR
+.br
+                  In addition to default output, shows fairshare
+                  load information for each participant.
+.sp 2
+                  The \fRPROVIDER\fR and \fRSHARE_INFO_FOR\fR
+                  show fairshare load information that is
+                  provided by a specific participant:
+.sp 2
+                  \fB\fRUSER/GROUP\fB\fR
+.br
+                           Name of users or user groups who have
+                           access to the global fairshare policy.
+.sp 2
+                  \fB\fRSTARTED\fB\fR
+.br
+                           Number of job slots that are used by
+                           running or suspended jobs from users
+                           or user groups for the specific
+                           participant.
+.sp 2
+                  \fB\fRRESERVED\fB\fR
+.br
+                           Number of job slots that are reserved
+                           by jobs from users or user groups for
+                           the specific participant.
+.sp 2
+                  \fB\fRCPU_TIME\fB\fR
+.br
+                           Cumulative CPU time that is used by
+                           jobs from users or user groups for the
+                           specific participant.
+.sp 2
+                  \fB\fRRUN_TIME\fB\fR
+.br
+                           Run time for the specific participant.
+.sp 2
+                  \fB\fRADJUST\fB\fR
+.br
+                           Dynamic priority calculation
+                           adjustment for the specific
+                           participant.
+.sp 2
+         \fB-c cluster_name\fR
+.br
+                  Filter for the -l option. It shows fairshare
+                  load for the specified participating cluster.
+                  Only one cluster name can be specified with the
+                  -c option.
+.sp 2
+\fBstatus [-l [global_policy_name ...]]\fR
+.br
+         Shows the status of the gpolicyd daemon and global
+         fairshare policies. By default, the following
+         information is shown:
+.sp 2
+         \fB\fRGPOLICYD CLUSTER\fB\fR
+.br
+                  The cluster where gpolicyd is running.
+.sp 2
+         \fB\fRGPOLICYD HOST\fB\fR
+.br
+                  The host where gpolicyd is running.
+.sp 2
+         \fB-l\fR
+.br
+                  In addition to the default output for daemon
+                  gpolicyd status, shows the status of specified
+                  global fairshare policies. By default, shows
+                  status of all global fairshare policies.
+.sp 2
+                  \fRGLOBAL FAIRSHARE POLICY\fR shows the status
+                  of a global fairshare policy:
+.sp 2
+                  \fB\fRPOLICY NAME\fB\fR
+.br
+                           Name of the global fairshare policy.
+.sp 2
+                  \fB\fRPARTICIPANTS\fB\fR
+.br
+                           Name of participants of the global
+                           fairshare policy.
+.sp 2
+                  \fB\fRSTATUS\fB\fR
+.br
+                           Status of the participant.
+.sp 2
+                           *  \fRDisconnected\fR - The cluster of
+                              the participant is disconnected
+                              from gpolicyd
+.sp 2
+                           *  \fRRejected\fR - Registration
+                              rejected. The participant does not
+                              exist or the participant is not a
+                              fairshare queue.
+.sp 2
+                           *  \fRok\fR - The cluster for the
+                              participant is connected to
+                              gpolicyd and the queue for the
+                              participant is successfully
+                              registered with gpolicyd.
+.sp 2
+                  $ bgpinfo status 
+.br
+                  GPOLICYD HOST: userA
+.br
+                  GPOLICYD CLUSTER: c1 
+.br
+                  
+.br
+                  $ bgpinfo status -l 
+.br
+                  GPOLICYD HOST: userA
+.br
+                  GPOLICYD CLUSTER: c1 
+.br
+                  
+.br
+                  GLOBAL FAIRSHARE POLICY 
+.br
+                  
+.br
+                  POLICY NAME: low 
+.br
+                    PARTICIPANTS         STATUS 
+.br
+                    low@c1               ok     
+.br
+                    low@c2               rejected   
+.br
+                  
+.br
+                  POLICY NAME: admin 
+.br
+                    PARTICIPANTS         STATUS 
+.br
+                    admin@c1             ok
+.br
+                    admin@c2             ok
