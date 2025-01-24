@@ -124,18 +124,26 @@ struct candHostGroup {
     struct candHost *candHost;	/* array of candidate host info */
 };
 
-/**
- * \page extsched_cand_getnextgroup extsched_cand_getnextgroup
+/* 
+ *-----------------------------------------------------------------------
+ *
+ * extsched_cand_getnextgroup
+ *
+ * PARAMETERS
+ * candGroupList [IN] :  current pointer to group of candidate hosts.
+ *
+ * DESCRIPTION
+ *
  * Iterate to the next group of candidate hosts for a job. 
- *
- * <b>\#include <lssched.h>
  * 
- * struct candHostGroup *extsched_cand_getnextgroup(INT_CandGroupList *candGroupList)</b>
+ * RETURN
  *
- * @param candGroupList [IN] :  current pointer to a group of candidate hosts.
+ * pointer to a candHostGroup structure
  *
- * @return struct candHostGroup *
- * \nPointer to a candHostGroup structure.
+ * SEE ALSO
+ * 
+ * candHostGroup
+ *-----------------------------------------------------------------------
  */
 extern struct candHostGroup *extsched_cand_getnextgroup(
     INT_CandGroupList *candGroupList);
@@ -212,8 +220,17 @@ struct resources {
     } val;
 };
 
-/**
- * \page extsched_host_resources extsched_host_resources
+/*
+ *-----------------------------------------------------------------------
+ *
+ * extsched_host_resources
+ *
+ * PARAMETERS
+ *
+ * host   [IN] : point to internal host structure
+ *
+ * DESCTIPTION
+ *
  * This API takes in input a void pointer to a scheduler internal
  * representation of a host and returns the resources on the host.
  * The host is for example the void * pointer of the candHost data
@@ -222,34 +239,34 @@ struct resources {
  * which is freed at the next fuction invocation. The caller must
  * copy the data if they have to be kept across function invocations.
  *
- * <b>\#include <lssched.h>
- * 
- * struct hostResources *extsched_host_resources(INT_Host *host)</b>
+ * RETURN
  *
- * @param host [IN] : point to an internal host structure
+ * pointer to hostResource structure
  *
- * @return struct hostResources *
- * \nPointer to hostResource structure.
+ *-----------------------------------------------------------------------
  */
 extern struct hostResources *extsched_host_resources(INT_Host *host);
 
-
-/**
- * \page extsched_getResType extsched_getResType
+/*
+ *-----------------------------------------------------------------------
+ * extsched_getResType
+ *
+ * PARAMETERS
+ *
+ * r [IN] : pointer to the resource structure 
+ *
+ * DESCRIPTION
+ *
  * A little helper routine returning the string from the enum restype.
  * Don't free the returned string (it points to a static buffer).
  *
- * <b>\#include <lssched.h>
+ * RETURN
  * 
- * char *extsched_getResType(const struct resources *r)<\b>
+ * string ("STATIC_RESOURCE", "DYNAMIC_RESOURCE", "SHARED_RESOURCE", or "")
  *
- * @param r [IN] : pointer to the resource structure 
- *
- * @return char *
- * \nOne of "STATIC_RESOURCE", "DYNAMIC_RESOURCE", "SHARED_RESOURCE", or "".
+ *-----------------------------------------------------------------------
  */
 extern char *extsched_getResType(const struct resources *r);
-
 
 /* Data structure representing a job inside the plugin
  */
@@ -291,8 +308,19 @@ enum phase {
 };
 
 
-/**
- * \page extsched_reason_set extsched_reason_set
+/* 
+ *-----------------------------------------------------------------------
+ * extsched_reason_set
+ *
+ * PARAMS
+ * 
+ * reasonPtr - [IN/OUT] the pointer to internal object that collects
+ * 	       pending reasons for the job.
+ * candHost - [IN] host that cannot be used by job
+ * reasonId - [IN] the ID of the reason why host cannot be used.
+ *
+ * DESCRIPTION
+ *
  * Provide the reason why a host is not considered usable for a job.
  *
  * reasonId must be either a pre-defined reason number, 
@@ -300,156 +328,152 @@ enum phase {
  * LSF reserves pending reason numbers from 1 - 20000.  Please refer
  * lsbatch.h for reason ID definitions.
  *
- * <b>\#include <lssched.h>
- * 
- * int extsched_reason_set(INT_Reason *reasonPtr, struct candHost *candHost, int reasonId)</b>
- *
- * @param reasonPtr [IN/OUT] : the pointer to internal object that collects pending reasons for the job.
- * @param candHost [IN] : host that cannot be used by job
- * @param reasonId [IN] : the ID of the reason why host cannot be used.
- *
  * RETURNS
  *
- * @return int:0
- * \nSuccess.
- * @return int:<0
- * \nFailure.
+ * 0 if successfully set reason, <0 if failed.
+ *
+ *-----------------------------------------------------------------------
  */
 extern int extsched_reason_set(INT_Reason *reasonPtr, 
 			       struct candHost *candHost, 
 			       int reasonId);
 
-/**
- * \page extsched_cand_removehost extsched_cand_removehost
+/* 
+ *-----------------------------------------------------------------------
+ * extsched_cand_removehost
+ *
+ * PARAMS
+ * 
+ * group - [IN/OUT] group of hosts to be modified
+ * index - [IN] index of the candidate host in the group to be removed.
+ *
+ * DESCRIPTION
+ *
  * Remove a candidate host from the group.
  *
  * Remaining hosts in the group are shifted up to the current index.
  * Thus, do not increment the current index if iterating through the 
- * candidate hosts in this group.
+ * candidate hosts in this group, 
  *
- * <b>\#include <lssched.h>
- * 
- * void extsched_cand_removehost(struct candHostGroup *group, int index)</b>
+ * RETURN
  *
- * @param group [IN/OUT] : group of hosts to be modified
- * @param index [IN] : index of the candidate host in the group to be removed.
- *
- * @return void
- * \nThere is no return value.
+ * none
+ *-----------------------------------------------------------------------
  */
 extern void extsched_cand_removehost(struct candHostGroup *group, int index);
 
 
-/**
- * \page extsched_cand_getavailslot extsched_cand_getavailslot
+/* 
+ *-----------------------------------------------------------------------
+ * extsched_cand_getavailslot
+ *
+ * PARAMS
+ * 
+ * candHost - (IN) host to get slot availability from.
+ * 
+ * DESCRIPTION
+ *
  * Get number of available slots on a candidate host. 
  * This function can also be used to get candidate host name, which is 
  * retruned in hostSlot.
  *
- * <b>\#include <lssched.h>
+ * RETURNS
  *
- * struct hostSlot *extsched_cand_getavailslot(struct candHost *candHost)</b>
+ * Available slots on host.
  *
- * @param candHost [IN] : host to get slot availability from.
- * 
- * @return struct hostSlot *
- * \nAvailable slots on host.
+ *-----------------------------------------------------------------------
  */
 extern struct hostSlot *extsched_cand_getavailslot(struct candHost *candHost);
 
-/**
- * \page RsrcReqHandler_NewFn RsrcReqHandler_NewFn
+/* 
  * Signature for functions that handle newly submitted resource requirement.
  *
  * Use these functions for newly submitted jobs to 
  * - get the user-specified resource requirement messages
  * - attach handler-specific data to peer jobs.
  *
- * <b>\#include <lssched.h>
- *
- * typedef int (* RsrcReqHandler_NewFn) (INT_RsrcReq *resreq)</b>
+ * PARAMS
  * 
- * @param resreq [IN] : Resource requirement object for newly submitted job. This is an internal object representing resource requirements for peer jobs.  
+ * resreq - (IN) Resource requirement object for newly submitted job.
+ *          This is an internal object representing resource requirements for
+ *          peer jobs.  
  *
- * @return int:0
- * \nIf successfully processed newly submitted resource requirements.
- * @return int:<0
- * \nIf failed to process.
+ * RETURNS
+ *
+ * 0 if successfully processed newly submitted resource requirements.
+ * <0 if failed to process.
+ *
+ * SEE ALSO
  * 
- * @see \ref RsrcReqHandlerType
- * @see \ref RsrcReqHandler_FreeFn
- * @see \ref extsched_resreq_registerhandler
- * @see \ref extsched_resreq_getextresreq
+ * RsrcReqHandlerType
+ * RsrcReqHandler_FreeFn
+ * extsched_resreq_registerhandler
+ * extsched_resreq_getextresreq
  */
 typedef int (* RsrcReqHandler_NewFn) (INT_RsrcReq *resreq);
 
-/**
- * \page RsrcReqHandler_FreeFn RsrcReqHandler_FreeFn
+/* 
  * Signature for functions that handles freeing of handler-specific
  * data when no more peer jobs refer to a resource requirement.
  *
- * <b>\#include <lssched.h>
- *
- * typedef void (* RsrcReqHandler_FreeFn)(void *handlerData)</b>
- *
- * @param handlerData [IN/OUT] : Handler-specific data that was created and attached to a resource requirement in above New function. Scheduler framework invokes this callback when the data is no longer usable.
- *
- * @return void
- * \nShould have no return value.
+ * PARAMS
  * 
- * @see \ref RsrcReqHandlerType
- * @see \ref RsrcReqHandler_NewFn
- * @see \ref extsched_resreq_registerhandler
+ * handlerData-(IN/OUT) Handler-specific data that was created and attached to 
+ *	    a resource requirement in above New function. Scheduler 
+ *	    framework invokes this callback when the data is no longer
+ *          usable.
+ *
+ * SEE ALSO
+ * 
+ * RsrcReqHandlerType
+ * RsrcReqHandler_NewFn
+ * extsched_resreq_registerhandler
  */
 typedef void (* RsrcReqHandler_FreeFn)(void *handlerData);
 
-/**
- * \page RsrcReqHandler_MatchFn RsrcReqHandler_MatchFn 
+/* 
  * Signature for functions that check candidate hosts against resource
  * requirements for peer jobs.
  *
- * <b>\#include <lssched.h>
- *
- * typedef int (* RsrcReqHandler_MatchFn)(void *handlerData, INT_CandGroupList *candGroupList, INT_Reason *reasonPtr)</b>
+ * PARAMS
  * 
- * @param handlerData [IN] : Handler-specific data attached to resource requirements for peer jobs.
- * @param candGroupList [IN/OUT] : list of candidate host groups.
- * @param reasonPtr [IN/OUT] : pointer to internal object that collects pending reasons.
+ *  handlerData - (IN) Handler-specific data attached to resource requirements
+ *  	          for peer jobs.
+ *  candGroupList - (IN/OUT) list of candidate host groups.
+ *  reasonPtr - (IN/OUT) pointer to internal object that collects pending
+ *  	        reasons.
  *
- * @return int:0
- * \nShould normally return with 0.
+ * SEE ALSO
  * 
- * @see \ref extsched_cand_getnextgroup
- * @see \ref RsrcReqHandlerType
- * @see \ref RsrcReqHandler_NewFn
- * @see \ref extsched_resreq_registerhandler
+ * extsched_cand_getnextgroup
+ * RsrcReqHandlerType
+ * RsrcReqHandler_NewFn
+ * extsched_resreq_registerhandler
  */
 typedef int (* RsrcReqHandler_MatchFn)(void *handlerData,
 				       INT_CandGroupList *candGroupList,
 				       INT_Reason *reasonPtr);
 
-/**
- * \page RsrcReqHandler_SortFn RsrcReqHandler_SortFn
+/* 
  * Signature for functions that sort candidate hosts by preferences for peer
  * jobs.
  *
  * These "sort" functions are called after matching is finished.
  *
- * <b>\#include <lssched.h>
+ * PARAMS
+ * 
+ *  handlerData - (IN) Handler-specific data attached to resource requirements
+ *  	          for peer jobs.
+ *  candGroupList - (IN/OUT) list of candidate host groups.
+ *  reasonPtr - (IN/OUT) pointer to internal object that collects
+ *              pending reasons.
  *
- * typedef int (*RsrcReqHandler_SortFn)(void *handlerData, INT_CandGroupList *candGroupList, INT_Reason *reasonPtr)</b>
- *
- * @param handlerData [IN] : Handler-specific data attached to resource requirements for peer jobs.
- * @param candGroupList [IN/OUT] list of candidate host groups.
- * @param reasonPtr [IN/OUT] pointer to internal object that collects pending reasons.
- *
- * @return int:0
- * \nShould normally return with 0.
- *
- * @see \ref extsched_cand_getnextgroup
- * @see \ref RsrcReqHandlerType
- * @see \ref RsrcReqHandler_NewFn
- * @see \ref extsched_resreq_registerhandler
+ * SEE ALSO
+ * 
+ * extsched_cand_getnextgroup
+ * RsrcReqHandlerType
+ * RsrcReqHandler_NewFn
+ * extsched_resreq_registerhandler
  */
 typedef int (*RsrcReqHandler_SortFn)(void *handlerData,
 				     INT_CandGroupList *candGroupList,
@@ -467,20 +491,13 @@ typedef int (*RsrcReqHandler_SortFn)(void *handlerData,
 					     */
 #define NOTIFY_STARTUP              0x010   /* job allocation at startup 
 					     */
-/**
- * \page RsrcReqHandler_CheckAllocFn RsrcReqHandler_CheckAllocFn
- * Signature for check alloc callback function.
- */
+
 typedef int (*RsrcReqHandler_CheckAllocFn)(
     void *info,
     INT_Job *job, 
     INT_Alloc *alloc,
     INT_AllocLimitList *allocLimitList);
 
-/**
- * \page RsrcReqHandler_NotifyAllocFn RsrcReqHandler_NotifyAllocFn
- * Signature for notify alloc callback function.
- */
 typedef int (*RsrcReqHandler_NotifyAllocFn)(
     void *info,
     INT_Job *job, 
@@ -538,59 +555,52 @@ typedef struct _RsrcReqHandlerType {
 
 } RsrcReqHandlerType;
 
-/**
- * \page extsched_resreq_registerhandler extsched_resreq_registerhandler
+/* 
  * Register a new handler for job resource requirements.
  *
  * Registered handler functions will be called during scheduling 
  * to handle peer jobs' resource requirements.
+ *
+ * PARAMS
+ * 
+ * handlerId (IN) identifier for the handler
+ * handler (IN) pointer to the handler.  Memory must be dynamically allocated.
+ *         Memory must not be freed.
+ * 
+ * PRECONDITIONS
  *
  * The handlerId must be a number between 100 and 199.  Each handler must have
  * a different identifier.
  * 
  * Fields of RsrcReqHandlerType that are not used must be set to NULL.
  *
- * <b>\#include <lssched.h>
+ * SEE ALSO
  *
- * int extsched_resreq_registerhandler(int handlerId, RsrcReqHandlerType *handler)</b>
- * 
- * @param handlerId [IN] : identifier for the handler
- * @param handler [IN] : pointer to the handler.  Memory must be dynamically allocated. Memory must not be freed.
- * 
- * @return int:TRUE
- * \nSuccess.
- * @return int:FALSE
- * \nFailure.
+ * RsrcReqHandlerType
+ * RsrcReqHandler_NewFn
+ * RsrcReqHandler_FreeFn
+ * RsrcReqHandler_MatchFn
+ * RsrcReqHandler_SortFn
+ * RsRcReqHandler_NotifyAlloc
  *
- * @see \ref RsrcReqHandlerType
- * @see \ref RsrcReqHandler_NewFn
- * @see \ref RsrcReqHandler_FreeFn
- * @see \ref RsrcReqHandler_MatchFn
- * @see \ref RsrcReqHandler_SortFn
- * @see \ref RsRcReqHandler_NotifyAlloc
  */
 extern int extsched_resreq_registerhandler(int handlerId, 
 					   RsrcReqHandlerType *handler);
 
-/**
- * \page extsched_resreq_setobject extsched_resreq_setobject
+/* 
  * Attach handler-specific data to a set of peer jobs.
  *
  * Jobs are classified as peer jobs when they have the same handler-specific
  * data attached (as indicated by a unique string representation).  Peer jobs
  * are scheduled together.
  *
- * <b>\#include <lssched.h>
+ * PARAMS
  *
- * void extsched_resreq_setobject(INT_RsrcReq *resreq, int handlerId, char *key, void *handlerData)</b>
- *
- * @param resreq [IN] : Internal object representing resource requirements of peer jobs.
- * @param handlerId [IN] : identifier for the handler.
- * @param key [IN] : the unique string representing the handler-specific data.
- * @param handlerData [IN] : handler-specific data to be attached to the peer jobs.
- *
- * @return void
- * \nThere is no return value.
+ * resreq - (IN) Internal object representing resource requirements of
+ *          peer jobs.
+ * handlerId - (IN) identifier for the handler.
+ * key - (IN) the unique string representing the handler-specific data.
+ * handlerData - (IN) handler-specific data to be attached to the peer jobs.
  *
  * PRECONDITIONS
  *
@@ -606,17 +616,18 @@ extern int extsched_resreq_registerhandler(int handlerId,
  * 4. The handlerData should not be freed until framework calls the freeFn of
  *    the registered handler type.
  *
- * @see \ref extsched_resreq_registerhandler
- * @see \ref RsrcReqHandler_NewFn
- * @see \ref RsrcReqHandler_FreeFn
+ * SEE ALSO
+ *
+ * extsched_resreq_registerhandler
+ * RsrcReqHandler_NewFn
+ * RsrcReqHandler_FreeFn
  */
 extern void extsched_resreq_setobject(INT_RsrcReq *resreq, 
 				      int handlerId, 
 				      char *key, 
 				      void *handlerData);
 
-/**
- * \page AllocatorFn AllocatorFn
+/* 
  * Signature for functions that adjusts allocation decisions for jobs. 
  *
  * Use these functions to adjust allocations made by internal scheduling
@@ -630,34 +641,40 @@ extern void extsched_resreq_setobject(INT_RsrcReq *resreq,
  * - the decision, SCH_MOD_DECISION_PENDPEERJOBS, has been given for
  *   a peer job to this job.
  *
- * <b>\#include <lssched.h>
+ * PARAMS
  *
- * typedef int (*AllocatorFn)(INT_JobBlock *jobBlock, INT_CandGroupList *groupList, INT_Reason *reasonPtr, INT_Alloc **alloc)</b>
+ * job - (IN) Internal job object. Make allocation decision for this job.
+ * groupList - (IN/OUT) List of candidate host groups usable for the job.
+ * reasonPtr - (IN/OUT) Internal object to collect pending reasons for the
+ *             job.
+ * alloc - (IN/OUT) Internal object representing resources allocated to the
+ * 	   job.
  *
- * @param job [IN] : Internal job object. Make allocation decision for this job.
- * @param groupList [IN/OUT] : List of candidate host groups usable for the job.
- * @param reasonPtr [IN/OUT] : Internal object to collect pending reasons for the job.
- * @param alloc [IN/OUT] : Internal object representing resources allocated to the job.
+ * RETURNS
  *
- * @return int:SCH_MOD_DECISION_NONE
- * \nThe function does not care to alter the decision for this job.
- * @return int:SCH_MOD_DECISION_DISPATCH
- * \n Decide to dispatch the job with the given allocation in alloc.
- * @return int:SCH_MOD_DECISION_RESERVE
- * \nDecide to reserve resources for the job with the given reservation in alloc.
- * @return int:SCH_MOD_DECISION_PENDPEERJOBS
- * \nDecide to keep this job pending, along with all its peer jobs.
- * @return int:SCH_MOD_DECISION_PENDJOB
- * \nDecide to keep this job only pending. Peer jobs will be scheduled separately.
+ * Decision for the job:
+ * - SCH_MOD_DECISION_NONE: The function does not care to alter the decision
+ *   for this job.
+ * - SCH_MOD_DECISION_DISPATCH: Decide to dispatch the job with the given
+ *   allocation in alloc.
+ * - SCH_MOD_DECISION_RESERVE: Decide to reserve resources for the job with
+ *   the given reservation in alloc.
+ * - SCH_MOD_DECISION_PENDPEERJOBS: Decide to keep this job pending, along
+ *   with all its peer jobs.
+ * - SCH_MOD_DECISION_PENDJOB: Decide to keep this job only pending. Peer
+ *   jobs will be scheduled separately.
  *
- * @see \ref extsched_alloc_registerallocator
- * @see \ref extsched_cand_getnextgroup
- * @see \ref extsched_alloc_modify
- * @see \ref extsched_alloc_gethostslot
- * @see \ref extsched_job_getaskedslot
- * @see \ref extsched_job_getextresreq
- * @see \ref extsched_job_getrsrcreqobject
- * @see \ref extsched_resreq_setobject
+ * SEE ALSO
+ *
+ * extsched_alloc_registerallocator
+ * extsched_cand_getnextgroup
+ * candHostGroup
+ * extsched_alloc_modify
+ * extsched_alloc_gethostslot
+ * extsched_job_getaskedslot
+ * extsched_job_getextresreq
+ * extsched_job_getrsrcreqobject
+ * extsched_resreq_setobject
  */
 typedef int (*AllocatorFn)(INT_JobBlock *jobBlock, /* not an INT_Job pointer */
 			   INT_CandGroupList *groupList,
@@ -670,129 +687,143 @@ typedef int (*AllocatorFn)(INT_JobBlock *jobBlock, /* not an INT_Job pointer */
 #define SCH_MOD_DECISION_PENDPEERJOBS    3
 #define SCH_MOD_DECISION_PENDJOB         4
 
-/**
- * \page extsched_alloc_registerallocator extsched_alloc_registerallocator
- * Register a function that adjusts allocation decisions for jobs. 
+/* 
+ * Register a functions that adjusts allocation decisions for jobs. 
  *
  * These functions will be called after internal scheduling policies
  * have decided allocations for jobs.
  *
- * <b>\#include <lssched.h>
+ * PARAMS
  *
- * int extsched_alloc_registerallocator(AllocatorFn  allocator)</b>
+ * allocator - (IN) Pointer to the function that adjusts alocations.
  *
- * @param allocator [IN] : Pointer to the function that adjusts alocations.
+ * RETURN
  *
- * @return int:0
- * \nSuccesfully registered.
- * @return int:<0
- * \nFailed to register the function.
+ * 0 if succesfully registered. <0 if failed to register the function.
  *
- * @see \ref AllocatorFn
+ * SEE ALSO
+ *
+ * AllocatorFn
  */
 extern int extsched_alloc_registerallocator(AllocatorFn  allocator);
 
-/**
- * \page extsched_resreq_getextresreq extsched_resreq_getextresreq
+/* 
  * Get user-specified resource requirement message for the peer jobs.
  *
- * <b>\#include <lssched.h>
- * 
- * char **extsched_resreq_getextresreq(INT_RsrcReq *resreq, int *msgCnt)</b>
+ * PARAMS
  *
- * @param resreq [IN] : Internal object representing resource requirements for peer jobs.
- * @param msgCnt [OUT] : Number of user-specified messages submitted with the peer jobs.
+ * resreq - (IN) Internal object representing resource requirements for peer
+ *          jobs.
+ * msgCnt - (OUT) Number of user-specified messages submitted with the
+ *          peer jobs.
+ * RETURNS
  *
- * @return char **
- * \nArray of user-specified messages submitted with the peer jobs.
- * @return NULL
- * \nthere are no such messages.
+ * Array of user-specified messages submitted with the peer jobs.
+ * If there are no such messages, returns NULL.
  *
- * @see \ref extsched_job_getextresreq
+ * SEE ALSO
+ *
+ * extsched_job_getextresreq
  */
 extern char **extsched_resreq_getextresreq(INT_RsrcReq *resreq, int *msgCnt);
 
-/**
- * \page extsched_resreq_getqueextsched extsched_resreq_getqueextsched
- * Get queue level MANDATORY_EXTSCHED and DEFAULT_EXTSCHED for job.
+/*
+ *-----------------------------------------------------------------------
+ * extsched_resreq_getqueextsched
  *
- * <b>\#include <lssched.h>
- * 
- * int extsched_resreq_getqueextsched(INT_RsrcReq *resreq, char **mand_extsched, char **default_extsched)</b>
+ * PARAMS
  *
- * @param resreq [IN] : Internal object representing resource requirements for peer jobs.
- * @param mand_extsched [OUT] : return the setting of MANDATORY_EXSCHED of job queue, mand_extsched should not be NULL.
- * @param default_extsched [OUT] : return the setting of DEFAULT_EXSCHED of job queue, default_extsched should not be NULL.
+ * resreq - (IN) Internal object representing resource requirements for peer
+ *          jobs.
+ * mand_extsched - (OUT) return the setting of MANDATORY_EXSCHED of job 
+ *          queue, mand_extsched should not be NULL.
+ * default_extsched - (OUT) return the setting of DEFAULT_EXSCHED of job
+ *          queue, default_extsched should not be NULL. It will points the 
  *
- * @return int:0
- * \nSuccess.
- * @return int:-1
- * \nFailed.
+ * DESCRIPTION
  *
+ * Get queue level MANDATORY_EXTSCHED and DEFAULT_EXTSCHED for job
+ *
+ * RETURNS
+ *
+ * If no error occurs, return 0, otherwise return -1,
  * If MANDATORY_EXTSCHED has been set in job's queue, *mand_extsched will
  *    points to the string, otherwise it will be NULL.
  * If DEFAULT_EXTSCHED has been set in job's queue, *default_extsched will
  *    points to the string, otherwise it will be NULL.
+ *
+ *-----------------------------------------------------------------------
  */
 extern int extsched_resreq_getqueextsched(INT_RsrcReq *resreq, 
 					  char **mand_extsched,
 					  char  **default_extsched);
 
-/**
- * \page extsched_job_getextresreq extsched_job_getextresreq
+/* 
+ *-----------------------------------------------------------------------
+ * extsched_job_getextresreq
+ *
+ * PARAMS
+ *
+ * job - (IN) Internal job object.
+ * msgCnt - (OUT) Number of user-specified messages submitted with the
+ *          peer jobs.
+ *
+ * DESCRIPTION
+ *
  * Get the user-specified resource requirements messages for the job.
  * 
  * Same as extsched_resreq_getextresreq, but uses pointer to the job,
  * rather than the resource requirements of the peer jobs.
  *
- * <b>\#include <lssched.h>
- * 
- * char **extsched_job_getextresreq(INT_JobBlock *jobPtr, int *msgCnt)</b>
+ * RETURNS
  *
- * @param job [IN] : Internal job object.
- * @param msgCnt [OUT] : Number of user-specified messages submitted with the peer jobs.
+ * Array of user-specified messages submitted with the peer jobs.
+ * If there are no such messages, returns NULL.
  *
- * @return char **
- * \nArray of user-specified messages submitted with the peer jobs.
- * @return NULL
- * \nIf there are no such messages.
- *
- * @see \ref extsched_resreq_getextresreq
+ *-----------------------------------------------------------------------
  */
 extern char **extsched_job_getextresreq(INT_JobBlock *jobPtr, int *msgCnt);
 
-/**
- * \page extsched_job_getaskedslot extsched_job_getaskedslot
+/* 
+ *-----------------------------------------------------------------------
+ * extsched_job_getaskedslot
+ *
+ * PARAMS
+ *
+ * jobPtr - (IN) Internal job object.
+ *
+ * DESCRIPTION
+ * 
  * Get the number of slots requested by a job.
  *
- * <b>\#include <lssched.h>
- * 
- * int extsched_job_getaskedslot(INT_JobBlock *jobPtr)</b>
+ * RETURNS
  *
- * @param jobPtr [IN] : Internal job object.
- *
- * @return int
- * \nThe (max) number of slots requested by job.
+ * Returns (max) number of slots requested by job.
+ *-----------------------------------------------------------------------
  */
 extern int extsched_job_getaskedslot(INT_JobBlock *jobPtr);
 
-/**
- * \page extsched_alloc_gethostslot extsched_alloc_gethostslot
+/* 
+ *-----------------------------------------------------------------------
+ * extsched_alloc_gethostslot
+ *
+ * PARAMS
+ *
+ * alloc - (IN) Internal allocation object. Allocated slots for the job.
+ * candGroupList - (IN) list of candidate host groups for the job.
+ * hostCnt - (OUT) number of hostSlot information returned.
+ * group - (OUT) which candidate host group is allocated.
+ *
+ * DESCRIPTION
+ *
  * Get the distribution of slots on various candidate hosts in job's
  * allocation.
  *
- * <b>\#include <lssched.h>
- * 
- * struct hostSlot *extsched_alloc_gethostslot(INT_Alloc *alloc, INT_CandGroupList *candGroupList, int *hostCnt, struct candHostGroup **group)</b>
+ * RETURNS
  *
- * @param alloc [IN] : Internal allocation object. Allocated slots for the job.
- * @param candGroupList [IN] : list of candidate host groups for the job.
- * @param hostCnt [OUT] : number of hostSlot information returned.
- * @param group [OUT] : which candidate host group is allocated.
- *
- * @return struct hostSlot *
- * \nArray of hostSlot data structures, giving the number of slots given
+ * Array of hostSlot data structures, giving the number of slots given
  * to the job on each host, and slots available on the host.
+ *-----------------------------------------------------------------------
  */
 extern struct hostSlot* extsched_alloc_gethostslot(
     INT_Alloc *alloc, 
@@ -800,29 +831,43 @@ extern struct hostSlot* extsched_alloc_gethostslot(
     int *hostCnt,
     struct candHostGroup **group);
 
-
-/**
- * \page extsched_alloc_type extsched_alloc_type
+/* 
+ *-----------------------------------------------------------------------
+ * extsched_alloc_type
+ *
+ * PARAMS
+ *
+ * alloc - (IN) Internal allocation object. Allocated slots for the job.
+ *
+ * DESCRIPTION
+ *
  * Return the type of allocation given to the job (reservation or dispatch).
  *
- * <b>\#include <lssched.h>
- * 
- * int extsched_alloc_type(INT_Alloc *alloc)</b>
+ * RETURNS
  *
- * @param alloc [IN] : Internal allocation object. Allocated slots for the job.
- *
- * @return int:SCH_MOD_DECISION_NONE
- * \nalloc is NULL. No decision has been made.
- * @return int:SCH_MOD_DECISION_DISPATCH 
- * \nalloc is a dispatch decision.
- * @return int:SCH_MOD_DECISION_RESERVE
- * \n alloc is a reservation decision.
+ * SCH_MOD_DECISION_NONE: alloc is NULL. No decision has been made.
+ * SCH_MOD_DECISION_DISPATCH: alloc is a dispatch decision.
+ * SCH_MOD_DECISION_RESERVE: alloc is a reservation decision.
+ *-----------------------------------------------------------------------
  */
 extern int extsched_alloc_type(INT_Alloc *alloc);
 
-
-/**
- * \page extsched_alloc_modify extsched_alloc_modify
+/*
+ *-----------------------------------------------------------------------
+ * extsched_alloc_modify
+ *
+ * PARAMS
+ *
+ * jobptr - (IN) jobblock pointer passed into allocator function, this is
+ *               not an INT_Job pointer.
+ * alloc - (IN/OUT) Internal allocation object. 
+ * host - (IN) The host to be modified. nslotAlloc field in hostSlot indicates
+ *             how many slots need to be allocated on the host.
+ * reason - (IN) Internal reason object.
+ * group - (IN) which candidate host group is used in the allocation. 
+ *
+ * DESCRIPTION
+ *
  * Adjust the number of slots allocated to a job on a candidate host,
  * if possible.
  *
@@ -835,24 +880,12 @@ extern int extsched_alloc_type(INT_Alloc *alloc);
  * The nslotAlloc field of host parameter must be greater than 1 (that is,
  * hosts cannot be removed from an allocation).
  *
- * <b>\#include <lssched.h>
- * 
- * int extsched_alloc_modify(INT_JobBlock *jobptr, INT_Alloc **alloc, struct hostSlot *host, INT_Reason *reason, struct candHostGroup *group)</b>
- *
- * @param jobptr [IN] : jobblock pointer passed into allocator function, this is not an INT_Job pointer.
- * @param alloc [IN/OUT] : Internal allocation object. 
- * @param host [IN] : The host to be modified. nslotAlloc field in hostSlot indicates how many slots need to be allocated on the host.
- * @param reason [IN] : Internal reason object.
- * @param group [IN] : which candidate host group is used in the allocation. 
- *
  * RETURNS
  *
- * TRUE if   FALSE if 
+ * TRUE if allocation was successfuly adjusted.  FALSE if adjustment
+ * failed (due to conflict with other scheduling policies).
  *
- * @return int:TRUE
- * \nAllocation was successfuly adjusted.
- * @return int:FALSE
- * \nAdjustment failed (due to conflict with other scheduling policies).
+ *-----------------------------------------------------------------------
  */
 extern int extsched_alloc_modify(INT_JobBlock *jobptr,
 				 INT_Alloc **alloc, 
@@ -861,157 +894,189 @@ extern int extsched_alloc_modify(INT_JobBlock *jobptr,
 				 struct candHostGroup *group);
 
 
-/**
- * \page JobOrderFn4Que JobOrderFn4Que
+/*
+ *-----------------------------------------------------------------------
+ * JobOrderFn4Que
+ *
+ * PARAMS
+ * 
+ * queueName - (IN) the name of the queue to which the job list belongs
+ * jobList   - (IN) the ready job list belonging to the queue
+ *
+ * DESCRIPTION
+ *
  * Signature for the function to decide job dispatch order.
  *
  * Use this funtion to decide which job in the ready job list passed in
- * from the queue should go first.
+ * from the queue should go first
  *
- * <b>\#include <lssched.h>
+ * RETURNS
  *
- * typedef INT_JobBlock * (*JobOrderFn4Que) (char *queueName, INT_JobList *jobList)</b>
+ * Pointer to the job which should go first. If no decision can be made
+ * then a NULL will be returned. 
  *
- * @param queueName [IN] : the name of the queue to which the job list belongs
- * @param jobList [IN] : the ready job list belonging to the queue
- *
- * @return INT_JobBlock *
- * \nPointer to the job which should go first.
- * @return NULL
- * \nIf no decision can be made.
- *
- * @see \ref extsched_order_registerOrderFn4AllQueues
+ *-----------------------------------------------------------------------
  */
 typedef INT_JobBlock * (*JobOrderFn4Que) (char *queueName, INT_JobList *jobList);
 
-/**
- * \page extsched_order_registerOrderFn4AllQueues extsched_order_registerOrderFn4AllQueues
+/* 
+ *-----------------------------------------------------------------------
+ * extsched_order_registerOrderFn4AllQueues
+ *
+ * PARAMS
+ *
+ * fcfsOrderFn - (IN) Pointer to the function that decides job dispatch order.
+ *
+ * DESCRIPTION
+ *
  * Register a function that decides job dispatch order for all queues.
  *
- * <b>\#include <lssched.h>
+ * RETURN
  *
- * int extsched_order_registerOrderFn4AllQueues(JobOrderFn4Que  orderFn)</b>
+ * 0 if succesfully registered. <0 if failed to register the function.
  *
- * @param fcfsOrderFn [IN] : Pointer to the function that decides job dispatch order.
- *
- * @return int:0
- * \nSuccesfully registered.
- * @return int:<0
- * \nFailed to register the function.
- *
- * @see \ref JobOrderFn4Que
+ *-----------------------------------------------------------------------
  */
 extern int extsched_order_registerOrderFn4AllQueues(JobOrderFn4Que  orderFn);
 
-/**
- * \page extsched_order_isJobListEmpty extsched_order_isJobListEmpty
+/* 
+ *-----------------------------------------------------------------------
+ * extsched_order_isJobListEmpty
+ *
+ * PARAMS
+ *
+ * jobList - (IN) Ready to dispatch job list.
+ *
+ * DESCRIPTION
+ *
  * Check if the jobList is empty.
  *
- * <b>\#include <lssched.h>
+ * RETURNS
+ *     TRUE  - if no job in the list
+ *     FALSE - there are jobs in the job list
  *
- * int extsched_order_isJobListEmpty(INT_JobList *jobList)</b>
- *
- * @param jobList [IN] : Ready to dispatch job list.
- *
- * @return int:TRUE
- * \nNo job in the list.
- * @return int:FALSE
- * \nThere are jobs in the job list.
+ *-----------------------------------------------------------------------
  */
 extern int extsched_order_isJobListEmpty(INT_JobList *jobList); 
 
-/**
- * \page extsched_order_getFirstJobOfList extsched_order_getFirstJobOfList
+/* 
+ *-----------------------------------------------------------------------
+ * extsched_order_getFirstJobOfList
+ *
+ * PARAMS
+ *
+ * jobList - (IN) The passed in job list.
+ *
+ * DESCRIPTION
+ *
  * Get the first job in the job list.
  *
- * <b>\#include <lssched.h>
+ * RETURNS
+ *     Return the first job in jobList if jobList is not empty,
+ *     otherwise return NULL. 
  *
- * INT_JobBlock *extsched_order_getFirstJobOfList(INT_JobList *jobList)</b>
- *
- * @param jobList [IN] : The passed in job list.
- *
- * @return INT_JobBlock *
- * \nReturn the first job in jobList.
- * @return NULL
- * \njobList is empty.
+ *-----------------------------------------------------------------------
  */
 extern INT_JobBlock *extsched_order_getFirstJobOfList(INT_JobList *jobList);
 
 
-/**
- * \page extsched_order_getNextJobOfList extsched_order_getNextJobOfList
+/* 
+ *-----------------------------------------------------------------------
+ * extsched_order_getNextJobOfList
+ *
+ * PARAMS
+ *
+ * currJob - (IN) Pointer to the current job.
+ * jobList - (IN) The passed in job list.
+ *
+ * DESCRIPTION
+ *
  * Get the next job in the job list.
  *
- * <b>\#include <lssched.h>
+ * RETURNS
+ *     Return the next job in jobList if jobList is not empty,
+ *     otherwise return NULL. 
  *
- * INT_JobBlock *extsched_order_getNextJobOfList(INT_JobBlock *currJob, INT_JobList *jobList)</b>
- *
- * @param currJob [IN] : Pointer to the current job.
- * @param jobList [IN] : The passed in job list.
- *
- * @return INT_JobBlock *
- * \nReturn the next job in jobList.
- * @return NULL
- * \njobList is empty.
+ *-----------------------------------------------------------------------
  */
 extern INT_JobBlock *extsched_order_getNextJobOfList(INT_JobBlock *currJob,  
 						     INT_JobList *jobList);
 
 
-/**
- * \page extsched_order_getPreJobOfList extsched_order_getPreJobOfList
+/* 
+ *-----------------------------------------------------------------------
+ * extsched_order_getPreJobOfList
+ *
+ * PARAMS
+ *
+ * currJob - (IN) Pointer to the current job.
+ * jobList - (IN) The passed in job list.
+ *
+ * DESCRIPTION
+ *
  * Get the previous job in the job list.
  *
- * <b>\#include <lssched.h>
+ * RETURNS
+ *     Return the previous job in jobList if jobList is not empty,
+ *     otherwise return NULL. 
  *
- * INT_JobBlock *extsched_order_getPreJobOfList(INT_JobBlock *currJob, INT_JobList *jobList)</b>
- *
- * @param currJob [IN] : Pointer to the current job.
- * @param jobList [IN] : The passed in job list.
- *
- * @return INT_JobBlock *
- * \nThe previous job in jobList.
- * @return NULL
- * \njobList is empty.
+ *-----------------------------------------------------------------------
  */ 
 extern INT_JobBlock *extsched_order_getPreJobOfList(INT_JobBlock *currJob,  
 						    INT_JobList *jobList);
 
 
-/**
- * \page extsched_order_getJobNumOfList extsched_order_getJobNumOfList
+/* 
+ *-----------------------------------------------------------------------
+ * extsched_order_getJobNumOfList
+ *
+ * PARAMS
+ *
+ * jobList - (IN) The passed in job list.
+ *
+ * DESCRIPTION
+ *
  * Get the number of jobs in the job list.
  *
- * <b>\#include <lssched.h>
+ * RETURNS
+ *     The number of jobs in the job list.
  *
- * int extsched_order_getJobNumOfList(INT_JobList *jobList)</b>
- *
- * @param jobList [IN] : The passed in job list.
- *
- * @return int
- * \nThe number of jobs in the job list.
+ *-----------------------------------------------------------------------
  */ 
 extern int extsched_order_getJobNumOfList(INT_JobList *jobList);
 
 
-/**
- * \page extsched_order_getJobPriority extsched_order_getJobPriority
+/* 
+ *-----------------------------------------------------------------------
+ * extsched_order_getJobPriority
+ *
+ * PARAMS
+ *
+ * jobPtr - (IN) Internal job object, this is jobblock not INT_Job pointer
+ *
+ * DESCRIPTION
+ *
  * Get the priority of a job, which could be defined by bsub -sp. 
  *
- * <b>\#include <lssched.h>
+ * RETURNS
  *
- * int extsched_order_getJobPriority(INT_JobBlock *job)</b>
+ * Returns priority of job.
  *
- * @param jobPtr [IN] : Internal job object, this is jobblock not INT_Job pointer 
- *
- * @return int
- * \nReturns priority of job.
+ *-----------------------------------------------------------------------
  */
 extern int extsched_order_getJobPriority(INT_JobBlock *job);
 
 
-/**
- * \page extsched_order_getJobSeqNum extsched_order_getJobSeqNum
+/* 
+ *-----------------------------------------------------------------------
+ * extsched_order_getJobSeqNum
+ *
+ * PARAMS
+ *
+ * jobPtr - (IN) Internal job object, this is jobblock not INT_Job pointer
+ *
+ * DESCRIPTION
+ *
  * Get the sequence number of a job. 
  *
  * Sequence number is used by LSF internally to decide a job's FCFS 
@@ -1019,46 +1084,53 @@ extern int extsched_order_getJobPriority(INT_JobBlock *job);
  * other relevant features; e.g, job requeue, are also considered when 
  * determining a job's sequential number.
  *
- * <b>\#include <lssched.h>
- * 
- * unsigned int extsched_order_getJobSeqNum(INT_JobBlock *job)</b>
+ * RETURNS
  *
- * @param jobPtr [IN] : Internal job object, this is jobblock not INT_Job pointer
+ * Returns the sequence number of a job.
  *
- * @return unsigned int
- * \nReturns the sequence number of a job.
+ *-----------------------------------------------------------------------
  */
 extern unsigned int extsched_order_getJobSeqNum(INT_JobBlock *job);
 
 
-/**
- * \page extsched_order_getJobSubmitTime extsched_order_getJobSubmitTime
+/* 
+ *-----------------------------------------------------------------------
+ * extsched_order_getJobSubmitTime
+ *
+ * PARAMS
+ *
+ * jobPtr - (IN) Internal job object, this is jobblock not INT_Job pointer
+ *
+ * DESCRIPTION
+ *
  * Get the submission time of a job. 
  *
- * <b>\#include <lssched.h>
- * 
- * time_t extsched_order_getJobSubmitTime(INT_JobBlock *job)</b>
+ * RETURNS
  *
- * @param jobPtr [IN] : Internal job object, this is jobblock not INT_Job pointer
+ * Returns the submission time of job.
  *
- * @return time_t
- * \nReturns the submission time of job.
+ *-----------------------------------------------------------------------
  */
 extern time_t extsched_order_getJobSubmitTime(INT_JobBlock *job);
 
 
-/**
- * \page extsched_order_getJobUser extsched_order_getJobUser
+/* 
+ *-----------------------------------------------------------------------
+ * extsched_order_getJobUser
+ *
+ * PARAMS
+ *
+ * jobPtr - (IN) Internal job object, this is jobblock not INT_Job pointer
+ *
+ * DESCRIPTION
+ *
  * Get the user name of a job. 
  *
- * <b>\#include <lssched.h>
- * 
- * char *extsched_order_getJobUser(INT_JobBlock *job)</b>
+ * RETURNS
  *
- * @param jobPtr [IN] : Internal job object, this is jobblock not INT_Job pointer
+ * Returns the user name of job.
  *
- * @return char *
- * \nReturns the user name of job.
+ *-----------------------------------------------------------------------
  */
 extern char *extsched_order_getJobUser(INT_JobBlock *job);
 
@@ -1131,74 +1203,81 @@ typedef struct {
 
 typedef struct {
     int nRsrcConsump;
-    extsched_rsrcConsump *rsrcConsump; /** rusage info */
+    extsched_rsrcConsump *rsrcConsump; /* rusage info */
     char *selectStr;
 } extsched_rsrcReqInfo;
 
-/**
- * \page extsched_getCheckAllocContext extsched_getCheckAllocContext
- * Function to be called from within checkAllocFn to determine
- * the context in which this function is called. 
+/*
+ *-----------------------------------------------------------------------
  *
- * <b>\#include <lssched.h>
+ * extsched_getCheckAllocContext --
  *
- * extsched_SchedContext extsched_getCheckAllocContext(void)</b>
+ * DESCRIPTION
+ * 
+ *  Function to be called from within checkAllocFn to determine
+ *  the context in which this function is called. 
+ * 
+ * PARAMETERS
  *
- * <b>Parameters:</b>
- * \par
- * none
- * \n
+ *  none
  *
- * @return extsched_SchedContext
- * \nCurrent scheduling context. One of the SCHED_CONTEXT_* values.
+ * RETURN
+ *
+ *  Current scheduling context.
+ *
+ *-----------------------------------------------------------------------
  */
 extern extsched_SchedContext
 extsched_getCheckAllocContext(void);
 
 
-/**
- * \page extsched_addAllocLimit extsched_addAllocLimit
- * To be called from within a registered checkAllocFn, in order
- * to block a job from using the allocation.
+/*
+ *-----------------------------------------------------------------------
  *
- * The function adds a limit to allocLimitList.
+ * extsched_addAllocLimit --
  *
- * Setting the host parameter to a particular host means that 
- * the job is forbidden to dispatch on the particular host.
- * Setting it to NULL means that the limit applies across all hosts. 
+ * PARAMETERS
  *
- * availSlots is the number of slots available.  The job is 
- * limited to this number of slots.  Set to 0 to prevent the 
- * job from dispatching on the host. 
+ *  allocLimitList [IN/OUT] : allocation limit list
+ *  alloc              [IN] : an allocation
+ *  host               [IN] : a host in the alloc
+ *  maxTasks           [IN] : number of tasks allowed
+ *  reason             [IN] : pending reason ID
+ *  handlerId          [IN] : plugin handler ID
+ *  bucketReason       [IN] : apply to all jobs in bucket 
  *
- * reason is the pending reason ID that will be reported by bjobs.
+ * DESCRIPTION
  *
- * handler is the ID for this plugin handler.
+ *  To be called from within a registered checkAllocFn, in order
+ *  to block a job from using the allocation.
+ *
+ *  The function adds a limit to allocLimitList.
+ *
+ *  Setting the host parameter to a particular host means that 
+ *  the job is forbidden to dispatch on the particular host.
+ *  Setting it to NULL means that the limit applies across all hosts. 
+ *
+ *  availSlots is the number of slots available.  The job is 
+ *  limited to this number of slots.  Set to 0 to prevent the 
+ *  job from dispatching on the host. 
+ *
+ *  reason is the pending reason ID that will be reported by bjobs.
+ *
+ *  handler is the ID for this plugin handler.
  * 
- * If bucketReason is FALSE (=0), then the limit applies only to this job.
- * Setting this TRUE (=1) means that the limit applies to all jobs
- * in the same bucket (i.e. with the same scheduling attributes and 
- * resource requirements).
+ *  If bucketReason is FALSE (=0), then the limit applies only to this job.
+ *  Setting this TRUE (=1) means that the limit applies to all jobs
+ *  in the same bucket (i.e. with the same scheduling attributes and 
+ *  resource requirements).
  *  
- * bucketReason should be set TRUE whenever possible, to help with
- * scheduling performance.
+ *  bucketReason should be set TRUE whenever possible, to help with
+ *  scheduling performance.
+ *  
+ * RETURN
  *
- * <b>\#include <lssched.h>
+ *  0, upon success.  -1 otherwise.
  *
- * int extsched_addAllocLimit(INT_AllocLimitList *allocLimitList, INT_Alloc *alloc, char *host, int maxTasks, int reasonId, char *reasonDetail, int handlerId, int bucketReason)</b>
- *
- * @param allocLimitList [IN/OUT] : allocation limit list
- * @param alloc [IN] : an allocation
- * @param host [IN] : a host in the alloc
- * @param maxTasks [IN] : number of tasks allowed
- * @param reason [IN] : pending reason ID
- * @param handlerId [IN] : plugin handler ID
- * @param bucketReason [IN] : apply to all jobs in bucket 
- *
- * @return int:0
- * \nSuccess.
- * @return int:-1
- * \nFailure.
+ *-----------------------------------------------------------------------
  */
 extern int 
 extsched_addAllocLimit(INT_AllocLimitList *allocLimitList,
@@ -1211,28 +1290,32 @@ extsched_addAllocLimit(INT_AllocLimitList *allocLimitList,
                        int bucketReason);
 
 
-/**
- * \page extsched_getPreemptableJobs extsched_getPreemptableJobs
- * Function to get the list of jobs that are preemptable by the
- * given job on the given host.
+/*
+ *-----------------------------------------------------------------------
  *
- * The list includes both SUSP and PEND jobs that are on the host.
+ * extsched_getPreemptableJobs --
  *
- * Caller should call free() on preemptableJob when done with this.
+ * PARAMETERS
  *
- * <b>\#include <lssched.h>
+ *  job             [IN]  : a job
+ *  host            [IN]  : a host
+ *  nPreemptableJob [OUT] : number of preemptable jobs
+ *  preemptableJob  [OUT] : list of preemptable jobs
  *
- * extsched_getPreemptableJobs(INT_Job *job, char *host, int *nPreemptableJob, INT_Job ***preemptableJob)</b>
+ * DESCRIPTION
  *
- * @param job [IN] : a job
- * @param host [IN] : a host
- * @param nPreemptableJob [OUT] : number of preemptable jobs
- * @param preemptableJob  [OUT] : list of preemptable jobs
+ *  Function to get the list of jobs that are preemptable by the
+ *  given job on the given host.
  *
- * @return int:0
- * \nSuccess.
- * @return int:-1
- * \nFailure.
+ *  The list includes both SUSP and PEND jobs that are on the host.
+ *
+ *  Caller should call free() on preemptableJob when done with this.
+ *
+ * RETURN
+ *
+ *  0, upon success.  -1 otherwise.
+ *
+ *-----------------------------------------------------------------------
  */
 extern int 
 extsched_getPreemptableJobs(INT_Job *job,
@@ -1241,217 +1324,243 @@ extsched_getPreemptableJobs(INT_Job *job,
                             INT_Job ***preemptableJob);
 
 
-/**
- * \page extsched_getAlloc extsched_getAlloc
- * Function to extract information from the internal representation
- * of a resource allocation.
+/*
+ *-----------------------------------------------------------------------
  *
- * The caller should free infoPtr with extsched_freeAlloc().
+ * extsched_getAlloc --
  *
- * <b>\#include <lssched.h>
+ * PARAMETERS
  *
- * int extsched_getAlloc(INT_Alloc *alloc, extsched_Alloc **infoPtr)</b>
+ *  alloc    [IN]  : internal allocation data structure
+ *  infoPtr  [OUT] : describes the allocation
  *
- * @param alloc [IN] : internal allocation data structure
- * @param infoPtr [OUT] : describes the allocation
+ * DESCRIPTION
  *
- * @return int:0
- * \nSuccess.
- * @return int:-1
- * \nFailure.
+ *  Function to extract information from the internal representation
+ *  of a resource allocation.
  *
- * @see \ref extsched_freeAlloc
+ *  The caller should free infoPtr with extsched_freeAlloc().
+ *
+ * RETURN
+ *
+ *  0, upon success.  -1 otherwise.
+ *
+ *-----------------------------------------------------------------------
  */
 extern int
 extsched_getAlloc(INT_Alloc *alloc,
                   extsched_Alloc **infoPtr);
 
 
-/**
- * \page extsched_freeAlloc extsched_freeAlloc
- * Frees the data structure created by extsched_getAlloc().
+/*
+ *-----------------------------------------------------------------------
  *
- * <b>\#include <lssched.h>
+ * extsched_freeAlloc --
  *
- * void extsched_freeAlloc(extsched_Alloc **info)</b>
+ * PARAMETERS
  *
- * @param info [IN/OUT] : describes the allocation
- *  
- * @return void
- * \nThere is no return value.
+ *  info  [IN/OUT] : describes the allocation
  *
- * @see \ref extsched_getAlloc
+ * DESCRIPTION
+ *
+ *  Frees the data structure created by extsched_getAlloc().
+ *
+ *-----------------------------------------------------------------------
  */
 extern void 
 extsched_freeAlloc(extsched_Alloc **info);
 
 
-/**
- * \page extsched_getAllocLimitList extsched_getAllocLimitList
- * An allocation limit list is generated during a call to checkAllocFn.
+/*
+ *-----------------------------------------------------------------------
  *
- * Each registered checkAllocFn can add limits to this
- * list, which serves to communicate to the scheduler framework whether 
- * the given allocation is permitted or not.
+ * extsched_getAllocLimitList --
  *
- * extsched_getAllocLimitListInfo() generates info on the
- * internal allocation limit 
- * list data structure.  It is intended to be called from within a
- * checkAllocFn.
+ * PARAMETERS
  *
- * Caller should free the allocated data using the function
- * extsched_freeAllocLimitListInfo(). 
+ *  allocLimitList [IN]  : an allocation limit list  
+ *  infoPtr        [OUT] : info describing the list
  *
- * <b>\#include <lssched.h>
+ * DESCRIPTION
  *
- * int extsched_getAllocLimitList(INT_AllocLimitList *allocLimitList, extsched_AllocLimitList **infoPtr)</b>
+ *  An allocation limit list is generated during a call to checkAllocFn.
  *
- * @param allocLimitList [IN] : an allocation limit list  
- * @param infoPtr [OUT] : info describing the list
+ *  Each registered checkAllocFn can add limits to this
+ *  list, which serves to communicate to the scheduler framework whether 
+ *  the given allocation is permitted or not.
  *
- * @return int:0
- * \nSuccess.
- * @return int:-1
- * \nFailure.
+ *  extsched_getAllocLimitListInfo() generates info on the
+ *  internal allocation limit 
+ *  list data structure.  It is intended to be called from within a
+ *  checkAllocFn.
  *
- * @see \ref extsched_getAllocLimitListInfo
- * @see \ref extsched_freeAllocLimitListInfo
+ *  Caller should free the allocated data using the function
+ *  extsched_freeAllocLimitListInfo(). 
+ *
+ * RETURN
+ *
+ *  0, upon success.  -1 otherwise.
+ *
+ *-----------------------------------------------------------------------
  */
 extern int
 extsched_getAllocLimitList(INT_AllocLimitList *allocLimitList,
                            extsched_AllocLimitList **infoPtr);
 
 
-/**
- * \page extsched_freeAllocLimitList extsched_freeAllocLimitList
- * Frees the data structure generated by extsched_getAllocLimitList().
+/*
+ *-----------------------------------------------------------------------
  *
- * <b>\#include <lssched.h>
+ * extsched_freeAllocLimitList --
  *
- * void extsched_freeAllocLimitList(extsched_AllocLimitList **info)</b>
+ * PARAMETERS
  *
- * @param info [IN/OUT] : describes an allocation limit list
+ *  info           [IN/OUT] : describes an allocation limit list
  *
- * @return void
- * \nThere is no return value.
- *  
- * @see \ref extsched_getAllocLimitList
+ * DESCRIPTION
+ *
+ *  Frees the data structure generated by extsched_getAllocLimitList().
+ *
+ *-----------------------------------------------------------------------
  */
 extern void
 extsched_freeAllocLimitList(extsched_AllocLimitList **info);
 
 
-/**
- * \page extsched_getChunkRef extsched_getChunkRef
- * Whenever an allocation is made a *chunk* is created, where
- * a chunk is a container for one or more jobs that share 
- * the allocation.  
+/*
+ *-----------------------------------------------------------------------
  *
- * The primarily purpose is to support the CHUNK_JOB_SIZE parameter. 
- * However, even when this is disabled allocations are made to 
- * degenerate chunks of size 1.
+ * extsched_getChunkRef --
  *
- * This function to get the chunk reference of a job may be useful
- * to some external scheduler plugins that register notifyAlloc()
- * callbacks.  
+ * PARAMETERS
  *
- * When an allocation is made, the job given as input to the 
- * notifyAlloc() callback may be different to the job that is 
- * given when the same allocation is destroyed.  However, the  
- * two jobs must have the same chunk reference.
+ *  job  [IN] : a job
  *
- * Use this function in the notifyAlloc() callback to get a pointer
- * to the internal (opaque) chunk structure.
+ * DESCRIPTION
  *
- * <b>\#include <lssched.h>
+ *  Whenever an allocation is made a *chunk* is created, where
+ *  a chunk is a container for one or more jobs that share 
+ *  the allocation.  
  *
- * INT_ChunkRef *extsched_getChunkRef(INT_Job *job)</b>
+ *  The primarily purpose is to support the CHUNK_JOB_SIZE parameter. 
+ *  However, even when this is disabled allocations are made to 
+ *  degenerate chunks of size 1.
  *
- * @param job  [IN] : a job
+ *  This function to get the chunk reference of a job may be useful
+ *  to some external scheduler plugins that register notifyAlloc()
+ *  callbacks.  
  *
- * @return INT_ChunkRef *
- * \nThe chunk reference for a job.
- * @return NULL
- * \nThe is no chunk reference.
+ *  When an allocation is made, the job given as input to the 
+ *  notifyAlloc() callback may be different to the job that is 
+ *  given when the same allocation is destroyed.  However, the  
+ *  two jobs must have the same chunk reference.
+ *
+ *  Use this function in the notifyAlloc() callback to get a pointer
+ *  to the internal (opaque) chunk structure.
+ *  
+ * RETURN
+ *
+ *  The chunk reference for a job, if it exists. NULL otherwise.
+ *
+ *-----------------------------------------------------------------------
  */
 extern INT_ChunkRef *
 extsched_getChunkRef(INT_Job *job);
 
 
-/**
- * \page extsched_getJobAlloc extsched_getJobAlloc
- * This function returns the current allocation that is made to a job,
- * if it exists.
+/*
+ *-----------------------------------------------------------------------
+ *
+ * extsched_getJobAlloc --
+ *
+ * PARAMETERS
+ *
+ *  job  [IN] : a job
+ *
+ * DESCRIPTION
+ *
+ *  This function returns the current allocation that is made to a job,
+ *  if it exists.  
+ *
+ * RETURN
  * 
- * <b>\#include <lssched.h>
+ *  Pointer to the internal (opaque) allocation structure currently 
+ *  assigned to the job.  NULL if there is no allocation.
  *
- * INT_Alloc *extsched_getJobAlloc(INT_Job *job)</b>
- *
- * @param job [IN] : a job
- *
- * @return INT_Alloc *
- * \nA pointer to the internal (opaque) allocation structure currently 
- * assigned to the job.
- * @return NULL
- * \nThere is no allocation.
+ *-----------------------------------------------------------------------
  */
 extern INT_Alloc *
 extsched_getJobAlloc(INT_Job *job);
 
 
-/**
- * \page extsched_freeIntAlloc extsched_freeIntAlloc
- * Use with caution.
+/*
+ *-----------------------------------------------------------------------
  *
- * Routine frees the allocation structure and sets *allocPtr NULL.
+ * extsched_freeIntAlloc --
  *
- * This function will fail to remove an allocation if that allocation
- * has already been assigned to a job.
+ * PARAMETERS
  *
- * This should not be used inside of checkAlloc(), notifyAlloc() or any
- * handler callback.
+ *  allocPtr [IN/OUT] : address of an allocation structure
+ *
+ * DESCRIPTION
+ *
+ *  Use with caution.
+ *
+ *  Routine frees the allocation structure and sets *allocPtr NULL.
+ *
+ *  This function will fail to remove an allocation if that allocation
+ *  has already been assigned to a job.
+ *
+ *  This should not be used inside of checkAlloc(), notifyAlloc() or any
+ *  handler callback.
  * 
- * Rather, this should only be called by an allocator function registered 
- * by extsched_alloc_registerallocator().  The purpose is to destroy
- * allocations proposed by the internal allocators.
+ *  Rather, this should only be called by an allocator function registered 
+ *  by extsched_alloc_registerallocator().  The purpose is to destroy
+ *  allocations proposed by the internal allocators.
  *
- * <b>\#include <lssched.h>
- *
- * void extsched_freeIntAlloc(INT_Alloc **allocPtr)</b>
- *
- * @param allocPtr [IN/OUT] : address of an allocation structure
- *
- * @return void
- * \nThere is no return value.
- *
- * @see \ref extsched_alloc_registerallocator
+ *-----------------------------------------------------------------------
  */
 extern void
 extsched_freeIntAlloc(INT_Alloc **allocPtr);
 
 
-/**
- * \page extsched_getRsrcReqForJob extsched_getRsrcReqForJob
+/*
+ *-----------------------------------------------------------------------
+ *
+ * extsched_getRsrcReqForJob --
+ *
+ * PARAMETERS
+ *
+ *  job [IN] : internal representation of a job
+ *
+ * DESCRIPTION
+ *
  *  Routine to get the address of the (internal) resource requirement
  *  structure associated with the given job.
  *
  *  The caller should not free this data.
  *
- * <b>\#include <lssched.h>
+ * RETURN
  *
- * INT_RsrcReq *extsched_getRsrcReqForJob(INT_Job *job)</b>
+ *  Address of the internal resource requirement structure.
  *
- * @param job [IN] : internal representation of a job
- *
- * @return INT_RsrcReq *
- * \nPointer of the internal resource requirement structure.
+ *-----------------------------------------------------------------------
  */
 extern INT_RsrcReq *
 extsched_getRsrcReqForJob(INT_Job *job);
 
 
-/**
- * \page extsched_getRsrcReqInfo extsched_getRsrcReqInfo
+/*
+ *-----------------------------------------------------------------------
+ *
+ * extsched_getRsrcReqInfo
+ *
+ * PARAMETERS
+ *
+ * rsrcreq [IN] : internal representation of rsrcreq 
+ *
+ * DESCRIPTION
+ *
  * Routine creates extsched_rsrcReqInfo object that exposes part
  * of the job's internal resrource requirement. Currently it exposes
  * the job's select string, and the job's requested resource usage.
@@ -1459,90 +1568,104 @@ extsched_getRsrcReqForJob(INT_Job *job);
  * The caller is responsible to free the returned data by using
  * extsched_freeRsrcReqInfo().
  *
- * <b>\#include <lssched.h>
+ * RETURN
  *
- * extsched_rsrcReqInfo *extsched_getRsrcReqInfo(INT_RsrcReq *rsrcreq)</b>
+ * Address to a dynamically allocated extsched_rsrcReqInfo data
+ * object.
  *
- * PARAMETERS
- *
- * @param rsrcreq [IN] : internal representation of rsrcreq 
- *
- * @return extsched_rsrcReqInfo *
- * \nPointer to a dynamically allocated extsched_rsrcReqInfo data object.
- *
- * @see \ref extsched_freeRsrcReqInfo
+ *-----------------------------------------------------------------------
  */
 extern extsched_rsrcReqInfo *
 extsched_getRsrcReqInfo(INT_RsrcReq *rsrcreq);
 
 
-/**
- * \page extsched_freeRsrcReqInfo extsched_freeRsrcReqInfo
+/*
+ *-----------------------------------------------------------------------
+ *
+ * extsched_freeRsrcReqInfo
+ *
+ * PARAMETERS
+ *
+ * info [IN|OUT] : extsched_rsrcReqInfo data to be freed
+ *
+ * DESCRIPTION
+ *
  * The counterpart for extsched_getRsrcReqInfo() to free the returned
  * object.
  *
- * <b>\#include <lssched.h>
+ * RETURN
  *
- * void extsched_freeRsrcReqInfo(extsched_rsrcReqInfo **info)</b>
+ * void
  *
- * @param info [IN|OUT] : extsched_rsrcReqInfo data to be freed
- *
- * @return void
- * \nThere is no return value.
- *
- * @see \ref extsched_getRsrcReqInfo
+ *-----------------------------------------------------------------------
  */
 extern void
 extsched_freeRsrcReqInfo(extsched_rsrcReqInfo **info);
 
 
-/**
- * \page extsched_getJobInfo extsched_getJobInfo
+/*
+ *-----------------------------------------------------------------------
+ *
+ * extsched_getJobInfo --
+ *
+ * PARAMETERS
+ *
+ *  job   [IN] : internal representation of a job
+ *  info [OUT] : info extracted from the job
+ *
+ * DESCRIPTION
+ *
  *  Routine to extract info from the internal representation of a job. 
  *
  *  Caller should invoke extsched_freeJobInfo() to free the returned
  *  info structure.
  *
- * <b>\#include <lssched.h>
+ * RETURN
  *
- * int extsched_getJobInfo(INT_Job *job, struct jobInfo *info)</b>
+ *  0 upon success. -1 otherwise.
  *
- * @param job [IN] : internal representation of a job
- * @param info [OUT] : info extracted from the job
- *
- * @return int:0
- * \nSuccess.
- * @return int:-1
- * \nFailure.
+ *-----------------------------------------------------------------------
  */
 extern int
 extsched_getJobInfo(INT_Job *job, 
                     struct jobInfo *info);
 
 
-/**
- * \page extsched_freeJobInfo extsched_freeJobInfo
+/*
+ *-----------------------------------------------------------------------
+ *
+ * extsched_freeJobInfo --
+ *
+ * PARAMETERS
+ *
+ *  info [IN/OUT] : info on a job
+ *
+ * DESCRIPTION
+ *
  *  Frees data in the info structure, allocated by extsched_getJobInfo().
  *  Does not call free() on info itself. 
  *
- * <b>\#include <lssched.h>
- *
- * void extsched_freeJobInfo(struct jobInfo *info)</b>
- *
- * @param info [IN/OUT] : info on a job
- *
- * @return void
- * \nThere is no return value.
+ *-----------------------------------------------------------------------
  */
 extern void
 extsched_freeJobInfo(struct jobInfo *info);
 
 
-/**
- * \page extsched_modifyJob extsched_modifyJob
+/*
+ *-----------------------------------------------------------------------
+ *
+ * extsched_modifyJob --
+ *
+ * PARAMETERS
+ *
+ *  job     [IN] : internal representation of a job
+ *  rsrcReq [IN] : a resource requirement expression 
+ *
+ * DESCRIPTION
+ *
  *  Routine allowing an external scheduling plugin to request a 
  *  modification of a job's resource requirement expression, i.e.
- *  the bsub -R string (job level rsscreq). Use with caution.
+ *  the bsub -R string (job level rsscreq).
  *
  *  Modification is not done immediately when this function is called.
  *  Instead, modification requests are stored in the mbschd memory, and 
@@ -1561,30 +1684,29 @@ extsched_freeJobInfo(struct jobInfo *info);
  *  element from the same job array. When this occurs only the first
  *  element is acted upon by the mbatchd.
  *
- * <b>\#include <lssched.h>
+ * RETURN
  *
- * int extsched_modifyJob(INT_Job *job, char *rsrcReq)</b>
+ *  0 upon success, -1 otherwise.   
  *
- * @param job [IN] : internal representation of a job
- * @param rsrcReq [IN] : a resource requirement expression 
- *
- * @return int:0
- * \nSuccess.
- * @return int:-1
- * \nFailure.
- *
- * @see \ref extsched_resetJob
- * @see \ref extsched_getSchedJobModError
+ *-----------------------------------------------------------------------
  */
 extern int
 extsched_modifyJob(INT_Job *job, 
                    char *rsrcReq);
 
 
-/**
- * \page extsched_resetJob extsched_resetJob
+/*
+ *-----------------------------------------------------------------------
+ * extsched_resetJob
+ *
+ * PARAMETERS
+ *
+ *  job     [IN] : internal representation of a job
+ *
+ * DESCRIPTION
+ *
  *  Routine allowing an external scheduling plugin to request a 
- *  modification of a job's resource requirement expression to its original
+ *  modification of a job's resource requirement expression to it's original
  *  value at submission, or the latest bmod value.
  *
  *  Modification is not done immediately when this function is called.
@@ -1604,32 +1726,39 @@ extsched_modifyJob(INT_Job *job,
  *  element from the same job array. When this occurs only the first
  *  element is acted upon by the mbatchd.
  *
- * <b>\#include <lssched.h>
+ * RETURN
  *
- * int extsched_resetJob(INT_Job *job)</b>
+ *  0 upon success, -1 otherwise.   
  *
- * @param job [IN] : internal representation of a job
- *
- * @return int:0
- * \nSuccess.
- * @return int:-1
- * \nFailure.
- *
- * @see \ref extsched_getSchedJobModError
- * @see \ref extsched_modifyJob
+ *-----------------------------------------------------------------------
  */
 extern int
 extsched_resetJob(INT_Job *job);
 
 
 typedef struct {
-    char *clusterId; /** The cluster name. */
-    int baseId; /** The base job ID. */
-    int index;	/** The index of job ID. */
+    char *clusterId;
+    int baseId;
+    int index;	
 } extsched_JobElement;
 
-/**
- * \page extsched_getSchedJobModError extsched_getSchedJobModError
+/*
+ *-----------------------------------------------------------------------
+ * extsched_getSchedJobModError
+ *
+ * PARAMETERS
+ *
+ *  job     [IN]  : internal representation of a job
+ *  nElem   [OUT] : number of elements in jobList and errList
+ *  jobList [OUT] : list of job elements
+ *  errList [OUT] : list of LSBE_* error number of last call to
+ *                  extsched_resetJob/extsched_modifyJob
+ *
+ * NOTE: The caller is responsible to free jobList and errList. Remember
+ *       to free clusterId in each element of jobList.
+ *
+ * DESCRIPTION
+ *
  * This call reports success/failure about the last call to 
  * extsched_modifyJob or extsched_resetJob for jobs. The associated job
  * array is broken into elements
@@ -1640,25 +1769,11 @@ typedef struct {
  * the current session then the success/failure should be known in the
  * next session.
  *
- * NOTE: The caller is responsible to free jobList and errList. Remember
- *       to free clusterId in each element of jobList.
+ * RETURN
  *
- * <b>\#include <lssched.h>
- *
- * int extsched_getSchedJobModError(INT_Job *job, int *nElem, extsched_JobElement **jobList, int **errList)</b>
- *
- * @param job [IN]  : internal representation of a job
- * @param nElem [OUT] : number of elements in jobList and errList
- * @param jobList [OUT] : list of job elements
- * @param errList [OUT] : list of LSBE_* error number of last call to extsched_resetJob/extsched_modifyJob
- *
- * @return int:0
- * \nSuccess.
- * @return int:-1
- * \nFailure.
- *
- * @see \ref extsched_resetJob
- * @see \ref extsched_modifyJob
+ * 0     no error
+ * -1    failure
+ *-----------------------------------------------------------------------
  */
 extern int
 extsched_getSchedJobModError(INT_Job *job,
@@ -1666,22 +1781,26 @@ extsched_getSchedJobModError(INT_Job *job,
 			     extsched_JobElement **jobList,
 			     int **errList);
 
-/**
- * \page extsched_setMainReason extsched_setMainReason
- * Set the main pending reason (not host based). PEND_EXTSCHED_REASON
- * 
- * <b>\#include <lssched.h>
+/*
+ *-----------------------------------------------------------------------
  *
- * int extsched_setMainReason(INT_Reason *reason, char *msg, int bucketLevel)</b>
+ * extsched_setMainReason --
  *
- * @param reason [IN] : internal representation of a pending reason
- * @param msg [IN] : a description of why the reason is being set
- * @param bucketLevel [IN] : if FALSE the pending reason applies specifically to the job
+ * PARAMETERS
  *
- * @return int:0
- * \nSuccess.
- * @return int:-1
- * \nFailure.
+ *  reason      [IN] : internal representation of a pending reason
+ *  msg         [IN] : a description of why the reason is being set
+ *  bucketLevel [IN] : if FALSE the pending reason applies specifically
+ *                     to the job
+ *
+ * DESCRIPTION
+ *  Set the main pending reason (not host based). PEND_EXTSCHED_REASON
+ *
+ * RETURN
+ *
+ *  0 upon success, -1 otherwise.   
+ *
+ *-----------------------------------------------------------------------
  */
 extern int
 extsched_setMainReason(INT_Reason *reason,
@@ -1690,119 +1809,114 @@ extsched_setMainReason(INT_Reason *reason,
 
 
 
-/**
- * \page extsched_getHost extsched_getHost
- * Obtain a pointer to internal host data.
+/*
+ *-----------------------------------------------------------------------
  *
- * <b>\#include <lssched.h>
+ * extsched_getHost
  *
- * INT_Host *extsched_getHost(char *hostname, char *clustername)</b>
+ * PARAMETERS
  *
- * @param hostname [IN] : the name of the host
- * @param clustername [IN] : the name of the cluster
+ * hostname    [IN] : the name of the host
+ * clustername [IN] : the name of the cluster
  *
- * @return INT_Host *
- * \nPointer to internal host data.
+ * RETURN
+ *  pointer to internal host data
+ *
+ *-----------------------------------------------------------------------
  */
 extern INT_Host *
 extsched_getHost(char *hostname, char *clustername);
 
 
-/**
- * \page extsched_clustername extsched_clustername
+/*
+ *-----------------------------------------------------------------------
+ * 
+ * extsched_clustername
+ *
+ * PARAMETERS
+ *
+ * none
+ *
+ * DESCRIPTION
+ *
  * Returns the local cluster's name. Do not free the returned pointer.
  *
- * <b>\#include <lssched.h>
- *
- * char *extsched_clustername(void)</b>
- *
- * <b>Parameters:</b>
- * \par
- * none
- * \n
- *
- * @return char *
- * \nReturns the local cluster's name.
+ *------------------------------------------------------------------------
  */
 extern char *
 extsched_clustername(void);
 
 
-/**
- * \page extsched_getHostID extsched_getHostID
+/*
+ *-----------------------------------------------------------------------
+ * 
+ * extsched_getHostID
+ *
  * This function will provide the host ID (hostname and clusternam)
  * provided with the internal host pointer. This function will
  * allocate the memory for the hostname and clustername so the caller
  * is responsible to free.
  *
- * <b>\#include <lssched.h>
+ * PARAMETERS
  *
- * int extsched_getHostID(INT_Host *hostPtr, char **hostname, char **clustername)</b>
+ * hostPtr     [IN] : pointer to internal host data
+ * hostname    [OUT] : the name of the host
+ * clustername [OUT] : the name of the cluster the host belongs to
  *
- * @param hostPtr [IN] : pointer to internal host data
- * @param hostname [OUT] : the name of the host
- * @param clustername [OUT] : the name of the cluster the host belongs to
+ * RETURN
  *
- * @return int:0
- * \nSuccess.
- * @return int:-1
- * \nFailure.
+ *  0 upon success, -1 otherwise.   
+ *
+ *------------------------------------------------------------------------
  */
 extern int
 extsched_getHostID(INT_Host *hostPtr, char **hostname, char **clustername);
 
 
-/**
- * \page extsched_get_INT_Job extsched_get_INT_Job
+/*
+ *-----------------------------------------------------------------------
+ * extsched_get_INT_Job
+ *
  * This is meant to be used from inside an allocator function. Pass in 
  * the jobBlock pointer to obtain the corresponding INT_Job pointer.
  *
- * <b>\#include <lssched.h>
+ * PARAMETERS
  *
- * INT_Job *extsched_get_INT_Job(INT_JobBlock *jobBlock)</b>
+ * jobBlock    [IN] : the jobBloack parameter passed into the allocator
+ *                    function
  *
- * @param jobBlock [IN] : the jobBloack parameter passed into the allocator function
+ * RETURN
  *
- * @return INT_Job *
- * \nAn INT_Job pointer, do not free the returned pointer.
+ *  an INT_Job pointer, do not free the returned pointer  
+ *
+ *------------------------------------------------------------------------
  */
 extern INT_Job *
 extsched_get_INT_Job(INT_JobBlock *jobBlock);
 
 
-/**
- * \page extsched_determineEvent extsched_determineEvent
+/*
+ *-----------------------------------------------------------------------
+ * extsched_determineEvent
+ *
  * This is a helper function to be used from within a notifyAlloc
  * callback function to determine what is happening with the job.
  *
- * The possible events are:
+ * PARAMETERS
  *
- * SCH_FM_EVE_ALLOCATE
- * SCH_FM_EVE_DEALLOCATE
- * SCH_FM_EVE_RESERVE
- * SCH_FM_EVE_CANCEL
- * SCH_FM_EVE_SUSPEND
- * SCH_FM_EVE_RESUME
- * SCH_FM_EVE_REPLAY
- * SCH_FM_EVE_ALLOCATE_BRUN
- * SCH_FM_EVE_ADDALLOC
- * SCH_FM_EVE_RMALLOC
+ * job            [IN] : job pointer passed into notifyAlloc callback
+ *                       function
+ * alloc          [IN] : alloc pointer passed into notifyAlloc callback
+ *                       function
+ * allocLimitList [IN] : allocLimitList pointer passed into notifyAlloc
+ *                       callback function
+ * flag           [IN] : flag passed into notifyAlloc callback function
  *
- * The returned value should be tested as a bitfield.
+ * RETURN
  *
- * <b>\#include <lssched.h>
- *
- * int extsched_determineEvent(INT_Job *job, INT_Alloc *alloc, INT_AllocLimitList *allocLimitList, int flag)</b>
- *
- * @param job [IN] : job pointer passed into notifyAlloc callback function
- * @param alloc [IN] : alloc pointer passed into notifyAlloc callback function
- * @param allocLimitList [IN] : allocLimitList pointer passed into notifyAlloc callback function
- * @param flag [IN] : flag passed into notifyAlloc callback function
- *
- * @return int:>0
- * \nA positive interger describing the event (SCH_FM_EVE_*).
- * @return int:0
- * \nUnknown.
+ * a positive interger describing the event (SCH_FM_EVE_*)
+ * 0 if unknown
+ *------------------------------------------------------------------------
  */
 extern int
 extsched_determineEvent(INT_Job *job, 
@@ -1842,162 +1956,52 @@ extsched_determineEvent(INT_Job *job,
 #define CORE_JOBSTAT_MIG    0x40000000  /* Job is being migrated */
 
 
-/**
- * \page CanBePreemptedFn CanBePreemptedFn
+/*----------------------------------------------------------------------
  * Signature for functions that determine if a job should be preempted.
+ *
  * Use these functions to allow/disallow the scheduler to preempt
  * (ie. suspend) a specific job.
  *
- * <b>\#include <lssched.h>
+ * PARAMS
  *
- * typedef int (*CanBePreemptedFn)(INT_Job *job)</b>
+ * job - (IN) internal job object, should this job be preempted?
  *
- * @param job - (IN) internal job object, should this job be preempted?
+ * RETURNS
  *
- * @return int:0
- * \nThe job should not be preempted.
- * @return int:!=0
- * \nIt is ok if the job is preempted.
+ * 0: The job should not be preempted.
+ * !=0: It is ok if the job is preempted.
  *
  * SEE ALSO
  *
- * @see \ref extsched_register_canBePreempted
+ * extsched_register_canBePreempted
+ *----------------------------------------------------------------------
  */
 typedef int (*CanBePreemptedFn)(INT_Job *job);
 
-/**
- * \page extsched_register_canBePreempted extsched_register_canBePreempted
+/*------------------------------------------------------------------------
+ * extsched_register_canBePreempted
+ *
  * Register a function that will decide if a job can be preempted.
+ *
  * The registered function will be called during preemption when
  * considering whether a job should be preempted.
  *
- * <b>\#include <lssched.h>
+ * PARAMS
  *
- * int extsched_register_canBePreempted( CanBePreemptedFn canBePreemptedFunc )</b>
- *
- * @param canBePreemptedFunc - (IN) pointer to the function that decides if
+ * canBePreemptedFunc - (IN) pointer to the function that decides if
  *                           a job can be preempted
  *
- * @return int:0 
- * \nIf succesfully registered.
- * @return int:<0
- * \nIf failed to register the function.
+ * RETURN
  *
- * @see \ref CanBePreemptedFn
+ * 0 if succesfully registered. <0 if failed to register the function.
+ *
+ * SEE ALSO
+ *
+ * CanBePreemptedFn
+ *------------------------------------------------------------------------
  */
 int extsched_register_canBePreempted( CanBePreemptedFn canBePreemptedFunc );
 
-/**
- * \brief A useful structure for representing a job array id. Used by extsched_jobArray2Str().
- */
-typedef struct {
-    char *clusterId; /** The cluster name. */
-    int baseId; /** The base job ID. */
-    int indexRangeCnt;	/** The index count, 0 is set for non-array single job. */
-    int *indexRangeStart; /** Index range start. */
-    int *indexRangeEnd; /** Index range end. */
-    int *indexRangeStep; /** Index range step. */
-} JobArrayID_T;
-
-/* event definitions used by job event callback functions (JobEventCallbackFn)
- * and used when using extsched_register_jobEventCallback()
- *
- * EVENT_JOB_NOTIFICATION_CREATE_JOB a job has been created within the mbschd,
- *                                   usually happens after a job has been
- *                                   submitted
- * EVENT_JOB_NOTIFICATION_DONE_JOB a job is about the be deleted within
- *                                 the mbschd, usually happens after a job is
- *                                 done, exited, or killed
- */
-#define EVENT_JOB_NOTIFICATION_CREATE_JOB     0x0001
-#define EVENT_JOB_NOTIFICATION_DONE_JOB       0x0002
-
-/* flag definitions used by job event callback functions (JobEventCallbackFn)
- *
- * FLAG_JOB_NOTIFICATION_DURING_STARTUP the mbsched has just be (re)started,
- *                                      and it is before the first scheduling
- *                                      session
- * FLAG_JOB_NOTIFICATION_REINSERT a job has been recreated within the mbschd,
- *                                usually happens because a job has been
- *                                requeued or migrated
- */
-#define FLAG_JOB_NOTIFICATION_DURING_STARTUP  0x0001
-#define FLAG_JOB_NOTIFICATION_REINSERT        0x0002
-
-/* job event callback function signature
- *
- * jarrayid  [IN] job array id
- * job       [IN] job pointer (job subarray pointer)
- * event     [IN] events defined above
- * flag      [IN] bit field, flag defined above, can be 0
- */
-typedef void (*JobEventCallbackFn)(JobArrayID_T *jarrayid, 
-				   INT_Job *job, int event, int flag);
-
-/**
- * \page extsched_register_jobEventCallback extsched_register_jobEventCallback
- * This function is used by a plugin to register a callback function
- * for job events.
- *
- * Event definitions used by job event callback functions (JobEventCallbackFn)
- * and used when using extsched_register_jobEventCallback().
- *
- * EVENT_JOB_NOTIFICATION_CREATE_JOB a job has been created within the mbschd,
- *                                   usually happens after a job has been
- *                                   submitted
- * EVENT_JOB_NOTIFICATION_DONE_JOB a job is about the be deleted within
- *                                 the mbschd, usually happens after a job is
- *                                 done, exited, or killed
- *
- * Flag definitions used by job event callback functions (JobEventCallbackFn).
- *
- * FLAG_JOB_NOTIFICATION_DURING_STARTUP the mbsched has just be (re)started,
- *                                      and it is before the first scheduling
- *                                      session
- * FLAG_JOB_NOTIFICATION_REINSERT a job has been recreated within the mbschd,
- *                                usually happens because a job has been
- *                                requeued or migrated
- *
- * The job event callback function signature.
- *
- * typedef void (*JobEventCallbackFn)(JobArrayID_T *jarrayid, 
- *				      INT_Job *job, int event, int flag);
- *
- * jarrayid  [IN] job array id
- * job       [IN] job pointer (job subarray pointer)
- * event     [IN] events defined above
- * flag      [IN] bit field, flag defined above, can be 0
- *
- * <b>\#include <lssched.h>
- *
- * int extsched_register_jobEventCallback(JobEventCallbackFn, int event)</b>
- *
- * @param JobEventCallbackFn  [IN] pointer to callback function
- * @param event               [IN] bit field, evnets defined above
- *
- * @return int:0
- * \nSuccess.
- * @return int:-1 
- * \nFailure.
- */
-int extsched_register_jobEventCallback(JobEventCallbackFn, int event);
-
-/**
- * \page extsched_jobArray2Str extsched_jobArray2Str
- * Create a string containing a job array id.
- *
- * <b>\#include <lssched.h>
- *
- * char *extsched_jobArray2Str(JobArrayID_T *jarrayid)</b>
- *
- * @param jarrayid   [IN]  job array id
- *
- * @return char *
- * \nPointer to a string containing a job array id (should NOT be freed).
- * @return NULL
- * \nFailure.
- */
-char *extsched_jobArray2Str(JobArrayID_T *jarrayid);
 
 /* hash table API
  */
@@ -2005,463 +2009,353 @@ typedef void INT_hTab; /* hash table */
 typedef void INT_hEnt; /* table entry */
 typedef void INT_sTab; /* search */
 
-/**
- * \page extsched_createTabAndInit extsched_createTabAndInit
+/*------------------------------------------------------------------------
+ * extsched_createTabAndInit
+ *
  * Create and initialize a hash table object.
  *
- * <b>\#include <lssched.h>
+ * PARAMETERS
  *
- * INT_hTab *extsched_createTabAndInit(int slots)</b>
+ * slots [IN] number of slots
  *
- * @param slots [IN] number of slots
+ * RETURN
  *
- * @return INT_hTab *
- * \nPointer to a hash table object.
- *
- * @see \ref extsched_destroyTab
+ * pointer to a hash table object
+ *------------------------------------------------------------------------
  */
 extern INT_hTab *extsched_createTabAndInit(int slots);
 
-/**
- * \page extsched_createTab extsched_createTab
+/*------------------------------------------------------------------------
+ * extsched_createTab
+ *
  * Create an un-initialized hash table object. You probabably should
  * use extsched_createTabAndInit().
  *
- * <b>\#include <lssched.h>
- * 
- * INT_hTab *extsched_createTab(void)</b>
+ * PARAMETERS
  *
- * <b>Parameters:</b>
- * \par
  * none
- * \n
  *
- * @return INT_hTab *
- * \nPointer to a (un-initialized) hash table object.
+ * RETURN
  *
- * @see \ref extsched_initTab_
- * @see \ref extsched_createTabAndInit
- * @see \ref extsched_destroyTab
+ * pointer to a (un-initialized) hash table object
+ *------------------------------------------------------------------------
  */
 extern INT_hTab *extsched_createTab(void);
 
-/**
- * \page extsched_destroyTab extsched_destroyTab
+/*------------------------------------------------------------------------
+ * extsched_destroyTab
+ *
  * Free the hash table object. The table should be emptied first.
  *
- * <b>\#include <lssched.h>
+ * PARAMETERS
  *
- * void extsched_destroyTab(INT_hTab **t)</b>
+ * t [IN|OUT] a hash table
  *
- * @param t [IN|OUT] a hash table
+ * RETURN
  *
- * @return void
- * \nThere is no return value.
- *
- * @see \ref extsched_createTabAndInit
- * @see \ref extsched_createTab
+ * none
+ *------------------------------------------------------------------------
  */
 extern void extsched_destroyTab(INT_hTab **t);
 
-/**
- * \page extsched_create_sTab extsched_create_sTab
+/*------------------------------------------------------------------------
+ * extsched_create_sTab
+ *
  * Create a search table object.
  *
- * <b>\#include <lssched.h>
+ * PARAMETERS
  *
- * INT_sTab *extsched_create_sTab(void)</b>
- *
- * <b>Parameters:</b>
- * \par
  * none
- * \n
  *
- * @return INT_sTab *
- * \nPointer to a search object.
+ * RETURN
  *
- * @see \ref extsched_destroy_sTab
- * @see \ref extsched_firstEnt_
- * @see \ref extsched_nextEnt_
+ * pointer to a search object
+ *------------------------------------------------------------------------
  */
 extern INT_sTab *extsched_create_sTab(void);
 
-/**
- * \page extsched_destroy_sTab extsched_destroy_sTab
+/*------------------------------------------------------------------------
+ * extsched_destroy_sTab
+ *
  * Free the search table object.
  *
- * <b>\#include <lssched.h>
+ * PARAMETERS
  *
- * void extsched_destroy_sTab(INT_sTab **s)</b>
+ * s [IN|OUT] search object
  *
- * @param s [IN|OUT] search object
+ * RETURN
  *
- * @return void
- * \nThere is no return value.
- *
- * @see \ref extsched_create_sTab
- * @see \ref extsched_firstEnt_
- * @see \ref extsched_nextEnt_
+ * none
+ *------------------------------------------------------------------------
  */
 extern void extsched_destroy_sTab(INT_sTab **s);
 
-/**
- * \page extsched_get_hData extsched_get_hData
+/*------------------------------------------------------------------------
+ * extsched_get_hData
+ *
  * Retreive the data associated with a hash table entry.
  *
- * <b>\#include <lssched.h>
+ * PARAMETERS
  *
- * void *extsched_get_hData(INT_hEnt *e)</b>
+ * e [IN] pointer to a hash table entry
  *
- * @param e [IN] pointer to a hash table entry
+ * RETURN
  *
- * @return void *
- * \nPointer to the data associated with the entry.
- *
- * @see \ref extsched_set_hData
+ * pointer to the data associated with the entry
+ *------------------------------------------------------------------------
  */
 extern void *extsched_get_hData(INT_hEnt *e);
 
-/**
- * \page extsched_set_hData extsched_set_hData
+/*------------------------------------------------------------------------
+ * extsched_set_hData
+ *
  * Set the data associated with a hash table entry.
  *
- * <b>\#include <lssched.h>
+ * PARAMETERS
  *
- * int extsched_set_hData(INT_hEnt *e, void *d)</b>
+ * e [IN|OUT] pointer to a hash table entry
+ * d [IN] pointer to the data
  *
- * @param e [IN|OUT] pointer to a hash table entry
- * @param d [IN] pointer to the data
+ * RETURN
  *
- * @return int:0
- * \nSuccess.
- * @return int:-1
- * \nFailure.
- *
- * @see \ref extsched_get_hData
+ * 0 success
+ * -1 failure
+ *------------------------------------------------------------------------
  */
 extern int extsched_set_hData(INT_hEnt *e, void *d);
 
-/**
- * \page extsched_get_key extsched_get_key
+/*------------------------------------------------------------------------
+ * extsched_get_key
+ *
  * Retreive the key associated with a hash table entry.
  *
- * <b>\#include <lssched.h>
+ * PARAMETERS
  *
- * char *extsched_get_key(INT_hEnt *e)</b>
+ * e [IN] pointer to a hash table entry
  *
- * @param e [IN] pointer to a hash table entry
+ * RETURN
  *
- * @return char *
- * \nPointer to the key name.
+ * pointer to the key name
+ *------------------------------------------------------------------------
  */
 extern char *extsched_get_key(INT_hEnt *e);
 
-/**
- * \page extsched_initTab_ extsched_initTab_
+/*------------------------------------------------------------------------
+ * extsched_initTab_
+ *
  * Initialize a hash table object.
  *
- * <b>\#include <lssched.h>
+ * PARAMETERS
  *
- * extsched_initTab_(INT_hTab *t, int slots)</b>
+ * t [IN|OUT] pointer to a hash table object
+ * slots [IN] number of slots
  *
- * @param t [IN|OUT] pointer to a hash table object
- * @param slots [IN] number of slots
+ * RETURN
  *
- * @return void
- * \nThere is no return value.
+ * none
+ *------------------------------------------------------------------------
  */
 extern void extsched_initTab_(INT_hTab *t, int slots);
 
-/**
- * \page extsched_freeTab_ extsched_freeTab_
+/*------------------------------------------------------------------------
+ * extsched_freeTab_
+ *
  * Remove everything from a hash table and free up
  * the memory using custom provided free function.
  *
- * <b>\#include <lssched.h>
+ * PARAMETERS
  *
- * void extsched_freeTab_(INT_hTab **t, void (*freeFunc)(void *), int freeTabFlag)</b>
- *
- * @param t [IN|OUT] pointer to a hash table object
- * @param freeFunc [IN] pointer to a custom free function, if NULL free()
+ * t [IN|OUT] pointer to a hash table object
+ * freeFunc [IN] pointer to a custom free function, if NULL free()
  * is used
- * @param freeTabFlag [IN] if TRUE the table object is freed and pointer
+ * freeTabFlag [IN] if TRUE the table object is freed and pointer
  * set to NULL, otherwise the table object is in
  * an uninitialized state
  *
- * @return void
- * \nThere is no return value.
+ * RETURN
+ *
+ * none
+ *------------------------------------------------------------------------
  */
 extern void extsched_freeTab_(INT_hTab **t, void (*freeFunc)(void *),
 			      int freeTabFlag);
 
-/**
- * \page extsched_TabEmpty_ extsched_TabEmpty_
+/*------------------------------------------------------------------------
+ * extsched_TabEmpty_
+ *
  * Check whether the table is empty.
  *
- * <b>\#include <lssched.h>
+ * PARAMETERS
  *
- * int extsched_TabEmpty_(INT_hTab *t)</b>
+ * t [IN] pointer to a hash table object
  *
- * @param t [IN] pointer to a hash table object
- *
- * @return int:1
- * \nTable is empty.
- * @return int:0
- * \nTable is not empty.
- * @return int:-1
- * \nError, t was NULL.
+ * RETURN
+ * 1 table is empty
+ * 0 table is not empty
+ * -1 error, t was NULL
+ *------------------------------------------------------------------------
  */
 extern int extsched_TabEmpty_(INT_hTab *t);
 
-/**
- * \page extsched_getEnt_ extsched_getEnt_
+/*------------------------------------------------------------------------
+ * extsched_getEnt_
+ *
  * Search a hash table for an entry corresponding to key.
  *
- * <b>\#include <lssched.h>
+ * PARAMETERS
  *
- * INT_hEnt *extsched_getEnt_(INT_hTab *t, const char *k)</b>
+ * t [IN] pointer to a hash table object
+ * k [IN] key name
  *
- * @param t [IN] pointer to a hash table object
- * @param k [IN] key name
+ * RETURN
  *
- * @return INT_hEnt *
- * \nPointer to an entry object.
+ * pointer to an entry object
+ *------------------------------------------------------------------------
  */
 extern INT_hEnt *extsched_getEnt_(INT_hTab *t, const char *k);
 
-/**
- * \page extsched_addEnt_ extsched_addEnt_
+/*------------------------------------------------------------------------
+ * extsched_addEnt_
+ *
  * Add a new entry in hash table. If the entry already exists,
- * then nothing is done. If the 'n' parameter is not NULL and the
- * entry returned is new then 'n' will be set to TRUE, and FALSE
- * if an entry already exists with the given key.
+ * then nothing is done.
  *
- * <b>\#include <lssched.h>
+ * PARAMETERS
  *
- * INT_hEnt *extsched_addEnt_(INT_hTab *t, const char *k, int *n)</b>
+ * t [IN|OUT] pointer to a hash table object
+ * k [IN] key name
+ * n [OUT] new flag
  *
- * @param t [IN|OUT] pointer to a hash table object
- * @param k [IN] key name
- * @param n [OUT] new flag, can be NULL
+ * RETURN
  *
- * @return INT_hEnt *
- * \nThe return value is a pointer to the entry.
+ * The return value is a pointer to the entry. If *n
+ * isn't NULL, then *n is filled in with TRUE if a new entry
+ * was created, and FALSE if an entry already exists with the given key.
+ *------------------------------------------------------------------------
  */
 extern INT_hEnt *extsched_addEnt_(INT_hTab *t, const char *k, int *n);
 
-/**
- * \page extsched_rmEnt_ extsched_rmEnt_
+/*------------------------------------------------------------------------
+ * extsched_rmEnt_
+ *
  * Remove the given hash table entry and free memory
  * associated with it, but do not free hData.
  *
- * <b>\#include <lssched.h>
+ * PARAMETERS
  *
- * void extsched_rmEnt_(INT_hTab *t, INT_hEnt *e)</b>
+ * t [IN|OUT] pointer to a hash table object
+ * e [IN|OUT] pointer to entry object
  *
- * @param t [IN|OUT] pointer to a hash table object
- * @param e [IN|OUT] pointer to entry object
+ * RETURN
  *
- * @return void
- * \nThere is no return value.
+ * none
+ *------------------------------------------------------------------------
  */
 extern void extsched_rmEnt_(INT_hTab *t, INT_hEnt *e);
 
-/**
- * \page extsched_rmEntAndFreeData extsched_rmEntAndFreeData
+/*------------------------------------------------------------------------
+ * extsched_rmEntAndFreeData
+ *
  * Remove the given hash table entry and free memory
  * associated with it, and free hData.
  *
- * <b>\#include <lssched.h>
+ * PARAMETERS
  *
- * void extsched_rmEntAndFreeData(INT_hTab *t, INT_hEnt *e, void (*freeFunc)(void *))</b>
+ * t [IN|OUT] pointer to a hash table object
+ * e [IN|OUT] pointer to entry object, after this call e is no
+ * longer valid
+ * freeFunc [IN] pointer to a custom free function, if NULL free()
+ * is used
  *
- * @param t [IN|OUT] pointer to a hash table object
- * @param e [IN|OUT] pointer to entry object, after this call e is no longer valid
- * @param freeFunc [IN] pointer to a custom free function, if NULL free() is used
+ * RETURN
  *
- * @return void
- * \nThere is no return value.
+ * none
+ *------------------------------------------------------------------------
  */
 extern void extsched_rmEntAndFreeData(INT_hTab *t, INT_hEnt *e,
 				      void (*freeFunc)(void *));
 
-/**
- * \page extsched_firstEnt_ extsched_firstEnt_
+/*------------------------------------------------------------------------
+ * extsched_firstEnt_
+ *
  * Sets things up for a complete search of all entries in
  * the hash table.
  *
- * <b>\#include <lssched.h>
+ * PARAMETERS
  *
- * INT_hEnt *extsched_firstEnt_(INT_hTab *t, INT_sTab *s)</b>
+ * t [IN] pointer to a hash table object
+ * s [OUT] pointer to search object
  *
- * @param t [IN] pointer to a hash table object
- * @param s [OUT] pointer to search object
+ * RETURN
  *
- * @return INT_hEnt *
- * \nReturn the address of the first entry in the hash table.
- * @return NULL
- * \nIf the table is empty.
- *
- * @see \ref extsched_nextEnt_
- * @see \ref extsched_create_sTab
- * @see \ref extsched_destroy_sTab
+ * Return the address of the first entry in the hash table, or NULL if
+ * the table is empty.
+ *------------------------------------------------------------------------
  */
 extern INT_hEnt *extsched_firstEnt_(INT_hTab *t, INT_sTab *s);
 
-/**
- * \page extsched_nextEnt_ extsched_nextEnt_
+/*------------------------------------------------------------------------
+ * extsched_nextEnt_
+ *
  * This function returns successive entries in the hash table.
  *
- * <b>\#include <lssched.h>
+ * PARAMETERS
  *
- * INT_hEnt *extsched_nextEnt_(INT_sTab *s)</b>
+ * s [IN|OUT] pointer to search object
  *
- * @param s [IN|OUT] pointer to search object
+ * RETURN
  *
- * @return INT_hEnt *
- * \nReturn a pointer to the next entry in the table.
- * @return NULL
- * \nWhen the end of the table is reached.
- *
- * @see \ref extsched_firstEnt_
- * @see \ref extsched_create_sTab
- * @see \ref extsched_destroy_sTab
+ * Return a pointer to the next entry in the table, or NULL when the end
+ * of the table is reached.
+ *------------------------------------------------------------------------
  */
 extern INT_hEnt *extsched_nextEnt_(INT_sTab *s);
 
-/**
- * \page extsched_freeRefTab_ extsched_freeRefTab_
+/*------------------------------------------------------------------------
+ * extsched_freeRefTab_
+ *
  * Free the hash table used as reference. When more than one table contains
  * addresses of the same data structure in memory then only the first
  * hash table has to destroy the data, the other tables, called reference
  * tables just need to destroy their entries.
  *
- * <b>\#include <lssched.h>
+ * PARAMETERS
  *
- * void extsched_freeRefTab_(INT_hTab **t, int freeTabFlag)</b>
- *
- * @param t [IN|OUT] hash table object
- * @param freeTabFlag [IN] if TRUE the table object is freed and pointer
+ * t [IN|OUT] hash table object
+ * freeTabFlag [IN] if TRUE the table object is freed and pointer
  * set to NULL, otherwise the table object is in
  * an uninitialized state
  *
- * @return void
- * \nThere is no return value.
+ * RETURN
+ *
+ * none
+ *------------------------------------------------------------------------
  */
 extern void extsched_freeRefTab_(INT_hTab **t, int freeTabFlag);
 
-/**
- * \page extsched_delRef_ extsched_delRef_
+/*------------------------------------------------------------------------
+ * extsched_delRef_
+ *
  * This function is to be used when the hash table uses reference
  * data, i.e. more that one hash table contains the address of the data.
- * This is useful when the data can be searched using different keys.
+ * This is usefull when the data can be searched using different keys.
  * Using the reference avoid to duplicate the memory.
  *
- * <b>\#include <lssched.h>
+ * PARAMETERS
  *
- * void extsched_delRef_(INT_hTab *t, INT_hEnt *e)</b>
+ * t [IN|OUT] pointer to a hash table object
+ * e [IN|OUT] pointer to entry object
  *
- * @param t [IN|OUT] pointer to a hash table object
- * @param e [IN|OUT] pointer to entry object
+ * RETURN
  *
- * @return void
- * \nThere is no return value.
+ * none
+ *------------------------------------------------------------------------
  */
 extern void extsched_delRef_(INT_hTab *t, INT_hEnt *e);
 
 /* end of hash table API
  */
 
-/**
- * \page extsched_inScout extsched_inScout
- * This function reports whether it is running in the scout (the child)
- * process, or in the main scheduler (the parent) process.
- *
- * <b>\#include <lssched.h>
- *
- * int extsched_inScout(void)</b>
- *
- * <b>Parameters:</b>
- * \par
- * none
- * \n
- *
- * @return int:0
- * \nRunning in the main scheduler (the parent) process.
- * @return int:1
- * \nRunning in the scout (the child) process.
- *
- * @see \ref extsched_getScoutMode
- */
-extern int extsched_inScout(void);
-
-#ifdef SCOUT_MODE_NONE
-#undef SCOUT_MODE_NONE
-#endif
-
-#ifdef SCOUT_MODE_FUTURE_ALLOC
-#undef SCOUT_MODE_FUTURE_ALLOC
-#endif
-
-#define SCOUT_MODE_NONE                0  /* not in scout */
-#define SCOUT_MODE_FUTURE_ALLOC        1  /* determine future allocations */
-
-/**
- * \page extsched_getScoutMode extsched_getScoutMode
- * To be called from within the scout process. Reports the mode.
- *
- * <b>\#include <lssched.h>
- *
- * int extsched_getScoutMode(void)</b>
- *
- * <b>Parameters:</b>
- * \par
- * none
- * \n
- *
- * @return int:0
- * \nSCOUT_MODE_NONE not in scout
- * @return int:1
- * \nSCOUT_MODE_FUTURE_ALLOC determine future allocations
- *
- * @see \ref extsched_inScout
- */
-extern int extsched_getScoutMode(void);
-
-/**
- * \page extsched_isEstimatorMode extsched_isEstimatorMode
- * This function reports if the scheduler binary is running in 
- * estimator mode. This is not the main scheduler. The scheduler is started 
- * in this mode to determine an estimate of job start times.
- *
- * NOTE: If it is not appropriate for a plugin to be invoked if the 
- * scheduler is in estimator mode the plugin's sched_init() function should
- * return 1 without registering any callbacks. This will disable the plugin.
- *
- * int sched_init( void *p )
- * {
- *     if( extsched_isEstimatorMode() ) {
- *         return(1);
- *     }
- *
- *     ...
- * }
- *
- * <b>\#include <lssched.h>
- *
- * int extsched_isEstimatorMode(void)</b>
- *
- * <b>Parameters:</b>
- * \par
- * none
- * \n
- *
- * @return int:1
- * \n The scheduler is in estimator mode.
- * @return int:0
- * \n The scheduler is not in estimator mode.
- */
-extern int extsched_isEstimatorMode(void);
 
 /*-------------------------------------------------------------------------
  * deprecated functions 
@@ -2514,15 +2408,3 @@ extern time_t lsb_order_getJobSubmitTime(void* job);
 extern char * lsb_order_getJobUser(void *job);
 
 #endif /* _LSSCHED_H_ */
-
-
-/**
- * \page extsched extsched
- * \brief Application Programming Interface (API) functions for scheduler plugins.
- *
- * \note
- * \par
- * All EXTSCHED APIs require that the header file <lssched.h> be included. 
- *
- * @see extschedapis
- */

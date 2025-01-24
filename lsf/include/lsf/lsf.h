@@ -1,8 +1,8 @@
 /*
  ****************************************************************************
  IBM Spectrum LSF 10.1
- Build 600488
- Date Jun 10 2021
+ Build 509238
+ Date Dec 18 2018
  ****************************************************************************
  */
 
@@ -11,8 +11,6 @@
  */
 #ifndef _LSF_H_
 #define _LSF_H_
-
-#ifndef RC_INVOKED
 
 /* $RCSfile: base.h,v $Revision: 1.25.6.12.2.5.2.11.2.15.4.3.4.34.2.63 $Date: 2013/11/12 09:09:21 $
  ****************************************************************************
@@ -355,8 +353,7 @@ typedef enum {
     LSF_SUITE_EDITION_INVALID = 0,
     LSF_SUITE_EDITION_WGS,  /* Suite for Workgroups */
     LSF_SUITE_EDITION_HPS,  /* Suite for HPC */
-    LSF_SUITE_EDITION_ES,    /* Suite for Enterprise */
-    LSF_SUITE_EDITION_HPA   /* Suite for High Performance Analytics */
+    LSF_SUITE_EDITION_ES    /* Suite for Enterprise */
 } lsf_suite_edition_t;
 extern lsf_suite_edition_t lsf_suite_edition;
 
@@ -421,8 +418,6 @@ extern lsf_suite_edition_t lsf_suite_edition;
 #endif /*end of HPUX*/
 /*End of Problem 87958*/
 
-
-
 /* please using following definitions for XDR version comparing */
 #define LSF_XDR_VERSION2_0          1 	      
 #define LSF_XDR_VERSION2_1          2 	      
@@ -478,8 +473,7 @@ extern lsf_suite_edition_t lsf_suite_edition;
 #define LSF_XDR_V706_RV0_1          1
 #define LSF_XDR_V706_RV0_2          2
 
-#define EGO_XDR_VERSION EGO_XDR_VERSION_3_2
-                                       /* unsigned char used for version 
+#define EGO_XDR_VERSION EGO_XDR_VERSION_3_2  /* unsigned char used for version 
 					* i.d. within struct LSFHeader 
                                         * 1 for 2.0 and 2.0a
                                         * 2 for 2.1 and 2.1a
@@ -593,22 +587,20 @@ extern int isLSFPlatformCompatible(void);
 /*@}*/
 
 
-
 #if defined(_CRAY) && !defined(CRAYX1)
 	    /* cray floats are 8 bytes! Note that 0x7fffffff is rounded to
                 2^31 on non-cray so we have to do the same on cray to
                 inter-operate with other platforms.
              */
-#define INFINIT_LOAD  (float) (0x7fffffff + 1)
-#define INFINIT_FLOAT (float) (0x7fffffff + 1)
+#define INFINIT_LOAD    (float) (0x7fffffff + 1)
+#define INFINIT_FLOAT   (float) (0x7fffffff + 1)
 #elif defined(_SX) /* sx4 IBM float1 */
-#define INFINIT_LOAD  (float) (0x7ffffc00)
-#define INFINIT_FLOAT (float) (0x7ffffc00)
+#define INFINIT_LOAD    (float) (0x7ffffc00)
+#define INFINIT_FLOAT   (float) (0x7ffffc00)
 #else
-#define INFINIT_LOAD  (float) (0x7fffffff)
-#define INFINIT_FLOAT (float) (0x7fffffff)
+#define INFINIT_LOAD    (float) (0x7fffffff)
+#define INFINIT_FLOAT   (float) (0x7fffffff)
 #endif /* cray */
-
 
 #define INFINIT_INT         0x7fffffff
 #ifndef INT32JOBID
@@ -620,13 +612,6 @@ extern int isLSFPlatformCompatible(void);
 #else
 #define INFINIT_LONG_INT    0x7fffffff
 #endif /* INT32JOBID */
-
-
-/*#define FLOAT_MAX (3.402823466e+38F)
- * RTC#233091, FLOAT_MAX must be set as the same value with INFINIT_LONG_INT  
- * This can ensure the same default value for mem, swap, tmp.
- * */
-#define FLOAT_MAX  INFINIT_LONG_INT  
 
 #define INFINIT_SHORT  0x7fff
 
@@ -878,17 +863,6 @@ extern int isLSFPlatformCompatible(void);
 /* api caller flag */
 #define API_CALLER 0x80000 /**<  api caller from command request*/
 
-/* ignore lim daemon down hosts. */
-#define LIM_UNAVAIL_HOST_IGN 0x100000 /**< ignore LIM unavalable hosts */
-
-/* ignore res daemon down hosts. */
-#define RES_DOWN_HOST_IGN 0x200000 /**< ignore RES down hosts */
-
-/* ignore gpu load from host index. */
-#define IGNORE_GPU_LOAD_INDEX 0x400000 /**< ignore gpu load from host index */
-
-/* use new struct hostGpuInfo and xdr in ls_gethostgpuinfo  */
-#define LS_GETHOSTGPUINFO_OPTION_NEW_XDR 0x800000 /**< new struct hostGpuInfo and xdr */
 /*@}*/
 
 
@@ -1126,9 +1100,6 @@ enum orderType {
 #define RESF_MEGA_CRITERIA 0x800 /**<  Resources can be megahost criteria*/ 
 #define RESF_APPEARS_IN_RESOURCEMAP 0x8000 /**<  Resource is configured in Resourcemap */
 #define RESF_GPU_AUTO_CONFIG 0x80000 /**<  Resource with GPU auto configured */ 
-#define RESF_SHARED_ALL          0x100000 /**<  Resource is shared for "all" hosts in cluster */ 
-#define RESF_DEFAULT_EACH_HOST   0x200000 /**<  Resource is host based default resource which is local to every host in cluster */ 
-#define RESF_IGNORABLE_GPURES    0x400000 /**<  GPU resource is not used by Batch system */ 
 /*@}*/
 
 /**
@@ -1396,52 +1367,14 @@ extern int ls_bindinfo(int, struct cpuBindInfoList_t*);
 extern void cpuBindInfo2Env (struct  cpuBindInfoList_t*);
 extern void destroyCpuBindInfoList(struct  cpuBindInfoList_t *);
 
-#define GPU_NAME_LEN  256
-#define GPU_ERROR_MSG_LEN 1032
+#define GPU_NAME_LEN  64
+#define GPU_ERROR_MSG_LEN 1024
 #define GPU_STATUS_LEN 20
 
 typedef struct keyVal_ {
     char *key;
     char *val;
 } keyValue_t;
-
-typedef struct giProfileInfo
-{
-    unsigned int        id;         /* Unique profile ID within the device */
-    unsigned int        sliceCount; /* GPU Slice count */
-    float               mem;        /* Memory size in MB */
-    char              * name;       /* eg. MIG 4g.20gb */
-} GiProfile_t;
-
-typedef struct computeInstance
-{
-    unsigned int        index;      /* Mig device index within the device */
-    char              * name;       /* eg. MIG 1c.4g.20gb  */
-                                    /* or  MIG 2g.10gb if the Compute Instance occupies all GPU slices of parent GPU instance */
-    unsigned int        id;         /* Unique instance ID within the GPU instance */
-    unsigned int        size;       /* Number of GPU slice */
-    unsigned int        giId;       /* Parent GPU Instnce ID */
-} ComputeInstance_t;
-
-typedef struct gpuInstance
-{
-    unsigned int        id;         /* Unique instance ID within the device */
-    char              * name;       /* eg. MIG 4g.20gb */
-    unsigned int        profileId;  /* Unique profile ID within the device  */
-    unsigned int        start;      /* Start slice index */
-    unsigned int        size;       /* Number of GPU slice */
-    float               mem;        /* Memory size in MB - same as its profile mem */
-} GpuInstance_t;
-
-typedef struct migInfo
-{
-    int                 nGiProfile; /* Number of GPU instance profile */
-    GiProfile_t       * giProfile;  /* GPU instance profiles */
-    int                 nGpuInst;   /* Number of GPU instance */
-    GpuInstance_t     * gpuInst;    /* GPU instances */
-    int                 nComInst;   /* Number of Compute instance */
-    ComputeInstance_t * comInst;    /* Compute instances */
-} MigInfo_t;
 
 typedef struct _hostGpuNvlinkMap {
     int* nvlinkMasks;               /*the nvlink relation bitmap with other gpus*/
@@ -1454,11 +1387,6 @@ typedef struct _hostGpuNvlinkInfo {
     hostGpuNvlinkMap* nvlinkMap;    /*nvlink map for each GPU*/
 }hostGpuNvlinkInfo;
 
-/* GPU vendor of -gpu */
-#define AMD_GPU     0x01
-#define NVIDIA_GPU  0x02
-
-#define HOST_GPU_ATTR_MIG_MODE   0x01
 typedef struct hostGpuAttr {
     int                     gID;                         /* The index of GPU (host level id)*/
     char                    gBrand[GPU_NAME_LEN];        /* The brand name of GPU */
@@ -1467,13 +1395,7 @@ typedef struct hostGpuAttr {
     float                   gTotalMem;                   /* The total memory of GPU (MB) */
     char                    gBusId[GPU_NAME_LEN];        /* The bus ID of GPU*/ 
     int                     nvlinkMaskC;                 /* The amount of integers of nvlinkMasks*/
-    int                   * nvlinkMasks;                 /* The nvlink relation bitmap with other gpus*/
-    int                     gvendor;                     /* The gpu vendor:  AMD_GPU or NVIDIA_GPU */
-    int                     gNumkvs;                     /* The number of KVPs */
-    keyValue_t            * gKvs;                        /* KVPs */
-    char                    driverVersion[GPU_NAME_LEN]; /* The driver version*/
-    int                     gFlag;                       /* The flag of GPU */
-    MigInfo_t             * migInfo;                     /* mig Infomation */
+    int*                    nvlinkMasks;                 /* The nvlink relation bitmap with other gpus*/
 } hostGpuAttr_t;
 
 typedef enum hostGpuStatus {
@@ -1492,9 +1414,6 @@ typedef struct hostGpuLoad {
     float                   gEcc;          /* The ECC state of GPU*/
     float                   gUt;           /* The ut of GPU*/
     float                   gMut;          /* The memory ut of GPU*/
-    float                   gPower;        /* The power ut of GPU*/
-    int                     gNumkvs;       /* The number of KVPs */
-    keyValue_t            * gKvs;          /* KVPs */
 }hostGpuLoad_t;
 
 typedef struct hostGpuInfo {
@@ -1520,9 +1439,9 @@ struct hostInfo {
     char  *hostModel;			/**<  The host model*/
     float cpuFactor;			/**<  The cpu factor*/
     int   maxCpus;			/**<  The max num of cpus*/
-    long   maxMem;			/**<  The max mem of the host*/
-    long   maxSwap;			/**<  The max swap of the host*/
-    long   maxTmp; 			/**<  The max tmp of the host*/
+    int   maxMem;			/**<  The max mem of the host*/
+    int   maxSwap;			/**<  The max swap of the host*/
+    int   maxTmp; 			/**<  The max tmp of the host*/
     int   nDisks;			/**<  The num of disks*/
     int   nRes;				/**<  The num of res*/
     char  **resources;			/**<  The host resources*/
@@ -1863,8 +1782,6 @@ struct KVPair {
     struct keyValue *array; /** Array of Key-value pairs */
 };
 
-void addKVPairs(struct KVPair * , char * , char * );
-void removeKVPairs(struct KVPair * , char * ); 
 extern void freeKVPairs(struct KVPair *);
 extern void copyKVPairs(struct KVPair *, struct KVPair *);
 extern void freeObjectArray(int num, void ** objs, size_t, void (*freeFunc)(void *));
@@ -1873,10 +1790,10 @@ extern void freeObjectArray(int num, void ** objs, size_t, void (*freeFunc)(void
  * \brief Information about job using resource.
  */
 typedef struct jRusage {
-    long mem;          /**< Total resident memory usage in kbytes of all
+    int mem;          /**< Total resident memory usage in kbytes of all
                        * currently running processes in given process
                        * groups. */
-    long swap;         /**< Total virtual memory usage in kbytes of all
+    int swap;         /**< Total virtual memory usage in kbytes of all
                        * currently running processes in given process
 		       * groups. */
     long utime;        /**< Cumulative total user time in seconds */
@@ -1980,9 +1897,9 @@ typedef struct params_key_value_pair
  */
 struct hRusage {
     char *name;       /**< The host name */
-    long mem;          /**< Total resident memory usage in kbytes of all
+    int mem;          /**< Total resident memory usage in kbytes of all
                        * currently running processes in given host. */
-    long swap;         /**< Total virtual memory usage in kbytes of all
+    int swap;         /**< Total virtual memory usage in kbytes of all
                        * currently running processes in given process
                        * groups. */
     long utime;        /**< Cumulative total user time in seconds on given host*/
@@ -2144,7 +2061,7 @@ struct jobRusagePack {
                                        * be issued from a master, master
                                        * candidate, or local host */
 #define LSE_UNRESOLVALBE_HOST  123    /* master Lim can not reslove the host
-                                       * name of child lim */ 
+                                       * name of slave lim */ 
 #define LSE_RESOURCE_NOT_CONSUMABLE 124 /* resource not consumable */
 #define LSE_SHUTDOWN 125 /* host is in exiting loop for rejected by clusters */
 #define LSE_BAD_SYNTAX         126    /* Bad string syntax */
@@ -2175,8 +2092,7 @@ struct jobRusagePack {
 #define LSE_NO_GPUINFO        150    /* No gpus topology on host */
 #define LSE_NO_CPUBIND_INFO    151    /* No gpus topology on host */
 #define LSE_GPU_COMPACT_USAGE_ENABLED 152 /* GPU compact usage, LSB_GPU_NEW_SYNTAX*/
-#define LSE_CTNER_NOT_EXIST    153        /* container to attach does not exist */
-#define LSE_NERR               154       /* Moving number, size of ls_errmsg[] */
+#define LSE_NERR               153       /* Moving number, size of ls_errmsg[] */
 
 
 typedef void (*profileLogFunc)(int, const char *, ...);
@@ -2351,7 +2267,6 @@ typedef struct ls_timeval {
   } \
 }
 
-/* SUB_BY_LSF issue#132 change TIMEIT support fork */
 #define TIMEIT(level, func, name) \
 { int doProfile = funcProfile_trackTime(level); \
   if ((clockticks > 0) \
@@ -2360,8 +2275,6 @@ typedef struct ls_timeval {
       struct timezone _tz; \
       struct tms _buf, _buf2; \
       static int timeInst = 0; \
-      pid_t currentpid; \
-      currentpid = getpid();\
       if (doProfile) { \
           funcProfile_enterFunc(&timeInst); \
       } \
@@ -2370,33 +2283,26 @@ typedef struct ls_timeval {
       func; \
       gettimeofday(&_after, &_tz); \
       times(&_buf2); \
-      if (currentpid == getpid()) { \
-          if (doProfile) { \
-              long rtime, utime, stime; \
-              rtime = (_after.tv_sec - _before.tv_sec)*1000000 + \
-                      (_after.tv_usec - _before.tv_usec); \
-              utime = (1000000*(_buf2.tms_utime - _buf.tms_utime))/clockticks; \
-              stime = (1000000*(_buf2.tms_stime - _buf.tms_stime))/clockticks; \
-              funcProfile_leaveFunc(&timeInst, name, rtime, utime, stime); \
-          } \
-          if (timinglevel > level) { \
-              ls_syslog(LOG_INFO,"L%d %s rtime %.2f ms, utime %.2f ms, stime %.2f ms", \
-                        level, \
-                        name, \
-                        (_after.tv_sec - _before.tv_sec)*1000.0 + \
-                        (_after.tv_usec - _before.tv_usec)/1000.0, \
-	            1000.0*(_buf2.tms_utime - _buf.tms_utime)/clockticks, \
-	            1000.0*(_buf2.tms_stime - _buf.tms_stime)/clockticks); \
-          } \
-      } else { \
-          /* child process */  \
-          if (doProfile) { \
-              funcProfile_leaveFunc(&timeInst, name, 0, 0, 0); \
-          } \
+      if (doProfile) { \
+          long rtime, utime, stime; \
+          rtime = (_after.tv_sec - _before.tv_sec)*1000000 + \
+                  (_after.tv_usec - _before.tv_usec); \
+          utime = (1000000*(_buf2.tms_utime - _buf.tms_utime))/clockticks; \
+          stime = (1000000*(_buf2.tms_stime - _buf.tms_stime))/clockticks; \
+          funcProfile_leaveFunc(&timeInst, name, rtime, utime, stime); \
+      } \
+      if (timinglevel > level) { \
+          ls_syslog(LOG_INFO,"L%d %s rtime %.2f ms, utime %.2f ms, stime %.2f ms", \
+                    level, \
+                    name, \
+                    (_after.tv_sec - _before.tv_sec)*1000.0 + \
+                    (_after.tv_usec - _before.tv_usec)/1000.0, \
+		    1000.0*(_buf2.tms_utime - _buf.tms_utime)/clockticks, \
+		    1000.0*(_buf2.tms_stime - _buf.tms_stime)/clockticks); \
       } \
   } else { \
-      func; \
-  } \
+        func; \
+    } \
 }
 
 #define TIMEIT_FORK(level, pid, name) \
@@ -2677,13 +2583,8 @@ typedef struct ls_timeval {
 #define LC2_JDL                         76 /* Job Dispatch Limit */
 #define LC2_GPU                         77 /* Log msg related to GPU */
 #define LC2_PLAN                        78 /* SCHED PLANNER */
-#define LC2_K8S                         79 /* Kubernetes */
-#define LC2_DOCKER_JOB_EXEC_TRACE       80 /* docker job exec trace*/
-#define LC2_HATTR                       81 /* attribute affinity */
 
-#define LC2_GL                          82 /* global limit*/   
-#define LC2_ASKEDPTR_CACHE              83
- 
+
 /*
   *end of Log classes 
  */
@@ -4507,15 +4408,8 @@ extern char    *ls_getmyhostname2 P_((void));
  */
 extern struct  hostInfo *ls_gethostinfo P_((char *, int *, char **, int, int));
 extern struct  hostGpuInfo *ls_gethostgpuinfo P_((char *, int *, char **, int, int));
-extern void ls_freeHostGpuInfoFields(struct  hostGpuInfo *);
-extern void ls_freeHostGpuInfo(struct  hostGpuInfo **);
-extern void freeGpuInstanceProfileField(GiProfile_t * gip);
-extern void freeGpuInstanceField(GpuInstance_t * gi);
-extern void freeComputeInstanceField(ComputeInstance_t * ci);
-extern  void freeMigInfoField(MigInfo_t * mig);
-extern  void freeMigInfo(MigInfo_t ** p);
-extern  int  copyMigInfo(MigInfo_t * dest, MigInfo_t * src);
-extern  void dumpMigInfo(MigInfo_t * mig, int level, char * fname);
+void ls_freeHostGpuInfoFields(struct  hostGpuInfo *);
+void ls_freeHostGpuInfo(struct  hostGpuInfo **);
 extern int getLsbGpuNewSyntax();
 
 extern char    *ls_getISVmode P_((void));
@@ -4611,7 +4505,6 @@ extern void    info40to32  P_((struct lsInfo32*, struct lsInfo*));
 extern struct  lsInfo    *ls_info P_((void));
 #endif
 
-extern void ls_setgpuoption(int);
 extern char ** ls_indexnames P_((struct lsInfo *)); 
 extern int     ls_isclustername P_((char *)); 
 
@@ -5443,12 +5336,6 @@ typedef struct liveConfReq {
 /*@}*/
 
 #if !defined(WIN32)
-typedef struct {
-    uint64_t utime;
-    uint64_t stime;
-         int readed;
-} OrigRusage_T;
-
 #if defined (OS_HAS_THREAD)
 extern pid_t fork_safe();
 #else
@@ -5499,13 +5386,6 @@ typedef enum {
     DISTRIBUTE_BALANCE,
     DISTRIBUTE_PACK
 } distributeMethod_t;
-
-
-typedef struct MigReq_ {
-    int giSlice;
-    int ciSlice;
-} migReq_t;
-
 /*@}*/
 
 #ifdef WIN32
@@ -5538,8 +5418,7 @@ extern int buildPIMFileFormat(char* );
 #endif /* _EGO_H_ */
 
 
-#define LSF_VERSION LSF_XDR_VERSION10_1
-                                       /* unsigned char used for version
+#define LSF_VERSION LSF_XDR_VERSION10_1 /* unsigned char used for version
 					* i.d. within struct LSFHeader 
                                         * 1 for 2.0 and 2.0a
                                         * 2 for 2.1 and 2.1a
@@ -5561,8 +5440,6 @@ extern int buildPIMFileFormat(char* );
 					*/
 #define LSF_CURRENT_VERSION  "10.1.0.0"
 #define LSF_CURRENT_VERSION_STRIPPED  "10.1"
-
-#endif /* ifndef RC_INVOKED */
 
 /*--------------------Begin of version string definition--------------------*/
 /*Below defintion is introduced by 72905
@@ -5657,8 +5534,6 @@ extern int buildPIMFileFormat(char* );
 #endif /* defined(__STDC__) || defined(WIN32) */
 
 /*--------------------End of version string definition--------------------*/
-
-#ifndef RC_INVOKED
 
 #if defined(__STDC__) || defined(__cplusplus) || defined(SN_SVR4) || defined(WIN32)
 #define P_(s) s
@@ -7973,10 +7848,7 @@ extern int   pam_vcl_set_rusage P_((int , struct jRusage *));
 #if defined(__cplusplus)
 }
 #endif
-
-#endif /* ifndef RC_INVOKED */
-
-#endif /* ifndef _LSF_H_ */
+#endif
 /**
  * \page lslib lslib
  * \brief Application Programming Interface (API) library routines for LSF services
