@@ -1,0 +1,25 @@
+---
+name: 'Build and Push Container Images'
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+jobs:
+  ubuntu22-openmpi4.1:
+    runs-on: ubuntu-latest 
+    steps:
+      - uses: actions/checkout@v3
+      - name: Login to GitHub Repo
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - run: |-
+          docker build \
+            --file ./Dockerfile \
+            --tag "ghcr.io/washu-it-ris/demo-openmpi:ubuntu22-mofed5.8-openmpi4.1" \
+            .
+      - run: |-
+        docker push ghcr.io/washu-it-ris/demo-openmpi:ubuntu22-mofed5.8-openmpi4.1
