@@ -23,6 +23,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && apt-get update && \
     kmod \
     libelf-dev \
     libfind-lib-perl \
+    libfuse2 \
     libglib2.0-0 \
     libltdl-dev \
     libmnl0 \
@@ -30,6 +31,8 @@ RUN export DEBIAN_FRONTEND=noninteractive && apt-get update && \
     libnl-route-3-dev \
     libnuma-dev \
     libssl-dev \
+    libudev0 \
+    libusb-dev \
     lsb-release \
     lsof \
     m4 \
