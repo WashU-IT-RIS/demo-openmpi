@@ -19,7 +19,7 @@ jobs:
       - run: |-
           docker build \
             --file ./Dockerfile \
-            --tag "ghcr.io/washu-it-ris/demo-openmpi:ubuntu22-mofed5.8-openmpi4.1" \
+            --tag "ghcr.io/washu-it-ris/base-openmpi:ubuntu22-mofed5.8-openmpi4.1" \
             .
       - run: |-
-        docker push ghcr.io/washu-it-ris/demo-openmpi:ubuntu22-mofed5.8-openmpi4.1
+        docker push ghcr.io/washu-it-ris/base-openmpi:ubuntu22-mofed5.8-openmpi4.1

@@ -41,13 +41,11 @@ Shown below are the steps to test it in the RIS Compute Cluster.
 2. Submit a LSF interactive job.
    Shown below is an example.
    Please replace `compute-ris` with your compute group.
-   Please replace `/home/sleong` with your home directory.
    Please replace `ghcr.io/washu-it-ris/base-openmpi:latest)` with your docker image built above.
    ```bash
    LSF_DOCKER_NETWORK=host \
    LSF_DOCKER_IPC=host \
    LSF_DOCKER_SHM_SIZE=20G \
-   LSF_DOCKER_VOLUMES="/home/sleong:/home/sleong" \
    bsub -q general-interactive \
         -a "docker(ghcr.io/washu-it-ris/base-openmpi:latest)" \
         -Is -n 4 -R "span[ptile=2] rusage[mem=10GB]" \
