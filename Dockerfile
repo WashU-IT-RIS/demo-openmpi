@@ -1,6 +1,6 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
-LABEL maintainer="sleong@wustl.edu"
+#LABEL maintainer="sleong@wustl.edu"
 
 # Setup LSF link libraries
 COPY lsf/ /opt/ibm/lsfsuite/lsf/10.1/
@@ -48,9 +48,8 @@ RUN export DEBIAN_FRONTEND=noninteractive && apt-get update && \
     apt-get clean all
 
 # Set MOFED version, OS version and platform
-ENV MOFED_VERSION 5.4-3.1.0.0
-#ENV MOFED_VERSION 4.9-4.0.8.0
-ENV OS_VERSION ubuntu20.04
+ENV MOFED_VERSION 5.8-6.4.4.2
+ENV OS_VERSION ubuntu22.04
 ENV PLATFORM x86_64
 
 RUN wget -q http://content.mellanox.com/ofed/MLNX_OFED-${MOFED_VERSION}/MLNX_OFED_LINUX-${MOFED_VERSION}-${OS_VERSION}-${PLATFORM}.tgz && \
@@ -71,15 +70,19 @@ RUN wget -q http://content.mellanox.com/ofed/MLNX_OFED-${MOFED_VERSION}/MLNX_OFE
 #    make && \
 #    make install
 
-ENV OPENMPI_VERSION_MAJOR=4.0
-ENV OPENMPI_VERSION=4.0.1
+ENV OPENMPI_VERSION_MAJOR=5.0
+ENV OPENMPI_VERSION=5.0.6
 # Install Open MPI
 RUN mkdir /tmp/openmpi && \
     cd /tmp/openmpi && \
     wget -q https://download.open-mpi.org/release/open-mpi/v${OPENMPI_VERSION_MAJOR}/openmpi-${OPENMPI_VERSION}.tar.gz && \
     tar zxf openmpi-${OPENMPI_VERSION}.tar.gz && \
     cd openmpi-${OPENMPI_VERSION} && \
-    ./configure --with-lsf=/opt/ibm/lsfsuite/lsf/10.1/ --enable-orterun-prefix-by-default --with-lsf-libdir=/opt/ibm/lsfsuite/lsf/10.1/linux2.6-glibc2.3-x86_64/lib/ --with-ucx=/usr --enable-mca-no-build=btl-uct && \
+    ./configure \
+        --with-lsf=/opt/ibm/lsfsuite/lsf/10.1/ \
+        --enable-orterun-prefix-by-default \
+        --with-lsf-libdir=/opt/ibm/lsfsuite/lsf/10.1/linux2.6-glibc2.3-x86_64/lib/ \
+        --with-ucx=/usr --enable-mca-no-build=btl-uct && \
     make -j $(nproc) all && \
     make install && \
     ldconfig && \
