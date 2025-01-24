@@ -73,8 +73,10 @@ RUN wget -q http://content.mellanox.com/ofed/MLNX_OFED-${MOFED_VERSION}/MLNX_OFE
 #    make && \
 #    make install
 
-ENV OPENMPI_VERSION_MAJOR=5.0
-ENV OPENMPI_VERSION=5.0.6
+#ENV OPENMPI_VERSION_MAJOR=5.0
+#ENV OPENMPI_VERSION=5.0.6
+ENV OPENMPI_VERSION_MAJOR=4.1
+ENV OPENMPI_VERSION=4.1.7
 # Install Open MPI
 RUN mkdir /tmp/openmpi && \
     cd /tmp/openmpi && \
