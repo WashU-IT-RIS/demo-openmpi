@@ -6,7 +6,7 @@ on:
     branches:
       - main
 jobs:
-  ubuntu20-mofed5.8-openmpi4.1:
+  ubuntu20_mofed5-8_openmpi4-1:
     runs-on: ubuntu-latest 
     steps:
       - uses: actions/checkout@v3
@@ -22,12 +22,10 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           file: Dockerfiles/ubuntu20-mofed5.8-openmpi4.1
-          tags:
-            - "ghcr.io/washu-it-ris/base-openmpi:latest"
-            - "ghcr.io/washu-it-ris/base-openmpi:ubuntu20-mofed5.8-openmpi4.1"
+          tags: ghcr.io/washu-it-ris/base-openmpi:latest,ghcr.io/washu-it-ris/base-openmpi:ubuntu20-mofed5.8-openmpi4.1
           platforms: linux/amd64
 
-  ubuntu22-mofed5.8-openmpi4.1:
+  ubuntu22_mofed5-8_openmpi4-1:
     runs-on: ubuntu-latest 
     steps:
       - uses: actions/checkout@v3
@@ -43,7 +41,6 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           file: Dockerfiles/ubuntu20-mofed5.8-openmpi4.1
-          tags:
-            - "ghcr.io/washu-it-ris/base-openmpi:ubuntu22-mofed5.8-openmpi4.1"
+          tags: ghcr.io/washu-it-ris/base-openmpi:ubuntu22-mofed5.8-openmpi4.1
           platforms: linux/amd64
 
