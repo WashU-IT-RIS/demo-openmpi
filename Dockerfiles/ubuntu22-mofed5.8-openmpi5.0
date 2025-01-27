@@ -61,8 +61,8 @@ RUN wget -q http://content.mellanox.com/ofed/MLNX_OFED-${MOFED_VERSION}/MLNX_OFE
     rm -rf *.tgz
 
 
-ENV OPENMPI_VERSION_MAJOR=4.1
-ENV OPENMPI_VERSION=4.1.7
+ENV OPENMPI_VERSION_MAJOR=5.0
+ENV OPENMPI_VERSION=5.0.6
 # Install Open MPI
 RUN mkdir /tmp/openmpi && \
     cd /tmp/openmpi && \
@@ -73,6 +73,7 @@ RUN mkdir /tmp/openmpi && \
         --with-lsf=/opt/ibm/lsfsuite/lsf/10.1/ \
         --enable-orterun-prefix-by-default \
         --with-lsf-libdir=/opt/ibm/lsfsuite/lsf/10.1/linux2.6-glibc2.3-x86_64/lib/ \
+        --with-lsf-incdir=/opt/ibm/lsfsuite/lsf/10.1/include \
         --with-ucx=/usr --enable-mca-no-build=btl-uct && \
     make -j $(nproc) all && \
     make install && \
