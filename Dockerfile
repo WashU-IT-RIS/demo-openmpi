@@ -49,7 +49,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && apt-get update && \
 
 # Set MOFED version, OS version and platform
 ENV MOFED_VERSION=5.8-6.0.4.2
-ENV OS_VERSION=ubuntu22.04
+ENV OS_VERSION=ubuntu20.04
 ENV PLATFORM=x86_64
 
 RUN wget -q http://content.mellanox.com/ofed/MLNX_OFED-${MOFED_VERSION}/MLNX_OFED_LINUX-${MOFED_VERSION}-${OS_VERSION}-${PLATFORM}.tgz && \
