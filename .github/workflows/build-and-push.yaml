@@ -6,7 +6,7 @@ on:
     branches:
       - main
 jobs:
-  ubuntu20-openmpi4.1:
+  ubuntu20-mofed5.8-openmpi4.1:
     runs-on: ubuntu-latest 
     steps:
       - uses: actions/checkout@v3
@@ -18,10 +18,29 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - run: |-
           docker build \
-            --file ./Dockerfile \
+            --file ./Dockerfiles/ubuntu20-mofed5.8-mpi4.1 \
             --tag "ghcr.io/washu-it-ris/base-openmpi:latest" \
             --tag "ghcr.io/washu-it-ris/base-openmpi:ubuntu20-mofed5.8-openmpi4.1" \
             .
       - run: |-
         docker push ghcr.io/washu-it-ris/base-openmpi:latest &&
         docker push ghcr.io/washu-it-ris/base-openmpi:ubuntu20-mofed5.8-openmpi4.1
+
+  ubuntu22-mofed5.8-openmpi4.1:
+    runs-on: ubuntu-latest 
+    steps:
+      - uses: actions/checkout@v3
+      - name: Login to GitHub Repo
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - run: |-
+          docker build \
+            --file ./Dockerfiles/ubuntu22-mofed5.8-mpi4.1 \
+            --tag "ghcr.io/washu-it-ris/base-openmpi:ubuntu22-mofed5.8-openmpi4.1" \
+            .
+      - run: |-
+        docker push ghcr.io/washu-it-ris/base-openmpi:latest &&
+        docker push ghcr.io/washu-it-ris/base-openmpi:ubuntu22-mofed5.8-openmpi4.1
