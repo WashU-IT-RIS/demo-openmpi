@@ -16,15 +16,16 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - run: |-
-          docker build \
-            --file ./Dockerfiles/ubuntu20-mofed5.8-openmpi4.1 \
-            --tag "ghcr.io/washu-it-ris/base-openmpi:latest" \
-            --tag "ghcr.io/washu-it-ris/base-openmpi:ubuntu20-mofed5.8-openmpi4.1" \
-            .
-      - run: |-
-        docker push ghcr.io/washu-it-ris/base-openmpi:latest &&
-        docker push ghcr.io/washu-it-ris/base-openmpi:ubuntu20-mofed5.8-openmpi4.1
+      - name: Setup docker buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Build and Push images
+        uses: docker/build-push-action@v6
+        with:
+          file: Dockerfiles/ubuntu20-mofed5.8-openmpi4.1
+          tags:
+            - "ghcr.io/washu-it-ris/base-openmpi:latest"
+            - "ghcr.io/washu-it-ris/base-openmpi:ubuntu20-mofed5.8-openmpi4.1"
+          platforms: linux/amd64
 
   ubuntu22-mofed5.8-openmpi4.1:
     runs-on: ubuntu-latest 
@@ -36,11 +37,13 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - run: |-
-          docker build \
-            --file ./Dockerfiles/ubuntu22-mofed5.8-openmpi4.1 \
-            --tag "ghcr.io/washu-it-ris/base-openmpi:ubuntu22-mofed5.8-openmpi4.1" \
-            .
-      - run: |-
-        docker push ghcr.io/washu-it-ris/base-openmpi:latest &&
-        docker push ghcr.io/washu-it-ris/base-openmpi:ubuntu22-mofed5.8-openmpi4.1
+      - name: Setup docker buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Build and Push images
+        uses: docker/build-push-action@v6
+        with:
+          file: Dockerfiles/ubuntu20-mofed5.8-openmpi4.1
+          tags:
+            - "ghcr.io/washu-it-ris/base-openmpi:ubuntu22-mofed5.8-openmpi4.1"
+          platforms: linux/amd64
+
