@@ -55,7 +55,7 @@ Shown below are the steps to test it in the RIS Compute Cluster.
    ``` 
 3. Download a MPI test program source.  Shown below is an example. Please download it to your home directory or a directory that can be accessed from all RIS compute nodes.
    ```bash
-   wget https://www.cs.mtsu.edu/~rbutler/courses/pp6330/www.llnl.gov/computing/tutorials/workshops/workshop/mpi/samples/Fortran/mpi_ringtopo.f
+   wget https://hpc-tutorials.llnl.gov/mpi/examples/mpi_ringtopo.f
    ```
 4. Compile the test source code downloaded.  Shown below is an example.
    ```bash
