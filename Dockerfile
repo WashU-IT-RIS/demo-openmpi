@@ -4,6 +4,7 @@ FROM ubuntu:20.04
 
 # Setup LSF link libraries
 COPY lsf/ /opt/ibm/lsfsuite/lsf/10.1/
+COPY ld.so.conf.d/ /etc/ld.so.conf.d/
 
 RUN export DEBIAN_FRONTEND=noninteractive && apt-get update && \
     apt-get install -y \
