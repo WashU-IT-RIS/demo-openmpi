@@ -22,7 +22,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           file: Dockerfiles/ubuntu20-mofed5.8-openmpi4.1
-          tags: ghcr.io/washu-it-ris/base-openmpi:latest,ghcr.io/washu-it-ris/base-openmpi:ubuntu20-mofed5.8-openmpi4.1
+          tags: ghcr.io/${{ github.repository }}:latest,ghcr.io/${{ github.repository }}:ubuntu20-mofed5.8-openmpi4.1
           platforms: linux/amd64
 
   ubuntu22_mofed5-8_openmpi4-1:
@@ -41,6 +41,6 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           file: Dockerfiles/ubuntu20-mofed5.8-openmpi4.1
-          tags: ghcr.io/washu-it-ris/base-openmpi:ubuntu22-mofed5.8-openmpi4.1
+          tags: ghcr.io/${{ github.repository }}:ubuntu22-mofed5.8-openmpi4.1
           platforms: linux/amd64
 
