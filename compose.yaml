@@ -1,7 +1,7 @@
 ---
 services:
   demo-openmpi:
-    image: ghcr.io/washu-it-ris/demo-openmpi:ubuntu22-ompi5.0.6-mofed5.8lts
+    image: ghcr.io/washu-it-ris/demo-openmpi:latest
     build:
       context: .
       dockerfile: Dockerfile
