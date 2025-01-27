@@ -6,7 +6,7 @@ on:
     branches:
       - main
 jobs:
-  ubuntu22-openmpi4.1:
+  ubuntu20-openmpi4.1:
     runs-on: ubuntu-latest 
     steps:
       - uses: actions/checkout@v3
@@ -20,8 +20,8 @@ jobs:
           docker build \
             --file ./Dockerfile \
             --tag "ghcr.io/washu-it-ris/base-openmpi:latest" \
-            --tag "ghcr.io/washu-it-ris/base-openmpi:ubuntu22-mofed5.8-openmpi4.1" \
+            --tag "ghcr.io/washu-it-ris/base-openmpi:ubuntu20-mofed5.8-openmpi4.1" \
             .
       - run: |-
         docker push ghcr.io/washu-it-ris/base-openmpi:latest &&
-        docker push ghcr.io/washu-it-ris/base-openmpi:ubuntu22-mofed5.8-openmpi4.1
+        docker push ghcr.io/washu-it-ris/base-openmpi:ubuntu20-mofed5.8-openmpi4.1
