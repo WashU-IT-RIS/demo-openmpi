@@ -18,7 +18,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - run: |-
           docker build \
-            --file ./Dockerfiles/ubuntu20-mofed5.8-mpi4.1 \
+            --file ./Dockerfiles/ubuntu20-mofed5.8-openmpi4.1 \
             --tag "ghcr.io/washu-it-ris/base-openmpi:latest" \
             --tag "ghcr.io/washu-it-ris/base-openmpi:ubuntu20-mofed5.8-openmpi4.1" \
             .
@@ -38,7 +38,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - run: |-
           docker build \
-            --file ./Dockerfiles/ubuntu22-mofed5.8-mpi4.1 \
+            --file ./Dockerfiles/ubuntu22-mofed5.8-openmpi4.1 \
             --tag "ghcr.io/washu-it-ris/base-openmpi:ubuntu22-mofed5.8-openmpi4.1" \
             .
       - run: |-
