@@ -48,7 +48,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && apt-get update && \
     apt-get clean all
 
 # Set MOFED version, OS version and platform
-ENV MOFED_VERSION=5.8-4.1.5.0
+ENV MOFED_VERSION=5.8-6.0.4.2
 ENV OS_VERSION=ubuntu20.04
 ENV PLATFORM=x86_64
 
