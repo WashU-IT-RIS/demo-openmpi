@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:20.04
 
 #LABEL maintainer="sleong@wustl.edu"
 
@@ -21,28 +21,29 @@ RUN export DEBIAN_FRONTEND=noninteractive && apt-get update && \
     graphviz \
     iproute2 \
     kmod \
-    libelf-dev \
+    libelf1 \
     libfind-lib-perl \
-    libfuse2 \
+    libgfortran4 \
     libglib2.0-0 \
     libltdl-dev \
     libmnl0 \
-    libnl-3-dev \
-    libnl-route-3-dev \
+    libnl-3-200 \
+    libnl-route-3-200 \
+    libnuma1 \
     libnuma-dev \
-    libssl-dev \
-    libusb-1.0-0-dev \
+    libssl1.1 \
     lsb-release \
     lsof \
     m4 \
     net-tools \
     pciutils \
     pkg-config \
-    python3 \
+    python \
     swig \
-    tk-dev \
+    tcl \
+    tk \
+    tk8.6 \
     tzdata \
-    udev \
     wget && \
     apt-get clean all
 
@@ -56,25 +57,13 @@ RUN wget -q http://content.mellanox.com/ofed/MLNX_OFED-${MOFED_VERSION}/MLNX_OFE
     MLNX_OFED_LINUX-${MOFED_VERSION}-${OS_VERSION}-${PLATFORM}/mlnxofedinstall \
       --user-space-only \
       --without-fw-update  \
-      #--with-neohost-backend \
+      --with-neohost-backend \
       -q && \
     cd .. && \
     rm -rf ${MOFED_DIR} && \
     rm -rf *.tgz
 
 
-#RUN apt-get remove -y ucx && \
-#    git clone https://github.com/openucx/ucx.git ucx && \
-#    cd ucx && \
-#    ./autogen.sh && \
-#    mkdir build && \
-#    cd build && \
-#    ../configure --prefix=/usr/ && \
-#    make && \
-#    make install
-
-#ENV OPENMPI_VERSION_MAJOR=5.0
-#ENV OPENMPI_VERSION=5.0.6
 ENV OPENMPI_VERSION_MAJOR=4.1
 ENV OPENMPI_VERSION=4.1.7
 # Install Open MPI
@@ -92,13 +81,4 @@ RUN mkdir /tmp/openmpi && \
     make install && \
     ldconfig && \
     rm -rf /tmp/openmpi
-
-#RUN git clone https://github.com/open-mpi/ompi.git && \
-#    cd ompi && \
-#    ./autogen.pl && \
-#     mkdir build && \
-#    cd build && \
-#    ../configure --prefix=/usr/local --with-ucx=/usr --enable-mca-no-build=btl-uct && \
-#    make && \
-#    make install
 
