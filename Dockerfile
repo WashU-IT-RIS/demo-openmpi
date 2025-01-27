@@ -1,1 +1,1 @@
-Dockerfiles/ubuntu20-mofed5.8-openmpi4.1
+Dockerfiles/ubuntu22-mofed5.8-openmpi4.1
