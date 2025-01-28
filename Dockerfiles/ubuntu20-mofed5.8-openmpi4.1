@@ -51,15 +51,16 @@ ENV MOFED_VERSION=5.8-6.0.4.2
 ENV OS_VERSION=ubuntu20.04
 ENV PLATFORM=x86_64
 
-RUN wget -q http://content.mellanox.com/ofed/MLNX_OFED-${MOFED_VERSION}/MLNX_OFED_LINUX-${MOFED_VERSION}-${OS_VERSION}-${PLATFORM}.tgz && \
+RUN mkdir /tmp/mofed && \
+    cd /tmp/mofed && \
+    wget -q http://content.mellanox.com/ofed/MLNX_OFED-${MOFED_VERSION}/MLNX_OFED_LINUX-${MOFED_VERSION}-${OS_VERSION}-${PLATFORM}.tgz && \
     tar -xvf MLNX_OFED_LINUX-${MOFED_VERSION}-${OS_VERSION}-${PLATFORM}.tgz && \
     MLNX_OFED_LINUX-${MOFED_VERSION}-${OS_VERSION}-${PLATFORM}/mlnxofedinstall \
       --user-space-only \
       --without-fw-update  \
       --with-neohost-backend \
       -q && \
-    cd .. && \
-    rm -rf ${MOFED_DIR} && \
+    rm -rf /tmp/mofed
     rm -rf *.tgz
 
 
