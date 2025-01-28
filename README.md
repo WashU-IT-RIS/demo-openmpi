@@ -15,17 +15,17 @@ Shown below is the steps to create a docker image.
    cd demo-openmpi
    ```
 3. Build a docker image.  I use my docker registry.
-   Please replace `registry.gsc.wustl.edu/sleong/base-openmpi:latest`
+   Please replace `ghcr.io/washu-it-ris/base-openmpi:latest`
    with your docker image name.
    Shown below is an example command.
    ```bash
-   docker build --tag registry.gsc.wustl.edu/sleong/base-openmpi:latest .
+   docker build --tag ghcr.io/washu-it-ris/base-openmpi:latest .
    ```
 4. Push to a docker registry.  Shown below is an example command.
-   Please replace `registry.gsc.wustl.edu/sleong/base-openmpi:latest`
+   Please replace `ghcr.io/washu-it-ris/base-openmpi:latest`
    with your docker image name.
    ```bash
-   docker push registry.gsc.wustl.edu/sleong/base-openmpi:latest
+   docker push ghcr.io/washu-it-ris/base-openmpi:latest
    ```
 
 # Test
@@ -41,15 +41,13 @@ Shown below are the steps to test it in the RIS Compute Cluster.
 2. Submit a LSF interactive job.
    Shown below is an example.
    Please replace `compute-ris` with your compute group.
-   Please replace `/home/sleong` with your home directory.
-   Please replace `registry.gsc.wustl.edu/sleong/base-openmpi:latest)` with your docker image built above.
+   Please replace `ghcr.io/washu-it-ris/base-openmpi:latest)` with your docker image built above.
    ```bash
    LSF_DOCKER_NETWORK=host \
    LSF_DOCKER_IPC=host \
    LSF_DOCKER_SHM_SIZE=20G \
-   LSF_DOCKER_VOLUMES="/home/sleong:/home/sleong" \
    bsub -q general-interactive \
-        -a "docker(registry.gsc.wustl.edu/sleong/base-openmpi:latest)" \
+        -a "docker(ghcr.io/washu-it-ris/base-openmpi:latest)" \
         -Is -n 4 -R "span[ptile=2] rusage[mem=10GB]" \
         -M 10GB \
         -G compute-ris \
@@ -57,7 +55,7 @@ Shown below are the steps to test it in the RIS Compute Cluster.
    ``` 
 3. Download a MPI test program source.  Shown below is an example. Please download it to your home directory or a directory that can be accessed from all RIS compute nodes.
    ```bash
-   wget https://www.cs.mtsu.edu/~rbutler/courses/pp6330/www.llnl.gov/computing/tutorials/workshops/workshop/mpi/samples/Fortran/mpi_ringtopo.f
+   wget https://hpc-tutorials.llnl.gov/mpi/examples/mpi_ringtopo.f
    ```
 4. Compile the test source code downloaded.  Shown below is an example.
    ```bash
