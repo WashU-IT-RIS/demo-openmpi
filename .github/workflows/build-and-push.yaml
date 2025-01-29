@@ -24,6 +24,12 @@ jobs:
           file: Dockerfile
           tags: ghcr.io/washu-it-ris/base-openmpi:latest
           platforms: linux/amd64
+          labels: |
+            org.opencontainers.image.title=RIS Base OpenMPI
+            org.opencontainers.image.description=RIS Managed OpenMPI Base Container for use with LSF 10.1 Compute1
+            org.opencontainers.image.vendor=ris.wustl.edu
+            org.opencontainers.image.url=https://docs.ris.wustl.edu/doc/compute/recipes/ris-installed-applications.html?highlight=openmpi#o
+            org.opencontainers.image.source=https://github.com/WashU-IT-RIS/demo-openmpi
 
   ubuntu20_mofed5-8_openmpi4-1:
     runs-on: ubuntu-latest 
@@ -43,6 +49,12 @@ jobs:
           file: Dockerfiles/ubuntu20-mofed5.8-openmpi4.1
           tags: ghcr.io/washu-it-ris/base-openmpi:ubuntu20-mofed5.8-openmpi4.1
           platforms: linux/amd64
+          labels: |
+            org.opencontainers.image.title=RIS Base OpenMPI
+            org.opencontainers.image.description=RIS Managed OpenMPI Base Container for use with LSF 10.1 Compute1
+            org.opencontainers.image.vendor=ris.wustl.edu
+            org.opencontainers.image.url=https://docs.ris.wustl.edu/doc/compute/recipes/ris-installed-applications.html?highlight=openmpi#o
+            org.opencontainers.image.source=https://github.com/WashU-IT-RIS/demo-openmpi
 
   ubuntu22_mofed5-8_openmpi4-1:
     runs-on: ubuntu-latest 
@@ -62,4 +74,10 @@ jobs:
           file: Dockerfiles/ubuntu20-mofed5.8-openmpi4.1
           tags: ghcr.io/washu-it-ris/base-openmpi:ubuntu22-mofed5.8-openmpi4.1
           platforms: linux/amd64
+          labels: |
+            org.opencontainers.image.title=RIS Base OpenMPI
+            org.opencontainers.image.description=RIS Managed OpenMPI Base Container for use with LSF 10.1 Compute1
+            org.opencontainers.image.vendor=ris.wustl.edu
+            org.opencontainers.image.url=https://docs.ris.wustl.edu/doc/compute/recipes/ris-installed-applications.html?highlight=openmpi#o
+            org.opencontainers.image.source=https://github.com/WashU-IT-RIS/demo-openmpi
 
