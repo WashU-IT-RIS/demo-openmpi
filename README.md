@@ -47,9 +47,9 @@ Shown below are the steps to test it in the RIS Compute Cluster.
    LSF_DOCKER_IPC=host \
    LSF_DOCKER_SHM_SIZE=20G \
    bsub -q general-interactive \
+        -Is -n 4 \
         -a "docker(ghcr.io/washu-it-ris/base-openmpi:latest)" \
-        -Is -n 4 -R "span[ptile=2] rusage[mem=10GB]" \
-        -M 10GB \
+        -R "affinity[core(1):distribute=pack] span[ptile=2]" \
         -G compute-ris \
         /bin/bash
    ``` 
@@ -65,11 +65,11 @@ Shown below are the steps to test it in the RIS Compute Cluster.
    The `--mca btl ^vader,tcp,openib,uct` is because by default for OpenMPI 4 and above enables build-in transports (BTLs).
    ```bash
    mpirun --mca btl ^vader,tcp,openib,uct \
-         --mca pml ucx \
-         -x UCX_NET_DEVICES=mlx5_0:1 \
-         -x LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH \
-         -np 4 \
-         $(pwd)/a.out 
+          --mca pml ucx \
+          -x UCX_NET_DEVICES=mlx5_0:1 \
+          -x LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH \
+          -np 4 \
+          $(pwd)/a.out 
    ```
 5. Shown below is an example of the output from above `mpirun` command.
    ```bash
