@@ -24,6 +24,7 @@ jobs:
           file: Dockerfile
           tags: ghcr.io/washu-it-ris/base-openmpi:latest
           platforms: linux/amd64
+          push: true
           labels: |
             org.opencontainers.image.title="RIS Base OpenMPI"
             org.opencontainers.image.description="RIS Managed OpenMPI Base Container for use with LSF 10.1 Compute1"
@@ -49,6 +50,7 @@ jobs:
           file: Dockerfiles/ubuntu20-mofed5.8-openmpi4.1
           tags: ghcr.io/washu-it-ris/base-openmpi:ubuntu20-mofed5.8-openmpi4.1
           platforms: linux/amd64
+          push: true
           labels: |
             org.opencontainers.image.title="RIS Base OpenMPI"
             org.opencontainers.image.description="RIS Managed OpenMPI Base Container for use with LSF 10.1 Compute1"
@@ -74,6 +76,7 @@ jobs:
           file: Dockerfiles/ubuntu20-mofed5.8-openmpi4.1
           tags: ghcr.io/washu-it-ris/base-openmpi:ubuntu22-mofed5.8-openmpi4.1
           platforms: linux/amd64
+          push: true
           labels: |
             org.opencontainers.image.title="RIS Base OpenMPI"
             org.opencontainers.image.description="RIS Managed OpenMPI Base Container for use with LSF 10.1 Compute1"
