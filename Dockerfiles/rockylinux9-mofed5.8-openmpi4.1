@@ -1,0 +1,43 @@
+FROM rockylinux:9
+
+# Setup LSF link libraries
+COPY lsf/ /opt/ibm/lsfsuite/lsf/10.1/
+COPY ld.so.conf.d/ /etc/ld.so.conf.d/
+
+RUN yum install -y gcc g++ wget perl fuse-libs tk numactl-libs ethtool tcl tcsh lsof gcc-gfortran pciutils pciutils-libs libnl3 libmnl
+
+# Set MOFED version, OS version and platform
+ENV MOFED_VERSION=5.8-7.0.6.1
+ENV OS_VERSION=rhel9.3
+ENV PLATFORM=x86_64
+
+RUN mkdir /tmp/mofed && \
+    cd /tmp/mofed && \
+    wget -q http://content.mellanox.com/ofed/MLNX_OFED-${MOFED_VERSION}/MLNX_OFED_LINUX-${MOFED_VERSION}-${OS_VERSION}-${PLATFORM}.tgz && \
+    tar -xvf MLNX_OFED_LINUX-${MOFED_VERSION}-${OS_VERSION}-${PLATFORM}.tgz && \
+    MLNX_OFED_LINUX-${MOFED_VERSION}-${OS_VERSION}-${PLATFORM}/mlnxofedinstall \
+      --user-space-only \
+      --without-fw-update  \
+      -q && \
+    rm -rf /tmp/mofed
+
+
+ENV OPENMPI_VERSION_MAJOR=4.1
+ENV OPENMPI_VERSION=4.1.7
+RUN yum install -y libnsl libnsl2 && ln -s /usr/lib64/libnsl.so.3 /usr/lib64/libnsl.so
+# Install Open MPI
+RUN mkdir /tmp/openmpi && \
+    cd /tmp/openmpi && \
+    wget -q https://download.open-mpi.org/release/open-mpi/v${OPENMPI_VERSION_MAJOR}/openmpi-${OPENMPI_VERSION}.tar.gz && \
+    tar zxf openmpi-${OPENMPI_VERSION}.tar.gz && \
+    cd openmpi-${OPENMPI_VERSION} && \
+    ./configure \
+        --with-lsf=/opt/ibm/lsfsuite/lsf/10.1/ \
+        --enable-orterun-prefix-by-default \
+        --with-lsf-libdir=/opt/ibm/lsfsuite/lsf/10.1/linux2.6-glibc2.3-x86_64/lib/ \
+        --with-ucx=/usr --enable-mca-no-build=btl-uct && \
+    make -j $(nproc) all && \
+    make install && \
+    ldconfig && \
+    rm -rf /tmp/openmpi
+
