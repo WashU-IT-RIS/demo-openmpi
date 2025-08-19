@@ -1,4 +1,8 @@
-FROM rockylinux:9
+ARG ROCKY_VERSION=9.3
+
+FROM rockylinux:${ROCKY_VERSION}
+
+ARG ROCKY_VERSION
 
 # Setup LSF link libraries
 COPY lsf/ /opt/ibm/lsfsuite/lsf/10.1/
@@ -8,7 +12,7 @@ RUN yum install -y gcc g++ wget perl fuse-libs tk numactl-libs ethtool tcl tcsh 
 
 # Set MOFED version, OS version and platform
 ENV MOFED_VERSION=5.8-7.0.6.1
-ENV OS_VERSION=rhel9.3
+ENV OS_VERSION=rhel${ROCKY_VERSION}
 ENV PLATFORM=x86_64
 
 RUN mkdir /tmp/mofed && \
